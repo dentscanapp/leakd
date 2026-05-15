@@ -73,6 +73,7 @@
 
     handleUrlParams();
     initPalette();
+    if (window.LeakdStreak) window.LeakdStreak.load();
     if (window.LeakdShortcuts) window.LeakdShortcuts.init();
   }
 
@@ -299,6 +300,7 @@
     if (activeView === 'home') {
       renderStats();
       renderAlerts();
+      renderStreak();
       renderCategories();
       renderList();
     } else if (activeView === 'insights') {
@@ -400,6 +402,32 @@
       if (t < 1 && _lastAnim.get(el) === target) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
+  }
+
+  function renderStreak() {
+    const card = $('streakCard');
+    if (!card || !window.LeakdStreak) return;
+    
+    // Only show if the user has some subscriptions (don't overwhelm on empty app)
+    if (subs.length === 0) { card.style.display = 'none'; return; }
+    
+    card.style.display = 'flex';
+    const count = window.LeakdStreak.getCount();
+    const checked = window.LeakdStreak.hasCheckedInToday();
+    
+    $('streakCount').textContent = count;
+    card.classList.toggle('is-checked', checked);
+    
+    const btn = $('streakBtn');
+    if (checked) {
+      btn.textContent = t('streak.done') || 'Stayed clean today! ✨';
+      btn.disabled = true;
+      $('streakMsg').textContent = t('streak.msgDone') || 'Great job! See you tomorrow to keep the screen clean.';
+    } else {
+      btn.textContent = t('streak.btn') || 'I stayed clean!';
+      btn.disabled = false;
+      $('streakMsg').textContent = t('streak.msg') || 'Did you resist a new subscription today?';
+    }
   }
 
   function renderSparkline() {
@@ -2306,6 +2334,18 @@
     $('proActivateBtn').addEventListener('click', activatePro);
     $('proDeactivateBtn').addEventListener('click', deactivatePro);
     $('proCloseActiveBtn').addEventListener('click', closeProModal);
+
+    const streakBtn = $('streakBtn');
+    if (streakBtn) {
+      streakBtn.addEventListener('click', () => {
+        if (!window.LeakdStreak) return;
+        if (window.LeakdStreak.checkIn()) {
+          if (window.LeakdConfetti) window.LeakdConfetti.burst();
+          render();
+          toast(t('toast.streakUpdated') || 'Streak updated! 🔥');
+        }
+      });
+    }
 
     $('closeImportModal').addEventListener('click', closeImportModal);
     $('cancelImportBtn').addEventListener('click', closeImportModal);

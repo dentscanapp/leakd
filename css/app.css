@@ -247,6 +247,35 @@ body {
   font-weight: 500;
 }
 
+/* ── Streak Card ── */
+.streak-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.streak-header { display: flex; justify-content: space-between; align-items: center; }
+.streak-info { display: flex; align-items: baseline; gap: 6px; }
+.streak-count { font-size: 24px; font-weight: 700; color: var(--accent); }
+.streak-label { font-size: 14px; font-weight: 500; color: var(--text-2); }
+.streak-icon { font-size: 20px; }
+.streak-body { display: flex; flex-direction: column; gap: 10px; }
+.streak-body p { font-size: 13px; color: var(--text-3); }
+.btn-streak {
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .alert-card {
   background: var(--amber-soft);
   border: 1px solid var(--amber);
@@ -2807,4 +2836,83 @@ a.btn-primary {
 
 [data-theme="dark"] #leak-overlay {
   --leak-opacity: 0.15;
+}
+
+/* ── Streak Card ── */
+.streak-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideIn 0.3s ease;
+}
+
+.streak-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.streak-info {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.streak-count {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--mono);
+}
+
+.streak-label {
+  font-size: 13px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.streak-icon {
+  font-size: 24px;
+}
+
+.streak-body p {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.btn-streak {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-streak:hover:not(:disabled) {
+  background: var(--accent);
+  color: white;
+}
+
+.streak-card.is-checked .btn-streak {
+  background: var(--green-soft);
+  border-color: var(--green);
+  color: var(--green-text);
+  cursor: default;
+}
+
+.streak-card.is-checked .streak-count {
+  color: var(--green);
 }

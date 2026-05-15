@@ -58,6 +58,12 @@
     // Cap it at 90% so it doesn't cover the header
     pct = Math.min(90, pct);
     
+    // Apply streak discount (1% reduction per day of streak)
+    if (window.LeakdStreak) {
+      const streakCount = window.LeakdStreak.getCount();
+      pct = Math.max(0, pct - streakCount);
+    }
+
     // If no spend, hide it
     if (monthlySpend <= 0) pct = 0;
 
