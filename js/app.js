@@ -1162,6 +1162,7 @@
     if (!alts || alts.length === 0) { card.style.display = 'none'; return; }
     card.style.display = 'block';
     const currentMonthly = toMonthly(sub.price, sub.cycle);
+    const trAlt = (window.LeakdAlternatives && window.LeakdAlternatives.tr) || (s => s);
     $('altList').innerHTML = alts.map(alt => {
       const isFree = alt.price === 0;
       const savings = currentMonthly - alt.price;
@@ -1169,8 +1170,8 @@
       const badgeCls = isFree ? 'alt-free' : 'alt-cheaper';
       return `<div class="alt-row">
         <div class="alt-row-main">
-          <div class="alt-row-name">${escHtml(alt.name)} ${badgeText ? '<span class="alt-badge ' + badgeCls + '">' + badgeText + '</span>' : ''}</div>
-          <div class="alt-row-why">${escHtml(alt.why)}</div>
+          <div class="alt-row-name">${escHtml(trAlt(alt.name))} ${badgeText ? '<span class="alt-badge ' + badgeCls + '">' + badgeText + '</span>' : ''}</div>
+          <div class="alt-row-why">${escHtml(trAlt(alt.why))}</div>
         </div>
         <div class="alt-row-price">${formatPrice(alt.price)}<span>/${t('cycle.mo').replace('/','')}</span></div>
       </div>`;
@@ -1188,7 +1189,8 @@
     diffEl.textContent = t('playbook.diff' + pb.difficulty.charAt(0).toUpperCase() + pb.difficulty.slice(1));
     diffEl.className = 'playbook-diff diff-' + pb.difficulty;
     $('playbookTime').textContent = t('playbook.time', { n: pb.minutes });
-    $('playbookSteps').innerHTML = pb.steps.map(s => `<li>${escHtml(s)}</li>`).join('');
+    const trStep = (window.LeakdImport && window.LeakdImport.trStep) || (s => s);
+    $('playbookSteps').innerHTML = pb.steps.map(s => `<li>${escHtml(trStep(s))}</li>`).join('');
   }
 
   function applyPreset(btn) {

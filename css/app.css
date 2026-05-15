@@ -1052,7 +1052,13 @@ a.btn-primary {
   font-size: 15px;
   pointer-events: none;
 }
-.input-prefix input { padding-left: 32px; }
+/* Override the generic .form-group input padding (which has higher specificity)
+   so the currency/unit prefix doesn't overlap the input value. 48px fits the
+   widest symbol we ship ("Mex$"); single-char ones look fine in the breathing room. */
+.form-group .input-prefix input[type="number"],
+.form-group .input-prefix input[type="text"] {
+  padding-left: 48px;
+}
 
 .modal-actions {
   display: flex;

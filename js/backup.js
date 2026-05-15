@@ -21,6 +21,7 @@
     'leakd_cancelled',
     'leakd_goal',
     'leakd_activity',
+    'leakd_tour_done',
   ];
 
   const FORMAT = 'leakd-backup-v1';

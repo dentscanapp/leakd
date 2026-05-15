@@ -394,5 +394,98 @@
     return out;
   }
 
-  window.LeakdImport = { parseText, parseCSV, parseLine, findCancelUrl, findPlaybook, KNOWN, PLAYBOOKS };
+  // ── Playbook step localization ──
+  // Same pattern as alternatives.js: canonical English steps, lookup table
+  // per language. Renderer calls trStep() to get the localized string.
+  const STEP_I18N = {
+    hu: {
+      // Netflix
+      'Open netflix.com and sign in': 'Nyisd meg a netflix.com-ot és jelentkezz be',
+      'Click your profile → Account': 'Kattints a profilra → Fiók',
+      'Click "Cancel Membership"': 'Kattints a "Tagság lemondása" gombra',
+      'Confirm cancellation': 'Erősítsd meg a lemondást',
+      // Spotify
+      'Go to spotify.com/account': 'Menj a spotify.com/account-ra',
+      'Click "Manage your plan"': 'Kattints a "Csomag kezelése" gombra',
+      'Click "Change plan" → "Cancel Premium"': '"Csomag módosítása" → "Premium lemondása"',
+      'Confirm — access continues until period ends': 'Erősítsd meg — a hozzáférés a periódus végéig megmarad',
+      // YouTube Premium
+      'Open youtube.com/paid_memberships': 'Nyisd meg a youtube.com/paid_memberships-et',
+      'Find YouTube Premium → "Deactivate"': 'Keresd a YouTube Premium-ot → "Deaktiválás"',
+      'Choose reason and confirm': 'Válassz okot és erősítsd meg',
+      // Apple Music
+      'iPhone: Settings → tap your name → Subscriptions': 'iPhone: Beállítások → koppints a nevedre → Előfizetések',
+      'Tap Apple Music → "Cancel Subscription"': 'Koppints Apple Music → "Előfizetés lemondása"',
+      'Confirm': 'Erősítsd meg',
+      // Disney+
+      'Sign in at disneyplus.com': 'Jelentkezz be a disneyplus.com-on',
+      'Click profile → Account → Subscription': 'Kattints profil → Fiók → Előfizetés',
+      '"Cancel Subscription" → confirm': '"Előfizetés lemondása" → erősítsd meg',
+      // HBO Max
+      'Open max.com → Settings → Subscription': 'Nyisd meg max.com → Beállítások → Előfizetés',
+      'Click "Manage subscription" → "Cancel"': 'Kattints "Előfizetés kezelése" → "Lemondás"',
+      // Amazon Prime
+      'Go to amazon.com/mc': 'Menj az amazon.com/mc-re',
+      'Find "Prime" → "End Membership"': 'Keresd "Prime" → "Tagság befejezése"',
+      'Click through 3 confirmation screens (Amazon tries to talk you out of it)': 'Kattints át 3 megerősítő képernyőn (az Amazon megpróbál lebeszélni)',
+      // ChatGPT Plus
+      'chatgpt.com → bottom-left avatar → Settings': 'chatgpt.com → bal-alsó avatar → Beállítások',
+      '"Subscription" → "Cancel plan"': '"Előfizetés" → "Csomag lemondása"',
+      // Claude Pro
+      'claude.ai → Settings → Billing': 'claude.ai → Beállítások → Számlázás',
+      'Click "Cancel subscription"': 'Kattints "Előfizetés lemondása"',
+      // Adobe CC
+      'WARNING: Adobe charges 50% of remaining contract if you cancel early': 'FIGYELEM: az Adobe a maradék szerződés 50%-át felszámolja korai lemondásnál',
+      'Go to account.adobe.com/plans': 'Menj az account.adobe.com/plans-re',
+      '"Cancel your plan" — they hide this behind multiple clicks': '"Csomag lemondása" — több kattintás mögé rejtik',
+      'Try the chat for a no-fee cancellation excuse': 'Próbáld a chatet díjmentes lemondási indokért',
+      'Document everything — Adobe is known to keep charging': 'Dokumentálj mindent — az Adobe ismert arról hogy tovább számláz',
+      // iCloud+
+      'iPhone: Settings → tap your name → iCloud → Manage Storage → Change Storage Plan': 'iPhone: Beállítások → név → iCloud → Tárhely kezelése → Csomag módosítása',
+      'Select "Downgrade options" → 5GB Free': 'Válaszd "Visszaminősítés" → 5GB Ingyenes',
+      // Microsoft 365
+      'account.microsoft.com/services': 'account.microsoft.com/services',
+      'Find Microsoft 365 → "Manage" → "Cancel subscription"': 'Keresd Microsoft 365 → "Kezelés" → "Előfizetés lemondása"',
+      'May need to wait until end of period for refund': 'A periódus végéig várni kell a visszatérítésért',
+      // NYT
+      'NYT requires a phone call or chat — no self-service cancel': 'A NYT telefont vagy chatet igényel — nincs önkiszolgáló lemondás',
+      'Go to myaccount.nytimes.com → Subscription → "Cancel"': 'myaccount.nytimes.com → Előfizetés → "Lemondás"',
+      'You will be redirected to chat': 'Át fognak irányítani chatre',
+      'Be firm, say "I want to cancel" and refuse the discount offers': 'Légy határozott, mondd "le akarom mondani" és utasíts el minden kedvezmény-ajánlatot',
+      // Audible
+      'audible.com/account/mship-cancel (only works on desktop)': 'audible.com/account/mship-cancel (csak desktopon)',
+      'Click through 4-5 "are you sure" screens': 'Kattints át 4-5 "biztos vagy benne" képernyőn',
+      'Use your remaining credits before cancelling': 'Használd fel a maradék krediteket lemondás előtt',
+      // LinkedIn Premium
+      'linkedin.com/premium/manage': 'linkedin.com/premium/manage',
+      '"Cancel subscription" — LinkedIn will offer 50% off, decline if you truly want out': '"Előfizetés lemondása" — a LinkedIn 50% kedvezményt fog kínálni, utasítsd el ha tényleg ki akarsz lépni',
+      // Peloton
+      'Sign in to members.onepeloton.com → Preferences → Subscriptions': 'Jelentkezz be members.onepeloton.com → Beállítások → Előfizetések',
+      'Membership → "Cancel membership"': 'Tagság → "Tagság lemondása"',
+      'If you bought hardware, the warranty stays — only membership is cancelled': 'Ha hardvert vettél, a garancia marad — csak a tagság szűnik',
+      // NordVPN
+      'my.nordaccount.com → Subscription': 'my.nordaccount.com → Előfizetés',
+      '"Cancel auto-renewal" (does NOT cancel immediately — they remember this)': '"Automatikus megújítás lemondása" (NEM mond le azonnal — erre figyelj)',
+      'Service continues until period ends': 'A szolgáltatás a periódus végéig folytatódik',
+      // OnlyFans
+      'Go to each subscribed creator': 'Menj minden alkotóhoz akire előfizettél',
+      'Toggle off "Renew automatically"': 'Kapcsold ki a "Automatikus megújítás"-t',
+      'No central cancel — must repeat per creator': 'Nincs központi lemondás — minden alkotónál külön',
+      // Patreon
+      'patreon.com/settings/memberships': 'patreon.com/settings/memberships',
+      'Find each pledge → "Edit" → "Cancel pledge"': 'Keresd minden vállalást → "Szerkesztés" → "Vállalás lemondása"',
+      // Generic
+      'no-central-cancel-repeat': 'Nincs központi lemondás — minden alkotónál külön',
+    },
+  };
+
+  function trStep(text) {
+    if (!text) return text;
+    const lang = window.LeakdI18n && window.LeakdI18n.lang;
+    if (!lang || lang === 'en') return text;
+    const dict = STEP_I18N[lang];
+    return (dict && dict[text]) || text;
+  }
+
+  window.LeakdImport = { parseText, parseCSV, parseLine, findCancelUrl, findPlaybook, trStep, KNOWN, PLAYBOOKS, STEP_I18N };
 })();

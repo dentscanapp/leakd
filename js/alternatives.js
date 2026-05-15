@@ -107,5 +107,112 @@
     return [];
   }
 
-  window.LeakdAlternatives = { findAlternatives, ALTERNATIVES };
+  // ── Localization lookup ──
+  // The data above is canonical English. We translate strings at render time
+  // by matching the English value against an entry in this table. If no
+  // translation exists for the current language, we fall back to English.
+  // Adding a new language = one new entry per "name" + "why" string.
+  const I18N = {
+    hu: {
+      // Alternative names (most stay in English brand names, only translate descriptors)
+      'Netflix Standard with Ads': 'Netflix Standard reklámmal',
+      'Disney+ Basic with Ads': 'Disney+ Basic reklámmal',
+      'Disney+ with Ads': 'Disney+ reklámmal',
+      'Library card': 'Könyvtári tagság',
+      'Apple One Individual': 'Apple One egyéni',
+      'Apple One Family': 'Apple One családi',
+      'YouTube Premium Family': 'YouTube Premium családi',
+      'Just ad-blocker': 'Csak ad-blocker',
+      'Disney Bundle (Disney+/Hulu/ESPN+)': 'Disney csomag (Disney+/Hulu/ESPN+)',
+      'Free ChatGPT + free Claude': 'Ingyenes ChatGPT + ingyenes Claude',
+      'Claude API pay-per-use': 'Claude API használat-arányos',
+      'Affinity Photo/Designer/Publisher': 'Affinity Photo/Designer/Publisher',
+      'Photopea (free)': 'Photopea (ingyenes)',
+      'Figma free + GIMP': 'Figma ingyenes + GIMP',
+      'Adobe CC Photography Plan': 'Adobe CC fotós csomag',
+      'Microsoft 365 Family': 'Microsoft 365 családi',
+      'Google Workspace (Free for personal)': 'Google Workspace (személyesnek ingyenes)',
+      'LibreOffice': 'LibreOffice',
+      'Notion Free': 'Notion ingyenes',
+      'Obsidian': 'Obsidian',
+      'Apple Notes': 'Apple Notes',
+      'Google One 2TB': 'Google One 2TB',
+      'pCloud Lifetime': 'pCloud élethosszig',
+      'Self-hosted Nextcloud': 'Saját Nextcloud',
+      'iCloud+ 200GB': 'iCloud+ 200GB',
+      'iCloud+ 2TB': 'iCloud+ 2TB',
+      'Sync.com': 'Sync.com',
+      'NYT All Access': 'NYT All Access',
+      'NYT Games only': 'NYT csak játékok',
+      'Library card + Libby': 'Könyvtár + Libby',
+      'Spotify (audiobooks included)': 'Spotify (hangoskönyvekkel)',
+      'LibriVox (public domain)': 'LibriVox (közkincs)',
+      'Peloton App One': 'Peloton App One',
+      'YouTube + free fitness': 'YouTube + ingyenes fitnesz',
+      'LinkedIn Premium Career': 'LinkedIn Premium karrier',
+      'Free LinkedIn': 'Ingyenes LinkedIn',
+      'Mullvad VPN': 'Mullvad VPN',
+      'Proton VPN Free': 'Proton VPN ingyenes',
+
+      // Why strings — the savings reasoning
+      'Same library, ads on most titles': 'Ugyanaz a kínálat, reklámmal a legtöbb tartalomnál',
+      'Different catalog, cheapest streaming option': 'Más kínálat, legolcsóbb streaming opció',
+      'Disney/Marvel/Star Wars + Hulu shows': 'Disney/Marvel/Star Wars + Hulu sorozatok',
+      'Hoopla, Kanopy free with most US/EU library cards': 'Hoopla, Kanopy ingyen a legtöbb EU/US könyvtári taggal',
+      'Same price, bundles with YouTube Premium': 'Ugyanaz az ár, YouTube Premium-mal csomagolva',
+      'Same price, bundled in Apple One': 'Ugyanaz az ár, Apple One-ban csomagban',
+      'Lossless audio, same price': 'Lossless audio, ugyanaz az ár',
+      'Cheaper, free with Prime': 'Olcsóbb, Prime-mal ingyen',
+      'Bundles Music + TV+ + iCloud+ 50GB + Arcade': 'Music + TV+ + iCloud+ 50GB + Arcade csomag',
+      'Same price, broader podcast library': 'Ugyanaz az ár, szélesebb podcast kínálat',
+      'Up to 6 family members for ~2x the individual': 'Akár 6 családtag az egyéni ~2x áráért',
+      'uBlock Origin is free; you lose offline downloads': 'uBlock Origin ingyenes; offline letöltéseket elveszíted',
+      'Bundle saves $16+/mo vs separate': 'A csomag $16+/hó-t spórol vs külön',
+      'Same library, lower price': 'Ugyanaz a kínálat, alacsonyabb ár',
+      'Same price; better at long-context + code': 'Ugyanaz az ár; jobb hosszú-kontextusra + kódra',
+      'Same tier, bundled with Google One 2TB': 'Ugyanaz a szint, Google One 2TB csomagban',
+      'Free tiers cover ~80% of use cases': 'Az ingyenes verziók a felhasználási esetek ~80%-át fedik',
+      'Same price; better image gen + voice': 'Ugyanaz az ár; jobb képgen + hang',
+      'If you use it lightly, pay-per-token may be cheaper': 'Ha keveset használod, a per-token fizetés olcsóbb lehet',
+      'One-time purchase ($164 total), not subscription': 'Egyszeri vásárlás ($164 összesen), nem előfizetés',
+      'Browser-based Photoshop clone': 'Böngészős Photoshop klón',
+      'Covers most design + photo workflows': 'A legtöbb design + fotó workflow-t lefedi',
+      'Photoshop + Lightroom only, much cheaper than full CC': 'Csak Photoshop + Lightroom, jóval olcsóbb mint a teljes CC',
+      'Up to 6 people, same price as Personal': 'Akár 6 fő, ugyanaz az ár mint a személyes',
+      'Docs/Sheets/Slides + 15GB Drive': 'Docs/Sheets/Slides + 15GB Drive',
+      'Open-source, works offline': 'Nyílt forrású, offline is működik',
+      'Unlimited pages for personal use': 'Korlátlan oldal személyes használatra',
+      'Local-first, lifetime free for personal': 'Lokális, személyesnek életfogytig ingyenes',
+      'Free, syncs across Apple devices': 'Ingyenes, Apple eszközök közt szinkronban',
+      '2TB storage + Gemini Advanced + VPN': '2TB tárhely + Gemini Advanced + VPN',
+      '$199 one-time = $8.25/mo for 5 years vs $30 in iCloud': '$199 egyszeri = $8.25/hó 5 évre vs $30 iCloud-ban',
+      '~$60/yr on a Hetzner VPS, unlimited': '~$60/év Hetzner VPS-en, korlátlan',
+      'Cheaper if you only need basic storage': 'Olcsóbb ha csak alap tárhely kell',
+      'One-time payment beats yearly fees long-term': 'Egyszeri fizetés hosszú távon veri az éves díjat',
+      'Same 2TB, $12/mo cheaper': 'Ugyanaz 2TB, $12/hó olcsóbb',
+      'Includes Gemini + VPN': 'Tartalmazza Gemini + VPN-t',
+      'End-to-end encrypted, cheaper': 'End-to-end titkosított, olcsóbb',
+      'Bundles News + Games + Cooking + Athletic — better if you use 2+': 'News + Games + Cooking + Athletic csomag — jobb ha 2+ kell',
+      'If you only play Wordle/Connections': 'Ha csak Wordle/Connections kell',
+      'Free audiobooks via Libby (most US/EU libraries)': 'Ingyenes hangoskönyvek Libby-vel (a legtöbb EU/US könyvtár)',
+      '15 hrs/mo of audiobooks bundled with Music': '15 óra/hó hangoskönyv a Music mellett',
+      'Free classics, no DRM': 'Ingyenes klasszikusok, DRM nélkül',
+      'No bike required, same classes': 'Bicikli nélkül is, ugyanazok az órák',
+      'Caroline Girvan, MadFit, etc. have free programs': 'Caroline Girvan, MadFit, stb. programjai ingyenesek',
+      "Job seeker plan if Sales Nav isn't needed": 'Álláskereső csomag ha nem kell Sales Nav',
+      '80% of value is in the free tier': 'Az érték 80%-a az ingyenes szinten van',
+      'Same security, half the price, no logs by design': 'Ugyanaz a biztonság, fele ár, alapból log-mentes',
+      'Free tier covers basic privacy needs': 'Az ingyenes szint fedi az alap privacy igényeket',
+    },
+  };
+
+  function tr(text) {
+    if (!text) return text;
+    const lang = window.LeakdI18n && window.LeakdI18n.lang;
+    if (!lang || lang === 'en') return text;
+    const dict = I18N[lang];
+    return (dict && dict[text]) || text;
+  }
+
+  window.LeakdAlternatives = { findAlternatives, tr, ALTERNATIVES, I18N };
 })();
