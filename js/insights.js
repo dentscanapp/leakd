@@ -6,6 +6,8 @@
 (function () {
   'use strict';
 
+  const t = (k, vars) => window.LeakdI18n ? window.LeakdI18n.t(k, vars) : k;
+
   function toMonthly(price, cycle) {
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
@@ -73,8 +75,8 @@
             id: 'dup-' + cat,
             severity: 'high',
             icon: '⚠️',
-            title: `${matches.length} overlapping ${cat.toLowerCase()} subscriptions`,
-            body: `You're paying for ${matches.map(s => s.name).join(', ')}. Keeping only one could save you up to <strong>${money(savings)}/yr</strong>.`,
+            title: t('sug.dup.title', { count: matches.length, cat: (window.LeakdI18n ? window.LeakdI18n.t('cat.' + cat) : cat).toLowerCase() }),
+            body: t('sug.dup.body', { names: matches.map(s => s.name).join(', '), savings: money(savings) }),
             savingsYearly: savings,
           });
         }
@@ -90,8 +92,8 @@
           id: 'yearly-' + s.id,
           severity: 'medium',
           icon: '💡',
-          title: `Switch ${s.name} to yearly billing`,
-          body: `Most services offer ~15–20% off when paid annually. Switching could save <strong>~${money(savings)}/yr</strong>.`,
+          title: t('sug.yearly.title', { name: s.name }),
+          body: t('sug.yearly.body', { savings: money(savings) }),
           savingsYearly: savings,
         });
       }
@@ -105,8 +107,8 @@
           id: 'expensive-' + s.id,
           severity: 'medium',
           icon: '💸',
-          title: `${s.name} is your biggest leak`,
-          body: `<strong>${money(m)}/mo</strong> = ${money(m * 12)}/year. When was the last time you used it?`,
+          title: t('sug.expensive.title', { name: s.name }),
+          body: t('sug.expensive.body', { monthly: money(m), yearly: money(m * 12) }),
           savingsYearly: m * 12,
         });
       }
@@ -117,12 +119,14 @@
       if (s.isTrial && s.trialEnd) {
         const d = daysUntil(s.trialEnd);
         if (d >= 0 && d <= 3) {
+          const when = d === 0 ? t('time.today') : d === 1 ? t('time.tomorrow') : t('time.inDays', { n: d });
+          const cycleLabel = s.cycle === 'monthly' ? t('cycle.mo') : s.cycle === 'yearly' ? t('cycle.yr') : t('cycle.wk');
           out.push({
             id: 'trial-' + s.id,
             severity: 'high',
             icon: '⏰',
-            title: `${s.name} trial ends ${d === 0 ? 'today' : d === 1 ? 'tomorrow' : 'in ' + d + ' days'}`,
-            body: `Will auto-renew at <strong>${money(s.price)}/${s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk'}</strong>. Cancel now if you don't want it.`,
+            title: t('sug.trial.title', { name: s.name, when: when }),
+            body: t('sug.trial.body', { price: money(s.price) + cycleLabel }),
             savingsYearly: toYearly(s.price, s.cycle),
           });
         }
@@ -137,8 +141,8 @@
           id: 'old-' + s.id,
           severity: 'low',
           icon: '👀',
-          title: `${s.name} has been on your list for 6+ months`,
-          body: `Still actively using it? You've paid <strong>${money(toMonthly(s.price, s.cycle) * 6)}</strong> so far for it.`,
+          title: t('sug.old.title', { name: s.name }),
+          body: t('sug.old.body', { paid: money(toMonthly(s.price, s.cycle) * 6) }),
           savingsYearly: 0,
         });
       }

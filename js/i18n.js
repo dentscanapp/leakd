@@ -510,6 +510,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'day streak',
+      'streak.msg': 'Did you resist a new subscription today?',
+      'streak.btn': 'I stayed clean!',
+      'streak.done': 'Stayed clean today! ✨',
+      'streak.msgDone': 'Great job! See you tomorrow to keep the screen clean.',
+      'toast.streakUpdated': 'Streak updated! 🔥',
+
     },
     hu: {
       'app.tagline': 'Hol szivárog a pénzed?',
@@ -581,7 +588,7 @@
       'notif.testBody': 'Időben szólunk mielőtt az előfizetéseid megújulnak.',
       'notif.on': 'Értesítések bekapcsolva',
       'notif.off': 'Értesítések kikapcsolva',
-      'insights.ytd': 'EZ ÉVBEN EDDIG',
+      'insights.ytd': 'EBBEN AZ ÉVBEN EDDIG',
       'insights.paidIn': 'fizettél ki',
       'insights.projection': '12 hónapos előrejelzés',
       'insights.now': 'Most',
@@ -937,6 +944,13 @@
       'whatif.summarySavings': '{monthly}/hó · {yearly}/év',
       'whatif.investedNote': 'Befektetve 7%-on: {y5} 5 év, {y10} 10 év múlva',
       'home.notesLabel': 'Megjegyzés',
+      'streak.days': 'napos streak',
+      'streak.msg': 'Ma is ellenálltál az új előfizetéseknek?',
+      'streak.btn': 'Tiszta maradtam!',
+      'streak.done': 'Ma is tiszta! ✨',
+      'streak.msgDone': 'Szép munka! Holnap találkozunk, hogy tiszta maradjon a képernyő.',
+      'toast.streakUpdated': 'Streak frissítve! 🔥',
+
     },
     de: {
       'app.tagline': 'Wohin verschwindet dein Geld?',
@@ -1364,6 +1378,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'Tage Streak',
+      'streak.msg': 'Hast du heute einem neuen Abo widerstanden?',
+      'streak.btn': 'Ich bin sauber geblieben!',
+      'streak.done': 'Heute sauber geblieben! ✨',
+      'streak.msgDone': 'Tolle Arbeit! Bis morgen, um den Bildschirm sauber zu halten.',
+      'toast.streakUpdated': 'Streak aktualisiert! 🔥',
+
     },
     es: {
       'app.tagline': '¿Dónde se fuga tu dinero?',
@@ -1791,6 +1812,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'días de racha',
+      'streak.msg': '¿Resististe una nueva suscripción hoy?',
+      'streak.btn': '¡Me mantuve limpio!',
+      'streak.done': '¡Limpio hoy! ✨',
+      'streak.msgDone': '¡Buen trabajo! Nos vemos mañana para mantener la pantalla limpia.',
+      'toast.streakUpdated': '¡Racha actualizada! 🔥',
+
     },
     fr: {
       'app.tagline': 'Où ton argent fuit-il ?',
@@ -2218,6 +2246,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'jours de série',
+      'streak.msg': 'Avez-vous résisté à un nouvel abonnement aujourd\'hui ?',
+      'streak.btn': 'Je suis resté clean !',
+      'streak.done': 'Clean aujourd\'hui ! ✨',
+      'streak.msgDone': 'Beau travail ! À demain pour garder l\'écran clean.',
+      'toast.streakUpdated': 'Série mise à jour ! 🔥',
+
     },
     it: {
       'app.tagline': 'Dove se ne va il tuo denaro?',
@@ -2645,6 +2680,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'giorni di fila',
+      'streak.msg': 'Hai resistito a un nuovo abbonamento oggi?',
+      'streak.btn': 'Sono rimasto pulito!',
+      'streak.done': 'Pulito oggi! ✨',
+      'streak.msgDone': 'Ottimo lavoro! Ci vediamo domani per mantenere lo schermo pulito.',
+      'toast.streakUpdated': 'Serie aggiornata! 🔥',
+
     },
     pt: {
       'app.tagline': 'Para onde vai o teu dinheiro?',
@@ -3072,6 +3114,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'dias de ofensiva',
+      'streak.msg': 'Você resistiu a uma nova assinatura hoje?',
+      'streak.btn': 'Fiquei limpo!',
+      'streak.done': 'Limpo hoje! ✨',
+      'streak.msgDone': 'Bom trabalho! Até amanhã para manter a tela limpa.',
+      'toast.streakUpdated': 'Ofensiva atualizada! 🔥',
+
     },
     nl: {
       'app.tagline': 'Waar lekt jouw geld weg?',
@@ -3499,6 +3548,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'dagen reeks',
+      'streak.msg': 'Heb je vandaag een nieuw abonnement weerstaan?',
+      'streak.btn': 'Ik ben schoon gebleven!',
+      'streak.done': 'Schoon vandaag! ✨',
+      'streak.msgDone': 'Goed gedaan! Tot morgen om het scherm schoon te houden.',
+      'toast.streakUpdated': 'Reeks bijgewerkt! 🔥',
+
     },
     pl: {
       'app.tagline': 'Gdzie wycieka twoje pieniądze?',
@@ -3926,6 +3982,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'dni passy',
+      'streak.msg': 'Oparłeś się dzisiaj nowej subskrypcji?',
+      'streak.btn': 'Zostałem czysty!',
+      'streak.done': 'Dzisiaj czysto! ✨',
+      'streak.msgDone': 'Dobra robota! Do zobaczenia jutro, aby utrzymać czysty ekran.',
+      'toast.streakUpdated': 'Passa zaktualizowana! 🔥',
+
     },
     sv: {
       'app.tagline': 'Vart läcker dina pengar?',
@@ -4353,6 +4416,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'dagar i rad',
+      'streak.msg': 'Stod du emot en ny prenumeration idag?',
+      'streak.btn': 'Jag höll mig ren!',
+      'streak.done': 'Ren idag! ✨',
+      'streak.msgDone': 'Bra jobbat! Vi ses imorgon för att hålla skärmen ren.',
+      'toast.streakUpdated': 'Sviten uppdaterad! 🔥',
+
     },
     cs: {
       'app.tagline': 'Kam ti utíkají peníze?',
@@ -4780,6 +4850,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'dní v řadě',
+      'streak.msg': 'Odolali jste dnes novému předplatnému?',
+      'streak.btn': 'Zůstal jsem čistý!',
+      'streak.done': 'Dnes čisto! ✨',
+      'streak.msgDone': 'Dobrá práce! Uvidíme se zítra, ať udržíme čistou obrazovku.',
+      'toast.streakUpdated': 'Série aktualizována! 🔥',
+
     },
     ja: {
       'app.tagline': 'お金はどこに漏れている？',
@@ -5207,6 +5284,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': '日連続',
+      'streak.msg': '今日新しいサブスクの誘惑に勝ちましたか？',
+      'streak.btn': 'クリーンなままです！',
+      'streak.done': '今日もクリーン！ ✨',
+      'streak.msgDone': '素晴らしい！画面をクリーンに保つため、明日も会いましょう。',
+      'toast.streakUpdated': '記録更新！ 🔥',
+
     },
     ko: {
       'app.tagline': '돈이 어디로 새고 있나요?',
@@ -5634,6 +5718,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': '일 연속',
+      'streak.msg': '오늘 새로운 구독을 참으셨나요?',
+      'streak.btn': '유혹을 이겨냈어요!',
+      'streak.done': '오늘도 깔끔합니다! ✨',
+      'streak.msgDone': '잘 하셨어요! 화면을 깔끔하게 유지하기 위해 내일 다시 만나요.',
+      'toast.streakUpdated': '연속 기록 업데이트! 🔥',
+
     },
     zh: {
       'app.tagline': '你的钱漏到哪里了？',
@@ -6061,6 +6152,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': '天连续',
+      'streak.msg': '今天抵制了新订阅吗？',
+      'streak.btn': '我保持干净了！',
+      'streak.done': '今天保持干净！ ✨',
+      'streak.msgDone': '干得好！明天见，以保持屏幕干净。',
+      'toast.streakUpdated': '连续记录已更新！ 🔥',
+
     },
     ru: {
       'app.tagline': 'Куда утекают ваши деньги?',
@@ -6488,6 +6586,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'дней подряд',
+      'streak.msg': 'Сегодня вы удержались от новых подписок?',
+      'streak.btn': 'Я остался чист!',
+      'streak.done': 'Сегодня всё чисто! ✨',
+      'streak.msgDone': 'Отличная работа! Увидимся завтра, чтобы сохранить экран чистым.',
+      'toast.streakUpdated': 'Серия обновлена! 🔥',
+
     },
     ro: {
       'app.tagline': 'Unde se scurg banii tăi?',
@@ -6915,6 +7020,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'zile la rând',
+      'streak.msg': 'Ai rezistat unui nou abonament astăzi?',
+      'streak.btn': 'Am rămas curat!',
+      'streak.done': 'Curat astăzi! ✨',
+      'streak.msgDone': 'Bravo! Ne vedem mâine pentru a păstra ecranul curat.',
+      'toast.streakUpdated': 'Șir actualizat! 🔥',
+
     },
     id: {
       'app.tagline': 'Ke mana uangmu bocor?',
@@ -7342,6 +7454,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'hari berturut-turut',
+      'streak.msg': 'Apakah Anda menahan diri dari langganan baru hari ini?',
+      'streak.btn': 'Saya tetap bersih!',
+      'streak.done': 'Bersih hari ini! ✨',
+      'streak.msgDone': 'Kerja bagus! Sampai jumpa besok untuk menjaga layar tetap bersih.',
+      'toast.streakUpdated': 'Rentetan diperbarui! 🔥',
+
     },
     vi: {
       'app.tagline': 'Tiền của bạn rò rỉ ở đâu?',
@@ -7769,6 +7888,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'ngày liên tiếp',
+      'streak.msg': 'Bạn có cưỡng lại đăng ký mới hôm nay không?',
+      'streak.btn': 'Tôi đã sạch!',
+      'streak.done': 'Sạch hôm nay! ✨',
+      'streak.msgDone': 'Làm tốt lắm! Hẹn gặp lại ngày mai để giữ màn hình sạch sẽ.',
+      'toast.streakUpdated': 'Chuỗi cập nhật! 🔥',
+
     },
     tr: {
       'app.tagline': 'Paranız nereye sızıyor?',
@@ -8196,6 +8322,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'günlük seri',
+      'streak.msg': 'Bugün yeni bir aboneliğe direndin mi?',
+      'streak.btn': 'Temiz kaldım!',
+      'streak.done': 'Bugün temiz! ✨',
+      'streak.msgDone': 'Harika iş! Ekranı temiz tutmak için yarın görüşürüz.',
+      'toast.streakUpdated': 'Seri güncellendi! 🔥',
+
     },
     el: {
       'app.tagline': 'Πού διαρρέουν τα λεφτά σου;',
@@ -8623,6 +8756,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'ημέρες σερί',
+      'streak.msg': 'Αντιστάθηκες σε νέα συνδρομή σήμερα;',
+      'streak.btn': 'Έμεινα καθαρός!',
+      'streak.done': 'Καθαρός σήμερα! ✨',
+      'streak.msgDone': 'Μπράβο! Τα λέμε αύριο για να κρατήσουμε την οθόνη καθαρή.',
+      'toast.streakUpdated': 'Σερί ανανεώθηκε! 🔥',
+
     },
     hi: {
       'app.tagline': 'आपका पैसा कहाँ रिस रहा है?',
@@ -9050,6 +9190,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'दिन की लकीर',
+      'streak.msg': 'क्या आपने आज नई सदस्यता का विरोध किया?',
+      'streak.btn': 'मैं साफ रहा!',
+      'streak.done': 'आज साफ! ✨',
+      'streak.msgDone': 'बहुत बढ़िया! स्क्रीन साफ रखने के लिए कल मिलते हैं।',
+      'toast.streakUpdated': 'लकीर अद्यतन! 🔥',
+
     },
     uk: {
       'app.tagline': 'Куди витікають твої гроші?',
@@ -9477,6 +9624,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'днів підряд',
+      'streak.msg': 'Сьогодні втрималися від нових підписок?',
+      'streak.btn': 'Я залишився чистим!',
+      'streak.done': 'Сьогодні все чисто! ✨',
+      'streak.msgDone': 'Чудова робота! Побачимося завтра, щоб екран був чистим.',
+      'toast.streakUpdated': 'Серію оновлено! 🔥',
+
     },
     hr: {
       'app.tagline': 'Gdje ti curi novac?',
@@ -9904,6 +10058,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'dana u nizu',
+      'streak.msg': 'Oduprli ste se novoj pretplati danas?',
+      'streak.btn': 'Ostao sam čist!',
+      'streak.done': 'Čisto danas! ✨',
+      'streak.msgDone': 'Odličan posao! Vidimo se sutra da ekran ostane čist.',
+      'toast.streakUpdated': 'Niz ažuriran! 🔥',
+
     },
     bg: {
       'app.tagline': 'Накъде изтичат парите ти?',
@@ -10331,6 +10492,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'дни поред',
+      'streak.msg': 'Устоя ли на нов абонамент днес?',
+      'streak.btn': 'Останах чист!',
+      'streak.done': 'Днес е чисто! ✨',
+      'streak.msgDone': 'Браво! Ще се видим утре, за да е чист екранът.',
+      'toast.streakUpdated': 'Серията е обновена! 🔥',
+
     },
     th: {
       'app.tagline': 'เงินของคุณรั่วไหลที่ไหน?',
@@ -10758,6 +10926,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'วันต่อเนื่อง',
+      'streak.msg': 'วันนี้คุณต้านทานการสมัครสมาชิกใหม่หรือเปล่า?',
+      'streak.btn': 'ฉันทำสำเร็จ!',
+      'streak.done': 'สำเร็จแล้ววันนี้! ✨',
+      'streak.msgDone': 'เยี่ยมมาก! พรุ่งนี้เจอกันเพื่อให้หน้าจอสะอาด',
+      'toast.streakUpdated': 'สถิติต่อเนื่องอัปเดตแล้ว! 🔥',
+
     },
     fil: {
       'app.tagline': 'Saan tumatagas ang pera mo?',
@@ -11185,6 +11360,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'araw na streak',
+      'streak.msg': 'Nanlaban ka ba sa bagong subscription ngayon?',
+      'streak.btn': 'Nanatili akong malinis!',
+      'streak.done': 'Malinis ngayon! ✨',
+      'streak.msgDone': 'Magaling! Kita-kits bukas para panatilihing malinis ang screen.',
+      'toast.streakUpdated': 'Na-update ang streak! 🔥',
+
     },
     ca: {
       'app.tagline': 'On s\'escola el teu diner?',
@@ -11612,6 +11794,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Notes',
+      'streak.days': 'dies de ratxa',
+      'streak.msg': 'Has resistit una nova subscripció avui?',
+      'streak.btn': 'M\'he mantingut net!',
+      'streak.done': 'Net avui! ✨',
+      'streak.msgDone': 'Bona feina! Ens veiem demà per mantenir la pantalla neta.',
+      'toast.streakUpdated': 'Ratxa actualitzada! 🔥',
+
     },
     sk: {
       'app.tagline': 'Kam ti unikajú peniaze?',
@@ -12039,6 +12228,13 @@
       'whatif.summarySavings': '{monthly}/mo · {yearly}/yr',
       'whatif.investedNote': 'Invested at 7%: {y5} in 5 years, {y10} in 10',
       'home.notesLabel': 'Poznámky',
+      'streak.days': 'dní po sebe',
+      'streak.msg': 'Odolali ste dnes novému predplatnému?',
+      'streak.btn': 'Zostal som čistý!',
+      'streak.done': 'Dnes čisto! ✨',
+      'streak.msgDone': 'Dobrá práca! Uvidíme sa zajtra, aby obrazovka zostala čistá.',
+      'toast.streakUpdated': 'Séria aktualizovaná! 🔥',
+
     },
   };
 
