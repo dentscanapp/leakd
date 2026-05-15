@@ -60,6 +60,8 @@ body {
   max-width: 520px;
   margin: 0 auto;
   padding: 16px 16px 90px;
+  position: relative;
+  z-index: 1;
 }
 
 .view { display: none; }
@@ -2752,4 +2754,57 @@ a.btn-primary {
 @media (min-width: 553px) {
   .modal-overlay { align-items: center; }
   .modal { border-radius: 20px; }
+}
+
+/* ── Leak Effect ── */
+#leak-overlay {
+  --leak-color: #ef4444;
+  --leak-opacity: 0.2;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.leak-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  transition: height 2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.leak-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -100px; /* Bleed off bottom */
+  background: linear-gradient(to top, var(--leak-color), transparent);
+  opacity: var(--leak-opacity);
+}
+
+.leak-wave {
+  position: absolute;
+  top: -27px;
+  left: 0;
+  width: 200%;
+  height: 28px;
+  animation: leakWaveAnim 10s linear infinite;
+  opacity: var(--leak-opacity);
+}
+
+.leak-wave path {
+  fill: var(--leak-color);
+}
+
+@keyframes leakWaveAnim {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+[data-theme="dark"] #leak-overlay {
+  --leak-opacity: 0.15;
 }

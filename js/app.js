@@ -348,6 +348,15 @@
     dueSoonEl.textContent = dueSoonCount;
     monthlyTotalEl.style.color = monthly > 0 ? '' : 'var(--text-3)';
 
+    // Update leak effect
+    if (window.LeakdEffect) {
+      const active = activeSubs();
+      const rated = active.filter(s => s.rating > 0);
+      const avgRating = rated.length ? rated.reduce((sum, s) => sum + s.rating, 0) / rated.length : 5;
+      const income = window.LeakdIncome ? window.LeakdIncome.get() : 0;
+      window.LeakdEffect.update(monthly, income, avgRating);
+    }
+
     // Sparkline (last 30 days)
     renderSparkline();
 
