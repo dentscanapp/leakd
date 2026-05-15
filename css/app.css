@@ -701,7 +701,7 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .pro-features li:last-child { border-bottom: none; }
-.pro-features li span {
+.pro-features li > span:first-child {
   width: 20px;
   height: 20px;
   border-radius: 50%;
