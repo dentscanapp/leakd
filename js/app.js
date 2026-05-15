@@ -774,6 +774,67 @@
         }).join('');
       }
     }
+    // Panic Button visibility
+    renderPanicButton(list, totals.monthly);
+  }
+
+  function renderPanicButton(list, monthlySpend) {
+    const cta = $('panicCta');
+    if (!cta) return;
+    
+    // Threshold per currency (roughly equivalent to $100)
+    const thresholds = {
+      '$': 100,
+      '€': 100,
+      '£': 80,
+      'Ft': 40000,
+      '¥': 15000,
+      '₹': 8000,
+      'R$': 500,
+      'A$': 150
+    };
+    
+    const threshold = thresholds[settings.currency] || 100;
+    if (monthlySpend >= threshold && list.length > 0) {
+      cta.style.display = 'block';
+    } else {
+      cta.style.display = 'none';
+    }
+  }
+
+  function openPanicModal() {
+    const modal = $('panicModal');
+    const list = activeSubs();
+    const lowest = window.LeakdInsights.lowestRated(list, 10); // Show up to 10
+    
+    const container = $('panicList');
+    if (lowest.length === 0) {
+      container.innerHTML = `<div class="empty-state-mini">${t('insights.noData')}</div>`;
+    } else {
+      container.innerHTML = lowest.map(s => {
+        const cancelUrl = window.LeakdImport ? window.LeakdImport.findCancelUrl(s.name) : null;
+        const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.name, s.category, 36) : '';
+        const cycleLabel = t('cycle.mo').replace('/', '');
+        
+        return `
+          <div class="panic-row">
+            ${iconHtml}
+            <div class="panic-info">
+              <div class="panic-name">${escHtml(s.name)}</div>
+              <div class="panic-meta">${formatPrice(s.monthly)}/${cycleLabel} · ${'★'.repeat(s.rating)}</div>
+            </div>
+            ${cancelUrl ? `<a href="${cancelUrl}" target="_blank" rel="noopener" class="btn-panic-cancel">${t('btn.cancelSub')}</a>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+    
+    modal.classList.add('active');
+    if (window.LeakdActivity) logActivity('panic_triggered', null, { spend: activeSubs().reduce((a,b)=>a+toMonthly(b.price,b.cycle),0) });
+  }
+
+  function closePanicModal() {
+    $('panicModal').classList.remove('active');
   }
 
   // ─── Calendar view ───
@@ -2367,6 +2428,11 @@
     $('yearendCloseBtn').addEventListener('click', closeYearendModal);
     $('yearendShareBtn').addEventListener('click', shareYearend);
     $('yearendModal').addEventListener('click', e => { if (e.target === $('yearendModal')) closeYearendModal(); });
+    
+    $('panicBtn').addEventListener('click', openPanicModal);
+    $('closePanicModal').addEventListener('click', closePanicModal);
+    $('panicDoneBtn').addEventListener('click', closePanicModal);
+    $('panicModal').addEventListener('click', e => { if (e.target === $('panicModal')) closePanicModal(); });
 
     $('searchInput').addEventListener('input', onSearch);
     $('searchClear').addEventListener('click', clearSearch);
@@ -2429,6 +2495,7 @@
         else if ($('goalModal').classList.contains('active')) closeGoalModal();
         else if ($('activityModal').classList.contains('active')) closeActivityModal();
         else if ($('whatifModal').classList.contains('active')) closeWhatIfModal();
+        else if ($('panicModal').classList.contains('active')) closePanicModal();
       }
       if (e.key === 'Enter' && modal.classList.contains('active')) saveSub();
     });

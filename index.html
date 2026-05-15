@@ -250,6 +250,14 @@
       <div id="lowestRatedList" class="lowest-list"></div>
     </div>
 
+    <div class="panic-cta" id="panicCta" style="display:none">
+      <button class="btn-panic" id="panicBtn">
+        <span class="panic-icon">🚨</span>
+        <span data-i18n="panic.button">PANIC BUTTON</span>
+      </button>
+      <div class="panic-sub" data-i18n="panic.sub">Spending is high. Time to cut the leaks.</div>
+    </div>
+
     <div class="share-cta">
       <div class="share-cta-text">
         <strong data-i18n="insights.shareTitle">Share your leak</strong>
@@ -273,6 +281,25 @@
       <span data-i18n="nav.insights">Insights</span>
     </button>
   </nav>
+</div>
+
+<!-- Panic Modal -->
+<div class="modal-overlay" id="panicModal">
+  <div class="modal panic-modal">
+    <div class="modal-header">
+      <h2 data-i18n="panic.title">Panic Mode: Active</h2>
+      <button class="btn-icon" id="closePanicModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="panic-body">
+      <p class="panic-intro" data-i18n="panic.intro">These subscriptions are costing you the most for the least value. Cut them now to stop the leak.</p>
+      <div id="panicList" class="panic-list"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="panicDoneBtn" data-i18n="btn.done">Done</button>
+    </div>
+  </div>
 </div>
 
 <!-- Subscription Modal -->
