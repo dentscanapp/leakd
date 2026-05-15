@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v13';
+const CACHE_NAME = 'leakd-v14';
 const ASSETS = [
   '/',
   '/index.html',
@@ -29,6 +29,9 @@ const ASSETS = [
   '/js/health.js',
   '/js/confetti.js',
   '/js/tour.js',
+  '/js/palette.js',
+  '/js/alternatives.js',
+  '/js/shortcuts.js',
   '/manifest.json',
   '/icons/icon.svg',
   '/icons/icon-192.png',

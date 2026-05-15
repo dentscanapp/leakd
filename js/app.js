@@ -72,6 +72,63 @@
     }
 
     handleUrlParams();
+    initPalette();
+    if (window.LeakdShortcuts) window.LeakdShortcuts.init();
+  }
+
+  // ─── Command palette setup ───
+  // Registers actions so the user can launch them by typing in Cmd+K.
+  // Re-registers on language change to keep labels translated.
+  function initPalette() {
+    if (!window.LeakdPalette) return;
+    window.LeakdPalette.initHotkey();
+    refreshPaletteActions();
+    if (window.LeakdI18n) window.LeakdI18n.onChange(refreshPaletteActions);
+
+    // Expose helpers the palette calls for add/edit
+    window.__paletteOnAddService = (known) => {
+      openAdd();
+      setTimeout(() => {
+        $('subName').value = known.name;
+        $('subPrice').value = known.price;
+        $('subCategory').value = known.cat;
+        $('subPrice').focus();
+      }, 150);
+    };
+    window.__paletteOnEditSub = (sub) => openEdit(sub.id);
+  }
+
+  function refreshPaletteActions() {
+    if (!window.LeakdPalette) return;
+    window.LeakdPalette.clearActions();
+    const a = window.LeakdPalette.register;
+    a({ id: 'home',      label: t('nav.home'),         run: () => setView('home'),         keywords: ['home','start'] });
+    a({ id: 'insights',  label: t('nav.insights'),     run: () => setView('insights'),     keywords: ['analysis','chart','stats'] });
+    a({ id: 'add',       label: t('modal.add'),        run: openAdd,                       keywords: ['new','plus','create'] });
+    a({ id: 'theme',     label: t('menu.theme'),       run: openThemeModal,                keywords: ['dark','light','color'] });
+    a({ id: 'lang',      label: t('menu.language'),    run: openLangModal,                 keywords: ['translate','locale'] });
+    a({ id: 'currency',  label: t('menu.currency'),    run: () => { currencyModal.style.display = 'flex'; }, keywords: ['money','symbol'] });
+    a({ id: 'budgets',   label: t('menu.budgets'),     run: openBudgetsModal,              keywords: ['limit','spending'] });
+    a({ id: 'income',    label: t('menu.income'),      run: openIncomeModal,               keywords: ['salary','ratio'] });
+    a({ id: 'goal',      label: t('menu.goal'),        run: openGoalModal,                 keywords: ['save','target'] });
+    a({ id: 'bank',      label: t('menu.bank'),        run: openBankModal,                 keywords: ['csv','revolut','wise','statement'] });
+    a({ id: 'import',    label: t('menu.import'),      run: openImportModal,               keywords: ['paste','bulk'] });
+    a({ id: 'export',    label: t('menu.export'),      run: exportCSV,                     keywords: ['download','csv'] });
+    a({ id: 'calendar',  label: t('menu.calendar'),    run: exportCalendar,                keywords: ['ics','renewal'] });
+    a({ id: 'backup',    label: t('menu.backup'),      run: openBackupModal,               keywords: ['restore','sync'] });
+    a({ id: 'cancelled', label: t('menu.cancelled'),   run: openCancelledModal,            keywords: ['killed','savings'] });
+    a({ id: 'yearend',   label: t('menu.yearend'),     run: openYearendModal,              keywords: ['wrap','report'] });
+    a({ id: 'pro',       label: t('menu.pro'),         run: openProModal,                  keywords: ['upgrade','premium'] });
+    a({ id: 'notif',     label: t('header.notif'),     run: openNotifModal,                keywords: ['reminder','alert'] });
+    a({ id: 'tour',      label: t('menu.tour'),        run: () => window.LeakdTour && window.LeakdTour.restart(), keywords: ['help','guide'] });
+    a({ id: 'help',      label: t('shortcut.title'),   run: () => window.LeakdShortcuts && window.LeakdShortcuts.toggleHelp(), keywords: ['keyboard','keys','shortcuts'] });
+    a({ id: 'privacy',   label: t('menu.privacy'),     run: () => window.open('privacy.html', '_blank'),  keywords: ['gdpr','policy'] });
+    a({ id: 'terms',     label: t('menu.terms'),       run: () => window.open('terms.html', '_blank'),    keywords: ['legal','tos'] });
+  }
+
+  // Keep palette's view of subs fresh
+  function updatePaletteSubs() {
+    window.__paletteSubs = subs;
   }
 
   // Auto-detect currency (and confirm language) from browser locale.
@@ -141,6 +198,7 @@
     mirrorStateToCache();
     rescheduleNotifications();
     if (window.LeakdHistory) window.LeakdHistory.record(subs);
+    updatePaletteSubs();
   }
 
   async function mirrorStateToCache() {
@@ -830,6 +888,7 @@
     setRatingUI(0);
     $('lifetimeCard').style.display = 'none';
     $('playbookCard').style.display = 'none';
+    const _altCard = $('altCard'); if (_altCard) _altCard.style.display = 'none';
     $('trialDateWrap').style.display = 'none';
     $('subTrialEnd').value = '';
     $('editId').value = '';
@@ -860,6 +919,7 @@
     $('subShared').value = s.sharedWith && s.sharedWith > 1 ? String(s.sharedWith) : '';
     setRatingUI(s.rating || 0);
     renderLifetimeCard(s);
+    renderAltCard(s);
     renderPlaybookCard(s);
     $('trialDateWrap').style.display = s.isTrial ? 'block' : 'none';
     $('subTrialEnd').value = s.trialEnd || '';
@@ -1071,6 +1131,29 @@
     $('lifetimeNext10y').textContent = formatPrice(r.next10y);
     $('lifetimeInvest5y').textContent = formatPrice(r.invested5y);
     $('lifetimeInvest10y').textContent = formatPrice(r.invested10y);
+  }
+
+  // ─── Cheaper alternatives card ───
+  function renderAltCard(sub) {
+    const card = $('altCard');
+    if (!card || !window.LeakdAlternatives) { if (card) card.style.display = 'none'; return; }
+    const alts = window.LeakdAlternatives.findAlternatives(sub.name);
+    if (!alts || alts.length === 0) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    const currentMonthly = toMonthly(sub.price, sub.cycle);
+    $('altList').innerHTML = alts.map(alt => {
+      const isFree = alt.price === 0;
+      const savings = currentMonthly - alt.price;
+      const badgeText = isFree ? t('alt.free') : (savings > 0 ? t('alt.cheaper', { amount: formatPrice(savings) }) : '');
+      const badgeCls = isFree ? 'alt-free' : 'alt-cheaper';
+      return `<div class="alt-row">
+        <div class="alt-row-main">
+          <div class="alt-row-name">${escHtml(alt.name)} ${badgeText ? '<span class="alt-badge ' + badgeCls + '">' + badgeText + '</span>' : ''}</div>
+          <div class="alt-row-why">${escHtml(alt.why)}</div>
+        </div>
+        <div class="alt-row-price">${formatPrice(alt.price)}<span>/${t('cycle.mo').replace('/','')}</span></div>
+      </div>`;
+    }).join('');
   }
 
   // ─── Cancellation playbook card ───
