@@ -641,6 +641,10 @@
     renderCalendarView();
     // Aggregate lifetime
     renderLifetimeAggregate(list);
+    // Bundle suggestions
+    renderBundles();
+    // Savings goal progress
+    renderGoalCard();
 
     // Lowest-rated subs (cancellation candidates)
     const lowestCard = $('lowestRatedCard');
@@ -1416,6 +1420,193 @@
     render();
   }
 
+  // ─── Bank statement import ───
+  let bankSuggestions = [];
+
+  function openBankModal() {
+    $('bankResult').style.display = 'none';
+    $('bankError').style.display = 'none';
+    $('confirmBankBtn').disabled = true;
+    $('confirmBankBtn').textContent = t('bank.importSelected', { count: 0 });
+    bankSuggestions = [];
+    $('bankModal').classList.add('active');
+  }
+  function closeBankModal() { $('bankModal').classList.remove('active'); }
+
+  function loadBankFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (!window.LeakdBankParse) return;
+      const result = window.LeakdBankParse.parseStatement(String(reader.result || ''));
+      if (result.error === 'missing-columns') {
+        $('bankError').textContent = t('bank.errorColumns');
+        $('bankError').style.display = 'block';
+        $('bankResult').style.display = 'none';
+        return;
+      }
+      $('bankError').style.display = 'none';
+      $('bankResult').style.display = 'block';
+      $('bankFormatPill').textContent = t('bank.formatDetected', { name: result.format.name });
+
+      const subList = result.suggestions;
+      bankSuggestions = subList.map(s => ({ ...s, selected: true }));
+
+      if (subList.length === 0) {
+        $('bankFound').textContent = t('bank.noRecurring');
+        $('bankSuggestionList').innerHTML = '';
+        $('confirmBankBtn').disabled = true;
+        $('confirmBankBtn').textContent = t('bank.importSelected', { count: 0 });
+        return;
+      }
+
+      $('bankFound').textContent = t('bank.foundRecurring', { count: subList.length });
+      const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+      $('bankSuggestionList').innerHTML = bankSuggestions.map((s, i) => {
+        const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.displayName, s.category, 32) : '';
+        const lastDate = s.lastSeen.toLocaleDateString(lang, { month: 'short', day: 'numeric' });
+        const conf = Math.round(s.confidence * 100);
+        return `<label class="bank-row">
+          <input type="checkbox" data-i="${i}" checked>
+          ${iconHtml}
+          <div class="bank-row-info">
+            <div class="bank-row-name">${escHtml(s.displayName)}</div>
+            <div class="bank-row-meta">${t('bank.confidence', { n: s.occurrences, confidence: conf })} · ${t('bank.lastSeen', { when: lastDate })}</div>
+          </div>
+          <div class="bank-row-price">${formatPrice(s.price)}<span>/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/','')}</span></div>
+        </label>`;
+      }).join('');
+
+      $('bankSuggestionList').querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          bankSuggestions[parseInt(cb.dataset.i, 10)].selected = cb.checked;
+          updateBankConfirm();
+        });
+      });
+      updateBankConfirm();
+    };
+    reader.readAsText(file);
+  }
+
+  function updateBankConfirm() {
+    const selected = bankSuggestions.filter(s => s.selected).length;
+    $('confirmBankBtn').disabled = selected === 0;
+    $('confirmBankBtn').textContent = t('bank.importSelected', { count: selected });
+  }
+
+  function confirmBankImport() {
+    const selected = bankSuggestions.filter(s => s.selected);
+    if (selected.length === 0) return;
+    selected.forEach(s => {
+      subs.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        name: s.displayName,
+        price: s.price,
+        cycle: s.cycle,
+        category: s.category,
+        nextDate: nextMonthIso(),
+        isTrial: false, trialEnd: '', paused: false, notes: '', rating: 0,
+        sharedWith: 1,
+        createdAt: new Date().toISOString(),
+      });
+    });
+    saveData();
+    closeBankModal();
+    render();
+    toast(t('bank.parsed', { count: selected.length }));
+  }
+
+  // ─── Savings goal ───
+  function openGoalModal() {
+    if (!window.LeakdGoals) return;
+    $('goalCurrencySymbol').textContent = settings.currency;
+    const current = window.LeakdGoals.load();
+    if (current) {
+      $('goalAmount').value = current.target;
+      $('goalClearBtn').style.display = 'inline-block';
+      const prog = window.LeakdGoals.progress();
+      if (prog) {
+        $('goalProgressBlock').style.display = 'block';
+        $('goalModalFill').style.width = Math.min(100, prog.pct) + '%';
+        $('goalModalText').textContent = t('goal.progress', {
+          saved: formatPrice(prog.saved),
+          target: formatPrice(prog.target),
+        });
+      }
+    } else {
+      $('goalAmount').value = '';
+      $('goalClearBtn').style.display = 'none';
+      $('goalProgressBlock').style.display = 'none';
+    }
+    $('goalModal').classList.add('active');
+    setTimeout(() => $('goalAmount').focus(), 100);
+  }
+  function closeGoalModal() { $('goalModal').classList.remove('active'); }
+
+  function saveGoal() {
+    if (!window.LeakdGoals) return;
+    const amt = parseFloat($('goalAmount').value);
+    if (!amt || amt <= 0) { $('goalAmount').focus(); return; }
+    window.LeakdGoals.set(amt);
+    closeGoalModal();
+    render();
+    toast(t('toast.goalSaved'));
+  }
+
+  function clearGoal() {
+    if (!window.LeakdGoals) return;
+    window.LeakdGoals.clear();
+    closeGoalModal();
+    render();
+    toast(t('toast.goalCleared'));
+  }
+
+  function renderGoalCard() {
+    const card = $('goalCard');
+    if (!card || !window.LeakdGoals) return;
+    const prog = window.LeakdGoals.progress();
+    if (!prog) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    $('goalProgressFill').style.width = Math.min(100, prog.pct) + '%';
+    if (prog.complete) {
+      $('goalProgressText').textContent = t('goal.complete');
+    } else {
+      $('goalProgressText').textContent = t('goal.progress', {
+        saved: formatPrice(prog.saved),
+        target: formatPrice(prog.target),
+      });
+    }
+    // Check milestone (toast it)
+    const ms = window.LeakdGoals.checkMilestone();
+    if (ms != null) {
+      setTimeout(() => toast(t('goal.milestone', { pct: ms })), 600);
+    }
+  }
+
+  // ─── Bundles ───
+  function renderBundles() {
+    const card = $('bundlesCard');
+    if (!card || !window.LeakdBundles) return;
+    const recs = window.LeakdBundles.detect(subs);
+    if (recs.length === 0) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    $('bundlesList').innerHTML = recs.slice(0, 3).map(r => {
+      const names = r.matchedSubs.map(s => escHtml(s.name)).join(', ');
+      return `<div class="bundle-card">
+        <div class="bundle-head">
+          <div class="bundle-title">${escHtml(r.bundle.name)}</div>
+          <div class="bundle-save">${t('bundles.saves', { amount: formatPrice(r.yearlySavings) })}</div>
+        </div>
+        <div class="bundle-stats">
+          <span>${t('bundles.now', { amount: formatPrice(r.currentMonthly) })}</span>
+          <span>→</span>
+          <span class="bundle-stat-new">${t('bundles.bundle', { amount: formatPrice(r.bundleMonthly) })}</span>
+        </div>
+        <div class="bundle-replaces">${t('bundles.replaces', { names })}</div>
+        <div class="bundle-note">${escHtml(r.bundle.note || '')}</div>
+      </div>`;
+    }).join('');
+  }
+
   // ─── Backup & Restore ───
   function openBackupModal() { $('backupModal').classList.add('active'); }
   function closeBackupModal() { $('backupModal').classList.remove('active'); }
@@ -1596,7 +1787,7 @@
   function resetAll() {
     if (!confirm(t('reset.confirm1'))) return;
     if (!confirm(t('reset.confirm2'))) return;
-    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled']
+    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal']
       .forEach(k => localStorage.removeItem(k));
     location.reload();
   }
@@ -1701,6 +1892,23 @@
     $('budgetSetterModal').addEventListener('click', e => { if (e.target === $('budgetSetterModal')) closeBudgetSetter(); });
 
     $('menuBackup').addEventListener('click', () => { closeMenuModal(); openBackupModal(); });
+
+    // Bank import
+    $('menuBank').addEventListener('click', () => { closeMenuModal(); openBankModal(); });
+    $('closeBankModal').addEventListener('click', closeBankModal);
+    $('cancelBankBtn').addEventListener('click', closeBankModal);
+    $('bankModal').addEventListener('click', e => { if (e.target === $('bankModal')) closeBankModal(); });
+    $('bankUploadBtn').addEventListener('click', () => $('bankFileInput').click());
+    $('bankFileInput').addEventListener('change', e => { if (e.target.files[0]) loadBankFile(e.target.files[0]); });
+    $('confirmBankBtn').addEventListener('click', confirmBankImport);
+
+    // Savings goal
+    $('menuGoal').addEventListener('click', () => { closeMenuModal(); openGoalModal(); });
+    $('closeGoalModal').addEventListener('click', closeGoalModal);
+    $('cancelGoalBtn').addEventListener('click', closeGoalModal);
+    $('saveGoalBtn').addEventListener('click', saveGoal);
+    $('goalClearBtn').addEventListener('click', clearGoal);
+    $('goalModal').addEventListener('click', e => { if (e.target === $('goalModal')) closeGoalModal(); });
     $('closeBackupModal').addEventListener('click', closeBackupModal);
     $('cancelBackupBtn').addEventListener('click', closeBackupModal);
     $('backupModal').addEventListener('click', e => { if (e.target === $('backupModal')) closeBackupModal(); });
@@ -1799,6 +2007,8 @@
         else if ($('incomeModal').classList.contains('active')) closeIncomeModal();
         else if ($('cancelledModal').classList.contains('active')) closeCancelledModal();
         else if ($('themeModal').classList.contains('active')) closeThemeModal();
+        else if ($('bankModal').classList.contains('active')) closeBankModal();
+        else if ($('goalModal').classList.contains('active')) closeGoalModal();
       }
       if (e.key === 'Enter' && modal.classList.contains('active')) saveSub();
     });

@@ -170,6 +170,19 @@
       <div class="ratio-sentiment" id="ratioSentiment"></div>
     </div>
 
+    <div class="chart-card" id="bundlesCard" style="display:none">
+      <div class="chart-title" data-i18n="bundles.title">Bundle suggestions</div>
+      <div id="bundlesList"></div>
+    </div>
+
+    <div class="chart-card" id="goalCard" style="display:none">
+      <div class="chart-title" data-i18n="goal.title">Savings goal</div>
+      <div class="goal-progress-wrap">
+        <div class="goal-progress-bar"><div class="goal-progress-fill" id="goalProgressFill" style="width:0%"></div></div>
+        <div class="goal-progress-text" id="goalProgressText">—</div>
+      </div>
+    </div>
+
     <div class="suggestions">
       <div class="chart-title" data-i18n="insights.suggestions">Smart suggestions</div>
       <div id="suggestionsList">
@@ -532,6 +545,28 @@
           <div>
             <div class="menu-row-label" data-i18n="menu.yearend">Year-end report</div>
             <div class="menu-row-sub" data-i18n="menu.yearendSub">See your spending wrap-up</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuBank">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🏦</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.bank">Import bank statement</div>
+            <div class="menu-row-sub" data-i18n="menu.bankSub">Auto-detect subs from Revolut, Wise, Chase, etc.</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuGoal">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🎯</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.goal">Savings goal</div>
+            <div class="menu-row-sub" id="menuGoalSub" data-i18n="menu.goalSub">Set a target — we celebrate every milestone</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -957,6 +992,73 @@
   </div>
 </div>
 
+<!-- Bank Statement Import Modal -->
+<div class="modal-overlay" id="bankModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h2 data-i18n="bank.title">Import bank statement</h2>
+      <button class="btn-icon" id="closeBankModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="bank.blurb">Upload a CSV from your bank.</p>
+
+    <div class="form-row" style="gap:8px;margin-bottom:14px">
+      <button class="btn-outline" id="bankUploadBtn" data-i18n="bank.upload">Choose CSV file</button>
+      <input type="file" id="bankFileInput" accept=".csv,text/csv" style="display:none">
+    </div>
+
+    <div id="bankResult" style="display:none">
+      <div class="bank-format-pill" id="bankFormatPill">—</div>
+      <div class="bank-found" id="bankFound">—</div>
+      <div class="bank-suggestion-list" id="bankSuggestionList"></div>
+    </div>
+
+    <div id="bankError" class="notif-hint" style="display:none"></div>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelBankBtn" data-i18n="btn.cancel">Cancel</button>
+      <button class="btn-primary" id="confirmBankBtn" disabled>Import 0</button>
+    </div>
+  </div>
+</div>
+
+<!-- Savings Goal Modal -->
+<div class="modal-overlay" id="goalModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <h2 data-i18n="goal.title">Savings goal</h2>
+      <button class="btn-icon" id="closeGoalModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="goal.blurb">How much do you want to save this year?</p>
+
+    <div class="form-group">
+      <label for="goalAmount" data-i18n="goal.label">Target amount</label>
+      <div class="input-prefix">
+        <span class="prefix" id="goalCurrencySymbol">$</span>
+        <input type="number" id="goalAmount" data-i18n-placeholder="goal.placeholder" step="1" min="0">
+      </div>
+    </div>
+
+    <div id="goalProgressBlock" style="display:none">
+      <div class="goal-progress-bar"><div class="goal-progress-fill" id="goalModalFill" style="width:0%"></div></div>
+      <div class="goal-progress-text" id="goalModalText">—</div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-danger" id="goalClearBtn" data-i18n="goal.clear" style="display:none">Clear goal</button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelGoalBtn" data-i18n="btn.cancel">Cancel</button>
+      <button class="btn-primary" id="saveGoalBtn" data-i18n="btn.save">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- Cancelled Subs Modal -->
 <div class="modal-overlay" id="cancelledModal">
   <div class="modal" style="max-width:440px">
@@ -1046,6 +1148,9 @@
 <script src="js/cancelled.js"></script>
 <script src="js/lifetime.js"></script>
 <script src="js/calview.js"></script>
+<script src="js/bankparse.js"></script>
+<script src="js/goals.js"></script>
+<script src="js/bundles.js"></script>
 <script src="js/notifications.js"></script>
 <script src="js/app.js"></script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
