@@ -2,12 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0f0f0f">
 <meta name="description" content="Track your subscriptions. See where your money leaks. Free, private, no account needed.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Leakd">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Leakd — Where's your money leaking?">
+<meta property="og:description" content="Track your subscriptions in 30 seconds. Free, private, no account. See exactly how much you're bleeding every month.">
+<meta property="og:url" content="https://leakd.app">
+<meta property="og:site_name" content="Leakd">
+<meta property="og:image" content="https://leakd.app/icons/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Leakd — Where's your money leaking?">
+<meta name="twitter:description" content="Track your subscriptions. Free, private, no account.">
+<meta name="twitter:image" content="https://leakd.app/icons/og-card.png">
+
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -18,7 +30,6 @@
 <body>
 
 <div id="app">
-  <!-- Header -->
   <header class="header">
     <div class="header-left">
       <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -26,78 +37,169 @@
         <path d="M14 8c0 0-4 4.5-4 8a4 4 0 108 0c0-3.5-4-8-4-8z" fill="#fca5a5"/>
       </svg>
       <h1 class="logo-text">leakd</h1>
+      <span class="pro-pill" id="proPill" style="display:none">PRO</span>
     </div>
     <div class="header-right">
-      <button class="btn-icon" id="toggleTheme" title="Toggle theme">
+      <button class="btn-icon" id="toggleNotif" data-i18n-title="header.notif">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="bell-dot" aria-hidden="true"></span>
+      </button>
+      <button class="btn-icon" id="toggleTheme" data-i18n-title="header.theme">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+      </button>
+      <button class="btn-icon" id="openMenu" data-i18n-title="header.menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
       </button>
     </div>
   </header>
 
-  <!-- Stats -->
-  <div class="stats" id="stats">
-    <div class="stat-card stat-main">
-      <span class="stat-label">Monthly spend</span>
-      <span class="stat-value" id="monthlyTotal">$0.00</span>
+  <!-- HOME VIEW -->
+  <section class="view view-home active" id="viewHome">
+    <div class="stats" id="stats">
+      <div class="stat-card stat-main">
+        <span class="stat-label" data-i18n="stats.monthly">Monthly spend</span>
+        <span class="stat-value" id="monthlyTotal">$0.00</span>
+        <svg class="sparkline" id="sparkline" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:none">
+          <path id="sparklineFill" fill="rgba(239,68,68,0.15)" d=""></path>
+          <path id="sparklinePath" stroke="#ef4444" stroke-width="1.5" fill="none" d=""></path>
+        </svg>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label" data-i18n="stats.yearly">Yearly total</span>
+        <span class="stat-value" id="yearlyTotal">$0.00</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label" data-i18n="stats.active">Active subs</span>
+        <span class="stat-value" id="activeCount">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label" data-i18n="stats.dueSoon">Due in 7 days</span>
+        <span class="stat-value" id="dueSoon">0</span>
+      </div>
     </div>
-    <div class="stat-card">
-      <span class="stat-label">Yearly total</span>
-      <span class="stat-value" id="yearlyTotal">$0.00</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Active subs</span>
-      <span class="stat-value" id="activeCount">0</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Due in 7 days</span>
-      <span class="stat-value" id="dueSoon">0</span>
-    </div>
-  </div>
 
-  <!-- Alerts -->
-  <div id="alerts"></div>
+    <div id="alerts"></div>
 
-  <!-- Category Filter -->
-  <div class="categories" id="categories">
-    <button class="cat-btn active" data-cat="all">All</button>
-  </div>
-
-  <!-- Subscription List -->
-  <div class="sub-list" id="subList">
-    <div class="empty-state" id="emptyState">
-      <svg width="48" height="48" viewBox="0 0 28 28" fill="none" opacity="0.3">
-        <path d="M14 2C14 2 6 10 6 16a8 8 0 1016 0c0-6-8-14-8-14z" fill="currentColor"/>
-      </svg>
-      <p>No subscriptions yet</p>
-      <p class="empty-sub">Tap the + button to add your first subscription</p>
+    <div class="forecast-card" id="forecastCard" style="display:none">
+      <div class="forecast-head">
+        <span class="forecast-label" id="forecastLabel">Next 30 days</span>
+        <span class="forecast-total" id="forecastTotal">—</span>
+      </div>
+      <div class="forecast-sub" id="forecastSub">—</div>
     </div>
-  </div>
 
-  <!-- Add Button -->
-  <button class="fab" id="addBtn" title="Add subscription">
+    <div class="search-bar" id="searchBar" style="display:none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" data-i18n-placeholder="search.placeholder">
+      <button class="search-clear" id="searchClear" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="categories" id="categories">
+      <button class="cat-btn active" data-cat="all" data-i18n="cat.all">All</button>
+    </div>
+
+    <div class="sub-list" id="subList">
+      <div class="empty-state" id="emptyState">
+        <svg width="48" height="48" viewBox="0 0 28 28" fill="none" opacity="0.3">
+          <path d="M14 2C14 2 6 10 6 16a8 8 0 1016 0c0-6-8-14-8-14z" fill="currentColor"/>
+        </svg>
+        <p data-i18n="empty.title">No subscriptions yet</p>
+        <p class="empty-sub" data-i18n="empty.sub">Tap the + button or paste a list to start</p>
+        <button class="btn-outline" id="emptyImportBtn" style="margin-top:14px" data-i18n="empty.paste">Paste subscriptions</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSIGHTS VIEW -->
+  <section class="view view-insights" id="viewInsights">
+    <div class="insight-hero">
+      <div class="insight-hero-label" data-i18n="insights.ytd">YEAR-TO-DATE</div>
+      <div class="insight-hero-value" id="ytdValue">$0</div>
+      <div class="insight-hero-sub"><span data-i18n="insights.paidIn">paid so far in</span> <span id="ytdYear"></span></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title" data-i18n="insights.projection">12-month projection</div>
+      <div class="chart-bars" id="chartBars"></div>
+      <div class="chart-foot">
+        <span data-i18n="insights.now">Now</span>
+        <span id="chartTotal">$0</span>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title" data-i18n="insights.byCategory">By category</div>
+      <div class="donut-wrap" id="donutWrap" style="display:none">
+        <svg class="donut" id="donutChart" viewBox="0 0 120 120"></svg>
+        <div class="donut-center">
+          <div class="donut-center-label" data-i18n="donut.title">Spending share</div>
+          <div class="donut-center-value" id="donutCenterValue"></div>
+        </div>
+      </div>
+      <div class="cat-breakdown" id="catBreakdown">
+        <div class="empty-state-mini" data-i18n="insights.noData">No data yet</div>
+      </div>
+    </div>
+
+    <div class="chart-card" id="incomeRatioCard" style="display:none">
+      <div class="chart-title"><span id="incomeRatioLabel">Income ratio</span></div>
+      <div class="ratio-row">
+        <div class="ratio-bar"><div class="ratio-fill" id="ratioFill" style="width:0%"></div></div>
+        <div class="ratio-value" id="ratioValue">—</div>
+      </div>
+      <div class="ratio-sentiment" id="ratioSentiment"></div>
+    </div>
+
+    <div class="suggestions">
+      <div class="chart-title" data-i18n="insights.suggestions">Smart suggestions</div>
+      <div id="suggestionsList">
+        <div class="empty-state-mini" data-i18n="insights.noSubs">Add some subscriptions to see suggestions</div>
+      </div>
+    </div>
+
+    <div class="chart-card" id="lowestRatedCard" style="display:none">
+      <div class="chart-title" data-i18n="insights.lowestRated">Lowest-rated subscriptions</div>
+      <div class="chart-sub" data-i18n="insights.lowestRatedSub">Easy cancellation candidates</div>
+      <div id="lowestRatedList" class="lowest-list"></div>
+    </div>
+
+    <div class="share-cta">
+      <div class="share-cta-text">
+        <strong data-i18n="insights.shareTitle">Share your leak</strong>
+        <span data-i18n="insights.shareSub">Generate a shareable image for Twitter, IG, or Reddit</span>
+      </div>
+      <button class="btn-primary" id="shareCardBtn" data-i18n="insights.generate">Generate</button>
+    </div>
+  </section>
+
+  <button class="fab" id="addBtn" data-i18n-title="modal.add">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
 
-  <!-- Bottom Actions -->
-  <div class="bottom-actions" id="bottomActions" style="display:none">
-    <button class="btn-outline" id="exportBtn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Export CSV
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-btn active" data-view="home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span data-i18n="nav.home">Home</span>
     </button>
-  </div>
+    <button class="nav-btn" data-view="insights">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span data-i18n="nav.insights">Insights</span>
+    </button>
+  </nav>
 </div>
 
-<!-- Modal -->
+<!-- Subscription Modal -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modalTitle">Add subscription</h2>
+      <h2 id="modalTitle" data-i18n="modal.add">Add subscription</h2>
       <button class="btn-icon" id="closeModal">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
-    <!-- Quick Add Presets -->
     <div id="presets" class="presets">
       <button class="preset" data-name="Netflix" data-price="15.99" data-cat="Entertainment" data-color="#e50914">N</button>
       <button class="preset" data-name="Spotify" data-price="10.99" data-cat="Music" data-color="#1db954">S</button>
@@ -109,64 +211,94 @@
       <button class="preset" data-name="Apple Music" data-price="10.99" data-cat="Music" data-color="#fc3c44">♫</button>
     </div>
 
-    <div class="form-divider"><span>or add custom</span></div>
+    <div class="form-divider"><span data-i18n="modal.orCustom">or add custom</span></div>
 
-    <div class="form-group">
-      <label for="subName">Name</label>
-      <input type="text" id="subName" placeholder="e.g. Netflix, Gym, Notion...">
+    <div class="form-group" style="position:relative">
+      <label for="subName" data-i18n="field.name">Name</label>
+      <input type="text" id="subName" data-i18n-placeholder="field.namePh" autocomplete="off">
+      <div class="suggest-box" id="suggestBox" style="display:none"></div>
     </div>
     <div class="form-row">
       <div class="form-group flex-1">
-        <label for="subPrice">Price</label>
+        <label for="subPrice" data-i18n="field.price">Price</label>
         <div class="input-prefix">
           <span class="prefix" id="currencySymbol">$</span>
           <input type="number" id="subPrice" placeholder="9.99" step="0.01" min="0">
         </div>
       </div>
       <div class="form-group flex-1">
-        <label for="subCycle">Billing cycle</label>
+        <label for="subCycle" data-i18n="field.cycle">Billing cycle</label>
         <select id="subCycle">
-          <option value="monthly">Monthly</option>
-          <option value="yearly">Yearly</option>
-          <option value="weekly">Weekly</option>
+          <option value="monthly" data-i18n="cycle.monthly">Monthly</option>
+          <option value="yearly" data-i18n="cycle.yearly">Yearly</option>
+          <option value="weekly" data-i18n="cycle.weekly">Weekly</option>
         </select>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group flex-1">
-        <label for="subCategory">Category</label>
+        <label for="subCategory" data-i18n="field.category">Category</label>
         <select id="subCategory">
-          <option value="Entertainment">Entertainment</option>
-          <option value="Work">Work</option>
-          <option value="Music">Music</option>
-          <option value="Fitness">Fitness</option>
-          <option value="Cloud">Cloud</option>
-          <option value="Food">Food</option>
-          <option value="News">News</option>
-          <option value="Other">Other</option>
+          <option value="Entertainment" data-i18n="cat.Entertainment">Entertainment</option>
+          <option value="Work" data-i18n="cat.Work">Work</option>
+          <option value="Music" data-i18n="cat.Music">Music</option>
+          <option value="Fitness" data-i18n="cat.Fitness">Fitness</option>
+          <option value="Cloud" data-i18n="cat.Cloud">Cloud</option>
+          <option value="Food" data-i18n="cat.Food">Food</option>
+          <option value="News" data-i18n="cat.News">News</option>
+          <option value="Other" data-i18n="cat.Other">Other</option>
         </select>
       </div>
       <div class="form-group flex-1">
-        <label for="subDate">Next payment</label>
+        <label for="subDate" data-i18n="field.nextDate">Next payment</label>
         <input type="date" id="subDate">
       </div>
     </div>
     <div class="form-group">
       <label for="subTrial">
-        <input type="checkbox" id="subTrial"> This is a free trial
+        <input type="checkbox" id="subTrial"> <span data-i18n="field.trial">This is a free trial</span>
       </label>
       <div id="trialDateWrap" style="display:none;margin-top:8px">
-        <label for="subTrialEnd">Trial ends on</label>
+        <label for="subTrialEnd" data-i18n="field.trialEnd">Trial ends on</label>
         <input type="date" id="subTrialEnd">
       </div>
+    </div>
+    <div class="form-group">
+      <label for="subPaused">
+        <input type="checkbox" id="subPaused"> <span data-i18n="field.paused">Paused (not counted in total)</span>
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label data-i18n="field.rating">Worth it?</label>
+      <div class="star-rating" id="subRating" data-rating="0">
+        <button type="button" class="star" data-v="1">★</button>
+        <button type="button" class="star" data-v="2">★</button>
+        <button type="button" class="star" data-v="3">★</button>
+        <button type="button" class="star" data-v="4">★</button>
+        <button type="button" class="star" data-v="5">★</button>
+        <button type="button" class="star-clear" id="subRatingClear" title="Clear">×</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="subNotes" data-i18n="field.notes">Notes</label>
+      <textarea id="subNotes" rows="2" data-i18n-placeholder="field.notesPh"></textarea>
+    </div>
+
+    <div id="trackedSince" class="tracked-since" style="display:none"></div>
+
+    <div id="cancelUrlWrap" style="display:none;margin-bottom:14px">
+      <a class="btn-cancel-link" id="cancelUrlLink" target="_blank" rel="noopener" data-i18n="btn.cancelSub">Cancel this subscription</a>
     </div>
 
     <input type="hidden" id="editId" value="">
     <div class="modal-actions">
-      <button class="btn-danger" id="deleteBtn" style="display:none">Delete</button>
+      <button class="btn-danger" id="deleteBtn" style="display:none" data-i18n="btn.delete">Delete</button>
+      <button class="btn-outline" id="markCancelledBtn" style="display:none" data-i18n="btn.cancelMark">Mark as cancelled</button>
       <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelBtn">Cancel</button>
-      <button class="btn-primary" id="saveBtn">Save</button>
+      <button class="btn-secondary" id="cancelBtn" data-i18n="btn.cancel">Cancel</button>
+      <button class="btn-primary" id="saveBtn" data-i18n="btn.save">Save</button>
     </div>
   </div>
 </div>
@@ -175,7 +307,7 @@
 <div class="modal-overlay" id="currencyModal" style="display:none">
   <div class="modal" style="max-width:340px">
     <div class="modal-header">
-      <h2>Choose currency</h2>
+      <h2 data-i18n="currency.choose">Choose currency</h2>
     </div>
     <div class="currency-grid">
       <button class="currency-btn" data-currency="$" data-code="USD">$ USD</button>
@@ -186,10 +318,640 @@
       <button class="currency-btn" data-currency="₹" data-code="INR">₹ INR</button>
       <button class="currency-btn" data-currency="R$" data-code="BRL">R$ BRL</button>
       <button class="currency-btn" data-currency="A$" data-code="AUD">A$ AUD</button>
+      <button class="currency-btn" data-currency="C$" data-code="CAD">C$ CAD</button>
+      <button class="currency-btn" data-currency="CHF" data-code="CHF">CHF</button>
+      <button class="currency-btn" data-currency="kr" data-code="SEK">kr SEK</button>
+      <button class="currency-btn" data-currency="kr" data-code="NOK">kr NOK</button>
+      <button class="currency-btn" data-currency="kr" data-code="DKK">kr DKK</button>
+      <button class="currency-btn" data-currency="zł" data-code="PLN">zł PLN</button>
+      <button class="currency-btn" data-currency="Kč" data-code="CZK">Kč CZK</button>
+      <button class="currency-btn" data-currency="¥" data-code="CNY">¥ CNY</button>
+      <button class="currency-btn" data-currency="₩" data-code="KRW">₩ KRW</button>
+      <button class="currency-btn" data-currency="₺" data-code="TRY">₺ TRY</button>
+      <button class="currency-btn" data-currency="Mex$" data-code="MXN">Mex$ MXN</button>
+      <button class="currency-btn" data-currency="HK$" data-code="HKD">HK$ HKD</button>
+      <button class="currency-btn" data-currency="S$" data-code="SGD">S$ SGD</button>
+      <button class="currency-btn" data-currency="R" data-code="ZAR">R ZAR</button>
+      <button class="currency-btn" data-currency="₽" data-code="RUB">₽ RUB</button>
+      <button class="currency-btn" data-currency="lei" data-code="RON">lei RON</button>
     </div>
   </div>
 </div>
 
+<!-- Language Modal -->
+<div class="modal-overlay" id="langModal">
+  <div class="modal" style="max-width:340px">
+    <div class="modal-header">
+      <h2 data-i18n="lang.choose">Choose language</h2>
+      <button class="btn-icon" id="closeLangModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="lang-grid" id="langGrid"></div>
+  </div>
+</div>
+
+<!-- Notification Settings Modal -->
+<div class="modal-overlay" id="notifModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h2 data-i18n="notif.title">Notifications</h2>
+      <button class="btn-icon" id="closeNotifModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="notif.blurb">Get a heads-up before subscriptions renew or free trials end. Everything runs on your device — no account, no server.</p>
+
+    <div class="notif-row">
+      <div>
+        <div class="notif-row-label" data-i18n="notif.permission">Browser permission</div>
+        <div class="notif-row-sub" id="notifPermState" data-i18n="notif.notSet">Not set</div>
+      </div>
+    </div>
+
+    <div class="notif-row">
+      <label class="notif-row-label" for="notifEnabled" data-i18n="notif.enable">Enable notifications</label>
+      <label class="switch">
+        <input type="checkbox" id="notifEnabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="notifDays" data-i18n="notif.beforeRenewal">Remind me before renewal</label>
+      <select id="notifDays">
+        <option value="0" data-i18n="notif.daysOption.0">On the day</option>
+        <option value="1" data-i18n="notif.daysOption.1">1 day before</option>
+        <option value="2" data-i18n="notif.daysOption.2">2 days before</option>
+        <option value="3" selected data-i18n="notif.daysOption.3">3 days before</option>
+        <option value="5" data-i18n="notif.daysOption.5">5 days before</option>
+        <option value="7" data-i18n="notif.daysOption.7">1 week before</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="notifTrialDays" data-i18n="notif.beforeTrial">Remind me before free trial ends</label>
+      <select id="notifTrialDays">
+        <option value="0" data-i18n="notif.daysOption.0">On the day</option>
+        <option value="1" selected data-i18n="notif.daysOption.1">1 day before</option>
+        <option value="2" data-i18n="notif.daysOption.2">2 days before</option>
+        <option value="3" data-i18n="notif.daysOption.3">3 days before</option>
+      </select>
+    </div>
+
+    <div id="notifDeniedHint" class="notif-hint" style="display:none" data-i18n="notif.deniedHint">Your browser blocked notifications for this site. Open the site settings (lock icon in the address bar) and allow notifications, then come back here.</div>
+
+    <div class="modal-actions">
+      <button class="btn-outline" id="notifTestBtn" type="button" data-i18n="notif.test">Send a test</button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelNotifBtn" data-i18n="btn.cancel">Cancel</button>
+      <button class="btn-primary" id="saveNotifBtn" data-i18n="btn.save">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Menu / Settings Modal -->
+<div class="modal-overlay" id="menuModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h2 data-i18n="menu.settings">Settings</h2>
+      <button class="btn-icon" id="closeMenuModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="menu-list">
+      <button class="menu-row" id="menuPro">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">⭐</span>
+          <div>
+            <div class="menu-row-label" id="menuProLabel" data-i18n="menu.pro">Upgrade to Pro</div>
+            <div class="menu-row-sub" id="menuProSub" data-i18n="menu.proSub">Email reminders, sync, year-end report</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuCancelled">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">✂️</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.cancelled">Cancelled subscriptions</div>
+            <div class="menu-row-sub" id="menuCancelledSub" data-i18n="menu.cancelledSub">See what you killed and how much you saved</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuTheme">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🌓</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.theme">Theme</div>
+            <div class="menu-row-sub" id="menuThemeSub">Light</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuYearend">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🎁</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.yearend">Year-end report</div>
+            <div class="menu-row-sub" data-i18n="menu.yearendSub">See your spending wrap-up</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuImport">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">📥</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.import">Bulk import</div>
+            <div class="menu-row-sub" data-i18n="menu.importSub">Paste a list or upload CSV</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuExport">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">📤</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.export">Export CSV</div>
+            <div class="menu-row-sub" data-i18n="menu.exportSub">Download all your data</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuCalendar">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">📅</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.calendar">Calendar export</div>
+            <div class="menu-row-sub" data-i18n="menu.calendarSub">Renewal dates as an .ics file</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuBudgets">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🎯</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.budgets">Category budgets</div>
+            <div class="menu-row-sub" data-i18n="menu.budgetsSub">Set monthly limits per category</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuBackup">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">💾</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.backup">Backup & restore</div>
+            <div class="menu-row-sub" data-i18n="menu.backupSub">Save your data to a file or restore it</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuLanguage">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🌍</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.language">Language</div>
+            <div class="menu-row-sub" id="menuLanguageSub">English</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuIncome">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">💰</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.income">Income & ratio</div>
+            <div class="menu-row-sub" data-i18n="menu.incomeSub">See what % of your income goes to subs</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuCurrency">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">💱</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.currency">Currency</div>
+            <div class="menu-row-sub" id="menuCurrencySub">USD ($)</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuShare">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🔗</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.share">Share leakd.app</div>
+            <div class="menu-row-sub" data-i18n="menu.shareSub">Help us grow</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row menu-row-danger" id="menuReset">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🗑️</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.reset">Reset all data</div>
+            <div class="menu-row-sub" data-i18n="menu.resetSub">Wipe and start over</div>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="menu-footer">
+      <span data-i18n="menu.footer">leakd v1.1 · made for indie wallets</span>
+    </div>
+  </div>
+</div>
+
+<!-- Pro Upgrade Modal -->
+<div class="modal-overlay" id="proModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <h2 data-i18n="pro.title">Leakd Pro</h2>
+      <button class="btn-icon" id="closeProModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div id="proStateInactive">
+      <div class="pro-hero">
+        <div class="pro-price">$5<span>/mo</span></div>
+        <div class="pro-price-sub" data-i18n="pro.priceSub">or $39/year (save 35%)</div>
+      </div>
+
+      <ul class="pro-features">
+        <li><span>✓</span> <span data-i18n="pro.f1">Email reminders before renewal</span></li>
+        <li><span>✓</span> <span data-i18n="pro.f2">Multi-device sync (encrypted)</span></li>
+        <li><span>✓</span> <span data-i18n="pro.f3">Year-end spending report</span></li>
+        <li><span>✓</span> <span data-i18n="pro.f4">Category budgets & alerts</span></li>
+        <li><span>✓</span> <span data-i18n="pro.f5">Priority email support</span></li>
+      </ul>
+
+      <div class="pro-note" data-i18n="pro.note">Already paid? Paste your license key below.</div>
+
+      <div class="form-group">
+        <label for="proKey" data-i18n="pro.key">License key</label>
+        <input type="text" id="proKey" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX" autocomplete="off">
+        <div class="pro-error" id="proError" style="display:none"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-outline" id="proActivateBtn" data-i18n="pro.activate">Activate key</button>
+        <div style="flex:1"></div>
+        <a class="btn-primary" id="proBuyBtn" href="#" target="_blank" rel="noopener" data-i18n="pro.buy">Get Pro</a>
+      </div>
+    </div>
+
+    <div id="proStateActive" style="display:none">
+      <div class="pro-active-hero">
+        <div class="pro-active-icon">⭐</div>
+        <h3 data-i18n="pro.welcome">You're on Pro</h3>
+        <p data-i18n="pro.thanks">Thanks for supporting indie software. All premium features are unlocked.</p>
+      </div>
+      <div class="pro-key-display">
+        <div class="pro-key-label" data-i18n="pro.yourKey">Your license key</div>
+        <div class="pro-key-value" id="proKeyDisplay">—</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-danger" id="proDeactivateBtn" data-i18n="pro.remove">Remove key</button>
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="proCloseActiveBtn" data-i18n="btn.done">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk Import Modal -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h2 data-i18n="import.title">Bulk import</h2>
+      <button class="btn-icon" id="closeImportModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="import-blurb" data-i18n="import.blurb">Paste one subscription per line. We'll try to detect the service and price automatically.</p>
+
+    <div class="form-group">
+      <textarea id="importText" rows="8" data-i18n-placeholder="import.placeholder"></textarea>
+    </div>
+
+    <div class="form-row" style="gap:8px">
+      <button class="btn-outline" id="importCSVBtn" data-i18n="import.uploadCSV">Upload CSV</button>
+      <input type="file" id="importCSVInput" accept=".csv,text/csv" style="display:none">
+      <button class="btn-outline" id="importExampleBtn" data-i18n="import.example">Try an example</button>
+    </div>
+
+    <div id="importPreview" style="display:none">
+      <div class="import-preview-title"><span data-i18n="import.found">Found</span> <span id="importCount">0</span></div>
+      <div class="import-preview-list" id="importPreviewList"></div>
+    </div>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelImportBtn" data-i18n="btn.cancel">Cancel</button>
+      <button class="btn-primary" id="confirmImportBtn" disabled>Import 0</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share Card Modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h2 data-i18n="share.title">Your leak card</h2>
+      <button class="btn-icon" id="closeShareModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="share-preview" id="sharePreview">
+      <canvas id="shareCanvas"></canvas>
+    </div>
+
+    <p class="share-note" data-i18n="share.note">Posts well on Twitter, Instagram, and Reddit. Tag <strong>@leakdapp</strong> if you share!</p>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-outline" id="downloadShareBtn" data-i18n="share.download">Download</button>
+      <button class="btn-primary" id="shareNowBtn" data-i18n="share.now">Share</button>
+    </div>
+  </div>
+</div>
+
+<!-- Year-end Report Modal -->
+<div class="modal-overlay" id="yearendModal">
+  <div class="modal year-modal">
+    <div class="modal-header">
+      <h2 id="yearendTitle">Wrap-up</h2>
+      <button class="btn-icon" id="closeYearendModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div id="yearendBody">
+      <div class="yearend-slide yearend-total">
+        <div class="yearend-label" data-i18n="yearend.totalPaid">You paid</div>
+        <div class="yearend-value" id="yearendTotal">$0</div>
+        <div class="yearend-sub" data-i18n="yearend.totalPaidSub">across all subscriptions</div>
+      </div>
+
+      <div class="yearend-grid">
+        <div class="yearend-card">
+          <div class="yearend-card-label" data-i18n="yearend.topName">Your biggest leak</div>
+          <div class="yearend-card-value" id="yearendTopName">—</div>
+          <div class="yearend-card-sub" id="yearendTopAmount">—</div>
+        </div>
+        <div class="yearend-card">
+          <div class="yearend-card-label" data-i18n="yearend.busiestCat">Most spent on</div>
+          <div class="yearend-card-value" id="yearendTopCat">—</div>
+          <div class="yearend-card-sub" id="yearendTopCatAmount">—</div>
+        </div>
+      </div>
+
+      <div class="yearend-count" id="yearendSubCount">—</div>
+    </div>
+
+    <div id="yearendEmpty" style="display:none">
+      <div class="yearend-empty-icon">📊</div>
+      <h3 data-i18n="yearend.emptyTitle">Nothing to wrap up yet</h3>
+      <p data-i18n="yearend.emptySub">Add some subscriptions and check back here later in the year.</p>
+    </div>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-outline" id="yearendShareBtn" data-i18n="yearend.share">Share</button>
+      <button class="btn-primary" id="yearendCloseBtn" data-i18n="yearend.close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Budgets Modal -->
+<div class="modal-overlay" id="budgetsModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <h2 data-i18n="budgets.title">Category budgets</h2>
+      <button class="btn-icon" id="closeBudgetsModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="budgets.blurb">Set a monthly limit for each category.</p>
+
+    <div id="budgetsProLock" class="notif-hint" style="display:none" data-i18n="budgets.proLock">Budgets are a Pro feature. Upgrade to unlock.</div>
+
+    <div id="budgetsList"></div>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-primary" id="budgetsCloseBtn" data-i18n="btn.done">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Income Modal -->
+<div class="modal-overlay" id="incomeModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header">
+      <h2 data-i18n="income.title">Monthly income</h2>
+      <button class="btn-icon" id="closeIncomeModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="income.blurb">Optional. We use it to show what share of your income goes to subscriptions.</p>
+
+    <div class="form-group">
+      <label for="incomeAmount" data-i18n="income.label">Net monthly income</label>
+      <div class="input-prefix">
+        <span class="prefix" id="incomeCurrencySymbol">$</span>
+        <input type="number" id="incomeAmount" data-i18n-placeholder="income.placeholder" step="1" min="0">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-danger" id="incomeClearBtn" data-i18n="income.clear">Clear</button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelIncomeBtn" data-i18n="btn.cancel">Cancel</button>
+      <button class="btn-primary" id="saveIncomeBtn" data-i18n="btn.save">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Budget Setter Modal (small inline) -->
+<div class="modal-overlay" id="budgetSetterModal">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-header">
+      <h2 id="budgetSetterTitle">Budget</h2>
+      <button class="btn-icon" id="closeBudgetSetterModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label for="budgetAmount" data-i18n="budgets.setLimit">Set monthly limit</label>
+      <div class="input-prefix">
+        <span class="prefix" id="budgetCurrencySymbol">$</span>
+        <input type="number" id="budgetAmount" placeholder="50" step="1" min="0">
+      </div>
+    </div>
+
+    <input type="hidden" id="budgetCategory" value="">
+    <div class="modal-actions">
+      <button class="btn-danger" id="budgetClearBtn" data-i18n="btn.delete">Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelBudgetBtn" data-i18n="btn.cancel">Cancel</button>
+      <button class="btn-primary" id="saveBudgetBtn" data-i18n="btn.save">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Backup & Restore Modal -->
+<div class="modal-overlay" id="backupModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <h2 data-i18n="backup.title">Backup & restore</h2>
+      <button class="btn-icon" id="closeBackupModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="backup.blurb">Export everything as a single file.</p>
+
+    <div class="backup-card">
+      <div class="backup-card-icon">📤</div>
+      <div class="backup-card-body">
+        <div class="backup-card-title" data-i18n="backup.exportTitle">Download backup</div>
+        <div class="backup-card-sub" data-i18n="backup.exportSub">A small JSON file you can keep anywhere</div>
+      </div>
+      <button class="btn-primary" id="backupExportBtn" data-i18n="backup.exportBtn">Download</button>
+    </div>
+
+    <div class="backup-card">
+      <div class="backup-card-icon">📥</div>
+      <div class="backup-card-body">
+        <div class="backup-card-title" data-i18n="backup.importTitle">Restore from backup</div>
+        <div class="backup-card-sub" data-i18n="backup.importSub">Replace current data with a backup file</div>
+      </div>
+      <button class="btn-outline" id="backupImportBtn" data-i18n="backup.importBtn">Choose file</button>
+      <input type="file" id="backupImportInput" accept=".json,application/json" style="display:none">
+    </div>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelBackupBtn" data-i18n="btn.done">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cancelled Subs Modal -->
+<div class="modal-overlay" id="cancelledModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <h2 data-i18n="cancelled.title">Cancelled subscriptions</h2>
+      <button class="btn-icon" id="closeCancelledModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div id="cancelledHero" class="cancelled-hero" style="display:none">
+      <div class="cancelled-savings" id="cancelledSavings">$0</div>
+      <div class="cancelled-savings-label" data-i18n="cancelled.savingsLabel">Saved every month</div>
+      <div class="cancelled-thisyear" id="cancelledThisYear">— cancelled in 2026</div>
+    </div>
+
+    <div id="cancelledEmpty" class="empty-state-mini" style="display:none" data-i18n="cancelled.empty">No cancellations yet.</div>
+
+    <div class="cancelled-list" id="cancelledList"></div>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-primary" id="cancelledCloseBtn" data-i18n="btn.done">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Theme Picker Modal -->
+<div class="modal-overlay" id="themeModal">
+  <div class="modal" style="max-width:340px">
+    <div class="modal-header">
+      <h2 data-i18n="menu.theme">Theme</h2>
+      <button class="btn-icon" id="closeThemeModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="theme-grid">
+      <button class="theme-btn" data-theme="light"><span class="theme-icon">☀️</span><span data-i18n="theme.light">Light</span></button>
+      <button class="theme-btn" data-theme="dark"><span class="theme-icon">🌙</span><span data-i18n="theme.dark">Dark</span></button>
+      <button class="theme-btn" data-theme="auto"><span class="theme-icon">🖥️</span><span data-i18n="theme.auto">Auto</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Onboarding -->
+<div class="onboard-overlay" id="onboard" style="display:none">
+  <div class="onboard-card">
+    <div class="onboard-step" data-step="1">
+      <div class="onboard-icon">💧</div>
+      <h2 data-i18n="onb1.title">Where's your money leaking?</h2>
+      <p data-i18n="onb1.body">Add the subscriptions you pay for. We'll show you the damage — and how to stop it.</p>
+      <button class="btn-primary" data-onboard-next data-i18n="btn.next">Next</button>
+    </div>
+    <div class="onboard-step" data-step="2" style="display:none">
+      <div class="onboard-icon">🔒</div>
+      <h2 data-i18n="onb2.title">Stays on your device</h2>
+      <p data-i18n="onb2.body">No account, no cloud. Your subscription list never leaves your phone or laptop. Open the menu anytime to export or wipe everything.</p>
+      <button class="btn-primary" data-onboard-next data-i18n="btn.next">Next</button>
+    </div>
+    <div class="onboard-step" data-step="3" style="display:none">
+      <div class="onboard-icon">🔔</div>
+      <h2 data-i18n="onb3.title">Get a heads-up</h2>
+      <p data-i18n="onb3.body">Allow notifications and we'll ping you before a free trial auto-renews. You can change this anytime.</p>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn-outline" data-onboard-skip data-i18n="onb.skip">Maybe later</button>
+        <button class="btn-primary" id="onboardEnableNotif" data-i18n="onb.allow">Allow</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/locale.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/brands.js"></script>
+<script src="js/insights.js"></script>
+<script src="js/pro.js"></script>
+<script src="js/share.js"></script>
+<script src="js/import.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/yearend.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/budgets.js"></script>
+<script src="js/history.js"></script>
+<script src="js/income.js"></script>
+<script src="js/cancelled.js"></script>
+<script src="js/notifications.js"></script>
 <script src="js/app.js"></script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>

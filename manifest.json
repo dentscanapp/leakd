@@ -3,7 +3,9 @@
   "short_name": "Leakd",
   "description": "Track your subscriptions. See where your money leaks. Free, private, no account needed.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#0f0f0f",
   "theme_color": "#ef4444",
   "orientation": "portrait-primary",
@@ -21,6 +23,22 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["finance", "utilities"],
-  "lang": "en"
+  "categories": ["finance", "utilities", "productivity"],
+  "lang": "en",
+  "shortcuts": [
+    {
+      "name": "Add subscription",
+      "short_name": "Add",
+      "description": "Quickly add a new subscription",
+      "url": "/?action=add",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Insights",
+      "short_name": "Insights",
+      "description": "See your spending breakdown",
+      "url": "/?view=insights",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }

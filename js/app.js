@@ -4,15 +4,22 @@
 (function() {
   'use strict';
 
-  // ─── State ───
-  const STORAGE_KEY = 'leakd_subs';
+  const STORAGE_KEY  = 'leakd_subs';
   const SETTINGS_KEY = 'leakd_settings';
+  const ONBOARD_KEY  = 'leakd_onboarded';
   let subs = [];
   let settings = { currency: '$', currencyCode: 'USD', theme: 'light' };
   let activeCategory = 'all';
+  let activeView = 'home';
+  let searchTerm = '';
   let editingId = null;
+  let importStaged = [];
 
-  // ─── Category Colors ───
+  window.LeakdState = settings;
+
+  // Translation helper (works even if i18n hasn't loaded yet)
+  const t = (k, vars) => window.LeakdI18n ? window.LeakdI18n.t(k, vars) : k;
+
   const catColors = {
     Entertainment: { bg: '#fef2f2', text: '#991b1b', icon: '🎬' },
     Work:          { bg: '#eff6ff', text: '#1e40af', icon: '💼' },
@@ -23,61 +30,173 @@
     News:          { bg: '#faf5ff', text: '#6b21a8', icon: '📰' },
     Other:         { bg: '#f5f5f4', text: '#44403c', icon: '📦' },
   };
+  const catPaletteDark = {
+    Entertainment: '#ef4444', Work: '#3b82f6', Music: '#22c55e', Fitness: '#eab308',
+    Cloud: '#06b6d4', Food: '#f97316', News: '#a855f7', Other: '#78716c',
+  };
 
-  // ─── DOM ───
   const $ = id => document.getElementById(id);
   const monthlyTotalEl = $('monthlyTotal');
-  const yearlyTotalEl = $('yearlyTotal');
-  const activeCountEl = $('activeCount');
-  const dueSoonEl = $('dueSoon');
-  const alertsEl = $('alerts');
-  const categoriesEl = $('categories');
-  const subListEl = $('subList');
-  const emptyStateEl = $('emptyState');
-  const bottomActionsEl = $('bottomActions');
-  const modal = $('modal');
-  const currencyModal = $('currencyModal');
+  const yearlyTotalEl  = $('yearlyTotal');
+  const activeCountEl  = $('activeCount');
+  const dueSoonEl      = $('dueSoon');
+  const alertsEl       = $('alerts');
+  const categoriesEl   = $('categories');
+  const subListEl      = $('subList');
+  const emptyStateEl   = $('emptyState');
+  const modal          = $('modal');
+  const currencyModal  = $('currencyModal');
 
-  // ─── Init ───
   function init() {
     loadData();
     applyTheme();
-    render();
+    if (window.LeakdPro) window.LeakdPro.load();
+    if (window.LeakdI18n) {
+      window.LeakdI18n.init();
+      window.LeakdI18n.onChange(() => { render(); refreshDynamicLabels(); });
+    }
+    buildLanguageGrid();
     bindEvents();
     setDefaultDate();
+    render();
+    refreshDynamicLabels();
+    initNotifications();
+    refreshProUI();
 
-    // Show currency picker on first visit
-    if (!localStorage.getItem(SETTINGS_KEY)) {
-      currencyModal.style.display = 'flex';
+    if (!localStorage.getItem(ONBOARD_KEY)) {
+      showOnboard();
+    } else if (!localStorage.getItem(SETTINGS_KEY)) {
+      // First real launch after onboarding — try auto-detect first
+      if (!autoDetectLocale()) currencyModal.style.display = 'flex';
     }
+
+    handleUrlParams();
+  }
+
+  // Auto-detect currency (and confirm language) from browser locale.
+  // Only runs on a brand-new install. Returns true if we successfully picked
+  // a currency, false if the picker should still be shown.
+  function autoDetectLocale() {
+    if (!window.LeakdLocale) return false;
+    const detected = window.LeakdLocale.detectCurrency();
+    if (!detected) return false;
+    settings.currency = detected.symbol;
+    settings.currencyCode = detected.code;
+    saveData();
+    refreshDynamicLabels();
+    render();
+
+    // Build a friendly toast: "Detected: Magyar · HUF"
+    const langName = window.LeakdI18n
+      ? (window.LeakdI18n.LANGUAGES[window.LeakdI18n.lang] || {}).name
+      : null;
+    const parts = [];
+    if (langName) parts.push(langName);
+    parts.push(detected.code);
+    toast('🌍 ' + parts.join(' · '));
+    return true;
+  }
+
+  function handleUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'insights') setView('insights');
+    if (params.get('action') === 'add') setTimeout(openAdd, 200);
+    if (params.get('action') === 'import') setTimeout(openImportModal, 200);
+    if (params.get('action') === 'yearend') setTimeout(openYearendModal, 200);
+    if (params.toString()) history.replaceState({}, '', window.location.pathname);
+  }
+
+  function initNotifications() {
+    if (!window.LeakdNotify) return;
+    window.LeakdNotify.load();
+    updateNotifBellState();
+    mirrorStateToCache();
+    rescheduleNotifications();
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(reg => {
+        reg.active && reg.active.postMessage({ type: 'check-now' });
+      }).catch(() => {});
+    }
+  }
+
+  function updateNotifBellState() {
+    const bell = $('toggleNotif');
+    if (!bell || !window.LeakdNotify) return;
+    const on = window.LeakdNotify.prefs.enabled && window.LeakdNotify.permission() === 'granted';
+    bell.classList.toggle('active', !!on);
   }
 
   // ─── Data ───
   function loadData() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      subs = raw ? JSON.parse(raw) : [];
-    } catch { subs = []; }
-    try {
-      const raw = localStorage.getItem(SETTINGS_KEY);
-      if (raw) settings = { ...settings, ...JSON.parse(raw) };
-    } catch {}
+    try { const raw = localStorage.getItem(STORAGE_KEY); subs = raw ? JSON.parse(raw) : []; } catch { subs = []; }
+    try { const raw = localStorage.getItem(SETTINGS_KEY); if (raw) settings = { ...settings, ...JSON.parse(raw) }; } catch {}
+    window.LeakdState = settings;
   }
 
   function saveData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(subs));
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    window.LeakdState = settings;
+    mirrorStateToCache();
+    rescheduleNotifications();
+    if (window.LeakdHistory) window.LeakdHistory.record(subs);
+  }
+
+  async function mirrorStateToCache() {
+    if (!('caches' in window)) return;
+    try {
+      const prefs = (window.LeakdNotify && window.LeakdNotify.prefs) || {};
+      const log = (window.LeakdNotify && window.LeakdNotify.log()) || {};
+      const snapshot = subs.map(s => ({ ...s, currency: settings.currency }));
+      const payload = { subs: snapshot, prefs, log, updatedAt: Date.now() };
+      const cache = await caches.open('leakd-state');
+      await cache.put('/state.json', new Response(JSON.stringify(payload), {
+        headers: { 'Content-Type': 'application/json' },
+      }));
+    } catch {}
+  }
+
+  function rescheduleNotifications() {
+    if (window.LeakdNotify && window.LeakdNotify.prefs.enabled) {
+      window.LeakdNotify.schedule(subs.filter(s => !s.paused).map(s => ({ ...s, currency: settings.currency })));
+    }
   }
 
   // ─── Theme ───
+  // Three modes: 'light', 'dark', 'auto'. Auto follows the system
+  // prefers-color-scheme and updates live if the user flips their OS theme.
+  let mediaListener = null;
   function applyTheme() {
-    document.documentElement.setAttribute('data-theme', settings.theme);
-  }
+    const mode = settings.theme || 'auto';
+    let effective = mode;
+    if (mode === 'auto') {
+      effective = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', effective);
 
+    // Wire up live system-theme listener only when in auto mode
+    if (mode === 'auto' && !mediaListener && window.matchMedia) {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaListener = e => {
+        if (settings.theme === 'auto') {
+          document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        }
+      };
+      if (mq.addEventListener) mq.addEventListener('change', mediaListener);
+      else if (mq.addListener) mq.addListener(mediaListener);
+    }
+  }
   function toggleTheme() {
-    settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
+    // Cycle: light → dark → auto → light
+    settings.theme = settings.theme === 'light' ? 'dark' : settings.theme === 'dark' ? 'auto' : 'light';
+    applyTheme(); saveData();
+    refreshDynamicLabels();
+  }
+  function setThemeMode(mode) {
+    settings.theme = mode;
     applyTheme();
     saveData();
+    refreshDynamicLabels();
   }
 
   // ─── Calculations ───
@@ -86,77 +205,190 @@
     if (cycle === 'yearly') return price / 12;
     return price;
   }
-
   function toYearly(price, cycle) {
     if (cycle === 'weekly') return price * 52;
     if (cycle === 'monthly') return price * 12;
     return price;
   }
-
   function daysUntil(dateStr) {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const target = new Date(dateStr);
-    target.setHours(0, 0, 0, 0);
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const target = new Date(dateStr); target.setHours(0, 0, 0, 0);
     return Math.ceil((target - now) / 86400000);
   }
-
   function formatPrice(amount) {
+    // Prefer the rich formatter from locale.js (handles position, decimals, etc.)
+    if (window.LeakdLocale && settings.currencyCode) {
+      return window.LeakdLocale.formatMoney(amount, settings.currencyCode);
+    }
+    // Legacy fallback for the original 8 currencies
     const s = settings.currency;
     if (s === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
     if (s === '¥') return s + Math.round(amount).toLocaleString();
     return s + amount.toFixed(2);
   }
+  function activeSubs() { return subs.filter(s => !s.paused); }
+  function dueLabel(days) {
+    if (days === 0) return t('time.today');
+    if (days === 1) return t('time.tomorrow');
+    return t('time.inDays', { n: days });
+  }
+  function localizedCat(cat) { return t('cat.' + cat) || cat; }
 
   // ─── Render ───
   function render() {
-    renderStats();
-    renderAlerts();
-    renderCategories();
-    renderList();
+    if (activeView === 'home') {
+      renderStats();
+      renderAlerts();
+      renderCategories();
+      renderList();
+    } else if (activeView === 'insights') {
+      renderInsights();
+    }
     $('currencySymbol').textContent = settings.currency;
+  }
+
+  function refreshDynamicLabels() {
+    const cs = $('menuCurrencySub');
+    if (cs) cs.textContent = `${settings.currencyCode} (${settings.currency})`;
+    const ls = $('menuLanguageSub');
+    if (ls && window.LeakdI18n) {
+      const lang = window.LeakdI18n.lang;
+      const info = window.LeakdI18n.LANGUAGES[lang];
+      ls.textContent = info ? `${info.flag} ${info.name}` : lang;
+    }
+    $('ytdYear').textContent = String(new Date().getFullYear());
+
+    const themeSub = $('menuThemeSub');
+    if (themeSub) {
+      const mode = settings.theme || 'auto';
+      themeSub.textContent = t('theme.' + mode);
+    }
+
+    const canSub = $('menuCancelledSub');
+    if (canSub && window.LeakdCancelled) {
+      const n = window.LeakdCancelled.count();
+      if (n > 0) {
+        const saved = window.LeakdCancelled.savings();
+        canSub.textContent = n + ' · ' + formatPrice(saved) + '/' + t('cycle.mo').replace('/','');
+      } else {
+        canSub.textContent = t('menu.cancelledSub');
+      }
+    }
   }
 
   function renderStats() {
     let monthly = 0, dueSoonCount = 0;
-    subs.forEach(s => {
+    activeSubs().forEach(s => {
       monthly += toMonthly(s.price, s.cycle);
       if (s.nextDate && daysUntil(s.nextDate) <= 7 && daysUntil(s.nextDate) >= 0) dueSoonCount++;
     });
-    monthlyTotalEl.textContent = formatPrice(monthly);
-    yearlyTotalEl.textContent = formatPrice(monthly * 12);
-    activeCountEl.textContent = subs.length;
+    animateNumber(monthlyTotalEl, monthly, formatPrice);
+    animateNumber(yearlyTotalEl, monthly * 12, formatPrice);
+    activeCountEl.textContent = activeSubs().length;
     dueSoonEl.textContent = dueSoonCount;
-
-    // Color code monthly if high
     monthlyTotalEl.style.color = monthly > 0 ? '' : 'var(--text-3)';
+
+    // Sparkline (last 30 days)
+    renderSparkline();
+
+    // Forecast widget for next 30 days
+    renderForecast();
+
+    // Show search bar once we have several subs
+    $('searchBar').style.display = subs.length >= 5 ? 'flex' : 'none';
+  }
+
+  function renderForecast() {
+    const card = $('forecastCard');
+    if (!card || !window.LeakdInsights) return;
+    const list = activeSubs();
+    if (list.length === 0) { card.style.display = 'none'; return; }
+    const fc = window.LeakdInsights.forecast(list, 30);
+    if (fc.count === 0) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    $('forecastLabel').textContent = t('forecast.title', { n: 30 });
+    $('forecastTotal').textContent = formatPrice(fc.total);
+    $('forecastSub').textContent = t('forecast.total', { total: formatPrice(fc.total), count: fc.count });
+  }
+
+  // Count-up animation on stat value updates
+  const _lastAnim = new WeakMap();
+  function animateNumber(el, target, formatter) {
+    const prev = _lastAnim.get(el) ?? 0;
+    if (prev === target) {
+      el.textContent = formatter(target);
+      return;
+    }
+    _lastAnim.set(el, target);
+    const start = performance.now();
+    const duration = 600;
+    const startVal = prev;
+    function frame(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const val = startVal + (target - startVal) * eased;
+      el.textContent = formatter(val);
+      if (t < 1 && _lastAnim.get(el) === target) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function renderSparkline() {
+    if (!window.LeakdHistory) return;
+    const svg = $('sparkline');
+    if (!svg) return;
+    const points = window.LeakdHistory.recent(30);
+    if (points.length < 2) { svg.style.display = 'none'; return; }
+    const max = Math.max(...points.map(p => p.monthly), 1);
+    const W = 200, H = 40, pad = 2;
+    const stepX = (W - pad * 2) / (points.length - 1);
+    const pathParts = points.map((p, i) => {
+      const x = pad + i * stepX;
+      const y = H - pad - (p.monthly / max) * (H - pad * 2);
+      return (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+    });
+    const line = pathParts.join(' ');
+    const fillPath = line + ` L ${W - pad},${H} L ${pad},${H} Z`;
+    $('sparklinePath').setAttribute('d', line);
+    $('sparklineFill').setAttribute('d', fillPath);
+    svg.style.display = 'block';
   }
 
   function renderAlerts() {
     alertsEl.innerHTML = '';
-    const now = new Date();
+
+    // Budget warnings — only for Pro users
+    if (window.LeakdBudgets && window.LeakdPro && window.LeakdPro.isPro()) {
+      const progress = window.LeakdBudgets.computeProgress(activeSubs());
+      progress.filter(p => p.status !== 'ok').slice(0, 2).forEach(p => {
+        const isOver = p.status === 'over';
+        alertsEl.innerHTML += `
+          <div class="alert-card ${isOver ? 'alert-danger' : ''}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div><strong>${escHtml(localizedCat(p.category))}</strong> · ${t(isOver ? 'budgets.over' : 'budgets.warn')} — ${t('budgets.spent', { spent: formatPrice(p.spent), limit: formatPrice(p.limit) })}</div>
+          </div>`;
+      });
+    }
 
     subs.forEach(s => {
-      // Trial ending alert
+      if (s.paused) return;
       if (s.isTrial && s.trialEnd) {
         const days = daysUntil(s.trialEnd);
         if (days >= 0 && days <= 3) {
           alertsEl.innerHTML += `
             <div class="alert-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              <div><strong>${s.name}</strong> free trial ends ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days'}! Will auto-renew at ${formatPrice(s.price)}/${s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk'}.</div>
+              <div><strong>${escHtml(s.name)}</strong> ${t('time.trialEnds', { when: dueLabel(days) })} — ${formatPrice(s.price)}/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/', '')}.</div>
             </div>`;
         }
       }
-
-      // Payment due alert
-      if (s.nextDate) {
+      if (s.nextDate && !s.isTrial) {
         const days = daysUntil(s.nextDate);
-        if (days >= 0 && days <= 2 && !(s.isTrial && s.trialEnd)) {
+        if (days >= 0 && days <= 2) {
           alertsEl.innerHTML += `
             <div class="alert-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <div><strong>${s.name}</strong> payment of ${formatPrice(s.price)} due ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days'}.</div>
+              <div><strong>${escHtml(s.name)}</strong> ${formatPrice(s.price)} · ${dueLabel(days)}</div>
             </div>`;
         }
       }
@@ -165,103 +397,323 @@
 
   function renderCategories() {
     const cats = {};
-    subs.forEach(s => {
+    activeSubs().forEach(s => {
       if (!cats[s.category]) cats[s.category] = 0;
       cats[s.category] += toMonthly(s.price, s.cycle);
     });
-
     let totalMonthly = 0;
-    subs.forEach(s => totalMonthly += toMonthly(s.price, s.cycle));
-
-    let html = `<button class="cat-btn ${activeCategory === 'all' ? 'active' : ''}" data-cat="all">All ${subs.length > 0 ? '(' + formatPrice(totalMonthly) + ')' : ''}</button>`;
-
-    Object.entries(cats)
-      .sort((a, b) => b[1] - a[1])
-      .forEach(([cat, amount]) => {
-        html += `<button class="cat-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat} (${formatPrice(amount)})</button>`;
-      });
-
+    activeSubs().forEach(s => totalMonthly += toMonthly(s.price, s.cycle));
+    let html = `<button class="cat-btn ${activeCategory === 'all' ? 'active' : ''}" data-cat="all">${t('cat.all')} ${subs.length > 0 ? '(' + formatPrice(totalMonthly) + ')' : ''}</button>`;
+    Object.entries(cats).sort((a, b) => b[1] - a[1]).forEach(([cat, amount]) => {
+      html += `<button class="cat-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${localizedCat(cat)} (${formatPrice(amount)})</button>`;
+    });
     categoriesEl.innerHTML = html;
-
-    // Rebind
     categoriesEl.querySelectorAll('.cat-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        activeCategory = btn.dataset.cat;
-        render();
-      });
+      btn.addEventListener('click', () => { activeCategory = btn.dataset.cat; render(); });
     });
   }
 
   function renderList() {
-    const filtered = activeCategory === 'all' ? subs : subs.filter(s => s.category === activeCategory);
+    let filtered = activeCategory === 'all' ? subs : subs.filter(s => s.category === activeCategory);
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase();
+      filtered = filtered.filter(s =>
+        s.name.toLowerCase().includes(q) ||
+        s.category.toLowerCase().includes(q) ||
+        localizedCat(s.category).toLowerCase().includes(q)
+      );
+    }
 
     if (filtered.length === 0) {
       emptyStateEl.style.display = 'block';
-      bottomActionsEl.style.display = 'none';
-      // Remove all sub-items but keep empty state
+      if (searchTerm) {
+        emptyStateEl.querySelector('p').textContent = t('search.noResults');
+        emptyStateEl.querySelector('.empty-sub').textContent = '';
+      } else {
+        emptyStateEl.querySelector('p').textContent = t('empty.title');
+        emptyStateEl.querySelector('.empty-sub').textContent = t('empty.sub');
+      }
       subListEl.querySelectorAll('.sub-item').forEach(el => el.remove());
       return;
     }
-
     emptyStateEl.style.display = 'none';
-    bottomActionsEl.style.display = 'flex';
 
-    // Sort: due soonest first
     const sorted = [...filtered].sort((a, b) => {
+      // Paused at the bottom
+      if (a.paused !== b.paused) return a.paused ? 1 : -1;
       const da = a.nextDate ? daysUntil(a.nextDate) : 999;
       const db = b.nextDate ? daysUntil(b.nextDate) : 999;
       return da - db;
     });
-
     let html = '';
     sorted.forEach(s => {
-      const c = catColors[s.category] || catColors.Other;
       const days = s.nextDate ? daysUntil(s.nextDate) : null;
-      const initial = s.name.charAt(0).toUpperCase();
-
       let badge = '';
-      if (s.isTrial && s.trialEnd) {
+      if (s.paused) {
+        badge = `<span class="sub-badge badge-paused">${t('badge.paused')}</span>`;
+      } else if (s.isTrial && s.trialEnd) {
         const td = daysUntil(s.trialEnd);
-        if (td >= 0 && td <= 3) badge = `<span class="sub-badge badge-trial">Trial ends ${td === 0 ? 'today' : td === 1 ? 'tomorrow' : 'in ' + td + 'd'}</span>`;
+        if (td >= 0 && td <= 3) badge = `<span class="sub-badge badge-trial">${t('time.trialEnds', { when: dueLabel(td) })}</span>`;
       } else if (days !== null && days >= 0 && days <= 3) {
-        badge = `<span class="sub-badge badge-due">${days === 0 ? 'Due today' : days === 1 ? 'Tomorrow' : 'In ' + days + 'd'}</span>`;
+        const label = days === 0 ? t('time.dueToday') : days === 1 ? t('time.dueTomorrow') : t('time.dueIn', { n: days });
+        badge = `<span class="sub-badge badge-due">${label}</span>`;
       }
-
       let dateText = '';
       if (s.nextDate) {
         const d = new Date(s.nextDate);
-        dateText = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+        dateText = d.toLocaleDateString(lang, { month: 'short', day: 'numeric' });
       }
-
-      const cycleLabel = s.cycle === 'monthly' ? '/mo' : s.cycle === 'yearly' ? '/yr' : '/wk';
-
+      const cycleLabel = t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk'));
+      const iconHtml = window.LeakdBrands
+        ? window.LeakdBrands.badgeHtml(s.name, s.category, 42)
+        : `<div class="sub-icon" style="background:${(catColors[s.category]||catColors.Other).bg};color:${(catColors[s.category]||catColors.Other).text}">${(catColors[s.category]||catColors.Other).icon}</div>`;
       html += `
-        <div class="sub-item" data-id="${s.id}">
-          <div class="sub-icon" style="background:${c.bg};color:${c.text}">${c.icon}</div>
-          <div class="sub-info">
-            <div class="sub-name">${escHtml(s.name)}</div>
-            <div class="sub-meta">
-              <span>${s.category}</span>
-              ${dateText ? '<span>·</span><span>' + dateText + '</span>' : ''}
-              ${badge}
+        <div class="sub-item ${s.paused ? 'is-paused' : ''}" data-id="${s.id}">
+          <div class="sub-swipe-bg"><span>${t('btn.delete')}</span></div>
+          <div class="sub-item-content">
+            ${iconHtml}
+            <div class="sub-info">
+              <div class="sub-name">${escHtml(s.name)}</div>
+              <div class="sub-meta">
+                <span>${localizedCat(s.category)}</span>
+                ${dateText ? '<span>·</span><span>' + dateText + '</span>' : ''}
+                ${badge}
+              </div>
             </div>
-          </div>
-          <div class="sub-price">
-            <div class="sub-amount">${formatPrice(s.price)}</div>
-            <div class="sub-cycle">${cycleLabel}</div>
+            <div class="sub-price">
+              <div class="sub-amount">${formatPrice(s.price)}</div>
+              <div class="sub-cycle">${cycleLabel}</div>
+            </div>
           </div>
         </div>`;
     });
-
-    // Keep empty state in DOM but hidden
-    const existingItems = subListEl.querySelectorAll('.sub-item');
-    existingItems.forEach(el => el.remove());
+    subListEl.querySelectorAll('.sub-item').forEach(el => el.remove());
     emptyStateEl.insertAdjacentHTML('beforebegin', html);
-
-    // Bind clicks
     subListEl.querySelectorAll('.sub-item').forEach(el => {
-      el.addEventListener('click', () => openEdit(el.dataset.id));
+      bindSwipeToDelete(el);
+      el.querySelector('.sub-item-content').addEventListener('click', () => {
+        if (el.classList.contains('swiping') || el.classList.contains('swiped')) return;
+        openEdit(el.dataset.id);
+      });
     });
+  }
+
+  // Swipe-to-delete: mobile gesture on .sub-item — drag left to reveal delete
+  function bindSwipeToDelete(el) {
+    const content = el.querySelector('.sub-item-content');
+    if (!content) return;
+    let startX = 0, currentX = 0, dragging = false, settled = false;
+    const THRESHOLD = 100;
+
+    function onStart(x) { startX = x; currentX = 0; dragging = true; settled = false; el.classList.add('swiping'); }
+    function onMove(x) {
+      if (!dragging) return;
+      currentX = Math.min(0, x - startX); // only allow left drag
+      if (currentX > -8) return; // ignore tiny moves so taps still work
+      content.style.transform = `translateX(${currentX}px)`;
+      content.style.transition = 'none';
+      el.classList.toggle('swiped-partial', currentX < -20);
+    }
+    function onEnd() {
+      if (!dragging) return;
+      dragging = false;
+      content.style.transition = '';
+      if (currentX < -THRESHOLD) {
+        content.style.transform = `translateX(-110px)`;
+        el.classList.add('swiped');
+        settled = true;
+        // Auto-collapse and delete after a short delay if user doesn't tap delete bg
+        setTimeout(() => {
+          if (el.classList.contains('swiped')) {
+            // Show the delete state; the user can tap the red area to confirm
+            // or tap anywhere else (handled below) to dismiss.
+          }
+        }, 0);
+      } else {
+        content.style.transform = '';
+        el.classList.remove('swiped-partial');
+      }
+      // remove swiping class after transition
+      setTimeout(() => { if (!settled) el.classList.remove('swiping'); }, 200);
+    }
+
+    // Touch
+    content.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
+    content.addEventListener('touchmove', e => onMove(e.touches[0].clientX), { passive: true });
+    content.addEventListener('touchend', onEnd);
+    content.addEventListener('touchcancel', onEnd);
+
+    // The red background = delete target
+    const bg = el.querySelector('.sub-swipe-bg');
+    if (bg) {
+      bg.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!el.classList.contains('swiped')) return;
+        const id = el.dataset.id;
+        if (!confirm(t('confirm.deleteSub'))) {
+          content.style.transform = '';
+          el.classList.remove('swiped', 'swiping', 'swiped-partial');
+          return;
+        }
+        subs = subs.filter(x => x.id !== id);
+        saveData();
+        render();
+      });
+    }
+
+    // Tap outside = collapse
+    content.addEventListener('click', e => {
+      if (el.classList.contains('swiped')) {
+        e.stopPropagation();
+        content.style.transform = '';
+        el.classList.remove('swiped', 'swiping', 'swiped-partial');
+      }
+    }, true);
+  }
+
+  function renderInsights() {
+    if (!window.LeakdInsights) return;
+    const I = window.LeakdInsights;
+    const list = activeSubs();
+    const totals = I.totals(list);
+    const ytd = I.paidThisYear(list);
+    const proj = I.twelveMonthProjection(list);
+    const cats = I.byCategory(list);
+    const sugs = I.suggestions(list);
+
+    $('ytdValue').textContent = formatPrice(ytd);
+    $('ytdYear').textContent = String(new Date().getFullYear());
+
+    const maxBar = Math.max(1, ...proj.map(p => p.amount));
+    $('chartBars').innerHTML = proj.map(p => {
+      const pct = (p.amount / maxBar) * 100;
+      const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+      const label = new Date(2000, parseInt(p.label === 'Jan' ? 0 : 0, 10)); // fallback, see below
+      // Just use the engine's labels for now; localize if needed later
+      return `<div class="chart-bar-col"><div class="chart-bar" style="height:${pct}%"></div><div class="chart-bar-label">${p.label}</div></div>`;
+    }).join('');
+    $('chartTotal').textContent = formatPrice(totals.yearly) + ' /' + t('cycle.yr').replace('/', '');
+
+    // Donut chart for category breakdown
+    renderDonut(cats, totals.monthly);
+
+    // Income ratio card
+    renderIncomeRatio(totals.monthly);
+
+    const breakdown = $('catBreakdown');
+    if (cats.length === 0) {
+      breakdown.innerHTML = `<div class="empty-state-mini">${t('insights.noData')}</div>`;
+    } else {
+      const max = cats[0].monthly;
+      breakdown.innerHTML = cats.map(c => {
+        const pct = (c.monthly / totals.monthly) * 100;
+        const color = catPaletteDark[c.category] || '#78716c';
+        return `<div class="cat-bar-row">
+          <div class="cat-bar-head">
+            <span class="cat-bar-name"><span class="cat-dot" style="background:${color}"></span>${escHtml(localizedCat(c.category))}</span>
+            <span class="cat-bar-amount">${formatPrice(c.monthly)}<span class="cat-bar-pct">${pct.toFixed(0)}%</span></span>
+          </div>
+          <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${(c.monthly / max) * 100}%;background:${color}"></div></div>
+        </div>`;
+      }).join('');
+    }
+
+    const sList = $('suggestionsList');
+    if (sugs.length === 0) {
+      sList.innerHTML = list.length
+        ? `<div class="empty-state-mini">${t('insights.clean')}</div>`
+        : `<div class="empty-state-mini">${t('insights.noSubs')}</div>`;
+    } else {
+      sList.innerHTML = sugs.slice(0, 6).map(s => `
+        <div class="suggestion-card sev-${s.severity}">
+          <div class="suggestion-icon">${s.icon}</div>
+          <div class="suggestion-body">
+            <div class="suggestion-title">${escHtml(s.title)}</div>
+            <div class="suggestion-text">${s.body}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Lowest-rated subs (cancellation candidates)
+    const lowestCard = $('lowestRatedCard');
+    if (lowestCard) {
+      const lowest = window.LeakdInsights.lowestRated(list, 3);
+      if (lowest.length === 0) {
+        lowestCard.style.display = 'none';
+      } else {
+        lowestCard.style.display = 'block';
+        $('lowestRatedList').innerHTML = lowest.map(s => {
+          const stars = '★'.repeat(s.rating) + '☆'.repeat(5 - s.rating);
+          const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.name, s.category, 32) : '';
+          return `<div class="lowest-row">
+            ${iconHtml}
+            <div class="lowest-info">
+              <div class="lowest-name">${escHtml(s.name)}</div>
+              <div class="lowest-stars">${stars}</div>
+            </div>
+            <div class="lowest-price">${formatPrice(s.monthly)}<span>/${t('cycle.mo').replace('/','')}</span></div>
+          </div>`;
+        }).join('');
+      }
+    }
+  }
+
+  // SVG donut chart for category breakdown
+  function renderDonut(cats, total) {
+    const svg = $('donutChart');
+    const wrap = $('donutWrap');
+    if (!svg || !wrap) return;
+    if (cats.length === 0 || total <= 0) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'flex';
+    const cx = 60, cy = 60, r = 48, strokeW = 14;
+    const circumference = 2 * Math.PI * r;
+    let offset = -Math.PI / 2; // start at top
+    let html = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="${strokeW}"/>`;
+    cats.forEach(c => {
+      const pct = c.monthly / total;
+      const dash = pct * circumference;
+      const gap = circumference - dash;
+      const color = catPaletteDark[c.category] || '#78716c';
+      // Rotate via stroke-dasharray + transform
+      const rot = (offset * 180 / Math.PI);
+      html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none"
+        stroke="${color}" stroke-width="${strokeW}"
+        stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
+        transform="rotate(${rot} ${cx} ${cy})"></circle>`;
+      offset += pct * 2 * Math.PI;
+    });
+    svg.innerHTML = html;
+    $('donutCenterValue').textContent = formatPrice(total);
+  }
+
+  function renderIncomeRatio(monthly) {
+    const card = $('incomeRatioCard');
+    if (!card || !window.LeakdIncome) return;
+    const ratio = window.LeakdIncome.ratio(monthly);
+    if (ratio == null) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    const pct = Math.min(100, ratio * 100);
+    const sentiment = window.LeakdIncome.sentiment(ratio);
+    $('ratioFill').style.width = pct + '%';
+    $('ratioFill').className = 'ratio-fill sentiment-' + sentiment;
+    $('ratioValue').textContent = (ratio * 100).toFixed(1) + '%';
+    $('incomeRatioLabel').textContent = t('income.ratio.label');
+    const sub = sentiment === 'crisis' ? t('income.ratio.crisis')
+              : sentiment === 'high' ? t('income.ratio.high')
+              : t('income.ratio.fine');
+    $('ratioSentiment').textContent = sub;
+    $('ratioSentiment').className = 'ratio-sentiment sentiment-' + sentiment;
+  }
+
+  function setView(view) {
+    activeView = view;
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1)).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+    $('addBtn').style.display = view === 'home' ? 'flex' : 'none';
+    render();
   }
 
   function escHtml(str) {
@@ -273,19 +725,26 @@
   // ─── Modal ───
   function openAdd() {
     editingId = null;
-    $('modalTitle').textContent = 'Add subscription';
+    $('modalTitle').textContent = t('modal.add');
     $('subName').value = '';
     $('subPrice').value = '';
     $('subCycle').value = 'monthly';
     $('subCategory').value = 'Entertainment';
     setDefaultDate();
     $('subTrial').checked = false;
+    $('subPaused').checked = false;
+    $('subNotes').value = '';
+    setRatingUI(0);
     $('trialDateWrap').style.display = 'none';
     $('subTrialEnd').value = '';
     $('editId').value = '';
     $('deleteBtn').style.display = 'none';
+    $('markCancelledBtn').style.display = 'none';
+    $('cancelUrlWrap').style.display = 'none';
+    $('trackedSince').style.display = 'none';
     $('presets').style.display = 'flex';
     document.querySelector('.form-divider').style.display = 'flex';
+    hideSuggestions();
     modal.classList.add('active');
     setTimeout(() => $('subName').focus(), 100);
   }
@@ -294,26 +753,55 @@
     const s = subs.find(x => x.id === id);
     if (!s) return;
     editingId = id;
-    $('modalTitle').textContent = 'Edit subscription';
+    $('modalTitle').textContent = t('modal.edit');
     $('subName').value = s.name;
     $('subPrice').value = s.price;
     $('subCycle').value = s.cycle;
     $('subCategory').value = s.category;
     $('subDate').value = s.nextDate || '';
     $('subTrial').checked = s.isTrial || false;
+    $('subPaused').checked = s.paused || false;
+    $('subNotes').value = s.notes || '';
+    setRatingUI(s.rating || 0);
     $('trialDateWrap').style.display = s.isTrial ? 'block' : 'none';
     $('subTrialEnd').value = s.trialEnd || '';
     $('deleteBtn').style.display = 'inline-block';
+    $('markCancelledBtn').style.display = 'inline-block';
     $('presets').style.display = 'none';
     document.querySelector('.form-divider').style.display = 'none';
+    hideSuggestions();
+
+    // Cancel URL if we know this service
+    const url = window.LeakdImport ? window.LeakdImport.findCancelUrl(s.name) : null;
+    if (url) {
+      $('cancelUrlWrap').style.display = 'block';
+      $('cancelUrlLink').href = url;
+    } else {
+      $('cancelUrlWrap').style.display = 'none';
+    }
+
+    // Tracked-since (if createdAt is known)
+    if (s.createdAt) {
+      const since = new Date(s.createdAt);
+      const months = (Date.now() - since.getTime()) / (1000 * 60 * 60 * 24 * 30.44);
+      const years = Math.floor(months / 12);
+      const remMonths = Math.floor(months % 12);
+      let label;
+      if (years === 0 && remMonths === 0) label = t('tracked.months', { n: 0 });
+      else if (years === 0) label = t('tracked.months', { n: remMonths });
+      else if (remMonths === 0) label = t('tracked.years', { n: years });
+      else label = t('tracked.both', { years, months: remMonths });
+      $('trackedSince').textContent = t('tracked.since', { when: label });
+      $('trackedSince').style.display = 'block';
+    } else {
+      $('trackedSince').style.display = 'none';
+    }
+
     modal.classList.add('active');
     setTimeout(() => $('subName').focus(), 100);
   }
 
-  function closeModalFn() {
-    modal.classList.remove('active');
-    editingId = null;
-  }
+  function closeModalFn() { modal.classList.remove('active'); editingId = null; }
 
   function setDefaultDate() {
     const now = new Date();
@@ -328,24 +816,22 @@
     const category = $('subCategory').value;
     const nextDate = $('subDate').value;
     const isTrial = $('subTrial').checked;
+    const paused = $('subPaused').checked;
     const trialEnd = $('subTrialEnd').value;
-
+    const notes = $('subNotes').value.trim();
+    const rating = parseInt($('subRating').dataset.rating || '0', 10);
     if (!name) { $('subName').focus(); return; }
     if (!price || price <= 0) { $('subPrice').focus(); return; }
-
     if (editingId) {
       const idx = subs.findIndex(x => x.id === editingId);
-      if (idx !== -1) {
-        subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd };
-      }
+      if (idx !== -1) subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating };
     } else {
       subs.push({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        name, price, cycle, category, nextDate, isTrial, trialEnd,
+        name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating,
         createdAt: new Date().toISOString()
       });
     }
-
     saveData();
     closeModalFn();
     render();
@@ -353,14 +839,119 @@
 
   function deleteSub() {
     if (!editingId) return;
-    if (!confirm('Delete this subscription?')) return;
+    if (!confirm(t('confirm.deleteSub'))) return;
     subs = subs.filter(x => x.id !== editingId);
     saveData();
     closeModalFn();
     render();
   }
 
-  // ─── Presets ───
+  function markAsCancelled() {
+    if (!editingId) return;
+    if (!confirm(t('confirm.markCancelled'))) return;
+    const sub = subs.find(x => x.id === editingId);
+    if (!sub) return;
+    if (window.LeakdCancelled) window.LeakdCancelled.add(sub);
+    subs = subs.filter(x => x.id !== editingId);
+    saveData();
+    closeModalFn();
+    render();
+    toast(t('toast.subCancelled'));
+  }
+
+  // ─── Cancelled subs modal ───
+  function openCancelledModal() {
+    renderCancelledList();
+    $('cancelledModal').classList.add('active');
+  }
+  function closeCancelledModal() { $('cancelledModal').classList.remove('active'); }
+
+  function renderCancelledList() {
+    if (!window.LeakdCancelled) return;
+    const list = window.LeakdCancelled.all();
+    const hero = $('cancelledHero');
+    const emptyEl = $('cancelledEmpty');
+    const listEl = $('cancelledList');
+
+    if (list.length === 0) {
+      hero.style.display = 'none';
+      emptyEl.style.display = 'block';
+      listEl.innerHTML = '';
+      return;
+    }
+    emptyEl.style.display = 'none';
+    hero.style.display = 'block';
+    const savings = window.LeakdCancelled.savings();
+    $('cancelledSavings').textContent = formatPrice(savings);
+    const yearCount = window.LeakdCancelled.thisYearCount();
+    $('cancelledThisYear').textContent = yearCount + ' · ' + t('cancelled.thisYear', { year: new Date().getFullYear() });
+
+    listEl.innerHTML = list
+      .sort((a, b) => new Date(b.cancelledAt) - new Date(a.cancelledAt))
+      .map(s => {
+        const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.name, s.category, 36) : '';
+        const date = s.cancelledAt ? new Date(s.cancelledAt).toLocaleDateString(window.LeakdI18n ? window.LeakdI18n.lang : 'en', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+        const monthly = s.monthlyAtCancel || 0;
+        return `<div class="cancelled-row" data-id="${s.id}">
+          ${iconHtml}
+          <div class="cancelled-info">
+            <div class="cancelled-name">${escHtml(s.name)}</div>
+            <div class="cancelled-meta">${date} · −${formatPrice(monthly)}/${t('cycle.mo').replace('/','')}</div>
+          </div>
+          <div class="cancelled-actions">
+            <button class="cancelled-restore" data-action="restore">↺</button>
+            <button class="cancelled-purge" data-action="purge">×</button>
+          </div>
+        </div>`;
+      }).join('');
+
+    listEl.querySelectorAll('.cancelled-row').forEach(row => {
+      const id = row.dataset.id;
+      row.querySelector('[data-action="restore"]').addEventListener('click', () => restoreCancelled(id));
+      row.querySelector('[data-action="purge"]').addEventListener('click', () => purgeCancelled(id));
+    });
+  }
+
+  function restoreCancelled(id) {
+    if (!window.LeakdCancelled) return;
+    if (!confirm(t('cancelled.confirmRestore'))) return;
+    const restored = window.LeakdCancelled.restore(id);
+    if (!restored) return;
+    subs.push(restored);
+    saveData();
+    renderCancelledList();
+    render();
+    toast(t('toast.subRestored'));
+  }
+
+  function purgeCancelled(id) {
+    if (!window.LeakdCancelled) return;
+    if (!confirm(t('cancelled.confirmPurge'))) return;
+    window.LeakdCancelled.remove(id);
+    renderCancelledList();
+    refreshDynamicLabels();
+  }
+
+  // ─── Theme picker modal ───
+  function openThemeModal() {
+    const m = $('themeModal');
+    m.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.theme === (settings.theme || 'auto'));
+    });
+    m.classList.add('active');
+  }
+  function closeThemeModal() { $('themeModal').classList.remove('active'); }
+
+  // ─── Star rating ───
+  function setRatingUI(value) {
+    const wrap = $('subRating');
+    if (!wrap) return;
+    wrap.dataset.rating = String(value || 0);
+    wrap.querySelectorAll('.star').forEach((star, idx) => {
+      star.classList.toggle('filled', idx < value);
+    });
+  }
+
   function applyPreset(btn) {
     $('subName').value = btn.dataset.name;
     $('subPrice').value = btn.dataset.price;
@@ -368,44 +959,555 @@
     $('subCycle').value = 'monthly';
   }
 
-  // ─── Currency ───
   function setCurrency(btn) {
     settings.currency = btn.dataset.currency;
     settings.currencyCode = btn.dataset.code;
     saveData();
     currencyModal.style.display = 'none';
+    refreshDynamicLabels();
     render();
   }
 
-  // ─── Export CSV ───
-  function exportCSV() {
-    if (subs.length === 0) return;
-    const headers = ['Name', 'Price', 'Currency', 'Cycle', 'Category', 'Next Payment', 'Is Trial', 'Trial End', 'Monthly Cost', 'Yearly Cost'];
-    const rows = subs.map(s => [
-      s.name,
-      s.price,
-      settings.currencyCode,
-      s.cycle,
-      s.category,
-      s.nextDate || '',
-      s.isTrial ? 'Yes' : 'No',
-      s.trialEnd || '',
-      toMonthly(s.price, s.cycle).toFixed(2),
-      toYearly(s.price, s.cycle).toFixed(2)
-    ]);
-
-    let csv = headers.join(',') + '\n';
-    rows.forEach(r => {
-      csv += r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n';
+  // ─── Autocomplete in the Name field ───
+  function onNameInput() {
+    const q = $('subName').value.trim();
+    if (q.length < 1 || !window.LeakdBrands) { hideSuggestions(); return; }
+    const items = window.LeakdBrands.suggestions(q, 5);
+    if (items.length === 0) { hideSuggestions(); return; }
+    const box = $('suggestBox');
+    box.innerHTML = items.map((it, i) => {
+      const b = it.badge;
+      const fontSize = b.symbol.length > 2 ? '12px' : '15px';
+      return `<button type="button" class="suggest-item" data-i="${i}">
+        <span class="suggest-icon" style="background:${b.bg};color:${b.fg};font-size:${fontSize}">${escHtml(b.symbol)}</span>
+        <span class="suggest-name">${escHtml(it.name)}</span>
+        <span class="suggest-price">${formatPrice(it.price)}<span>/${t('cycle.mo').replace('/', '')}</span></span>
+      </button>`;
+    }).join('');
+    box.style.display = 'block';
+    box.querySelectorAll('.suggest-item').forEach(btn => {
+      btn.addEventListener('click', () => applySuggestion(items[parseInt(btn.dataset.i, 10)]));
     });
+  }
 
+  function hideSuggestions() {
+    const box = $('suggestBox');
+    if (box) box.style.display = 'none';
+  }
+
+  function applySuggestion(item) {
+    $('subName').value = item.name;
+    $('subPrice').value = item.price;
+    $('subCategory').value = item.category;
+    $('subCycle').value = 'monthly';
+    hideSuggestions();
+    $('subPrice').focus();
+  }
+
+  function exportCSV() {
+    if (subs.length === 0) { toast(t('toast.nothing')); return; }
+    const headers = ['Name', 'Price', 'Currency', 'Cycle', 'Category', 'Next Payment', 'Is Trial', 'Trial End', 'Paused', 'Notes', 'Monthly Cost', 'Yearly Cost'];
+    const rows = subs.map(s => [
+      s.name, s.price, settings.currencyCode, s.cycle, s.category,
+      s.nextDate || '', s.isTrial ? 'Yes' : 'No', s.trialEnd || '',
+      s.paused ? 'Yes' : 'No', s.notes || '',
+      toMonthly(s.price, s.cycle).toFixed(2), toYearly(s.price, s.cycle).toFixed(2)
+    ]);
+    let csv = headers.join(',') + '\n';
+    rows.forEach(r => { csv += r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n'; });
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'leakd-subscriptions.csv';
-    a.click();
+    a.href = url; a.download = 'leakd-subscriptions.csv'; a.click();
     URL.revokeObjectURL(url);
+    toast(t('toast.exported', { n: subs.length }));
+  }
+
+  // ─── Notifications ───
+  function openNotifModal() {
+    const N = window.LeakdNotify;
+    if (!N) return;
+    const m = $('notifModal');
+    const perm = N.permission();
+    $('notifPermState').textContent =
+      perm === 'granted' ? t('notif.allowed') :
+      perm === 'denied'  ? t('notif.blocked') :
+      perm === 'unsupported' ? t('notif.unsupported') : t('notif.notSet');
+    $('notifEnabled').checked = !!N.prefs.enabled;
+    $('notifDays').value = String(N.prefs.daysBefore);
+    $('notifTrialDays').value = String(N.prefs.trialDaysBefore);
+    const denied = perm === 'denied' || perm === 'unsupported';
+    $('notifEnabled').disabled = denied;
+    $('notifTestBtn').disabled = denied;
+    $('notifDeniedHint').style.display = perm === 'denied' ? 'block' : 'none';
+    m.classList.add('active');
+  }
+  function closeNotifModal() { $('notifModal').classList.remove('active'); }
+  async function saveNotifPrefs() {
+    const N = window.LeakdNotify;
+    if (!N) return;
+    const wantEnabled = $('notifEnabled').checked;
+    if (wantEnabled && N.permission() !== 'granted') {
+      const res = await N.requestPermission();
+      if (res !== 'granted') { $('notifEnabled').checked = false; openNotifModal(); return; }
+    }
+    N.save({
+      enabled: wantEnabled,
+      daysBefore: parseInt($('notifDays').value, 10) || 3,
+      trialDaysBefore: parseInt($('notifTrialDays').value, 10) || 1,
+    });
+    mirrorStateToCache();
+    rescheduleNotifications();
+    updateNotifBellState();
+    closeNotifModal();
+    toast(wantEnabled ? t('notif.on') : t('notif.off'));
+  }
+  async function testNotification() {
+    const N = window.LeakdNotify;
+    if (!N) return;
+    if (N.permission() !== 'granted') {
+      const r = await N.requestPermission();
+      if (r !== 'granted') { openNotifModal(); return; }
+    }
+    await N.test();
+  }
+
+  // ─── Pro ───
+  function openProModal() {
+    const P = window.LeakdPro;
+    if (!P) return;
+    const m = $('proModal');
+    const active = P.isPro();
+    $('proStateActive').style.display = active ? 'block' : 'none';
+    $('proStateInactive').style.display = active ? 'none' : 'block';
+    if (active) {
+      $('proKeyDisplay').textContent = maskKey(P.state.key);
+    } else {
+      $('proBuyBtn').href = P.productUrl();
+      $('proKey').value = '';
+      $('proError').style.display = 'none';
+    }
+    m.classList.add('active');
+  }
+  function maskKey(k) { if (!k || k.length < 8) return k || ''; return k.slice(0, 8) + '–•••••••••••• ' + k.slice(-4); }
+  function closeProModal() { $('proModal').classList.remove('active'); }
+  async function activatePro() {
+    const P = window.LeakdPro;
+    const key = $('proKey').value;
+    const err = $('proError');
+    err.style.display = 'none';
+    const btn = $('proActivateBtn');
+    btn.disabled = true; btn.textContent = t('pro.verifying');
+    const result = await P.activate(key);
+    btn.disabled = false; btn.textContent = t('pro.activate');
+    if (!result.ok) {
+      // Map known error strings to translated ones
+      const msg = result.error && /key doesn|kulcs nem|schlüssel|chave|chiave|clé|clave/i.test(result.error)
+        ? t('pro.invalidKey') : t('pro.invalidServer');
+      err.textContent = msg;
+      err.style.display = 'block';
+      return;
+    }
+    refreshProUI();
+    openProModal();
+    toast(result.offline ? t('pro.activatedOffline') : t('pro.activated'));
+  }
+  function deactivatePro() {
+    if (!confirm(t('pro.confirmRemove'))) return;
+    window.LeakdPro.deactivate();
+    refreshProUI();
+    openProModal();
+  }
+  function refreshProUI() {
+    const P = window.LeakdPro;
+    if (!P) return;
+    const active = P.isPro();
+    $('proPill').style.display = active ? 'inline-flex' : 'none';
+    $('menuProLabel').textContent = active ? t('menu.proOn') : t('menu.pro');
+    $('menuProSub').textContent = active ? t('menu.proOnSub') : t('menu.proSub');
+  }
+
+  // ─── Menu ───
+  function openMenuModal() { $('menuModal').classList.add('active'); }
+  function closeMenuModal() { $('menuModal').classList.remove('active'); }
+
+  // ─── Language picker ───
+  function buildLanguageGrid() {
+    const grid = $('langGrid');
+    if (!grid || !window.LeakdI18n) return;
+    const I = window.LeakdI18n;
+    grid.innerHTML = I.SUPPORTED.map(code => {
+      const info = I.LANGUAGES[code];
+      const active = code === I.lang ? 'active' : '';
+      return `<button class="lang-btn ${active}" data-lang="${code}"><span class="lang-flag">${info.flag}</span><span>${info.name}</span></button>`;
+    }).join('');
+    grid.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        I.setLang(btn.dataset.lang);
+        buildLanguageGrid();
+        closeLangModal();
+        refreshDynamicLabels();
+        refreshProUI();
+        toast(I.LANGUAGES[btn.dataset.lang].name);
+      });
+    });
+  }
+  function openLangModal() { buildLanguageGrid(); $('langModal').classList.add('active'); }
+  function closeLangModal() { $('langModal').classList.remove('active'); }
+
+  // ─── Import ───
+  function openImportModal() {
+    $('importText').value = '';
+    $('importPreview').style.display = 'none';
+    $('confirmImportBtn').disabled = true;
+    $('confirmImportBtn').textContent = t('import.confirm', { count: 0 });
+    importStaged = [];
+    $('importModal').classList.add('active');
+  }
+  function closeImportModal() { $('importModal').classList.remove('active'); }
+
+  function previewImport() {
+    const text = $('importText').value.trim();
+    if (!text || !window.LeakdImport) { $('importPreview').style.display = 'none'; return; }
+    const parsed = window.LeakdImport.parseText(text);
+    importStaged = parsed;
+    const list = $('importPreviewList');
+    if (parsed.length === 0) {
+      $('importPreview').style.display = 'block';
+      $('importCount').textContent = '0';
+      list.innerHTML = `<div class="empty-state-mini">${t('import.nothingFound')}</div>`;
+      $('confirmImportBtn').disabled = true;
+      $('confirmImportBtn').textContent = t('import.confirm', { count: 0 });
+      return;
+    }
+    list.innerHTML = parsed.map(p => {
+      const iconHtml = window.LeakdBrands
+        ? window.LeakdBrands.badgeHtml(p.name, p.category, 34)
+        : `<div class="sub-icon" style="background:${(catColors[p.category]||catColors.Other).bg};color:${(catColors[p.category]||catColors.Other).text}">${(catColors[p.category]||catColors.Other).icon}</div>`;
+      return `<div class="import-row">
+        ${iconHtml}
+        <div class="import-row-info">
+          <div class="import-row-name">${escHtml(p.name)} ${p.matched ? '<span class="import-tag">' + t('import.detected') + '</span>' : ''}</div>
+          <div class="import-row-meta">${escHtml(localizedCat(p.category))} · ${t('cycle.' + p.cycle)}</div>
+        </div>
+        <div class="import-row-price">${formatPrice(p.price)}<span>${t('cycle.' + (p.cycle === 'monthly' ? 'mo' : p.cycle === 'yearly' ? 'yr' : 'wk'))}</span></div>
+      </div>`;
+    }).join('');
+    $('importPreview').style.display = 'block';
+    $('importCount').textContent = String(parsed.length);
+    $('confirmImportBtn').disabled = false;
+    $('confirmImportBtn').textContent = t('import.confirm', { count: parsed.length });
+  }
+
+  function confirmImport() {
+    if (importStaged.length === 0) return;
+    importStaged.forEach(p => {
+      subs.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        name: p.name, price: p.price, cycle: p.cycle, category: p.category,
+        nextDate: p.nextDate || nextMonthIso(),
+        isTrial: false, trialEnd: '', paused: false, notes: '',
+        createdAt: new Date().toISOString()
+      });
+    });
+    saveData();
+    closeImportModal();
+    render();
+    toast(t('import.imported', { count: importStaged.length }));
+    importStaged = [];
+  }
+
+  function nextMonthIso() {
+    const d = new Date(); d.setMonth(d.getMonth() + 1);
+    return d.toISOString().split('T')[0];
+  }
+
+  function loadImportCSV(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = String(reader.result || '');
+      if (!window.LeakdImport) return;
+      const rows = window.LeakdImport.parseCSV(text);
+      if (rows.length === 0) {
+        $('importText').value = text;
+        previewImport();
+        return;
+      }
+      importStaged = rows.map(r => ({ ...r, matched: false }));
+      const list = $('importPreviewList');
+      list.innerHTML = importStaged.map(p => {
+        const c = catColors[p.category] || catColors.Other;
+        return `<div class="import-row">
+          <div class="sub-icon" style="background:${c.bg};color:${c.text}">${c.icon}</div>
+          <div class="import-row-info">
+            <div class="import-row-name">${escHtml(p.name)}</div>
+            <div class="import-row-meta">${escHtml(localizedCat(p.category))} · ${t('cycle.' + p.cycle)}</div>
+          </div>
+          <div class="import-row-price">${formatPrice(p.price)}<span>${t('cycle.' + (p.cycle === 'monthly' ? 'mo' : p.cycle === 'yearly' ? 'yr' : 'wk'))}</span></div>
+        </div>`;
+      }).join('');
+      $('importPreview').style.display = 'block';
+      $('importCount').textContent = String(importStaged.length);
+      $('confirmImportBtn').disabled = false;
+      $('confirmImportBtn').textContent = t('import.confirm', { count: importStaged.length });
+    };
+    reader.readAsText(file);
+  }
+
+  function fillImportExample() {
+    $('importText').value = [
+      'Netflix 15.99', 'Spotify 10.99', 'ChatGPT Plus 20',
+      'iCloud+ 2.99', 'Notion 10/mo', 'Adobe yearly 599', 'Gym 49',
+    ].join('\n');
+    previewImport();
+  }
+
+  // ─── Income ───
+  function openIncomeModal() {
+    if (!window.LeakdIncome) return;
+    $('incomeCurrencySymbol').textContent = settings.currency;
+    $('incomeAmount').value = window.LeakdIncome.get() || '';
+    $('incomeModal').classList.add('active');
+    setTimeout(() => $('incomeAmount').focus(), 100);
+  }
+  function closeIncomeModal() { $('incomeModal').classList.remove('active'); }
+  function saveIncome() {
+    if (!window.LeakdIncome) return;
+    const v = parseFloat($('incomeAmount').value);
+    window.LeakdIncome.set(isNaN(v) ? 0 : v);
+    closeIncomeModal();
+    render();
+    toast(t('toast.incomeSaved'));
+  }
+  function clearIncome() {
+    if (!window.LeakdIncome) return;
+    window.LeakdIncome.clear();
+    $('incomeAmount').value = '';
+    closeIncomeModal();
+    render();
+  }
+
+  // ─── Backup & Restore ───
+  function openBackupModal() { $('backupModal').classList.add('active'); }
+  function closeBackupModal() { $('backupModal').classList.remove('active'); }
+  function downloadBackup() {
+    if (!window.LeakdBackup) return;
+    window.LeakdBackup.download();
+    toast(t('backup.exported'));
+  }
+  async function restoreBackup(file) {
+    if (!file || !window.LeakdBackup) return;
+    if (!confirm(t('backup.confirmImport'))) return;
+    const ok = await window.LeakdBackup.restoreFromFile(file);
+    if (!ok) { toast(t('backup.invalidFile')); return; }
+    toast(t('backup.imported'));
+    setTimeout(() => location.reload(), 700);
+  }
+
+  // ─── Budgets ───
+  let editingBudgetCat = null;
+
+  function openBudgetsModal() {
+    if (window.LeakdPro && !window.LeakdPro.isPro()) {
+      $('budgetsProLock').style.display = 'block';
+    } else {
+      $('budgetsProLock').style.display = 'none';
+    }
+    renderBudgetsList();
+    $('budgetsModal').classList.add('active');
+  }
+  function closeBudgetsModal() { $('budgetsModal').classList.remove('active'); }
+
+  function renderBudgetsList() {
+    const list = $('budgetsList');
+    if (!window.LeakdBudgets) return;
+    const all = window.LeakdBudgets.all();
+    const cats = ['Entertainment', 'Work', 'Music', 'Fitness', 'Cloud', 'Food', 'News', 'Other'];
+    const progress = window.LeakdBudgets.computeProgress(activeSubs());
+    const progMap = {};
+    progress.forEach(p => { progMap[p.category] = p; });
+    const proLocked = window.LeakdPro && !window.LeakdPro.isPro();
+
+    list.innerHTML = cats.map(cat => {
+      const p = progMap[cat];
+      const limit = all[cat];
+      const spent = activeSubs()
+        .filter(s => s.category === cat)
+        .reduce((sum, s) => sum + toMonthly(s.price, s.cycle), 0);
+      if (!limit) {
+        return `<button class="budget-row ${proLocked ? 'is-locked' : ''}" data-cat="${cat}">
+          <span class="budget-row-cat">${escHtml(localizedCat(cat))}</span>
+          <span class="budget-row-meta">${formatPrice(spent)} · <span class="budget-row-add">+ ${t('budgets.setLimit')}</span></span>
+        </button>`;
+      }
+      const pct = Math.min(100, (spent / limit) * 100);
+      const status = p ? p.status : 'ok';
+      return `<button class="budget-row ${proLocked ? 'is-locked' : ''}" data-cat="${cat}">
+        <div class="budget-row-head">
+          <span class="budget-row-cat">${escHtml(localizedCat(cat))}</span>
+          <span class="budget-row-amount status-${status}">${formatPrice(spent)} / ${formatPrice(limit)}</span>
+        </div>
+        <div class="budget-row-track"><div class="budget-row-fill status-${status}" style="width:${pct}%"></div></div>
+      </button>`;
+    }).join('');
+
+    list.querySelectorAll('.budget-row').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (proLocked) { closeBudgetsModal(); openProModal(); return; }
+        openBudgetSetter(btn.dataset.cat);
+      });
+    });
+  }
+
+  function openBudgetSetter(cat) {
+    editingBudgetCat = cat;
+    $('budgetCategory').value = cat;
+    $('budgetSetterTitle').textContent = localizedCat(cat);
+    $('budgetCurrencySymbol').textContent = settings.currency;
+    const existing = window.LeakdBudgets.getBudget(cat);
+    $('budgetAmount').value = existing || '';
+    $('budgetClearBtn').style.display = existing ? 'inline-block' : 'none';
+    $('budgetSetterModal').classList.add('active');
+    setTimeout(() => $('budgetAmount').focus(), 100);
+  }
+  function closeBudgetSetter() { $('budgetSetterModal').classList.remove('active'); editingBudgetCat = null; }
+
+  function saveBudget() {
+    if (!editingBudgetCat) return;
+    const amount = parseFloat($('budgetAmount').value);
+    if (!amount || amount <= 0) { $('budgetAmount').focus(); return; }
+    window.LeakdBudgets.setBudget(editingBudgetCat, amount);
+    closeBudgetSetter();
+    renderBudgetsList();
+    render();
+    toast(t('toast.budgetSaved'));
+  }
+
+  function clearBudget() {
+    if (!editingBudgetCat) return;
+    window.LeakdBudgets.setBudget(editingBudgetCat, null);
+    closeBudgetSetter();
+    renderBudgetsList();
+    render();
+    toast(t('toast.budgetCleared'));
+  }
+
+  // ─── Calendar export ───
+  function exportCalendar() {
+    if (!window.LeakdCalendar) return;
+    const eligible = activeSubs().filter(s => s.nextDate);
+    if (eligible.length === 0) { toast(t('cal.noDates')); return; }
+    const ok = window.LeakdCalendar.download(activeSubs(), settings.currency);
+    if (ok) toast(t('cal.exported'));
+  }
+
+  // ─── Year-end report ───
+  function openYearendModal() {
+    if (!window.LeakdYearEnd) return;
+    const report = window.LeakdYearEnd.computeReport(activeSubs());
+    $('yearendTitle').textContent = t('yearend.title', { year: report.year });
+
+    if (report.activeCount === 0 || report.totalPaid === 0) {
+      $('yearendBody').style.display = 'none';
+      $('yearendEmpty').style.display = 'block';
+      $('yearendShareBtn').style.display = 'none';
+    } else {
+      $('yearendBody').style.display = 'block';
+      $('yearendEmpty').style.display = 'none';
+      $('yearendShareBtn').style.display = 'inline-block';
+      $('yearendTotal').textContent = formatPrice(report.totalPaid);
+      $('yearendTopName').textContent = report.topName || '—';
+      $('yearendTopAmount').textContent = formatPrice(report.topAmount);
+      $('yearendTopCat').textContent = report.topCategory ? localizedCat(report.topCategory) : '—';
+      $('yearendTopCatAmount').textContent = formatPrice(report.topCategoryAmount);
+      $('yearendSubCount').textContent = t('yearend.subCount', { count: report.activeCount });
+    }
+    $('yearendModal').classList.add('active');
+  }
+  function closeYearendModal() { $('yearendModal').classList.remove('active'); }
+  async function shareYearend() {
+    // Reuse the share card for now
+    await openShareCard();
+  }
+
+  // ─── Share card ───
+  async function openShareCard() {
+    if (activeSubs().length === 0) { toast(t('share.addFirst')); return; }
+    if (!window.LeakdShare) return;
+    $('shareModal').classList.add('active');
+    const canvas = $('shareCanvas');
+    const drawn = window.LeakdShare.render(activeSubs().map(s => ({ ...s, currency: settings.currency })), settings.currency);
+    canvas.width = drawn.width;
+    canvas.height = drawn.height;
+    canvas.getContext('2d').drawImage(drawn, 0, 0);
+  }
+  function closeShareModal() { $('shareModal').classList.remove('active'); }
+  async function downloadShare() {
+    if (!window.LeakdShare) return;
+    const { blob } = await window.LeakdShare.generate(activeSubs().map(s => ({ ...s, currency: settings.currency })), settings.currency);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'my-leakd.png'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast(t('share.saved'));
+  }
+  async function shareNow() {
+    if (!window.LeakdShare) return;
+    const result = await window.LeakdShare.shareOrDownload(activeSubs().map(s => ({ ...s, currency: settings.currency })), settings.currency);
+    if (result.method === 'downloaded') toast(t('share.savedDevice'));
+  }
+
+  async function shareLeakdLink() {
+    const data = { title: 'Leakd', text: t('app.tagline'), url: 'https://leakd.app' };
+    if (navigator.share) { try { await navigator.share(data); return; } catch {} }
+    try { await navigator.clipboard.writeText('https://leakd.app'); toast(t('toast.linkCopied')); }
+    catch { toast('https://leakd.app'); }
+  }
+
+  function resetAll() {
+    if (!confirm(t('reset.confirm1'))) return;
+    if (!confirm(t('reset.confirm2'))) return;
+    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled']
+      .forEach(k => localStorage.removeItem(k));
+    location.reload();
+  }
+
+  // ─── Search ───
+  function onSearch() {
+    searchTerm = $('searchInput').value.trim();
+    $('searchClear').style.display = searchTerm ? 'flex' : 'none';
+    render();
+  }
+  function clearSearch() {
+    searchTerm = '';
+    $('searchInput').value = '';
+    $('searchClear').style.display = 'none';
+    render();
+  }
+
+  // ─── Toast ───
+  let toastTimer;
+  function toast(msg) {
+    const el = $('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+  }
+
+  // ─── Onboarding ───
+  function showOnboard() { $('onboard').style.display = 'flex'; setOnboardStep(1); }
+  function setOnboardStep(n) {
+    document.querySelectorAll('.onboard-step').forEach(el => {
+      el.style.display = parseInt(el.dataset.step, 10) === n ? 'block' : 'none';
+    });
+  }
+  function finishOnboard() {
+    localStorage.setItem(ONBOARD_KEY, '1');
+    $('onboard').style.display = 'none';
+    if (!localStorage.getItem(SETTINGS_KEY)) {
+      if (!autoDetectLocale()) currencyModal.style.display = 'flex';
+    }
   }
 
   // ─── Events ───
@@ -416,34 +1518,158 @@
     $('saveBtn').addEventListener('click', saveSub);
     $('deleteBtn').addEventListener('click', deleteSub);
     $('toggleTheme').addEventListener('click', toggleTheme);
-    $('exportBtn').addEventListener('click', exportCSV);
+
+    $('toggleNotif').addEventListener('click', openNotifModal);
+    $('closeNotifModal').addEventListener('click', closeNotifModal);
+    $('cancelNotifBtn').addEventListener('click', closeNotifModal);
+    $('saveNotifBtn').addEventListener('click', saveNotifPrefs);
+    $('notifTestBtn').addEventListener('click', testNotification);
+    $('notifModal').addEventListener('click', e => { if (e.target === $('notifModal')) closeNotifModal(); });
+
+    $('openMenu').addEventListener('click', openMenuModal);
+    $('closeMenuModal').addEventListener('click', closeMenuModal);
+    $('menuModal').addEventListener('click', e => { if (e.target === $('menuModal')) closeMenuModal(); });
+    $('menuPro').addEventListener('click', () => { closeMenuModal(); openProModal(); });
+    $('menuYearend').addEventListener('click', () => { closeMenuModal(); openYearendModal(); });
+    $('menuImport').addEventListener('click', () => { closeMenuModal(); openImportModal(); });
+    $('menuExport').addEventListener('click', () => { closeMenuModal(); exportCSV(); });
+    $('menuCalendar').addEventListener('click', () => { closeMenuModal(); exportCalendar(); });
+    $('menuBudgets').addEventListener('click', () => { closeMenuModal(); openBudgetsModal(); });
+    $('menuCancelled').addEventListener('click', () => { closeMenuModal(); openCancelledModal(); });
+    $('closeCancelledModal').addEventListener('click', closeCancelledModal);
+    $('cancelledCloseBtn').addEventListener('click', closeCancelledModal);
+    $('cancelledModal').addEventListener('click', e => { if (e.target === $('cancelledModal')) closeCancelledModal(); });
+
+    $('menuTheme').addEventListener('click', () => { closeMenuModal(); openThemeModal(); });
+    $('closeThemeModal').addEventListener('click', closeThemeModal);
+    $('themeModal').addEventListener('click', e => { if (e.target === $('themeModal')) closeThemeModal(); });
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setThemeMode(btn.dataset.theme);
+        document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b === btn));
+        closeThemeModal();
+      });
+    });
+
+    $('markCancelledBtn').addEventListener('click', markAsCancelled);
+
+    // Star rating clicks
+    document.querySelectorAll('#subRating .star').forEach(star => {
+      star.addEventListener('click', () => setRatingUI(parseInt(star.dataset.v, 10)));
+    });
+    $('subRatingClear').addEventListener('click', () => setRatingUI(0));
+    $('closeBudgetsModal').addEventListener('click', closeBudgetsModal);
+    $('budgetsCloseBtn').addEventListener('click', closeBudgetsModal);
+    $('budgetsModal').addEventListener('click', e => { if (e.target === $('budgetsModal')) closeBudgetsModal(); });
+    $('closeBudgetSetterModal').addEventListener('click', closeBudgetSetter);
+    $('cancelBudgetBtn').addEventListener('click', closeBudgetSetter);
+    $('saveBudgetBtn').addEventListener('click', saveBudget);
+    $('budgetClearBtn').addEventListener('click', clearBudget);
+    $('budgetSetterModal').addEventListener('click', e => { if (e.target === $('budgetSetterModal')) closeBudgetSetter(); });
+
+    $('menuBackup').addEventListener('click', () => { closeMenuModal(); openBackupModal(); });
+    $('closeBackupModal').addEventListener('click', closeBackupModal);
+    $('cancelBackupBtn').addEventListener('click', closeBackupModal);
+    $('backupModal').addEventListener('click', e => { if (e.target === $('backupModal')) closeBackupModal(); });
+    $('backupExportBtn').addEventListener('click', downloadBackup);
+    $('backupImportBtn').addEventListener('click', () => $('backupImportInput').click());
+    $('backupImportInput').addEventListener('change', e => { if (e.target.files[0]) restoreBackup(e.target.files[0]); });
+    $('menuLanguage').addEventListener('click', () => { closeMenuModal(); openLangModal(); });
+    $('menuCurrency').addEventListener('click', () => { closeMenuModal(); currencyModal.style.display = 'flex'; });
+    $('menuShare').addEventListener('click', () => { closeMenuModal(); shareLeakdLink(); });
+    $('menuReset').addEventListener('click', () => { closeMenuModal(); resetAll(); });
+
+    $('closeLangModal').addEventListener('click', closeLangModal);
+    $('langModal').addEventListener('click', e => { if (e.target === $('langModal')) closeLangModal(); });
+
+    $('closeProModal').addEventListener('click', closeProModal);
+    $('proModal').addEventListener('click', e => { if (e.target === $('proModal')) closeProModal(); });
+    $('proActivateBtn').addEventListener('click', activatePro);
+    $('proDeactivateBtn').addEventListener('click', deactivatePro);
+    $('proCloseActiveBtn').addEventListener('click', closeProModal);
+
+    $('closeImportModal').addEventListener('click', closeImportModal);
+    $('cancelImportBtn').addEventListener('click', closeImportModal);
+    $('importModal').addEventListener('click', e => { if (e.target === $('importModal')) closeImportModal(); });
+    $('importText').addEventListener('input', previewImport);
+    $('importExampleBtn').addEventListener('click', fillImportExample);
+    $('importCSVBtn').addEventListener('click', () => $('importCSVInput').click());
+    $('importCSVInput').addEventListener('change', e => { if (e.target.files[0]) loadImportCSV(e.target.files[0]); });
+    $('confirmImportBtn').addEventListener('click', confirmImport);
+    $('emptyImportBtn').addEventListener('click', openImportModal);
+
+    $('shareCardBtn').addEventListener('click', openShareCard);
+    $('closeShareModal').addEventListener('click', closeShareModal);
+    $('shareModal').addEventListener('click', e => { if (e.target === $('shareModal')) closeShareModal(); });
+    $('downloadShareBtn').addEventListener('click', downloadShare);
+    $('shareNowBtn').addEventListener('click', shareNow);
+
+    $('closeYearendModal').addEventListener('click', closeYearendModal);
+    $('yearendCloseBtn').addEventListener('click', closeYearendModal);
+    $('yearendShareBtn').addEventListener('click', shareYearend);
+    $('yearendModal').addEventListener('click', e => { if (e.target === $('yearendModal')) closeYearendModal(); });
+
+    $('searchInput').addEventListener('input', onSearch);
+    $('searchClear').addEventListener('click', clearSearch);
 
     $('subTrial').addEventListener('change', function() {
       $('trialDateWrap').style.display = this.checked ? 'block' : 'none';
     });
 
-    // Presets
-    document.querySelectorAll('.preset').forEach(btn => {
-      btn.addEventListener('click', () => applyPreset(btn));
+    // Name field autocomplete
+    $('subName').addEventListener('input', onNameInput);
+    $('subName').addEventListener('blur', () => setTimeout(hideSuggestions, 150));
+    $('subName').addEventListener('focus', onNameInput);
+
+    // Income
+    $('menuIncome').addEventListener('click', () => { closeMenuModal(); openIncomeModal(); });
+    $('closeIncomeModal').addEventListener('click', closeIncomeModal);
+    $('cancelIncomeBtn').addEventListener('click', closeIncomeModal);
+    $('saveIncomeBtn').addEventListener('click', saveIncome);
+    $('incomeClearBtn').addEventListener('click', clearIncome);
+    $('incomeModal').addEventListener('click', e => { if (e.target === $('incomeModal')) closeIncomeModal(); });
+    document.querySelectorAll('.preset').forEach(btn => btn.addEventListener('click', () => applyPreset(btn)));
+    document.querySelectorAll('.currency-btn').forEach(btn => btn.addEventListener('click', () => setCurrency(btn)));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => setView(btn.dataset.view)));
+
+    document.querySelectorAll('[data-onboard-next]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const step = parseInt(btn.closest('.onboard-step').dataset.step, 10);
+        if (step < 3) setOnboardStep(step + 1); else finishOnboard();
+      });
+    });
+    document.querySelectorAll('[data-onboard-skip]').forEach(btn => btn.addEventListener('click', finishOnboard));
+    $('onboardEnableNotif').addEventListener('click', async () => {
+      const N = window.LeakdNotify;
+      if (N) {
+        const r = await N.requestPermission();
+        if (r === 'granted') { N.save({ enabled: true }); updateNotifBellState(); }
+      }
+      finishOnboard();
     });
 
-    // Currency
-    document.querySelectorAll('.currency-btn').forEach(btn => {
-      btn.addEventListener('click', () => setCurrency(btn));
-    });
+    modal.addEventListener('click', e => { if (e.target === modal) closeModalFn(); });
 
-    // Close modal on overlay click
-    modal.addEventListener('click', e => {
-      if (e.target === modal) closeModalFn();
-    });
-
-    // Keyboard
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeModalFn();
+      if (e.key === 'Escape') {
+        if (modal.classList.contains('active')) closeModalFn();
+        else if ($('proModal').classList.contains('active')) closeProModal();
+        else if ($('importModal').classList.contains('active')) closeImportModal();
+        else if ($('shareModal').classList.contains('active')) closeShareModal();
+        else if ($('notifModal').classList.contains('active')) closeNotifModal();
+        else if ($('menuModal').classList.contains('active')) closeMenuModal();
+        else if ($('langModal').classList.contains('active')) closeLangModal();
+        else if ($('yearendModal').classList.contains('active')) closeYearendModal();
+        else if ($('backupModal').classList.contains('active')) closeBackupModal();
+        else if ($('budgetSetterModal').classList.contains('active')) closeBudgetSetter();
+        else if ($('budgetsModal').classList.contains('active')) closeBudgetsModal();
+        else if ($('incomeModal').classList.contains('active')) closeIncomeModal();
+        else if ($('cancelledModal').classList.contains('active')) closeCancelledModal();
+        else if ($('themeModal').classList.contains('active')) closeThemeModal();
+      }
       if (e.key === 'Enter' && modal.classList.contains('active')) saveSub();
     });
   }
 
-  // ─── Start ───
   init();
 })();
