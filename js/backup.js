@@ -20,6 +20,7 @@
     'leakd_income',
     'leakd_cancelled',
     'leakd_goal',
+    'leakd_activity',
   ];
 
   const FORMAT = 'leakd-backup-v1';

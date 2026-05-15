@@ -2453,6 +2453,121 @@ a.btn-primary {
 }
 .kbd-plus { color: var(--text-3); font-size: 11px; }
 
+/* ── Spending personality ── */
+.personality-card {
+  background: linear-gradient(135deg, var(--blue-soft), transparent);
+  border-color: var(--blue);
+}
+.personality-body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0 2px;
+}
+.personality-icon {
+  font-size: 56px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 72px;
+  text-align: center;
+}
+.personality-detail { flex: 1; min-width: 0; }
+.personality-label {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--blue-text);
+}
+.personality-tag {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+
+/* ── Public benchmarks ── */
+.bench-card {
+  background: linear-gradient(135deg, var(--amber-soft), transparent);
+  border-color: var(--amber);
+}
+.bench-body { padding: 6px 0 4px; }
+.bench-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+  gap: 12px;
+}
+.bench-label {
+  font-size: 13px;
+  color: var(--text-2);
+}
+.bench-verdict {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.bench-verdict.verdict-lower { background: var(--green-soft); color: var(--green-text); }
+.bench-verdict.verdict-average { background: var(--bg-card-hover); color: var(--text-2); }
+.bench-verdict.verdict-higher { background: var(--amber-soft); color: var(--amber-text); }
+.bench-verdict.verdict-much-higher { background: var(--accent-soft); color: var(--accent-text); }
+.bench-percentile {
+  font-size: 12px;
+  color: var(--text-3);
+  text-align: center;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
+  margin-top: 6px;
+}
+
+/* ── Activity log ── */
+.activity-day {
+  margin-bottom: 18px;
+}
+.activity-day-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+}
+.activity-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  background: var(--bg-card-hover);
+  color: var(--text-2);
+}
+.activity-icon.event-added { background: var(--green-soft); color: var(--green-text); }
+.activity-icon.event-cancelled { background: var(--accent-soft); color: var(--accent-text); }
+.activity-icon.event-paused { background: var(--amber-soft); color: var(--amber-text); }
+.activity-icon.event-resumed { background: var(--blue-soft); color: var(--blue-text); }
+.activity-icon.event-restored { background: var(--green-soft); color: var(--green-text); }
+.activity-icon.event-deleted { background: var(--accent-soft); color: var(--accent-text); }
+.activity-icon.event-imported { background: var(--blue-soft); color: var(--blue-text); }
+.activity-text { flex: 1; font-size: 13px; color: var(--text); }
+.activity-time {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
 /* ── Budgets ── */
 .budget-row {
   width: 100%;

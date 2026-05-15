@@ -705,6 +705,10 @@
     renderGoalCard();
     // Health score
     renderHealthCard();
+    // Personality
+    renderPersonalityCard(list);
+    // Benchmarks
+    renderBenchCard(list, totals.monthly);
 
     // Lowest-rated subs (cancellation candidates)
     const lowestCard = $('lowestRatedCard');
@@ -967,6 +971,11 @@
     $('subDate').value = now.toISOString().split('T')[0];
   }
 
+  // ─── Activity log: record helper ───
+  function logActivity(type, sub, payload) {
+    if (window.LeakdActivity) window.LeakdActivity.record(type, sub, payload);
+  }
+
   function saveSub() {
     const name = $('subName').value.trim();
     const price = parseFloat($('subPrice').value);
@@ -984,13 +993,21 @@
     if (!price || price <= 0) { $('subPrice').focus(); return; }
     if (editingId) {
       const idx = subs.findIndex(x => x.id === editingId);
-      if (idx !== -1) subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith };
+      if (idx !== -1) {
+        const wasPaused = subs[idx].paused;
+        subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith };
+        if (paused && !wasPaused) logActivity('paused', subs[idx]);
+        else if (!paused && wasPaused) logActivity('resumed', subs[idx]);
+        else logActivity('edited', subs[idx]);
+      }
     } else {
-      subs.push({
+      const newSub = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith,
         createdAt: new Date().toISOString()
-      });
+      };
+      subs.push(newSub);
+      logActivity('added', newSub);
     }
     saveData();
     closeModalFn();
@@ -1000,7 +1017,9 @@
   function deleteSub() {
     if (!editingId) return;
     if (!confirm(t('confirm.deleteSub'))) return;
+    const target = subs.find(x => x.id === editingId);
     subs = subs.filter(x => x.id !== editingId);
+    if (target) logActivity('deleted', target);
     saveData();
     closeModalFn();
     render();
@@ -1013,6 +1032,7 @@
     if (!sub) return;
     if (window.LeakdCancelled) window.LeakdCancelled.add(sub);
     subs = subs.filter(x => x.id !== editingId);
+    logActivity('cancelled', sub);
     saveData();
     closeModalFn();
     render();
@@ -1078,6 +1098,7 @@
     const restored = window.LeakdCancelled.restore(id);
     if (!restored) return;
     subs.push(restored);
+    logActivity('restored', restored);
     saveData();
     renderCancelledList();
     render();
@@ -1419,6 +1440,7 @@
 
   function confirmImport() {
     if (importStaged.length === 0) return;
+    const count = importStaged.length;
     importStaged.forEach(p => {
       subs.push({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
@@ -1428,10 +1450,11 @@
         createdAt: new Date().toISOString()
       });
     });
+    logActivity('imported', null, { count });
     saveData();
     closeImportModal();
     render();
-    toast(t('import.imported', { count: importStaged.length }));
+    toast(t('import.imported', { count }));
     importStaged = [];
   }
 
@@ -1557,6 +1580,85 @@
     gradeEl.className = 'health-grade grade-' + result.grade.toLowerCase();
     $('healthScore').textContent = t('health.scoreOf', { score: result.score });
     $('healthAdvice').textContent = t(window.LeakdHealth.adviceKey(result));
+  }
+
+  // ─── Spending personality ───
+  function renderPersonalityCard(list) {
+    const card = $('personalityCard');
+    if (!card || !window.LeakdPersonality) return;
+    if (list.length === 0) { card.style.display = 'none'; return; }
+    const result = window.LeakdPersonality.classify(list);
+    if (!result) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    $('personalityIcon').textContent = result.icon;
+    $('personalityLabel').textContent = t(result.labelKey);
+    $('personalityTag').textContent = t(result.taglineKey);
+  }
+
+  // ─── Public benchmarks ───
+  function renderBenchCard(list, monthly) {
+    const card = $('benchCard');
+    if (!card || !window.LeakdBenchmarks) return;
+    if (list.length === 0) { card.style.display = 'none'; return; }
+    const cmp = window.LeakdBenchmarks.compare(monthly, list.length);
+    if (!cmp) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    $('benchExpected').textContent = t('bench.expected', {
+      count: list.length,
+      expected: formatPrice(cmp.expected),
+    });
+    const verdictKey = cmp.verdict === 'lower' ? 'bench.lower'
+      : cmp.verdict === 'average' ? 'bench.average'
+      : cmp.verdict === 'higher' ? 'bench.higher'
+      : 'bench.muchHigher';
+    const verdictEl = $('benchVerdict');
+    verdictEl.textContent = t(verdictKey);
+    verdictEl.className = 'bench-verdict verdict-' + cmp.verdict;
+    $('benchPercentile').textContent = t('bench.percentile', { pct: cmp.percentile });
+  }
+
+  // ─── Activity log modal ───
+  function openActivityModal() {
+    if (!window.LeakdActivity) return;
+    renderActivityList();
+    $('activityModal').classList.add('active');
+  }
+  function closeActivityModal() { $('activityModal').classList.remove('active'); }
+
+  function renderActivityList() {
+    const list = $('activityList');
+    if (!window.LeakdActivity) return;
+    const days = window.LeakdActivity.byDay();
+    if (days.length === 0) {
+      list.innerHTML = `<div class="empty-state-mini">${t('activity.empty')}</div>`;
+      return;
+    }
+    const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+    let html = '';
+    days.slice(0, 30).forEach(d => {
+      const date = new Date(d.day);
+      const dateStr = date.toLocaleDateString(lang, { month: 'short', day: 'numeric', year: 'numeric' });
+      html += `<div class="activity-day"><div class="activity-day-label">${dateStr}</div>`;
+      d.events.forEach(e => {
+        const time = new Date(e.ts).toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit' });
+        const iconMap = {
+          added: '＋', edited: '✎', cancelled: '✂',
+          paused: '⏸', resumed: '▶', restored: '↺',
+          deleted: '✕', imported: '⤓',
+        };
+        const colorClass = 'event-' + e.type;
+        const text = e.type === 'imported'
+          ? t('activity.imported', { n: (e.payload && e.payload.count) || 0 })
+          : t('activity.' + e.type, { name: e.name || '—' });
+        html += `<div class="activity-row">
+          <span class="activity-icon ${colorClass}">${iconMap[e.type] || '·'}</span>
+          <span class="activity-text">${escHtml(text)}</span>
+          <span class="activity-time">${time}</span>
+        </div>`;
+      });
+      html += '</div>';
+    });
+    list.innerHTML = html;
   }
 
   // ─── Bank statement import ───
@@ -1929,7 +2031,7 @@
   function resetAll() {
     if (!confirm(t('reset.confirm1'))) return;
     if (!confirm(t('reset.confirm2'))) return;
-    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done']
+    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done','leakd_activity']
       .forEach(k => localStorage.removeItem(k));
     location.reload();
   }
@@ -2052,6 +2154,12 @@
     const demoBtn = $('emptyDemoBtn');
     if (demoBtn) demoBtn.addEventListener('click', injectDemoData);
 
+    // Activity log
+    $('menuActivity').addEventListener('click', () => { closeMenuModal(); openActivityModal(); });
+    $('closeActivityModal').addEventListener('click', closeActivityModal);
+    $('activityCloseBtn').addEventListener('click', closeActivityModal);
+    $('activityModal').addEventListener('click', e => { if (e.target === $('activityModal')) closeActivityModal(); });
+
     // Tour replay
     $('menuTour').addEventListener('click', () => {
       closeMenuModal();
@@ -2165,6 +2273,7 @@
         else if ($('themeModal').classList.contains('active')) closeThemeModal();
         else if ($('bankModal').classList.contains('active')) closeBankModal();
         else if ($('goalModal').classList.contains('active')) closeGoalModal();
+        else if ($('activityModal').classList.contains('active')) closeActivityModal();
       }
       if (e.key === 'Enter' && modal.classList.contains('active')) saveSub();
     });

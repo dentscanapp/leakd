@@ -135,6 +135,30 @@
       </div>
     </div>
 
+    <!-- Spending personality -->
+    <div class="chart-card personality-card" id="personalityCard" style="display:none">
+      <div class="chart-title" data-i18n="personality.title">Your subscription personality</div>
+      <div class="personality-body">
+        <div class="personality-icon" id="personalityIcon">🌱</div>
+        <div class="personality-detail">
+          <div class="personality-label" id="personalityLabel">—</div>
+          <div class="personality-tag" id="personalityTag">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Public benchmarks -->
+    <div class="chart-card bench-card" id="benchCard" style="display:none">
+      <div class="chart-title" data-i18n="bench.title">How you compare</div>
+      <div class="bench-body">
+        <div class="bench-row">
+          <span class="bench-label" id="benchExpected">—</span>
+          <span class="bench-verdict" id="benchVerdict">—</span>
+        </div>
+        <div class="bench-percentile" id="benchPercentile">—</div>
+      </div>
+    </div>
+
     <div class="chart-card">
       <div class="chart-title" data-i18n="insights.projection">12-month projection</div>
       <div class="chart-bars" id="chartBars"></div>
@@ -695,6 +719,17 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
+      <button class="menu-row" id="menuActivity">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">📜</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.activity">Activity log</div>
+            <div class="menu-row-sub" data-i18n="menu.activitySub">See every change you made</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
       <button class="menu-row" id="menuTour">
         <div class="menu-row-main">
           <span class="menu-row-icon">🗺️</span>
@@ -1094,6 +1129,23 @@
   </div>
 </div>
 
+<!-- Activity Log Modal -->
+<div class="modal-overlay" id="activityModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h2 data-i18n="activity.title">Activity log</h2>
+      <button class="btn-icon" id="closeActivityModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="activityList"></div>
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-primary" id="activityCloseBtn" data-i18n="btn.done">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- Cancelled Subs Modal -->
 <div class="modal-overlay" id="cancelledModal">
   <div class="modal" style="max-width:440px">
@@ -1192,6 +1244,9 @@
 <script src="js/palette.js"></script>
 <script src="js/alternatives.js"></script>
 <script src="js/shortcuts.js"></script>
+<script src="js/activity.js"></script>
+<script src="js/personality.js"></script>
+<script src="js/benchmarks.js"></script>
 <script src="js/notifications.js"></script>
 <script src="js/app.js"></script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
