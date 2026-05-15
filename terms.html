@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Terms of Service — Leakd</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf9;
+  --text: #0f0f0f;
+  --text-2: #57534e;
+  --text-3: #a8a29e;
+  --border: #e7e5e4;
+  --accent: #ef4444;
+  --bg-card: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f0f;
+    --text: #fafaf9;
+    --text-2: #a8a29e;
+    --text-3: #57534e;
+    --border: #2a2a2a;
+    --bg-card: #1a1a1a;
+  }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 40px 20px 80px;
+}
+.container { max-width: 720px; margin: 0 auto; }
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 32px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.back:hover { color: var(--accent); border-color: var(--accent); }
+h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+.subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 40px; }
+h2 { font-size: 20px; font-weight: 600; margin: 32px 0 12px; }
+p { margin-bottom: 12px; color: var(--text-2); }
+strong { color: var(--text); }
+ul { margin: 10px 0 14px 22px; }
+li { margin-bottom: 6px; color: var(--text-2); }
+.tldr {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
+}
+.tldr-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.lang-switch { display: flex; gap: 8px; margin-bottom: 32px; }
+.lang-switch button {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.lang-switch button.active { border-color: var(--accent); color: var(--accent); }
+section[lang] { display: none; }
+section.active { display: block; }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="/" class="back">← Back to Leakd</a>
+
+  <div class="lang-switch">
+    <button data-lang="en" class="active">English</button>
+    <button data-lang="hu">Magyar</button>
+  </div>
+
+  <section lang="en" class="active">
+    <h1>Terms of Service</h1>
+    <div class="subtitle">Last updated: May 15, 2026</div>
+
+    <div class="tldr">
+      <div class="tldr-label">TL;DR</div>
+      <p>Leakd is free to use. We don't promise it works perfectly. We can't be sued if you forget to cancel a subscription. Don't try to break the app. That's basically it.</p>
+    </div>
+
+    <h2>1. Acceptance</h2>
+    <p>By using Leakd, you agree to these terms. If you don't agree, don't use the app. That's fine.</p>
+
+    <h2>2. The service</h2>
+    <p>Leakd is a free Progressive Web App that helps you track your own subscriptions on your own device. The Pro version unlocks additional features through a Gumroad license key.</p>
+
+    <h2>3. Free and Pro tiers</h2>
+    <p>The free tier includes core tracking, insights, calendar export, notifications, and more. The Pro tier ($5/month or $39/year) unlocks email reminders, multi-device sync, year-end report, category budgets, and priority support. Pro is billed by Gumroad, our payment processor. We're not directly involved in the payment flow.</p>
+
+    <h2>4. Your data</h2>
+    <p>All data you enter into Leakd stays on your device. You are responsible for backing it up. Use the "Backup & restore" feature in Settings to download your data as a JSON file. If you lose your device or clear browser data without backing up, the data is gone — we cannot recover it because we never had it.</p>
+
+    <h2>5. Notifications</h2>
+    <p>Leakd can send local browser notifications about upcoming renewals and trial endings. These run in your browser's service worker. Browser limitations apply — notifications are best-effort and not guaranteed. You should not rely solely on Leakd for critical financial reminders.</p>
+
+    <h2>6. No financial advice</h2>
+    <p>Leakd is a tracking tool. Anything that looks like financial advice ("you could save $X", "if you invested instead") is illustrative math, not investment advice. Past S&P 500 returns do not guarantee future results. Consult a qualified financial advisor before making investment decisions.</p>
+
+    <h2>7. Disclaimer of warranties</h2>
+    <p>Leakd is provided <strong>"as is"</strong> without warranties of any kind. We don't guarantee it will work on your specific device or browser, or that it will be available at any given time. We are not responsible if you miss a renewal reminder, if a subscription auto-renews you didn't want, or if your data gets corrupted.</p>
+
+    <h2>8. Limitation of liability</h2>
+    <p>To the maximum extent permitted by law, our liability for any claim related to Leakd is limited to the amount you paid us in the 12 months preceding the claim (which for most users is zero). We are not liable for indirect, incidental, or consequential damages.</p>
+
+    <h2>9. Acceptable use</h2>
+    <p>Don't:</p>
+    <ul>
+      <li>Reverse engineer the app to extract Pro features without paying</li>
+      <li>Use the app for anything illegal</li>
+      <li>Try to disrupt or hack the app or its users</li>
+    </ul>
+    <p>Beyond that, do whatever you want with it.</p>
+
+    <h2>10. Termination</h2>
+    <p>You can stop using Leakd anytime by closing the tab, uninstalling the PWA, or wiping data with "Reset all data". We can stop offering Leakd anytime — though we'll try to give notice if we do.</p>
+
+    <h2>11. Changes to terms</h2>
+    <p>If we change these terms, the updated version will appear here with a new "Last updated" date.</p>
+
+    <h2>12. Governing law</h2>
+    <p>These terms are governed by the laws of Hungary (where the developer is based), without regard to conflict of laws principles. EU consumer protection laws apply where relevant.</p>
+
+    <h2>13. Contact</h2>
+    <p><a href="mailto:hello@leakd.app">hello@leakd.app</a></p>
+  </section>
+
+  <section lang="hu">
+    <h1>Felhasználási feltételek</h1>
+    <div class="subtitle">Utolsó frissítés: 2026. május 15.</div>
+
+    <div class="tldr">
+      <div class="tldr-label">A LÉNYEG</div>
+      <p>A Leakd ingyenes. Nem ígérjük hogy tökéletesen működik. Nem perelhetsz be ha elfelejtesz lemondani egy előfizetést. Ne próbáld feltörni az appot. Ennyi.</p>
+    </div>
+
+    <h2>1. Elfogadás</h2>
+    <p>A Leakd használatával elfogadod ezeket a feltételeket. Ha nem értesz egyet, ne használd az appot. Ez teljesen rendben van.</p>
+
+    <h2>2. A szolgáltatás</h2>
+    <p>A Leakd egy ingyenes Progressive Web App, ami segít az előfizetéseid követésében a saját eszközödön. A Pro verzió Gumroad licenckulccsal old fel további funkciókat.</p>
+
+    <h2>3. Ingyenes és Pro</h2>
+    <p>Az ingyenes verzió tartalmazza az alap követést, insights-ot, naptár exportot, értesítéseket és többet. A Pro ($5/hó vagy $39/év) feloldja az email emlékeztetőket, multi-device szinkront, év végi jelentést, kategória költségvetést és prioritás támogatást. A Pro-t a Gumroad számlázza, ami a fizetési szolgáltatónk. Mi nem veszünk részt közvetlenül a fizetésben.</p>
+
+    <h2>4. Az adataid</h2>
+    <p>Minden adat amit beviszel a Leakd-be az eszközödön marad. Te felelsz a mentésért. Használd a "Mentés és visszaállítás" funkciót a beállításokban hogy letöltsd JSON fájlként. Ha elveszíted az eszközöd vagy törlöd a böngésző adatokat mentés nélkül, az adatok elvesznek — nem tudjuk visszaállítani, mert sosem voltak nálunk.</p>
+
+    <h2>5. Értesítések</h2>
+    <p>A Leakd lokális böngésző értesítéseket küldhet a közelgő megújulásokról és próbaidő-lejáratokról. Ezek a böngésződ service worker-jén keresztül futnak. Böngésző-korlátozások érvényesek — az értesítések best-effort alapon működnek, nem garantáltak. Ne támaszkodj egyedül a Leakd-re kritikus pénzügyi emlékeztetőkre.</p>
+
+    <h2>6. Nem pénzügyi tanácsadás</h2>
+    <p>A Leakd egy követő eszköz. Bármi ami pénzügyi tanácsnak tűnik ("spórolhatnál $X-et", "ha helyette befektettél volna") szemléltető matematika, nem befektetési tanácsadás. A korábbi S&P 500 hozamok nem garantálják a jövőbeli eredményeket. Konzultálj minősített pénzügyi tanácsadóval mielőtt befektetési döntést hozol.</p>
+
+    <h2>7. Garancia kizárása</h2>
+    <p>A Leakd <strong>"ahogy van"</strong> állapotban szolgáltatott, mindenféle garancia nélkül. Nem garantáljuk hogy a te specifikus eszközödön vagy böngésződben működik, sem hogy bármikor elérhető. Nem vagyunk felelősek ha lekésel egy emlékeztetőt, ha egy előfizetés automatikusan megújul amit nem akartál, vagy ha az adataid korrumpálódnak.</p>
+
+    <h2>8. Felelősség korlátozása</h2>
+    <p>A törvény által megengedett legnagyobb mértékben, a Leakd-del kapcsolatos bármilyen igényért való felelősségünk a kérelem előtti 12 hónapban nekünk fizetett összegre korlátozott (ami a legtöbb usernél nulla). Nem vagyunk felelősek közvetett, járulékos vagy következményi károkért.</p>
+
+    <h2>9. Elfogadható használat</h2>
+    <p>Ne:</p>
+    <ul>
+      <li>Próbáld visszafejteni az appot hogy fizetés nélkül használd a Pro funkciókat</li>
+      <li>Használd illegális célokra</li>
+      <li>Próbáld megzavarni vagy feltörni az appot vagy más felhasználókat</li>
+    </ul>
+    <p>Ezen kívül csinálj vele bármit.</p>
+
+    <h2>10. Megszüntetés</h2>
+    <p>Bármikor abbahagyhatod a Leakd használatát: zárd be a tabot, távolítsd el a PWA-t, vagy töröld az adatokat a "Minden adat törlése" gombbal. Mi is bármikor leállíthatjuk a Leakd-et — de értesíteni próbálunk ha igen.</p>
+
+    <h2>11. Feltételek módosítása</h2>
+    <p>Ha módosítjuk ezeket a feltételeket, a frissített verzió itt jelenik meg új "Utolsó frissítés" dátummal.</p>
+
+    <h2>12. Irányadó jog</h2>
+    <p>Ezek a feltételek Magyarország (ahol a fejlesztő található) jogszabályai szerint értelmezendők, a jogszabály-ütközések elveinek figyelmen kívül hagyásával. EU fogyasztóvédelmi törvények érvényesek ahol releváns.</p>
+
+    <h2>13. Kapcsolat</h2>
+    <p><a href="mailto:hello@leakd.app">hello@leakd.app</a></p>
+  </section>
+</div>
+
+<script>
+  const supported = ['en', 'hu'];
+  const stored = localStorage.getItem('leakd_lang');
+  const browser = (navigator.language || 'en').toLowerCase().split('-')[0];
+  let lang = (stored && supported.includes(stored)) ? stored
+           : supported.includes(browser) ? browser
+           : 'en';
+  showLang(lang);
+
+  document.querySelectorAll('.lang-switch button').forEach(btn => {
+    btn.addEventListener('click', () => showLang(btn.dataset.lang));
+  });
+
+  function showLang(l) {
+    document.querySelectorAll('section[lang]').forEach(s => s.classList.toggle('active', s.lang === l));
+    document.querySelectorAll('.lang-switch button').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+    document.documentElement.lang = l;
+  }
+</script>
+
+</body>
+</html>

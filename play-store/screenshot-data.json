@@ -1,0 +1,56 @@
+{
+  "comment": "Paste this into Leakd's Bulk Import (Settings → Bulk import → paste text) before taking screenshots. Gives a realistic-looking demo with 8 subscriptions across categories. Total monthly: $147.95",
+  "subscriptions": [
+    "Netflix 15.99",
+    "Spotify 10.99",
+    "ChatGPT Plus 20",
+    "Adobe CC 54.99",
+    "iCloud+ 2.99",
+    "YouTube Premium 13.99",
+    "GitHub Copilot 10",
+    "Notion 19"
+  ],
+  "asCSV": "Name,Price,Currency,Cycle,Category,Next Payment,Is Trial,Trial End,Paused,Notes,Monthly Cost,Yearly Cost\n\"Netflix\",\"15.99\",\"USD\",\"monthly\",\"Entertainment\",\"2026-06-15\",\"No\",\"\",\"No\",\"\",\"15.99\",\"191.88\"\n\"Spotify\",\"10.99\",\"USD\",\"monthly\",\"Music\",\"2026-06-03\",\"No\",\"\",\"No\",\"\",\"10.99\",\"131.88\"\n\"ChatGPT Plus\",\"20.00\",\"USD\",\"monthly\",\"Work\",\"2026-06-20\",\"No\",\"\",\"No\",\"For research\",\"20.00\",\"240.00\"\n\"Adobe CC\",\"54.99\",\"USD\",\"monthly\",\"Work\",\"2026-05-28\",\"No\",\"\",\"No\",\"Consider Affinity\",\"54.99\",\"659.88\"\n\"iCloud+\",\"2.99\",\"USD\",\"monthly\",\"Cloud\",\"2026-06-01\",\"No\",\"\",\"No\",\"\",\"2.99\",\"35.88\"\n\"YouTube Premium\",\"13.99\",\"USD\",\"monthly\",\"Entertainment\",\"2026-05-25\",\"No\",\"\",\"No\",\"\",\"13.99\",\"167.88\"\n\"GitHub Copilot\",\"10.00\",\"USD\",\"monthly\",\"Work\",\"2026-06-10\",\"No\",\"\",\"No\",\"\",\"10.00\",\"120.00\"\n\"Notion\",\"19.00\",\"USD\",\"monthly\",\"Work\",\"2026-05-22\",\"No\",\"\",\"No\",\"Family plan\",\"19.00\",\"228.00\"",
+  "screenshotPlan": [
+    {
+      "n": 1,
+      "title": "Home view — 'See where your money leaks'",
+      "instructions": "Bulk-import the 8 services. Wait for animation to settle. Screenshot the Home tab. The $147.95/mo number with sparkline + forecast widget + sub list should all be visible."
+    },
+    {
+      "n": 2,
+      "title": "Insights — Donut + ratio",
+      "instructions": "Tap Insights tab. Settings → Income & ratio → set $3000. Reopen Insights. Screenshot showing YTD hero + donut chart + income ratio (4.9% — 'Healthy')."
+    },
+    {
+      "n": 3,
+      "title": "Lifetime cost — 'Netflix has cost you $179.86 — would be $2,596 invested'",
+      "instructions": "Tap on Netflix in the list. Wait for Lifetime Cost card to render. Screenshot the modal showing 'You've paid $179.86' + green 'If you invested instead' card."
+    },
+    {
+      "n": 4,
+      "title": "Calendar view — 'See every renewal at a glance'",
+      "instructions": "Insights tab → scroll to Renewal calendar card. Screenshot the month grid with red dots on renewal days."
+    },
+    {
+      "n": 5,
+      "title": "Cancellation playbook — 'We tell you exactly how to cancel'",
+      "instructions": "Tap on Adobe CC in the list. Scroll to the Playbook card. Screenshot showing the red 'Hard' difficulty badge + 5 cancellation steps."
+    },
+    {
+      "n": 6,
+      "title": "Smart suggestions — 'We spot what you'd miss'",
+      "instructions": "Insights tab → scroll to Smart suggestions. Screenshot showing the 3 suggestion cards (yearly billing, duplicates, etc.)."
+    },
+    {
+      "n": 7,
+      "title": "16 languages — 'Speaks your language. Literally.'",
+      "instructions": "Settings → Language. Screenshot the language picker showing all 16 flags + names."
+    },
+    {
+      "n": 8,
+      "title": "Cancelled subs — 'Celebrate your wins'",
+      "instructions": "Mark 2-3 subs as cancelled (Edit → Mark as cancelled). Settings → Cancelled subscriptions. Screenshot the green hero showing total monthly savings."
+    }
+  ]
+}

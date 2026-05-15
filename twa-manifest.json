@@ -1,0 +1,51 @@
+{
+  "packageId": "app.leakd.twa",
+  "host": "leakd.app",
+  "name": "Leakd",
+  "launcherName": "Leakd",
+  "display": "standalone",
+  "themeColor": "#ef4444",
+  "navigationColor": "#0f0f0f",
+  "navigationColorDark": "#0f0f0f",
+  "navigationDividerColor": "#0f0f0f",
+  "navigationDividerColorDark": "#0f0f0f",
+  "backgroundColor": "#0f0f0f",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://leakd.app/icons/icon-512.png",
+  "maskableIconUrl": "https://leakd.app/icons/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "appVersionName": "1.7.0",
+  "appVersionCode": 17,
+  "shortcuts": [
+    {
+      "name": "Add subscription",
+      "shortName": "Add",
+      "url": "/?action=add",
+      "chosenIconUrl": "https://leakd.app/icons/icon-192.png"
+    },
+    {
+      "name": "Insights",
+      "shortName": "Insights",
+      "url": "/?view=insights",
+      "chosenIconUrl": "https://leakd.app/icons/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://leakd.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://leakd.app/",
+  "minSdkVersion": 21,
+  "orientation": "portrait"
+}

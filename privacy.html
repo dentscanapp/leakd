@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Privacy Policy — Leakd</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf9;
+  --text: #0f0f0f;
+  --text-2: #57534e;
+  --text-3: #a8a29e;
+  --border: #e7e5e4;
+  --accent: #ef4444;
+  --bg-card: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f0f;
+    --text: #fafaf9;
+    --text-2: #a8a29e;
+    --text-3: #57534e;
+    --border: #2a2a2a;
+    --bg-card: #1a1a1a;
+  }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 40px 20px 80px;
+}
+.container { max-width: 720px; margin: 0 auto; }
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 32px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: all 0.15s;
+}
+.back:hover { color: var(--accent); border-color: var(--accent); }
+h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+.subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 40px; }
+h2 { font-size: 20px; font-weight: 600; margin: 32px 0 12px; letter-spacing: -0.3px; }
+p { margin-bottom: 12px; color: var(--text-2); }
+strong { color: var(--text); font-weight: 600; }
+ul { margin: 10px 0 14px 22px; }
+li { margin-bottom: 6px; color: var(--text-2); }
+.tldr {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
+}
+.tldr-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.lang-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.lang-switch button {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.lang-switch button.active { border-color: var(--accent); color: var(--accent); }
+section[lang] { display: none; }
+section.active { display: block; }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="/" class="back">← Back to Leakd</a>
+
+  <div class="lang-switch">
+    <button data-lang="en" class="active">English</button>
+    <button data-lang="hu">Magyar</button>
+  </div>
+
+  <!-- ─── ENGLISH ─── -->
+  <section lang="en" class="active">
+    <h1>Privacy Policy</h1>
+    <div class="subtitle">Last updated: May 15, 2026</div>
+
+    <div class="tldr">
+      <div class="tldr-label">TL;DR</div>
+      <p>Leakd stores everything on <strong>your device only</strong>. We do not have a server. We cannot see your subscriptions, your spending, or even that you exist. There is no account, no login, no tracking.</p>
+    </div>
+
+    <h2>1. What we collect</h2>
+    <p><strong>Nothing.</strong> Leakd is a Progressive Web App that runs entirely in your browser. All data — subscriptions, settings, notifications, language preference, history snapshots, budgets, cancellation records — is stored in your browser's <em>localStorage</em> and Cache API. It never leaves your device.</p>
+
+    <h2>2. What we do not collect</h2>
+    <ul>
+      <li>No personal information (name, email, address)</li>
+      <li>No subscription data (what you pay for, how much)</li>
+      <li>No financial data (we never ask for bank credentials)</li>
+      <li>No usage analytics, no fingerprinting, no advertising IDs</li>
+      <li>No cookies (we don't have any)</li>
+    </ul>
+
+    <h2>3. Third parties</h2>
+    <p>Leakd does not use any third-party analytics, tracking, or advertising services. The only outbound requests are:</p>
+    <ul>
+      <li><strong>Google Fonts</strong> — loads the DM Sans typeface. Google's privacy policy applies to font fetches. You can block it with a content blocker without breaking the app.</li>
+      <li><strong>Gumroad</strong> (only if you activate Pro) — to verify your license key. Only the key is sent; no personal data.</li>
+    </ul>
+
+    <h2>4. Notifications</h2>
+    <p>If you enable renewal reminders, your browser fires local notifications based on dates stored on your device. Notifications are scheduled and shown by your browser — they do not pass through any server we control.</p>
+
+    <h2>5. Backup files</h2>
+    <p>The "Backup & restore" feature lets you download a JSON file of your data. You choose where to save it (your device, Google Drive, email to yourself). We never see this file. Treat it like a sensitive file — anyone who opens it sees your subscription list.</p>
+
+    <h2>6. Pro license</h2>
+    <p>When you activate Leakd Pro with a Gumroad license key, that key is sent to Gumroad's verify endpoint <code>api.gumroad.com</code>. Gumroad's privacy policy applies to that exchange. If the verification fails (offline, blocked), the app falls back to a local format check.</p>
+
+    <h2>7. Children</h2>
+    <p>Leakd is not directed at children under 13. We don't knowingly collect data from anyone, regardless of age.</p>
+
+    <h2>8. Your rights (GDPR / CCPA)</h2>
+    <p>Because we don't collect data, there is nothing for us to access, delete, or export. You have full control: use the "Reset all data" button in Settings to wipe everything from your device instantly.</p>
+
+    <h2>9. Changes to this policy</h2>
+    <p>If we ever change this policy, the updated version will appear here with a new "Last updated" date.</p>
+
+    <h2>10. Contact</h2>
+    <p>Questions? Open an issue on our GitHub repository or email <a href="mailto:hello@leakd.app">hello@leakd.app</a>.</p>
+  </section>
+
+  <!-- ─── MAGYAR ─── -->
+  <section lang="hu">
+    <h1>Adatvédelmi tájékoztató</h1>
+    <div class="subtitle">Utolsó frissítés: 2026. május 15.</div>
+
+    <div class="tldr">
+      <div class="tldr-label">A LÉNYEG</div>
+      <p>A Leakd mindent <strong>csak a te eszközödön</strong> tárol. Nincs szerverünk. Nem látjuk az előfizetéseidet, a költésedet, sőt azt sem, hogy létezel. Nincs fiók, nincs bejelentkezés, nincs követés.</p>
+    </div>
+
+    <h2>1. Mit gyűjtünk</h2>
+    <p><strong>Semmit.</strong> A Leakd egy Progressive Web App ami teljes egészében a böngésződben fut. Minden adat — előfizetések, beállítások, értesítések, nyelvi preferencia, history snapshotok, költségvetések, lemondási rekordok — a böngésződ <em>localStorage</em>-ában és Cache API-jában tárolódik. Sosem hagyja el az eszközödet.</p>
+
+    <h2>2. Mit nem gyűjtünk</h2>
+    <ul>
+      <li>Semmi személyes adatot (név, email, cím)</li>
+      <li>Semmi előfizetési adatot (mire fizetsz, mennyit)</li>
+      <li>Semmi pénzügyi adatot (sosem kérjük a bank belépőd)</li>
+      <li>Semmi használati analytics-et, fingerprintinget, hirdetési ID-t</li>
+      <li>Semmi sütit (nincsen)</li>
+    </ul>
+
+    <h2>3. Harmadik felek</h2>
+    <p>A Leakd nem használ semmilyen harmadik fél analytics, követés vagy hirdetési szolgáltatást. Az egyetlen kimenő kérés:</p>
+    <ul>
+      <li><strong>Google Fonts</strong> — betölti a DM Sans betűkészletet. A Google adatvédelmi nyilatkozata vonatkozik erre. Content blocker-rel letilthatod anélkül hogy az app elromlana.</li>
+      <li><strong>Gumroad</strong> (csak ha aktiválod a Pro-t) — a licenckulcs ellenőrzéséhez. Csak a kulcs megy el, semmi személyes adat.</li>
+    </ul>
+
+    <h2>4. Értesítések</h2>
+    <p>Ha bekapcsolod a megújulási emlékeztetőket, a böngésződ lokális értesítéseket küld az eszközödön tárolt dátumok alapján. Az értesítéseket a böngésződ ütemezi és jeleníti meg — nem mennek át semmilyen szerveren amit mi kontrollálunk.</p>
+
+    <h2>5. Mentési fájlok</h2>
+    <p>A "Mentés és visszaállítás" funkció lehetővé teszi hogy letölts egy JSON fájlt az adataidról. Te döntöd el hova mented (eszközöd, Google Drive, küldd email-ben magadnak). Mi sosem látjuk ezt a fájlt. Kezeld érzékeny fájlként — aki megnyitja, látja az előfizetés-listád.</p>
+
+    <h2>6. Pro licenc</h2>
+    <p>Amikor aktiválod a Leakd Pro-t egy Gumroad licenckulccsal, a kulcs elmegy a Gumroad ellenőrző végpontjára (<code>api.gumroad.com</code>). A Gumroad adatvédelmi nyilatkozata vonatkozik erre a cserére. Ha az ellenőrzés sikertelen (offline, blokkolt), az app egy lokális formátum-ellenőrzésre esik vissza.</p>
+
+    <h2>7. Gyermekek</h2>
+    <p>A Leakd nem 13 év alattiaknak van szánva. Tudtunkkal senkitől nem gyűjtünk adatot, kortól függetlenül.</p>
+
+    <h2>8. A jogaid (GDPR)</h2>
+    <p>Mivel nem gyűjtünk adatot, nincs semmi amit hozzáférhetnél, törölhetnél vagy exportálhatnál. Teljes kontrollod van: használd a "Minden adat törlése" gombot a Beállításokban hogy azonnal minden eltűnjön az eszközödről.</p>
+
+    <h2>9. A tájékoztató módosulása</h2>
+    <p>Ha valaha módosítjuk ezt a tájékoztatót, a frissített verzió itt fog megjelenni új "Utolsó frissítés" dátummal.</p>
+
+    <h2>10. Kapcsolat</h2>
+    <p>Kérdés? Nyiss egy issue-t a GitHub repón vagy írj a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre.</p>
+  </section>
+</div>
+
+<script>
+  // Auto-detect language from URL hash or browser
+  const supported = ['en', 'hu'];
+  const stored = localStorage.getItem('leakd_lang');
+  const browser = (navigator.language || 'en').toLowerCase().split('-')[0];
+  let lang = (stored && supported.includes(stored)) ? stored
+           : supported.includes(browser) ? browser
+           : 'en';
+  showLang(lang);
+
+  document.querySelectorAll('.lang-switch button').forEach(btn => {
+    btn.addEventListener('click', () => showLang(btn.dataset.lang));
+  });
+
+  function showLang(l) {
+    document.querySelectorAll('section[lang]').forEach(s => s.classList.toggle('active', s.lang === l));
+    document.querySelectorAll('.lang-switch button').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+    document.documentElement.lang = l;
+  }
+</script>
+
+</body>
+</html>

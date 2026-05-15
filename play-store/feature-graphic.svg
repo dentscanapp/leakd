@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0a0a"/>
+      <stop offset="1" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#b91c1c"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="500" fill="url(#bg)"/>
+
+  <!-- Decorative leak drops -->
+  <g opacity="0.15">
+    <ellipse cx="900" cy="100" rx="120" ry="160" fill="#ef4444" filter="url(#glow)"/>
+    <ellipse cx="950" cy="380" rx="80" ry="100" fill="#ef4444" filter="url(#glow)"/>
+  </g>
+
+  <!-- Logo: water drop -->
+  <g transform="translate(80, 130)">
+    <path d="M0 80 C0 80 -40 40 -40 0 C-40 -40 0 -80 0 -80 C0 -80 40 -40 40 0 C40 40 0 80 0 80 Z"
+          fill="url(#accent)" opacity="0.95"/>
+    <path d="M0 50 C0 50 -22 20 -22 0 C-22 -20 0 -50 0 -50"
+          fill="#fca5a5" opacity="0.7"/>
+  </g>
+
+  <!-- Wordmark "leakd" -->
+  <text x="80" y="290" font-family="DM Sans, system-ui, sans-serif" font-weight="700"
+        font-size="84" fill="#fafaf9" letter-spacing="-2">leakd</text>
+
+  <!-- Tagline -->
+  <text x="80" y="345" font-family="DM Sans, system-ui, sans-serif" font-weight="500"
+        font-size="22" fill="#a8a29e">Where&apos;s your money leaking?</text>
+
+  <!-- Feature pills -->
+  <g transform="translate(80, 400)" font-family="DM Sans, system-ui, sans-serif" font-weight="600" font-size="15">
+    <g>
+      <rect x="0" y="0" width="195" height="44" rx="22" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="1"/>
+      <text x="98" y="29" fill="#fca5a5" text-anchor="middle">16 languages</text>
+    </g>
+    <g transform="translate(210, 0)">
+      <rect x="0" y="0" width="205" height="44" rx="22" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="1"/>
+      <text x="103" y="29" fill="#fca5a5" text-anchor="middle">24 currencies</text>
+    </g>
+    <g transform="translate(430, 0)">
+      <rect x="0" y="0" width="220" height="44" rx="22" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="1"/>
+      <text x="110" y="29" fill="#fca5a5" text-anchor="middle">No bank login</text>
+    </g>
+  </g>
+
+  <!-- Big stat preview (right side) -->
+  <g transform="translate(620, 110)">
+    <!-- Card -->
+    <rect x="0" y="0" width="320" height="280" rx="20" fill="#16161a" stroke="#2a2a2a" stroke-width="1"/>
+
+    <!-- Card label -->
+    <text x="20" y="40" font-family="DM Sans, system-ui, sans-serif" font-weight="600"
+          font-size="11" fill="#a8a29e" letter-spacing="1">MONTHLY SPEND</text>
+
+    <!-- Big number -->
+    <text x="20" y="105" font-family="DM Mono, DM Sans, monospace" font-weight="700"
+          font-size="56" fill="#ef4444">$147.95</text>
+
+    <!-- Sparkline -->
+    <path d="M 20 145 L 60 138 L 100 142 L 140 130 L 180 135 L 220 125 L 260 130 L 300 122"
+          stroke="#ef4444" stroke-width="2" fill="none" opacity="0.85"/>
+    <path d="M 20 145 L 60 138 L 100 142 L 140 130 L 180 135 L 220 125 L 260 130 L 300 122 L 300 180 L 20 180 Z"
+          fill="#ef4444" opacity="0.15"/>
+
+    <!-- Mini cards -->
+    <g transform="translate(20, 200)">
+      <rect x="0" y="0" width="135" height="60" rx="10" fill="#1a1a1a" stroke="#2a2a2a"/>
+      <text x="12" y="22" font-family="DM Sans, sans-serif" font-size="10" fill="#a8a29e" letter-spacing="0.5">YEARLY</text>
+      <text x="12" y="47" font-family="DM Mono, monospace" font-weight="600" font-size="18" fill="#fafaf9">$1,775</text>
+    </g>
+    <g transform="translate(165, 200)">
+      <rect x="0" y="0" width="135" height="60" rx="10" fill="#1a1a1a" stroke="#2a2a2a"/>
+      <text x="12" y="22" font-family="DM Sans, sans-serif" font-size="10" fill="#a8a29e" letter-spacing="0.5">10Y INVESTED</text>
+      <text x="12" y="47" font-family="DM Mono, monospace" font-weight="700" font-size="18" fill="#86efac">$25,613</text>
+    </g>
+  </g>
+</svg>

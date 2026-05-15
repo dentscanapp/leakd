@@ -129,6 +129,24 @@
       </div>
     </div>
 
+    <!-- Visual renewal calendar -->
+    <div class="chart-card" id="calendarCard" style="display:none">
+      <div class="calendar-head">
+        <button class="cal-nav-btn" id="calPrev" data-i18n-title="calendar.prev">‹</button>
+        <div class="calendar-title" id="calMonthName">—</div>
+        <button class="cal-nav-btn" id="calNext" data-i18n-title="calendar.next">›</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="calendar-sub" id="calendarSub"></div>
+      <div class="calendar-day-detail" id="calDayDetail" style="display:none"></div>
+    </div>
+
+    <!-- Aggregate lifetime cost card -->
+    <div class="chart-card lifetime-aggregate" id="lifetimeAggCard" style="display:none">
+      <div class="chart-title" data-i18n="insights.lifetimeTitle">Lifetime paid (all subs)</div>
+      <div class="lifetime-agg-value" id="lifetimeAggValue">—</div>
+    </div>
+
     <div class="chart-card">
       <div class="chart-title" data-i18n="insights.byCategory">By category</div>
       <div class="donut-wrap" id="donutWrap" style="display:none">
@@ -263,10 +281,17 @@
         <input type="date" id="subTrialEnd">
       </div>
     </div>
-    <div class="form-group">
-      <label for="subPaused">
-        <input type="checkbox" id="subPaused"> <span data-i18n="field.paused">Paused (not counted in total)</span>
-      </label>
+    <div class="form-row">
+      <div class="form-group flex-1">
+        <label for="subShared" data-i18n="field.shared">Shared with</label>
+        <input type="number" id="subShared" data-i18n-placeholder="field.sharedPh" min="1" max="20" step="1">
+        <div class="field-note" data-i18n="field.sharedNote">Total cost stays the same — we show your share too</div>
+      </div>
+      <div class="form-group flex-1">
+        <label for="subPaused" style="margin-top: 26px">
+          <input type="checkbox" id="subPaused"> <span data-i18n="field.paused">Paused</span>
+        </label>
+      </div>
     </div>
 
     <div class="form-group">
@@ -287,6 +312,52 @@
     </div>
 
     <div id="trackedSince" class="tracked-since" style="display:none"></div>
+
+    <!-- Lifetime cost + investment alternative (only shown when editing existing sub) -->
+    <div id="lifetimeCard" class="lifetime-card" style="display:none">
+      <div class="lifetime-head">
+        <span class="lifetime-label" data-i18n="lifetime.paidSoFar">You've paid</span>
+        <span class="lifetime-value" id="lifetimeValue">—</span>
+      </div>
+      <div class="lifetime-since" id="lifetimeSince">—</div>
+      <div class="lifetime-grid">
+        <div class="lifetime-cell">
+          <span class="lifetime-cell-label" data-i18n="lifetime.next5y">Next 5 years</span>
+          <span class="lifetime-cell-val" id="lifetimeNext5y">—</span>
+        </div>
+        <div class="lifetime-cell">
+          <span class="lifetime-cell-label" data-i18n="lifetime.next10y">Next 10 years</span>
+          <span class="lifetime-cell-val" id="lifetimeNext10y">—</span>
+        </div>
+      </div>
+      <div class="lifetime-invest">
+        <div class="lifetime-invest-title" data-i18n="lifetime.investTitle">If you invested instead</div>
+        <div class="lifetime-invest-note" data-i18n="lifetime.investNote">At 7% annual return (S&P 500 long-term avg)</div>
+        <div class="lifetime-grid">
+          <div class="lifetime-cell green">
+            <span class="lifetime-cell-label" data-i18n="lifetime.invest5y">5 years invested</span>
+            <span class="lifetime-cell-val" id="lifetimeInvest5y">—</span>
+          </div>
+          <div class="lifetime-cell green">
+            <span class="lifetime-cell-label" data-i18n="lifetime.invest10y">10 years invested</span>
+            <span class="lifetime-cell-val" id="lifetimeInvest10y">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancellation playbook (shown when we know how to cancel this service) -->
+    <div id="playbookCard" class="playbook-card" style="display:none">
+      <div class="playbook-head">
+        <span class="playbook-icon">📋</span>
+        <span class="playbook-title-text" data-i18n="playbook.title">How to cancel</span>
+        <span class="playbook-meta">
+          <span class="playbook-diff" id="playbookDiff">—</span>
+          <span class="playbook-time" id="playbookTime">—</span>
+        </span>
+      </div>
+      <ol class="playbook-steps" id="playbookSteps"></ol>
+    </div>
 
     <div id="cancelUrlWrap" style="display:none;margin-bottom:14px">
       <a class="btn-cancel-link" id="cancelUrlLink" target="_blank" rel="noopener" data-i18n="btn.cancelSub">Cancel this subscription</a>
@@ -564,6 +635,28 @@
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
+
+      <a class="menu-row" href="privacy.html" target="_blank">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🛡️</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.privacy">Privacy policy</div>
+            <div class="menu-row-sub" data-i18n="menu.privacySub">Read what we store (spoiler: nothing)</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+      </a>
+
+      <a class="menu-row" href="terms.html" target="_blank">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">📜</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.terms">Terms of service</div>
+            <div class="menu-row-sub" data-i18n="menu.termsSub">The boring fine print</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+      </a>
 
       <button class="menu-row menu-row-danger" id="menuReset">
         <div class="menu-row-main">
@@ -951,6 +1044,8 @@
 <script src="js/history.js"></script>
 <script src="js/income.js"></script>
 <script src="js/cancelled.js"></script>
+<script src="js/lifetime.js"></script>
+<script src="js/calview.js"></script>
 <script src="js/notifications.js"></script>
 <script src="js/app.js"></script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>

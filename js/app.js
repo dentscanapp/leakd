@@ -14,6 +14,7 @@
   let searchTerm = '';
   let editingId = null;
   let importStaged = [];
+  let calMonthOffset = 0;
 
   window.LeakdState = settings;
 
@@ -636,6 +637,11 @@
       `).join('');
     }
 
+    // Calendar view
+    renderCalendarView();
+    // Aggregate lifetime
+    renderLifetimeAggregate(list);
+
     // Lowest-rated subs (cancellation candidates)
     const lowestCard = $('lowestRatedCard');
     if (lowestCard) {
@@ -658,6 +664,86 @@
         }).join('');
       }
     }
+  }
+
+  // ─── Calendar view ───
+  function renderCalendarView() {
+    const card = $('calendarCard');
+    if (!card || !window.LeakdCalView) return;
+    const list = activeSubs();
+    if (list.length === 0) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+    const grid = window.LeakdCalView.monthGrid(list, calMonthOffset);
+    $('calMonthName').textContent = grid.monthName;
+    const weekdays = window.LeakdCalView.weekdayLabels(lang);
+    let html = '<div class="cal-weekdays">';
+    weekdays.forEach(w => { html += `<div class="cal-weekday">${escHtml(w)}</div>`; });
+    html += '</div>';
+    grid.weeks.forEach(week => {
+      html += '<div class="cal-week">';
+      week.forEach(cell => {
+        if (!cell) {
+          html += '<div class="cal-cell cal-cell-empty"></div>';
+        } else {
+          const cls = 'cal-cell' + (cell.isToday ? ' is-today' : '') + (cell.hasRenewals ? ' has-renewals' : '');
+          html += `<button class="${cls}" data-day="${cell.day}">
+            <span class="cal-day-num">${cell.day}</span>
+            ${cell.hasRenewals ? '<span class="cal-dot"></span>' : ''}
+          </button>`;
+        }
+      });
+      html += '</div>';
+    });
+    $('calendarGrid').innerHTML = html;
+    if (grid.countThisMonth === 0) {
+      $('calendarSub').textContent = t('calendar.empty');
+    } else {
+      $('calendarSub').textContent = t('calendar.thisMonth', {
+        count: grid.countThisMonth, total: formatPrice(grid.totalThisMonth),
+      });
+    }
+    $('calDayDetail').style.display = 'none';
+
+    // Bind day clicks
+    $('calendarGrid').querySelectorAll('.cal-cell.has-renewals').forEach(btn => {
+      btn.addEventListener('click', () => showCalDayDetail(grid, parseInt(btn.dataset.day, 10)));
+    });
+  }
+
+  function showCalDayDetail(grid, day) {
+    // Find renewals for that day
+    let renewals = [];
+    grid.weeks.forEach(week => {
+      week.forEach(cell => {
+        if (cell && cell.day === day) renewals = cell.renewals;
+      });
+    });
+    if (!renewals.length) return;
+    const detail = $('calDayDetail');
+    const dateStr = new Date(grid.year, grid.month, day).toLocaleDateString(
+      window.LeakdI18n ? window.LeakdI18n.lang : 'en',
+      { month: 'long', day: 'numeric' }
+    );
+    const key = renewals.length === 1 ? 'calendar.dayDetail' : 'calendar.dayDetailPlural';
+    let html = `<div class="cal-detail-head">${t(key, { date: dateStr, count: renewals.length })}</div>`;
+    html += '<div class="cal-detail-list">';
+    renewals.forEach(r => {
+      const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(r.name, r.category, 28) : '';
+      html += `<div class="cal-detail-row">${iconHtml}<span class="cal-detail-name">${escHtml(r.name)}</span><span class="cal-detail-price">${formatPrice(r.price)}</span></div>`;
+    });
+    html += '</div>';
+    detail.innerHTML = html;
+    detail.style.display = 'block';
+  }
+
+  function renderLifetimeAggregate(subs) {
+    const card = $('lifetimeAggCard');
+    if (!card || !window.LeakdLifetime) return;
+    const total = window.LeakdLifetime.aggregateLifetime(subs);
+    if (total <= 0) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    $('lifetimeAggValue').textContent = formatPrice(total);
   }
 
   // SVG donut chart for category breakdown
@@ -734,7 +820,10 @@
     $('subTrial').checked = false;
     $('subPaused').checked = false;
     $('subNotes').value = '';
+    $('subShared').value = '';
     setRatingUI(0);
+    $('lifetimeCard').style.display = 'none';
+    $('playbookCard').style.display = 'none';
     $('trialDateWrap').style.display = 'none';
     $('subTrialEnd').value = '';
     $('editId').value = '';
@@ -762,7 +851,10 @@
     $('subTrial').checked = s.isTrial || false;
     $('subPaused').checked = s.paused || false;
     $('subNotes').value = s.notes || '';
+    $('subShared').value = s.sharedWith && s.sharedWith > 1 ? String(s.sharedWith) : '';
     setRatingUI(s.rating || 0);
+    renderLifetimeCard(s);
+    renderPlaybookCard(s);
     $('trialDateWrap').style.display = s.isTrial ? 'block' : 'none';
     $('subTrialEnd').value = s.trialEnd || '';
     $('deleteBtn').style.display = 'inline-block';
@@ -820,15 +912,17 @@
     const trialEnd = $('subTrialEnd').value;
     const notes = $('subNotes').value.trim();
     const rating = parseInt($('subRating').dataset.rating || '0', 10);
+    const sharedRaw = parseInt($('subShared').value, 10);
+    const sharedWith = isNaN(sharedRaw) || sharedRaw < 1 ? 1 : Math.min(20, sharedRaw);
     if (!name) { $('subName').focus(); return; }
     if (!price || price <= 0) { $('subPrice').focus(); return; }
     if (editingId) {
       const idx = subs.findIndex(x => x.id === editingId);
-      if (idx !== -1) subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating };
+      if (idx !== -1) subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith };
     } else {
       subs.push({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating,
+        name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith,
         createdAt: new Date().toISOString()
       });
     }
@@ -950,6 +1044,41 @@
     wrap.querySelectorAll('.star').forEach((star, idx) => {
       star.classList.toggle('filled', idx < value);
     });
+  }
+
+  // ─── Lifetime cost card ───
+  // Shows in edit modal: total paid so far + projection + investment alt.
+  function renderLifetimeCard(sub) {
+    const card = $('lifetimeCard');
+    if (!card || !window.LeakdLifetime || !sub.createdAt) {
+      if (card) card.style.display = 'none';
+      return;
+    }
+    const r = window.LeakdLifetime.report(sub, 7);
+    if (!r.lifetime) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    $('lifetimeValue').textContent = formatPrice(r.lifetime.totalPaid);
+    const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+    const dateStr = r.lifetime.startDate.toLocaleDateString(lang, { month: 'short', year: 'numeric' });
+    $('lifetimeSince').textContent = t('lifetime.since', { date: dateStr });
+    $('lifetimeNext5y').textContent = formatPrice(r.next5y);
+    $('lifetimeNext10y').textContent = formatPrice(r.next10y);
+    $('lifetimeInvest5y').textContent = formatPrice(r.invested5y);
+    $('lifetimeInvest10y').textContent = formatPrice(r.invested10y);
+  }
+
+  // ─── Cancellation playbook card ───
+  function renderPlaybookCard(sub) {
+    const card = $('playbookCard');
+    if (!card || !window.LeakdImport) { if (card) card.style.display = 'none'; return; }
+    const pb = window.LeakdImport.findPlaybook(sub.name);
+    if (!pb) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    const diffEl = $('playbookDiff');
+    diffEl.textContent = t('playbook.diff' + pb.difficulty.charAt(0).toUpperCase() + pb.difficulty.slice(1));
+    diffEl.className = 'playbook-diff diff-' + pb.difficulty;
+    $('playbookTime').textContent = t('playbook.time', { n: pb.minutes });
+    $('playbookSteps').innerHTML = pb.steps.map(s => `<li>${escHtml(s)}</li>`).join('');
   }
 
   function applyPreset(btn) {
@@ -1552,6 +1681,10 @@
     });
 
     $('markCancelledBtn').addEventListener('click', markAsCancelled);
+
+    // Calendar nav
+    $('calPrev').addEventListener('click', () => { calMonthOffset--; renderCalendarView(); });
+    $('calNext').addEventListener('click', () => { calMonthOffset++; renderCalendarView(); });
 
     // Star rating clicks
     document.querySelectorAll('#subRating .star').forEach(star => {
