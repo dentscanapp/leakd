@@ -719,6 +719,17 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
+      <button class="menu-row" id="menuWhatIf">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🔮</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.whatif">What-if calculator</div>
+            <div class="menu-row-sub" data-i18n="menu.whatifSub">Pick subs to cancel — see savings live</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
       <button class="menu-row" id="menuActivity">
         <div class="menu-row-main">
           <span class="menu-row-icon">📜</span>
@@ -1129,6 +1140,38 @@
   </div>
 </div>
 
+<!-- What-If Calculator Modal -->
+<div class="modal-overlay" id="whatifModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h2 data-i18n="whatif.title">What-if calculator</h2>
+      <button class="btn-icon" id="closeWhatIfModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="whatif.blurb">Tap subscriptions to mark them as cancelled in this scenario.</p>
+
+    <div class="whatif-hero" id="whatifHero">
+      <div class="whatif-savings" id="whatifSavings">—</div>
+      <div class="whatif-savings-sub" id="whatifSavingsSub">—</div>
+      <div class="whatif-invest-note" id="whatifInvestNote">—</div>
+    </div>
+
+    <div class="whatif-actions">
+      <button class="btn-outline" id="whatifSuggestBtn" data-i18n="whatif.suggestBtn">Suggest top picks</button>
+      <button class="btn-outline" id="whatifClearBtn" data-i18n="whatif.clearBtn">Clear all</button>
+    </div>
+
+    <div class="whatif-list" id="whatifList"></div>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-primary" id="whatifCloseBtn" data-i18n="btn.done">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- Activity Log Modal -->
 <div class="modal-overlay" id="activityModal">
   <div class="modal" style="max-width:480px">
@@ -1247,6 +1290,7 @@
 <script src="js/activity.js"></script>
 <script src="js/personality.js"></script>
 <script src="js/benchmarks.js"></script>
+<script src="js/whatif.js"></script>
 <script src="js/notifications.js"></script>
 <script src="js/app.js"></script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>

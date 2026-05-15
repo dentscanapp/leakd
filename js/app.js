@@ -111,6 +111,7 @@
     a({ id: 'budgets',   label: t('menu.budgets'),     run: openBudgetsModal,              keywords: ['limit','spending'] });
     a({ id: 'income',    label: t('menu.income'),      run: openIncomeModal,               keywords: ['salary','ratio'] });
     a({ id: 'goal',      label: t('menu.goal'),        run: openGoalModal,                 keywords: ['save','target'] });
+    a({ id: 'whatif',    label: t('menu.whatif'),      run: openWhatIfModal,               keywords: ['scenario','simulate','cancel','preview'] });
     a({ id: 'bank',      label: t('menu.bank'),        run: openBankModal,                 keywords: ['csv','revolut','wise','statement'] });
     a({ id: 'import',    label: t('menu.import'),      run: openImportModal,               keywords: ['paste','bulk'] });
     a({ id: 'export',    label: t('menu.export'),      run: exportCSV,                     keywords: ['download','csv'] });
@@ -527,6 +528,9 @@
       const iconHtml = window.LeakdBrands
         ? window.LeakdBrands.badgeHtml(s.name, s.category, 42)
         : `<div class="sub-icon" style="background:${(catColors[s.category]||catColors.Other).bg};color:${(catColors[s.category]||catColors.Other).text}">${(catColors[s.category]||catColors.Other).icon}</div>`;
+      const notesLine = s.notes && s.notes.trim()
+        ? `<div class="sub-notes">${escHtml(s.notes.trim())}</div>`
+        : '';
       html += `
         <div class="sub-item ${s.paused ? 'is-paused' : ''}" data-id="${s.id}">
           <div class="sub-swipe-bg"><span>${t('btn.delete')}</span></div>
@@ -539,6 +543,7 @@
                 ${dateText ? '<span>·</span><span>' + dateText + '</span>' : ''}
                 ${badge}
               </div>
+              ${notesLine}
             </div>
             <div class="sub-price">
               <div class="sub-amount">${formatPrice(s.price)}</div>
@@ -1663,6 +1668,96 @@
     list.innerHTML = html;
   }
 
+  // ─── What-If calculator ───
+  // Lets the user simulate "what if I cancelled these subs?" without actually
+  // committing. Tap-to-toggle in a modal, totals update live as the user
+  // explores. Doesn't touch real data — closing the modal discards the
+  // scenario state. Acts as a Pro conversion driver: "you'd save $X/yr".
+  let whatifSet = new Set();
+
+  function openWhatIfModal() {
+    if (!window.LeakdWhatIf) return;
+    whatifSet = new Set();
+    renderWhatIfModal();
+    $('whatifModal').classList.add('active');
+  }
+  function closeWhatIfModal() {
+    $('whatifModal').classList.remove('active');
+    whatifSet = new Set();
+  }
+
+  function renderWhatIfModal() {
+    if (!window.LeakdWhatIf) return;
+    const active = activeSubs();
+    const listEl = $('whatifList');
+    const heroEl = $('whatifHero');
+
+    if (active.length === 0) {
+      listEl.innerHTML = `<div class="empty-state-mini">${t('whatif.empty')}</div>`;
+      heroEl.style.display = 'none';
+      return;
+    }
+
+    const result = window.LeakdWhatIf.compute(active, [...whatifSet]);
+    heroEl.style.display = 'block';
+    $('whatifSavings').textContent = '−' + formatPrice(result.monthlySavings);
+    $('whatifSavingsSub').textContent = t('whatif.summarySavings', {
+      monthly: formatPrice(result.monthlySavings),
+      yearly: formatPrice(result.yearlySavings),
+    });
+    if (result.cancelledCount > 0) {
+      $('whatifInvestNote').textContent = t('whatif.investedNote', {
+        y5: formatPrice(result.investedAlt5y),
+        y10: formatPrice(result.investedAlt10y),
+      });
+      $('whatifInvestNote').style.display = 'block';
+    } else {
+      $('whatifInvestNote').style.display = 'none';
+    }
+
+    // Sort: not-selected first (so user can find candidates easily)
+    const sorted = [...active].sort((a, b) => {
+      const aSel = whatifSet.has(a.id) ? 1 : 0;
+      const bSel = whatifSet.has(b.id) ? 1 : 0;
+      if (aSel !== bSel) return aSel - bSel;
+      return toMonthly(b.price, b.cycle) - toMonthly(a.price, a.cycle);
+    });
+
+    listEl.innerHTML = sorted.map(s => {
+      const sel = whatifSet.has(s.id);
+      const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.name, s.category, 32) : '';
+      const monthly = toMonthly(s.price, s.cycle);
+      return `<button class="whatif-row${sel ? ' whatif-selected' : ''}" data-id="${s.id}">
+        ${iconHtml}
+        <div class="whatif-info">
+          <div class="whatif-name">${escHtml(s.name)}</div>
+          <div class="whatif-meta">${formatPrice(s.price)}/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/','')}</div>
+        </div>
+        <div class="whatif-check">${sel ? '✓' : '○'}</div>
+      </button>`;
+    }).join('');
+
+    listEl.querySelectorAll('.whatif-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const id = row.dataset.id;
+        if (whatifSet.has(id)) whatifSet.delete(id);
+        else whatifSet.add(id);
+        renderWhatIfModal();
+      });
+    });
+  }
+
+  function whatifSuggest() {
+    if (!window.LeakdWhatIf) return;
+    const ids = window.LeakdWhatIf.suggestCancellations(activeSubs(), 5);
+    whatifSet = new Set(ids);
+    renderWhatIfModal();
+  }
+  function whatifClear() {
+    whatifSet = new Set();
+    renderWhatIfModal();
+  }
+
   // ─── Bank statement import ───
   let bankSuggestions = [];
 
@@ -2156,6 +2251,14 @@
     const demoBtn = $('emptyDemoBtn');
     if (demoBtn) demoBtn.addEventListener('click', injectDemoData);
 
+    // What-if calculator
+    $('menuWhatIf').addEventListener('click', () => { closeMenuModal(); openWhatIfModal(); });
+    $('closeWhatIfModal').addEventListener('click', closeWhatIfModal);
+    $('whatifCloseBtn').addEventListener('click', closeWhatIfModal);
+    $('whatifSuggestBtn').addEventListener('click', whatifSuggest);
+    $('whatifClearBtn').addEventListener('click', whatifClear);
+    $('whatifModal').addEventListener('click', e => { if (e.target === $('whatifModal')) closeWhatIfModal(); });
+
     // Activity log
     $('menuActivity').addEventListener('click', () => { closeMenuModal(); openActivityModal(); });
     $('closeActivityModal').addEventListener('click', closeActivityModal);
@@ -2276,6 +2379,7 @@
         else if ($('bankModal').classList.contains('active')) closeBankModal();
         else if ($('goalModal').classList.contains('active')) closeGoalModal();
         else if ($('activityModal').classList.contains('active')) closeActivityModal();
+        else if ($('whatifModal').classList.contains('active')) closeWhatIfModal();
       }
       if (e.key === 'Enter' && modal.classList.contains('active')) saveSub();
     });

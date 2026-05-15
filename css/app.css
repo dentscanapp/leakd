@@ -2574,6 +2574,106 @@ a.btn-primary {
   flex-shrink: 0;
 }
 
+/* ── Sub notes inline on home list ── */
+.sub-notes {
+  font-size: 12px;
+  color: var(--text-3);
+  font-style: italic;
+  margin-top: 4px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ── What-If calculator modal ── */
+.whatif-hero {
+  background: linear-gradient(135deg, var(--green-soft), transparent);
+  border: 1px solid var(--green);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.whatif-savings {
+  font-family: var(--mono);
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--green-text);
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+.whatif-savings-sub {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 4px;
+}
+.whatif-invest-note {
+  font-size: 12px;
+  color: var(--green-text);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--green);
+}
+
+.whatif-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.whatif-actions button {
+  flex: 1;
+  font-size: 12px;
+  padding: 8px;
+}
+
+.whatif-list {
+  max-height: 360px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.whatif-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font);
+  color: var(--text);
+  text-align: left;
+}
+.whatif-row:hover { background: var(--bg-card-hover); }
+.whatif-row.whatif-selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  opacity: 0.75;
+}
+.whatif-row.whatif-selected .whatif-name {
+  text-decoration: line-through;
+  color: var(--text-3);
+}
+.whatif-row .sub-icon { width: 32px; height: 32px; font-size: 13px; }
+.whatif-info { flex: 1; min-width: 0; }
+.whatif-name { font-size: 14px; font-weight: 600; }
+.whatif-meta { font-size: 12px; color: var(--text-3); }
+.whatif-check {
+  font-size: 18px;
+  color: var(--text-3);
+  font-weight: 700;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.whatif-row.whatif-selected .whatif-check { color: var(--accent); }
+
 /* ── Budgets ── */
 .budget-row {
   width: 100%;
