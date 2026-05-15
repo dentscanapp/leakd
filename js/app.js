@@ -645,6 +645,8 @@
     renderBundles();
     // Savings goal progress
     renderGoalCard();
+    // Health score
+    renderHealthCard();
 
     // Lowest-rated subs (cancellation candidates)
     const lowestCard = $('lowestRatedCard');
@@ -1420,6 +1422,60 @@
     render();
   }
 
+  // ─── Demo data injection ───
+  // Populates 8 realistic subscriptions so the user can experience the app
+  // without entering anything. Wipes existing subs first (we only show this
+  // option when the user is empty anyway).
+  function injectDemoData() {
+    const today = new Date();
+    const dateOffset = (days) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split('T')[0];
+    };
+    const createdOffset = (monthsAgo) => {
+      const d = new Date(today);
+      d.setMonth(d.getMonth() - monthsAgo);
+      return d.toISOString();
+    };
+    const demoSubs = [
+      { name: 'Netflix',         price: 15.99, cycle: 'monthly', category: 'Entertainment', nextDate: dateOffset(12), rating: 4, monthsBack: 18 },
+      { name: 'Spotify',         price: 10.99, cycle: 'monthly', category: 'Music',         nextDate: dateOffset(5),  rating: 5, monthsBack: 24 },
+      { name: 'ChatGPT Plus',    price: 20.00, cycle: 'monthly', category: 'Work',          nextDate: dateOffset(18), rating: 5, monthsBack: 8 },
+      { name: 'Adobe CC',        price: 54.99, cycle: 'monthly', category: 'Work',          nextDate: dateOffset(2),  rating: 2, monthsBack: 14 },
+      { name: 'iCloud+',         price: 2.99,  cycle: 'monthly', category: 'Cloud',         nextDate: dateOffset(7),  rating: 4, monthsBack: 36 },
+      { name: 'YouTube Premium', price: 13.99, cycle: 'monthly', category: 'Entertainment', nextDate: dateOffset(22), rating: 3, monthsBack: 6 },
+      { name: 'GitHub Copilot',  price: 10.00, cycle: 'monthly', category: 'Work',          nextDate: dateOffset(9),  rating: 5, monthsBack: 4 },
+      { name: 'Notion',          price: 10.00, cycle: 'monthly', category: 'Work',          nextDate: dateOffset(15), rating: 4, monthsBack: 12 },
+    ];
+    demoSubs.forEach(d => {
+      subs.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        name: d.name, price: d.price, cycle: d.cycle, category: d.category,
+        nextDate: d.nextDate, isTrial: false, trialEnd: '', paused: false,
+        notes: '', rating: d.rating, sharedWith: 1,
+        createdAt: createdOffset(d.monthsBack),
+      });
+    });
+    saveData();
+    render();
+    toast(t('demo.injected'));
+  }
+
+  // ─── Subscription health score ───
+  function renderHealthCard() {
+    const card = $('healthCard');
+    if (!card || !window.LeakdHealth) return;
+    const result = window.LeakdHealth.compute(activeSubs());
+    if (!result || result.score == null) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    const gradeEl = $('healthGrade');
+    gradeEl.textContent = result.grade;
+    gradeEl.className = 'health-grade grade-' + result.grade.toLowerCase();
+    $('healthScore').textContent = t('health.scoreOf', { score: result.score });
+    $('healthAdvice').textContent = t(window.LeakdHealth.adviceKey(result));
+  }
+
   // ─── Bank statement import ───
   let bankSuggestions = [];
 
@@ -1575,10 +1631,13 @@
         target: formatPrice(prog.target),
       });
     }
-    // Check milestone (toast it)
+    // Check milestone (toast it + confetti)
     const ms = window.LeakdGoals.checkMilestone();
     if (ms != null) {
-      setTimeout(() => toast(t('goal.milestone', { pct: ms })), 600);
+      setTimeout(() => {
+        toast(t('goal.milestone', { pct: ms }));
+        if (window.LeakdConfetti) window.LeakdConfetti.burst();
+      }, 600);
     }
   }
 
@@ -1787,7 +1846,7 @@
   function resetAll() {
     if (!confirm(t('reset.confirm1'))) return;
     if (!confirm(t('reset.confirm2'))) return;
-    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal']
+    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done']
       .forEach(k => localStorage.removeItem(k));
     location.reload();
   }
@@ -1827,6 +1886,10 @@
     $('onboard').style.display = 'none';
     if (!localStorage.getItem(SETTINGS_KEY)) {
       if (!autoDetectLocale()) currencyModal.style.display = 'flex';
+    }
+    // Kick off the interactive tour after a beat — only the first time
+    if (window.LeakdTour && !window.LeakdTour.isDone()) {
+      setTimeout(() => window.LeakdTour.start(), 600);
     }
   }
 
@@ -1901,6 +1964,16 @@
     $('bankUploadBtn').addEventListener('click', () => $('bankFileInput').click());
     $('bankFileInput').addEventListener('change', e => { if (e.target.files[0]) loadBankFile(e.target.files[0]); });
     $('confirmBankBtn').addEventListener('click', confirmBankImport);
+
+    // Demo data button (in empty state)
+    const demoBtn = $('emptyDemoBtn');
+    if (demoBtn) demoBtn.addEventListener('click', injectDemoData);
+
+    // Tour replay
+    $('menuTour').addEventListener('click', () => {
+      closeMenuModal();
+      if (window.LeakdTour) setTimeout(() => window.LeakdTour.restart(), 200);
+    });
 
     // Savings goal
     $('menuGoal').addEventListener('click', () => { closeMenuModal(); openGoalModal(); });
