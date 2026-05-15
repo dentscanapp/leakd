@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f0f0f">
+<meta name="description" content="Track your subscriptions. See where your money leaks. Free, private, no account needed.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Leakd">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Leakd — Where's your money leaking?</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div id="app">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2C14 2 6 10 6 16a8 8 0 1016 0c0-6-8-14-8-14z" fill="#ef4444" opacity="0.9"/>
+        <path d="M14 8c0 0-4 4.5-4 8a4 4 0 108 0c0-3.5-4-8-4-8z" fill="#fca5a5"/>
+      </svg>
+      <h1 class="logo-text">leakd</h1>
+    </div>
+    <div class="header-right">
+      <button class="btn-icon" id="toggleTheme" title="Toggle theme">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats" id="stats">
+    <div class="stat-card stat-main">
+      <span class="stat-label">Monthly spend</span>
+      <span class="stat-value" id="monthlyTotal">$0.00</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Yearly total</span>
+      <span class="stat-value" id="yearlyTotal">$0.00</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Active subs</span>
+      <span class="stat-value" id="activeCount">0</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Due in 7 days</span>
+      <span class="stat-value" id="dueSoon">0</span>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div id="alerts"></div>
+
+  <!-- Category Filter -->
+  <div class="categories" id="categories">
+    <button class="cat-btn active" data-cat="all">All</button>
+  </div>
+
+  <!-- Subscription List -->
+  <div class="sub-list" id="subList">
+    <div class="empty-state" id="emptyState">
+      <svg width="48" height="48" viewBox="0 0 28 28" fill="none" opacity="0.3">
+        <path d="M14 2C14 2 6 10 6 16a8 8 0 1016 0c0-6-8-14-8-14z" fill="currentColor"/>
+      </svg>
+      <p>No subscriptions yet</p>
+      <p class="empty-sub">Tap the + button to add your first subscription</p>
+    </div>
+  </div>
+
+  <!-- Add Button -->
+  <button class="fab" id="addBtn" title="Add subscription">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+  <!-- Bottom Actions -->
+  <div class="bottom-actions" id="bottomActions" style="display:none">
+    <button class="btn-outline" id="exportBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export CSV
+    </button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Add subscription</h2>
+      <button class="btn-icon" id="closeModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Quick Add Presets -->
+    <div id="presets" class="presets">
+      <button class="preset" data-name="Netflix" data-price="15.99" data-cat="Entertainment" data-color="#e50914">N</button>
+      <button class="preset" data-name="Spotify" data-price="10.99" data-cat="Music" data-color="#1db954">S</button>
+      <button class="preset" data-name="YouTube Premium" data-price="13.99" data-cat="Entertainment" data-color="#ff0000">Y</button>
+      <button class="preset" data-name="ChatGPT Plus" data-price="20.00" data-cat="Work" data-color="#10a37f">G</button>
+      <button class="preset" data-name="Adobe CC" data-price="54.99" data-cat="Work" data-color="#ff0000">A</button>
+      <button class="preset" data-name="iCloud" data-price="2.99" data-cat="Cloud" data-color="#3b82f6">i</button>
+      <button class="preset" data-name="Disney+" data-price="13.99" data-cat="Entertainment" data-color="#113ccf">D</button>
+      <button class="preset" data-name="Apple Music" data-price="10.99" data-cat="Music" data-color="#fc3c44">♫</button>
+    </div>
+
+    <div class="form-divider"><span>or add custom</span></div>
+
+    <div class="form-group">
+      <label for="subName">Name</label>
+      <input type="text" id="subName" placeholder="e.g. Netflix, Gym, Notion...">
+    </div>
+    <div class="form-row">
+      <div class="form-group flex-1">
+        <label for="subPrice">Price</label>
+        <div class="input-prefix">
+          <span class="prefix" id="currencySymbol">$</span>
+          <input type="number" id="subPrice" placeholder="9.99" step="0.01" min="0">
+        </div>
+      </div>
+      <div class="form-group flex-1">
+        <label for="subCycle">Billing cycle</label>
+        <select id="subCycle">
+          <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option>
+          <option value="weekly">Weekly</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group flex-1">
+        <label for="subCategory">Category</label>
+        <select id="subCategory">
+          <option value="Entertainment">Entertainment</option>
+          <option value="Work">Work</option>
+          <option value="Music">Music</option>
+          <option value="Fitness">Fitness</option>
+          <option value="Cloud">Cloud</option>
+          <option value="Food">Food</option>
+          <option value="News">News</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group flex-1">
+        <label for="subDate">Next payment</label>
+        <input type="date" id="subDate">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="subTrial">
+        <input type="checkbox" id="subTrial"> This is a free trial
+      </label>
+      <div id="trialDateWrap" style="display:none;margin-top:8px">
+        <label for="subTrialEnd">Trial ends on</label>
+        <input type="date" id="subTrialEnd">
+      </div>
+    </div>
+
+    <input type="hidden" id="editId" value="">
+    <div class="modal-actions">
+      <button class="btn-danger" id="deleteBtn" style="display:none">Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelBtn">Cancel</button>
+      <button class="btn-primary" id="saveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Currency Modal -->
+<div class="modal-overlay" id="currencyModal" style="display:none">
+  <div class="modal" style="max-width:340px">
+    <div class="modal-header">
+      <h2>Choose currency</h2>
+    </div>
+    <div class="currency-grid">
+      <button class="currency-btn" data-currency="$" data-code="USD">$ USD</button>
+      <button class="currency-btn" data-currency="€" data-code="EUR">€ EUR</button>
+      <button class="currency-btn" data-currency="£" data-code="GBP">£ GBP</button>
+      <button class="currency-btn" data-currency="Ft" data-code="HUF">Ft HUF</button>
+      <button class="currency-btn" data-currency="¥" data-code="JPY">¥ JPY</button>
+      <button class="currency-btn" data-currency="₹" data-code="INR">₹ INR</button>
+      <button class="currency-btn" data-currency="R$" data-code="BRL">R$ BRL</button>
+      <button class="currency-btn" data-currency="A$" data-code="AUD">A$ AUD</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
