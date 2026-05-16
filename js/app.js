@@ -497,7 +497,7 @@
           alertsEl.innerHTML += `
             <div class="alert-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              <div><strong>${escHtml(s.name)}</strong> ${t('time.trialEnds', { when: dueLabel(days) })} — ${formatPrice(s.price)}/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/', '')}.</div>
+              <div><strong>${escHtml(s.name)}</strong> ${t('time.trialEnds', { when: dueLabel(days) })} — ${formatPrice(s.price, s.currency)}/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/', '')}.</div>
             </div>`;
         }
       }
@@ -507,7 +507,7 @@
           alertsEl.innerHTML += `
             <div class="alert-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <div><strong>${escHtml(s.name)}</strong> ${formatPrice(s.price)} · ${dueLabel(days)}</div>
+              <div><strong>${escHtml(s.name)}</strong> ${formatPrice(s.price, s.currency)} · ${dueLabel(days)}</div>
             </div>`;
         }
       }
@@ -934,7 +934,7 @@
     html += '<div class="cal-detail-list">';
     renewals.forEach(r => {
       const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(r.name, r.category, 28) : '';
-      html += `<div class="cal-detail-row">${iconHtml}<span class="cal-detail-name">${escHtml(r.name)}</span><span class="cal-detail-price">${formatPrice(r.price)}</span></div>`;
+      html += `<div class="cal-detail-row">${iconHtml}<span class="cal-detail-name">${escHtml(r.name)}</span><span class="cal-detail-price">${formatPrice(r.price, r.currency)}</span></div>`;
     });
     html += '</div>';
     detail.innerHTML = html;
@@ -2064,7 +2064,7 @@
             <div class="bank-row-name">${escHtml(s.displayName)}</div>
             <div class="bank-row-meta">${t('bank.confidence', { n: s.occurrences, confidence: conf })} · ${t('bank.lastSeen', { when: lastDate })}</div>
           </div>
-          <div class="bank-row-price">${formatPrice(s.price)}<span>/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/','')}</span></div>
+          <div class="bank-row-price">${formatPrice(s.price, s.currency)}<span>/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/','')}</span></div>
         </label>`;
       }).join('');
 

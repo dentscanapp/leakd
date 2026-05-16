@@ -88,7 +88,7 @@
                   <td><strong>${s.name}</strong></td>
                   <td>${cat || s.category}</td>
                   <td>${cycleLabel}</td>
-                  <td class="price-col">${formatPrice(s.price)}</td>
+                  <td class="price-col">${formatPrice(s.price, s.currency)}</td>
                 </tr>
               `;
             }).join('')}
