@@ -420,12 +420,21 @@ body {
 .badge-trial { background: var(--amber-soft); color: var(--amber-text); }
 .badge-due { background: var(--accent-soft); color: var(--accent-text); }
 .badge-paused { background: var(--bg-card-hover); color: var(--text-3); }
+.badge-zombie { background: #44403c; color: #fafaf9; }
+[data-theme="dark"] .badge-zombie { background: #a8a29e; color: #0f0f0f; }
 
 .sub-item.is-paused .sub-item-content { opacity: 0.55; }
 .sub-item.is-paused .sub-amount { text-decoration: line-through; text-decoration-color: var(--text-3); }
 
 .sub-price { text-align: right; flex-shrink: 0; }
 .sub-amount { font-family: var(--mono); font-weight: 600; font-size: 15px; }
+.sub-amount-converted {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
 .sub-cycle { font-size: 11px; color: var(--text-3); }
 
 .empty-state {
@@ -1089,7 +1098,44 @@ a.btn-primary {
    widest symbol we ship ("Mex$"); single-char ones look fine in the breathing room. */
 .form-group .input-prefix input[type="number"],
 .form-group .input-prefix input[type="text"] {
-  padding-left: 48px;
+  padding-left: 36px;
+}
+
+.input-with-currency {
+  display: flex;
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.input-with-currency:focus-within {
+  border-color: var(--accent);
+}
+
+.currency-select-inline {
+  background: var(--bg-card-hover);
+  border: none !important;
+  border-right: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  width: auto !important;
+  color: var(--text-2) !important;
+  cursor: pointer;
+}
+
+.input-with-currency input {
+  flex: 1;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 10px 12px !important;
+  margin: 0 !important;
 }
 
 .modal-actions {

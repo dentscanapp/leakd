@@ -15,6 +15,7 @@
   let editingId = null;
   let importStaged = [];
   let calMonthOffset = 0;
+  let insightsFilter = 'all';
 
   window.LeakdState = settings;
 
@@ -63,6 +64,10 @@
     refreshDynamicLabels();
     initNotifications();
     refreshProUI();
+    if (window.LeakdCurrency) {
+      window.LeakdCurrency.sync(subs).then(() => render());
+      buildCurrencyDropdown();
+    }
 
     if (!localStorage.getItem(ONBOARD_KEY)) {
       showOnboard();
@@ -127,6 +132,14 @@
     a({ id: 'help',      label: t('shortcut.title'),   run: () => window.LeakdShortcuts && window.LeakdShortcuts.toggleHelp(), keywords: ['keyboard','keys','shortcuts'] });
     a({ id: 'privacy',   label: t('menu.privacy'),     run: () => window.open('privacy.html', '_blank'),  keywords: ['gdpr','policy'] });
     a({ id: 'terms',     label: t('menu.terms'),       run: () => window.open('terms.html', '_blank'),    keywords: ['legal','tos'] });
+  }
+
+  function buildCurrencyDropdown() {
+    const sel = $('subCurrency');
+    if (!sel || !window.LeakdCurrency) return;
+    sel.innerHTML = window.LeakdCurrency.supported.map(code => {
+      return `<option value="${code}">${code} (${window.LeakdCurrency.getSymbol(code)})</option>`;
+    }).join('');
   }
 
   // Keep palette's view of subs fresh
@@ -262,29 +275,38 @@
   }
 
   // ─── Calculations ───
-  function toMonthly(price, cycle) {
-    if (cycle === 'weekly') return price * 4.33;
-    if (cycle === 'yearly') return price / 12;
-    return price;
+  function toMonthly(price, cycle, currency) {
+    let p = price;
+    if (currency && window.LeakdCurrency) {
+      p = window.LeakdCurrency.convert(price, currency, settings.currencyCode);
+    }
+    if (cycle === 'weekly') return p * 4.33;
+    if (cycle === 'yearly') return p / 12;
+    return p;
   }
-  function toYearly(price, cycle) {
-    if (cycle === 'weekly') return price * 52;
-    if (cycle === 'monthly') return price * 12;
-    return price;
+  function toYearly(price, cycle, currency) {
+    let p = price;
+    if (currency && window.LeakdCurrency) {
+      p = window.LeakdCurrency.convert(price, currency, settings.currencyCode);
+    }
+    if (cycle === 'weekly') return p * 52;
+    if (cycle === 'monthly') return p * 12;
+    return p;
   }
   function daysUntil(dateStr) {
     const now = new Date(); now.setHours(0, 0, 0, 0);
     const target = new Date(dateStr); target.setHours(0, 0, 0, 0);
     return Math.ceil((target - now) / 86400000);
   }
-  function formatPrice(amount) {
-    // Prefer the rich formatter from locale.js (handles position, decimals, etc.)
-    if (window.LeakdLocale && settings.currencyCode) {
-      return window.LeakdLocale.formatMoney(amount, settings.currencyCode);
+  function formatPrice(amount, code) {
+    const targetCode = code || settings.currencyCode;
+    // Prefer the rich formatter from locale.js
+    if (window.LeakdLocale && targetCode) {
+      return window.LeakdLocale.formatMoney(amount, targetCode);
     }
-    // Legacy fallback for the original 8 currencies
-    const s = settings.currency;
-    if (s === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
+    // Legacy fallback
+    const s = window.LeakdCurrency ? window.LeakdCurrency.getSymbol(targetCode) : (settings.currency || '$');
+    if (targetCode === 'HUF' || s === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
     if (s === '¥') return s + Math.round(amount).toLocaleString();
     return s + amount.toFixed(2);
   }
@@ -342,7 +364,7 @@
   function renderStats() {
     let monthly = 0, dueSoonCount = 0;
     activeSubs().forEach(s => {
-      monthly += toMonthly(s.price, s.cycle);
+      monthly += toMonthly(s.price, s.cycle, s.currency);
       if (s.nextDate && daysUntil(s.nextDate) <= 7 && daysUntil(s.nextDate) >= 0) dueSoonCount++;
     });
     animateNumber(monthlyTotalEl, monthly, formatPrice);
@@ -497,10 +519,10 @@
     const cats = {};
     activeSubs().forEach(s => {
       if (!cats[s.category]) cats[s.category] = 0;
-      cats[s.category] += toMonthly(s.price, s.cycle);
+      cats[s.category] += toMonthly(s.price, s.cycle, s.currency);
     });
     let totalMonthly = 0;
-    activeSubs().forEach(s => totalMonthly += toMonthly(s.price, s.cycle));
+    activeSubs().forEach(s => totalMonthly += toMonthly(s.price, s.cycle, s.currency));
     let html = `<button class="cat-btn ${activeCategory === 'all' ? 'active' : ''}" data-cat="all">${t('cat.all')} ${subs.length > 0 ? '(' + formatPrice(totalMonthly) + ')' : ''}</button>`;
     Object.entries(cats).sort((a, b) => b[1] - a[1]).forEach(([cat, amount]) => {
       html += `<button class="cat-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${localizedCat(cat)} (${formatPrice(amount)})</button>`;
@@ -553,6 +575,8 @@
       } else if (s.isTrial && s.trialEnd) {
         const td = daysUntil(s.trialEnd);
         if (td >= 0 && td <= 3) badge = `<span class="sub-badge badge-trial">${t('time.trialEnds', { when: dueLabel(td) })}</span>`;
+      } else if (s.lastUsed && new Date(s.lastUsed).getTime() < Date.now() - 30 * 86400000) {
+        badge = `<span class="sub-badge badge-zombie">${t('badge.zombie')}</span>`;
       } else if (days !== null && days >= 0 && days <= 3) {
         const label = days === 0 ? t('time.dueToday') : days === 1 ? t('time.dueTomorrow') : t('time.dueIn', { n: days });
         badge = `<span class="sub-badge badge-due">${label}</span>`;
@@ -579,7 +603,7 @@
           <div class="sub-item-content">
             ${iconHtml}
             <div class="sub-info">
-              <div class="sub-name">${escHtml(s.name)}</div>
+              <div class="sub-name">${escHtml(s.name)}${s.isBusiness ? ' <span style="font-size: 14px; opacity: 0.8" title="Business expense">💼</span>' : ''}</div>
               <div class="sub-meta">
                 <span>${localizedCat(s.category)}</span>
                 ${dateText ? '<span>·</span><span>' + dateText + '</span>' : ''}
@@ -589,7 +613,8 @@
               ${notesLine}
             </div>
             <div class="sub-price">
-              <div class="sub-amount">${formatPrice(s.price)}</div>
+              <div class="sub-amount">${formatPrice(s.price, s.currency)}</div>
+              ${s.currency && s.currency !== settings.currencyCode ? `<div class="sub-amount-converted">≈ ${formatPrice(window.LeakdCurrency.convert(s.price, s.currency, settings.currencyCode))}</div>` : ''}
               <div class="sub-cycle">${cycleLabel}</div>
             </div>
           </div>
@@ -682,7 +707,10 @@
   function renderInsights() {
     if (!window.LeakdInsights) return;
     const I = window.LeakdInsights;
-    const list = activeSubs();
+    let list = activeSubs();
+    if (insightsFilter === 'business') list = list.filter(s => s.isBusiness);
+    if (insightsFilter === 'personal') list = list.filter(s => !s.isBusiness);
+
     const totals = I.totals(list);
     const ytd = I.paidThisYear(list);
     const proj = I.twelveMonthProjection(list);
@@ -836,7 +864,7 @@
     }
     
     modal.classList.add('active');
-    if (window.LeakdActivity) logActivity('panic_triggered', null, { spend: activeSubs().reduce((a,b)=>a+toMonthly(b.price,b.cycle),0) });
+    if (window.LeakdActivity) logActivity('panic_triggered', null, { spend: activeSubs().reduce((a,b)=>a+toMonthly(b.price,b.cycle,b.currency),0) });
   }
 
   function closePanicModal() {
@@ -991,14 +1019,19 @@
     $('modalTitle').textContent = t('modal.add');
     $('subName').value = '';
     $('subPrice').value = '';
+    $('subCurrency').value = settings.currencyCode || 'EUR';
     $('subCycle').value = 'monthly';
     $('subCategory').value = 'Entertainment';
+    $('subCategoryCustom').style.display = 'none';
+    $('subCategoryCustom').value = '';
     setDefaultDate();
     $('subTrial').checked = false;
     $('subPaused').checked = false;
+    $('subBusiness').checked = false;
     $('subNotes').value = '';
     $('subShared').value = '';
     $('subTags').value = '';
+    $('subLastUsed').value = '';
     setRatingUI(0);
     $('lifetimeCard').style.display = 'none';
     $('playbookCard').style.display = 'none';
@@ -1024,14 +1057,30 @@
     $('modalTitle').textContent = t('modal.edit');
     $('subName').value = s.name;
     $('subPrice').value = s.price;
+    $('subCurrency').value = s.currency || settings.currencyCode || 'EUR';
     $('subCycle').value = s.cycle;
-    $('subCategory').value = s.category;
+    
+    // Handle custom categories in edit
+    const catSelect = $('subCategory');
+    const isCustom = !Array.from(catSelect.options).some(opt => opt.value === s.category);
+    if (isCustom) {
+      catSelect.value = '_new';
+      $('subCategoryCustom').value = s.category;
+      $('subCategoryCustom').style.display = 'block';
+    } else {
+      catSelect.value = s.category;
+      $('subCategoryCustom').style.display = 'none';
+      $('subCategoryCustom').value = '';
+    }
+
     $('subDate').value = s.nextDate || '';
     $('subTrial').checked = s.isTrial || false;
     $('subPaused').checked = s.paused || false;
+    $('subBusiness').checked = s.isBusiness || false;
     $('subNotes').value = s.notes || '';
     $('subShared').value = s.sharedWith && s.sharedWith > 1 ? String(s.sharedWith) : '';
     $('subTags').value = Array.isArray(s.tags) ? s.tags.join(', ') : (s.tags || '');
+    $('subLastUsed').value = s.lastUsed || '';
     setRatingUI(s.rating || 0);
     renderLifetimeCard(s);
     renderAltCard(s);
@@ -1090,12 +1139,18 @@
   function saveSub() {
     const name = $('subName').value.trim();
     const price = parseFloat($('subPrice').value);
+    const currency = $('subCurrency').value;
     const cycle = $('subCycle').value;
-    const category = $('subCategory').value;
+    let category = $('subCategory').value;
+    if (category === '_new') {
+      category = $('subCategoryCustom').value.trim() || 'Other';
+    }
     const nextDate = $('subDate').value;
     const isTrial = $('subTrial').checked;
     const paused = $('subPaused').checked;
+    const isBusiness = $('subBusiness').checked;
     const trialEnd = $('subTrialEnd').value;
+    const lastUsed = $('subLastUsed').value;
     const notes = $('subNotes').value.trim();
     const rating = parseInt($('subRating').dataset.rating || '0', 10);
     const sharedRaw = parseInt($('subShared').value, 10);
@@ -1110,7 +1165,7 @@
       const idx = subs.findIndex(x => x.id === editingId);
       if (idx !== -1) {
         const wasPaused = subs[idx].paused;
-        subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith, tags };
+        subs[idx] = { ...subs[idx], name, price, currency, cycle, category, nextDate, isTrial, trialEnd, lastUsed, paused, isBusiness, notes, rating, sharedWith, tags };
         if (paused && !wasPaused) logActivity('paused', subs[idx]);
         else if (!paused && wasPaused) logActivity('resumed', subs[idx]);
         else logActivity('edited', subs[idx]);
@@ -1118,7 +1173,7 @@
     } else {
       const newSub = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith, tags,
+        name, price, currency, cycle, category, nextDate, isTrial, trialEnd, lastUsed, paused, isBusiness, notes, rating, sharedWith, tags,
         createdAt: new Date().toISOString()
       };
       subs.push(newSub);
@@ -1280,7 +1335,7 @@
     const alts = window.LeakdAlternatives.findAlternatives(sub.name);
     if (!alts || alts.length === 0) { card.style.display = 'none'; return; }
     card.style.display = 'block';
-    const currentMonthly = toMonthly(sub.price, sub.cycle);
+    const currentMonthly = toMonthly(sub.price, sub.cycle, sub.currency);
     const trAlt = (window.LeakdAlternatives && window.LeakdAlternatives.tr) || (s => s);
     $('altList').innerHTML = alts.map(alt => {
       const isFree = alt.price === 0;
@@ -1315,6 +1370,7 @@
   function applyPreset(btn) {
     $('subName').value = btn.dataset.name;
     $('subPrice').value = btn.dataset.price;
+    $('subCurrency').value = btn.dataset.currency || settings.currencyCode || 'EUR';
     $('subCategory').value = btn.dataset.cat;
     $('subCycle').value = 'monthly';
   }
@@ -1372,7 +1428,7 @@
       s.nextDate || '', s.isTrial ? 'Yes' : 'No', s.trialEnd || '',
       s.paused ? 'Yes' : 'No', s.notes || '',
       Array.isArray(s.tags) ? s.tags.join('; ') : '',
-      toMonthly(s.price, s.cycle).toFixed(2), toYearly(s.price, s.cycle).toFixed(2)
+      toMonthly(s.price, s.cycle, s.currency).toFixed(2), toYearly(s.price, s.cycle, s.currency).toFixed(2)
     ]);
     let csv = headers.join(',') + '\n';
     rows.forEach(r => { csv += r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n'; });
@@ -1915,18 +1971,18 @@
       const aSel = whatifSet.has(a.id) ? 1 : 0;
       const bSel = whatifSet.has(b.id) ? 1 : 0;
       if (aSel !== bSel) return aSel - bSel;
-      return toMonthly(b.price, b.cycle) - toMonthly(a.price, a.cycle);
+      return toMonthly(b.price, b.cycle, b.currency) - toMonthly(a.price, a.cycle, a.currency);
     });
 
     listEl.innerHTML = sorted.map(s => {
       const sel = whatifSet.has(s.id);
       const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.name, s.category, 32) : '';
-      const monthly = toMonthly(s.price, s.cycle);
+      const monthly = toMonthly(s.price, s.cycle, s.currency);
       return `<button class="whatif-row${sel ? ' whatif-selected' : ''}" data-id="${s.id}">
         ${iconHtml}
         <div class="whatif-info">
           <div class="whatif-name">${escHtml(s.name)}</div>
-          <div class="whatif-meta">${formatPrice(s.price)}/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/','')}</div>
+          <div class="whatif-meta">${formatPrice(s.price, s.currency)}/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/','')}</div>
         </div>
         <div class="whatif-check">${sel ? '✓' : '○'}</div>
       </button>`;
@@ -2189,7 +2245,7 @@
       const limit = all[cat];
       const spent = activeSubs()
         .filter(s => s.category === cat)
-        .reduce((sum, s) => sum + toMonthly(s.price, s.cycle), 0);
+        .reduce((sum, s) => sum + toMonthly(s.price, s.cycle, s.currency), 0);
       if (!limit) {
         return `<button class="budget-row ${proLocked ? 'is-locked' : ''}" data-cat="${cat}">
           <span class="budget-row-cat">${escHtml(localizedCat(cat))}</span>
@@ -2375,6 +2431,9 @@
     $('addBtn').addEventListener('click', openAdd);
     $('closeModal').addEventListener('click', closeModalFn);
     $('cancelBtn').addEventListener('click', closeModalFn);
+    $('markUsedTodayBtn').addEventListener('click', () => {
+      $('subLastUsed').value = new Date().toISOString().split('T')[0];
+    });
     $('saveBtn').addEventListener('click', saveSub);
     $('deleteBtn').addEventListener('click', deleteSub);
     $('toggleTheme').addEventListener('click', toggleTheme);
@@ -2393,6 +2452,13 @@
     $('menuYearend').addEventListener('click', () => { closeMenuModal(); openYearendModal(); });
     $('menuImport').addEventListener('click', () => { closeMenuModal(); openImportModal(); });
     $('menuExport').addEventListener('click', () => { closeMenuModal(); exportCSV(); });
+    $('menuPdf').addEventListener('click', () => {
+      closeMenuModal();
+      let list = activeSubs();
+      if (insightsFilter === 'business') list = list.filter(s => s.isBusiness);
+      if (insightsFilter === 'personal') list = list.filter(s => !s.isBusiness);
+      if (window.LeakdPdf) window.LeakdPdf.generate(list, window.LeakdInsights.totals(list));
+    });
     $('menuCalendar').addEventListener('click', () => { closeMenuModal(); exportCalendar(); });
     $('menuBudgets').addEventListener('click', () => { closeMenuModal(); openBudgetsModal(); });
     $('menuCancelled').addEventListener('click', () => { closeMenuModal(); openCancelledModal(); });
@@ -2412,6 +2478,21 @@
     });
 
     $('markCancelledBtn').addEventListener('click', markAsCancelled);
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = 'var(--text-muted)';
+        });
+        btn.classList.add('active');
+        btn.style.background = 'var(--bg)';
+        btn.style.color = 'var(--text)';
+        insightsFilter = btn.dataset.filter;
+        renderInsights();
+      });
+    });
 
     // Calendar nav
     $('calPrev').addEventListener('click', () => { calMonthOffset--; renderCalendarView(); });
@@ -2542,6 +2623,20 @@
 
     $('subTrial').addEventListener('change', function() {
       $('trialDateWrap').style.display = this.checked ? 'block' : 'none';
+    });
+
+    $('subCategory').addEventListener('change', function() {
+      if (this.value === '_new') {
+        if (window.LeakdPro && !window.LeakdPro.isPro()) {
+          this.value = 'Other';
+          openProModal();
+          return;
+        }
+        $('subCategoryCustom').style.display = 'block';
+        $('subCategoryCustom').focus();
+      } else {
+        $('subCategoryCustom').style.display = 'none';
+      }
     });
 
     // Name field autocomplete

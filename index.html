@@ -137,6 +137,14 @@
       <div class="insight-hero-sub"><span data-i18n="insights.paidIn">paid so far in</span> <span id="ytdYear"></span></div>
     </div>
 
+    <!-- Insights Filter -->
+    <div class="insights-filter" style="display:flex; gap:8px; margin-bottom: 24px; background: var(--bg-card); padding: 4px; border-radius: 8px; border: 1px solid var(--border);">
+      <button class="filter-btn active" data-filter="all" style="flex:1; border:none; background:var(--bg); border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text)" data-i18n="filter.all">All</button>
+      <button class="filter-btn" data-filter="business" style="flex:1; border:none; background:transparent; border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text-muted)" data-i18n="filter.business">Business</button>
+      <button class="filter-btn" data-filter="personal" style="flex:1; border:none; background:transparent; border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text-muted)" data-i18n="filter.personal">Personal</button>
+    </div>
+
+
     <!-- Health Score -->
     <div class="chart-card health-card" id="healthCard" style="display:none">
       <div class="chart-title" data-i18n="health.title">Subscription health</div>
@@ -312,14 +320,14 @@
     </div>
 
     <div id="presets" class="presets">
-      <button class="preset" data-name="Netflix" data-price="15.99" data-cat="Entertainment" data-color="#e50914">N</button>
-      <button class="preset" data-name="Spotify" data-price="10.99" data-cat="Music" data-color="#1db954">S</button>
-      <button class="preset" data-name="YouTube Premium" data-price="13.99" data-cat="Entertainment" data-color="#ff0000">Y</button>
-      <button class="preset" data-name="ChatGPT Plus" data-price="20.00" data-cat="Work" data-color="#10a37f">G</button>
-      <button class="preset" data-name="Adobe CC" data-price="54.99" data-cat="Work" data-color="#ff0000">A</button>
-      <button class="preset" data-name="iCloud" data-price="2.99" data-cat="Cloud" data-color="#3b82f6">i</button>
-      <button class="preset" data-name="Disney+" data-price="13.99" data-cat="Entertainment" data-color="#113ccf">D</button>
-      <button class="preset" data-name="Apple Music" data-price="10.99" data-cat="Music" data-color="#fc3c44">♫</button>
+      <button class="preset" data-name="Netflix" data-price="15.99" data-currency="EUR" data-cat="Entertainment" data-color="#e50914">N</button>
+      <button class="preset" data-name="Spotify" data-price="10.99" data-currency="EUR" data-cat="Music" data-color="#1db954">S</button>
+      <button class="preset" data-name="YouTube Premium" data-price="13.99" data-currency="EUR" data-cat="Entertainment" data-color="#ff0000">Y</button>
+      <button class="preset" data-name="ChatGPT Plus" data-price="20.00" data-currency="USD" data-cat="Work" data-color="#10a37f">G</button>
+      <button class="preset" data-name="Adobe CC" data-price="54.99" data-currency="USD" data-cat="Work" data-color="#ff0000">A</button>
+      <button class="preset" data-name="iCloud" data-price="2.99" data-currency="EUR" data-cat="Cloud" data-color="#3b82f6">i</button>
+      <button class="preset" data-name="Disney+" data-price="13.99" data-currency="EUR" data-cat="Entertainment" data-color="#113ccf">D</button>
+      <button class="preset" data-name="Apple Music" data-price="10.99" data-currency="EUR" data-cat="Music" data-color="#fc3c44">♫</button>
     </div>
 
     <div class="form-divider"><span data-i18n="modal.orCustom">or add custom</span></div>
@@ -332,8 +340,14 @@
     <div class="form-row">
       <div class="form-group flex-1">
         <label for="subPrice" data-i18n="field.price">Price</label>
-        <div class="input-prefix">
-          <span class="prefix" id="currencySymbol">$</span>
+        <div class="input-with-currency">
+          <select id="subCurrency" class="currency-select-inline">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="HUF">HUF (Ft)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
           <input type="number" id="subPrice" placeholder="9.99" step="0.01" min="0">
         </div>
       </div>
@@ -358,7 +372,9 @@
           <option value="Food" data-i18n="cat.Food">Food</option>
           <option value="News" data-i18n="cat.News">News</option>
           <option value="Other" data-i18n="cat.Other">Other</option>
+          <option value="_new" data-i18n="cat.new">+ New Category (Pro)</option>
         </select>
+        <input type="text" id="subCategoryCustom" placeholder="Custom category name" style="display:none; margin-top:8px;">
       </div>
       <div class="form-group flex-1">
         <label for="subDate" data-i18n="field.nextDate">Next payment</label>
@@ -384,6 +400,20 @@
         <label for="subPaused" style="margin-top: 26px">
           <input type="checkbox" id="subPaused"> <span data-i18n="field.paused">Paused</span>
         </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="subBusiness">
+        <input type="checkbox" id="subBusiness"> <span data-i18n="field.business">This is a business expense</span>
+      </label>
+    </div>
+    <div class="form-row">
+      <div class="form-group flex-1">
+        <label for="subLastUsed" data-i18n="field.lastUsed">Last used</label>
+        <input type="date" id="subLastUsed">
+      </div>
+      <div class="form-group flex-1" style="display:flex; align-items:flex-end">
+        <button type="button" class="btn-outline" id="markUsedTodayBtn" style="width:100%; font-size:12px; padding: 10px 8px;" data-i18n="btn.markUsed">Mark as used today</button>
       </div>
     </div>
 
@@ -704,6 +734,18 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
+      <button class="menu-row" id="menuPdf">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">📄</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.pdf">PDF report (Pro)</div>
+            <div class="menu-row-sub" data-i18n="menu.pdfSub">Printable report for your accountant</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+
       <button class="menu-row" id="menuCalendar">
         <div class="menu-row-main">
           <span class="menu-row-icon">📅</span>
@@ -859,7 +901,7 @@
     </div>
 
     <div class="menu-footer">
-      <span data-i18n="menu.footer">leakd v1.1 · made for indie wallets</span>
+      <span data-i18n="menu.footer">leakd v1.2 · made for indie wallets</span>
     </div>
   </div>
 </div>
@@ -1385,6 +1427,8 @@
 <script src="js/notifications.js"></script>
 <script src="js/streak.js"></script>
 <script src="js/leak.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/currency.js"></script>
 <script src="js/app.js"></script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>

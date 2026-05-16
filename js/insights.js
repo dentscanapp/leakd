@@ -8,22 +8,30 @@
 
   const t = (k, vars) => window.LeakdI18n ? window.LeakdI18n.t(k, vars) : k;
 
-  function toMonthly(price, cycle) {
-    if (cycle === 'weekly') return price * 4.33;
-    if (cycle === 'yearly') return price / 12;
-    return price;
+  function toMonthly(price, cycle, currency) {
+    let p = price;
+    if (currency && window.LeakdCurrency && window.LeakdState) {
+      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
+    }
+    if (cycle === 'weekly') return p * 4.33;
+    if (cycle === 'yearly') return p / 12;
+    return p;
   }
 
-  function toYearly(price, cycle) {
-    if (cycle === 'weekly') return price * 52;
-    if (cycle === 'monthly') return price * 12;
-    return price;
+  function toYearly(price, cycle, currency) {
+    let p = price;
+    if (currency && window.LeakdCurrency && window.LeakdState) {
+      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
+    }
+    if (cycle === 'weekly') return p * 52;
+    if (cycle === 'monthly') return p * 12;
+    return p;
   }
 
   // ── Spend buckets ──
   function totals(subs) {
     let monthly = 0;
-    subs.forEach(s => { monthly += toMonthly(s.price, s.cycle); });
+    subs.forEach(s => { monthly += toMonthly(s.price, s.cycle, s.currency); });
     return {
       monthly,
       yearly: monthly * 12,
@@ -36,7 +44,7 @@
   function byCategory(subs) {
     const map = {};
     subs.forEach(s => {
-      const m = toMonthly(s.price, s.cycle);
+      const m = toMonthly(s.price, s.cycle, s.currency);
       if (!map[s.category]) map[s.category] = { category: s.category, monthly: 0, count: 0, subs: [] };
       map[s.category].monthly += m;
       map[s.category].count += 1;
@@ -48,7 +56,7 @@
   // ── Top N spenders ──
   function topSpenders(subs, n = 5) {
     return [...subs]
-      .map(s => ({ ...s, monthly: toMonthly(s.price, s.cycle) }))
+      .map(s => ({ ...s, monthly: toMonthly(s.price, s.cycle, s.currency) }))
       .sort((a, b) => b.monthly - a.monthly)
       .slice(0, n);
   }
@@ -65,11 +73,11 @@
       const matches = subs.filter(s => s.category === cat);
       if (matches.length >= 2) {
         const cheapest = matches.reduce((m, s) =>
-          toMonthly(s.price, s.cycle) < toMonthly(m.price, m.cycle) ? s : m
+          toMonthly(s.price, s.cycle, s.currency) < toMonthly(m.price, m.cycle, m.currency) ? s : m
         );
         const savings = matches
           .filter(s => s.id !== cheapest.id)
-          .reduce((sum, s) => sum + toYearly(s.price, s.cycle), 0);
+          .reduce((sum, s) => sum + toYearly(s.price, s.cycle, s.currency), 0);
         if (savings > 0) {
           out.push({
             id: 'dup-' + cat,
@@ -85,9 +93,10 @@
 
     // 2. Monthly → yearly arbitrage (most services give 15-20% off yearly)
     subs.forEach(s => {
-      if (s.cycle === 'monthly' && toMonthly(s.price, s.cycle) >= 5) {
-        const yearlyEstimate = toYearly(s.price, s.cycle) * 0.83; // ~17% savings typical
-        const savings = toYearly(s.price, s.cycle) - yearlyEstimate;
+      const monthlyVal = toMonthly(s.price, s.cycle, s.currency);
+      if (s.cycle === 'monthly' && monthlyVal >= 5) {
+        const yearlyEstimate = toYearly(s.price, s.cycle, s.currency) * 0.83; // ~17% savings typical
+        const savings = toYearly(s.price, s.cycle, s.currency) - yearlyEstimate;
         out.push({
           id: 'yearly-' + s.id,
           severity: 'medium',
@@ -101,7 +110,7 @@
 
     // 3. Expensive single subs (>$30/mo)
     subs.forEach(s => {
-      const m = toMonthly(s.price, s.cycle);
+      const m = toMonthly(s.price, s.cycle, s.currency);
       if (m >= 30) {
         out.push({
           id: 'expensive-' + s.id,
@@ -126,25 +135,44 @@
             severity: 'high',
             icon: '⏰',
             title: t('sug.trial.title', { name: s.name, when: when }),
-            body: t('sug.trial.body', { price: money(s.price) + cycleLabel }),
-            savingsYearly: toYearly(s.price, s.cycle),
+            body: t('sug.trial.body', { price: money(s.price, s.currency) + cycleLabel }),
+            savingsYearly: toYearly(s.price, s.cycle, s.currency),
           });
         }
       }
     });
 
-    // 5. "Set and forget" — subs you added long ago without recent edits
+    // 5. Zombie detection — not used for 30+ days
+    const thirtyDaysAgo = Date.now() - 30 * 86400000;
+    subs.forEach(s => {
+      if (s.lastUsed && new Date(s.lastUsed).getTime() < thirtyDaysAgo && !s.paused) {
+        const m = toMonthly(s.price, s.cycle);
+        out.push({
+          id: 'zombie-' + s.id,
+          severity: 'high',
+          icon: '🧟',
+          title: t('sug.zombie.title', { name: s.name }),
+          body: t('sug.zombie.body', { monthly: money(m) }),
+          savingsYearly: toYearly(s.price, s.cycle, s.currency),
+        });
+      }
+    });
+    
+    // 6. "Set and forget" — subs you added long ago without recent edits
     const sixMonthsAgo = Date.now() - 180 * 86400000;
     subs.forEach(s => {
-      if (s.createdAt && new Date(s.createdAt).getTime() < sixMonthsAgo && toMonthly(s.price, s.cycle) >= 5) {
-        out.push({
-          id: 'old-' + s.id,
-          severity: 'low',
-          icon: '👀',
-          title: t('sug.old.title', { name: s.name }),
-          body: t('sug.old.body', { paid: money(toMonthly(s.price, s.cycle) * 6) }),
-          savingsYearly: 0,
-        });
+      if (s.createdAt && new Date(s.createdAt).getTime() < sixMonthsAgo && toMonthly(s.price, s.cycle, s.currency) >= 5) {
+        const rating = s.rating || 0;
+        if (rating < 3) {
+          out.push({
+            id: 'old-' + s.id,
+            severity: 'low',
+            icon: '🕰️',
+            title: t('sug.old.title', { name: s.name }),
+            body: t('sug.old.body', { paid: money(toMonthly(s.price, s.cycle, s.currency) * 6) }),
+            savingsYearly: 0,
+          });
+        }
       }
     });
 
@@ -169,11 +197,15 @@
     return Math.ceil((t - now) / 86400000);
   }
 
-  function money(amount) {
-    const cur = (window.LeakdState && window.LeakdState.currency) || '$';
-    if (cur === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
-    if (cur === '¥') return cur + Math.round(amount).toLocaleString();
-    return cur + Number(amount).toFixed(2);
+  function money(amount, code) {
+    const targetCode = code || (window.LeakdState && window.LeakdState.currencyCode);
+    if (window.LeakdLocale && targetCode) {
+      return window.LeakdLocale.formatMoney(amount, targetCode);
+    }
+    const s = window.LeakdCurrency ? window.LeakdCurrency.getSymbol(targetCode) : ((window.LeakdState && window.LeakdState.currency) || '$');
+    if (targetCode === 'HUF' || s === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
+    if (s === '¥') return s + Math.round(amount).toLocaleString();
+    return s + Number(amount).toFixed(2);
   }
 
   // ── Year-to-date paid ──
@@ -181,7 +213,7 @@
     const now = new Date();
     const monthsElapsed = now.getMonth() + (now.getDate() / 30.44);
     let total = 0;
-    subs.forEach(s => { total += toMonthly(s.price, s.cycle) * monthsElapsed; });
+    subs.forEach(s => { total += toMonthly(s.price, s.cycle, s.currency) * monthsElapsed; });
     return total;
   }
 
@@ -238,7 +270,7 @@
   function lowestRated(subs, limit) {
     return subs
       .filter(s => !s.paused && typeof s.rating === 'number' && s.rating > 0)
-      .map(s => ({ ...s, monthly: toMonthly(s.price, s.cycle) }))
+      .map(s => ({ ...s, monthly: toMonthly(s.price, s.cycle, s.currency) }))
       .sort((a, b) => a.rating - b.rating || b.monthly - a.monthly)
       .slice(0, limit || 3);
   }

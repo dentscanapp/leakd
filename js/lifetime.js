@@ -11,10 +11,14 @@
 (function () {
   'use strict';
 
-  function toMonthly(price, cycle) {
-    if (cycle === 'weekly') return price * 4.33;
-    if (cycle === 'yearly') return price / 12;
-    return price;
+  function toMonthly(price, cycle, currency) {
+    let p = price;
+    if (currency && window.LeakdCurrency && window.LeakdState) {
+      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
+    }
+    if (cycle === 'weekly') return p * 4.33;
+    if (cycle === 'yearly') return p / 12;
+    return p;
   }
 
   // ── Lifetime paid so far ──
@@ -25,7 +29,7 @@
     const start = new Date(sub.createdAt);
     const now = new Date();
     const months = Math.max(0, (now - start) / (1000 * 60 * 60 * 24 * 30.44));
-    const monthly = toMonthly(sub.price, sub.cycle);
+    const monthly = toMonthly(sub.price, sub.cycle, sub.currency);
     const totalPaid = monthly * months;
     return {
       months,
@@ -38,7 +42,7 @@
   // ── Future projection if user keeps paying ──
   // Years can be 1, 3, 5, 10. Returns the cumulative cost.
   function futureCost(sub, years) {
-    const m = toMonthly(sub.price, sub.cycle);
+    const m = toMonthly(sub.price, sub.cycle, sub.currency);
     return m * 12 * years;
   }
 
@@ -48,7 +52,7 @@
   //   where P = monthly payment, r = monthly rate, n = number of months
   // Default 7% annual return ≈ historical S&P 500 long-term real return.
   function investmentAlternative(sub, years, annualReturnPct) {
-    const monthly = toMonthly(sub.price, sub.cycle);
+    const monthly = toMonthly(sub.price, sub.cycle, sub.currency);
     const n = years * 12;
     const r = (annualReturnPct || 7) / 100 / 12;
     if (r === 0) return monthly * n;
@@ -61,7 +65,7 @@
   // estimate so the user sees the future cost of "just $10/month".
   function projectedPriceAfter(sub, years, annualRaisePct) {
     const r = (annualRaisePct == null ? 5 : annualRaisePct) / 100;
-    const monthly = toMonthly(sub.price, sub.cycle);
+    const monthly = toMonthly(sub.price, sub.cycle, sub.currency);
     return monthly * Math.pow(1 + r, years);
   }
 
@@ -69,7 +73,7 @@
   // This is the geometric series sum: m * 12 * ((1+r)^n - 1) / r
   function inflatedFutureCost(sub, years, annualRaisePct) {
     const r = (annualRaisePct == null ? 5 : annualRaisePct) / 100;
-    const monthly = toMonthly(sub.price, sub.cycle);
+    const monthly = toMonthly(sub.price, sub.cycle, sub.currency);
     if (r === 0) return monthly * 12 * years;
     return monthly * 12 * ((Math.pow(1 + r, years) - 1) / r);
   }
@@ -77,7 +81,7 @@
   // ── Full report for the UI ──
   function report(sub, annualReturnPct) {
     const lt = lifetime(sub);
-    const monthly = toMonthly(sub.price, sub.cycle);
+    const monthly = toMonthly(sub.price, sub.cycle, sub.currency);
     return {
       lifetime: lt,
       monthly,
