@@ -1,0 +1,38 @@
+$path = "js/i18n.js"
+$content = Get-Content $path -Raw
+$pattern = '(?s)const LANGUAGES = \{.*?const STRINGS = \{'
+$replacement = "const LANGUAGES = {
+    en: { name: 'English', flag: '🇬🇧' },
+    hu: { name: 'Magyar', flag: '🇭🇺' },
+    de: { name: 'Deutsch', flag: '🇩🇪' },
+    es: { name: 'Español', flag: '🇪🇸' },
+    fr: { name: 'Français', flag: '🇫🇷' },
+    it: { name: 'Italiano', flag: '🇮🇹' },
+    pt: { name: 'Português', flag: '🇵🇹' },
+    nl: { name: 'Nederlands', flag: '🇳🇱' },
+    pl: { name: 'Polski', flag: '🇵🇱' },
+    sv: { name: 'Svenska', flag: '🇸🇪' },
+    cs: { name: 'Čeština', flag: '🇨🇿' },
+    ja: { name: '日本語', flag: '🇯🇵' },
+    ko: { name: '한국어', flag: '🇰🇷' },
+    zh: { name: '中文', flag: '🇨🇳' },
+    ru: { name: 'Русский', flag: '🇷🇺' },
+    ro: { name: 'Română', flag: '🇷🇴' },
+    id: { name: 'Indonesia', flag: '🇮🇩' },
+    vi: { name: 'Tiếng Việt', flag: '🇻🇳' },
+    tr: { name: 'Türkçe', flag: '🇹🇷' },
+    el: { name: 'Ελληνικά', flag: '🇬🇷' },
+    hi: { name: 'हिन्दी', flag: '🇮🇳' },
+    uk: { name: 'Українська', flag: '🇺🇦' },
+    hr: { name: 'Hrvatski', flag: '🇭🇷' },
+    bg: { name: 'Български', flag: '🇧🇬' },
+    th: { name: 'ไทย', flag: '🇹🇭' },
+    fil: { name: 'Filipino', flag: '🇵🇭' },
+    ca: { name: 'Català', flag: '🇦🇩' },
+    sk: { name: 'Slovenčina', flag: '🇸🇰' }
+  };
+
+  // ── Strings ──
+  const STRINGS = {"
+$newContent = $content -replace $pattern, $replacement
+$newContent | Set-Content $path -NoNewline
