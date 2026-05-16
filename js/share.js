@@ -236,8 +236,8 @@
       try {
         await navigator.share({
           files: [file],
-          title: 'My subscription leak',
-          text: 'Found out where my money goes — built with leakd.app',
+          title: t('share.shareTitle'),
+          text: t('share.shareText'),
         });
         return { method: 'shared' };
       } catch {

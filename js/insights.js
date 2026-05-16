@@ -244,7 +244,7 @@
         if (next >= now) {
           renewals.push({
             id: s.id, name: s.name, category: s.category,
-            price: s.price, cycle: s.cycle,
+            price: s.price, cycle: s.cycle, currency: s.currency,
             date: next.toISOString().split('T')[0],
           });
         }
@@ -255,7 +255,7 @@
       }
     });
     renewals.sort((a, b) => a.date.localeCompare(b.date));
-    const total = renewals.reduce((sum, r) => sum + r.price, 0);
+    const total = renewals.reduce((sum, r) => sum + toMonthly(r.price, 'monthly', r.currency), 0);
     return { total, count: renewals.length, renewals, days };
   }
 
