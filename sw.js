@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v26';
+const CACHE_NAME = 'leakd-v27';
 const ASSETS = [
   './',
   'index.html',
@@ -88,9 +88,14 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch: cache first, then network
+// Fetch: cache first, then network. Cross-origin requests bypass the SW entirely
+// so that third-party APIs (e.g. frankfurter.app for currency rates) keep their
+// own CORS/cache semantics.
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
@@ -100,11 +105,13 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }
         return response;
+      }).catch(async () => {
+        if (event.request.mode === 'navigate') {
+          const fallback = await caches.match('index.html');
+          if (fallback) return fallback;
+        }
+        return new Response('', { status: 504, statusText: 'Offline' });
       });
-    }).catch(() => {
-      if (event.request.mode === 'navigate') {
-        return caches.match('/index.html');
-      }
     })
   );
 });

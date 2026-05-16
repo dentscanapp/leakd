@@ -2373,7 +2373,7 @@
     if (!window.LeakdShare) return;
     $('shareModal').classList.add('active');
     const canvas = $('shareCanvas');
-    const drawn = window.LeakdShare.render(activeSubs().map(s => ({ ...s, currency: settings.currency })), settings.currency);
+    const drawn = window.LeakdShare.render(activeSubs(), settings.currency);
     canvas.width = drawn.width;
     canvas.height = drawn.height;
     canvas.getContext('2d').drawImage(drawn, 0, 0);
@@ -2381,7 +2381,7 @@
   function closeShareModal() { $('shareModal').classList.remove('active'); }
   async function downloadShare() {
     if (!window.LeakdShare) return;
-    const { blob } = await window.LeakdShare.generate(activeSubs().map(s => ({ ...s, currency: settings.currency })), settings.currency);
+    const { blob } = await window.LeakdShare.generate(activeSubs(), settings.currency);
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = 'my-leakd.png'; a.click();
@@ -2390,7 +2390,7 @@
   }
   async function shareNow() {
     if (!window.LeakdShare) return;
-    const result = await window.LeakdShare.shareOrDownload(activeSubs().map(s => ({ ...s, currency: settings.currency })), settings.currency);
+    const result = await window.LeakdShare.shareOrDownload(activeSubs(), settings.currency);
     if (result.method === 'downloaded') toast(t('share.savedDevice'));
   }
 
