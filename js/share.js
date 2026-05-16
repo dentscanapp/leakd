@@ -29,17 +29,19 @@
   }
 
   function pickTagline(monthly) {
-    if (monthly === 0) return 'No leaks — yet';
-    if (monthly < 10) return 'Barely a drip';
-    if (monthly < 30) return 'A small leak';
-    if (monthly < 75) return 'Real money';
-    if (monthly < 150) return 'A serious leak';
-    if (monthly < 300) return 'Wake-up call';
-    return 'How are you still standing';
+    const t = window.LeakdI18n ? window.LeakdI18n.t : (k) => k;
+    if (monthly === 0) return t('share.tag0');
+    if (monthly < 10)  return t('share.tag1');
+    if (monthly < 30)  return t('share.tag2');
+    if (monthly < 75)  return t('share.tag3');
+    if (monthly < 150) return t('share.tag4');
+    if (monthly < 300) return t('share.tag5');
+    return t('share.tag6');
   }
 
   // ── Main render ──
   function render(subs, currency) {
+    const t = window.LeakdI18n ? window.LeakdI18n.t : (k) => k;
     const canvas = document.createElement('canvas');
     canvas.width = W;
     canvas.height = H;
@@ -60,15 +62,15 @@
 
     ctx.fillStyle = palette.textDim;
     ctx.font = '500 28px "DM Sans", system-ui, sans-serif';
-    ctx.fillText('Where my money leaks', 80, 184);
+    ctx.fillText(t('share.tagline'), 80, 184);
 
-    // ── Big number ──
+    // big number
     const monthly = subs.reduce((sum, s) => sum + toMonthly(s.price, s.cycle), 0);
     const yearly = monthly * 12;
 
     ctx.fillStyle = palette.textDim;
     ctx.font = '500 28px "DM Sans", system-ui, sans-serif';
-    ctx.fillText('Monthly spend', 80, 320);
+    ctx.fillText(t('share.monthlySpend'), 80, 320);
 
     ctx.fillStyle = palette.accent;
     ctx.font = '700 180px "DM Mono", "DM Sans", monospace';
@@ -77,7 +79,7 @@
 
     ctx.fillStyle = palette.textFaint;
     ctx.font = '500 32px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(`= ${money(yearly, currency)} per year`, 80, 540);
+    ctx.fillText(t('share.perYear', { amount: money(yearly, currency) }), 80, 540);
 
     // Tagline pill
     const tag = pickTagline(monthly);
@@ -86,7 +88,7 @@
     // ── Top 5 leaks ──
     ctx.fillStyle = palette.textDim;
     ctx.font = '500 24px "DM Sans", system-ui, sans-serif';
-    ctx.fillText('TOP LEAKS', 80, 720);
+    ctx.fillText(t('share.topLeaks'), 80, 720);
 
     const top = [...subs]
       .map(s => ({ ...s, monthly: toMonthly(s.price, s.cycle) }))
@@ -124,7 +126,7 @@
       ctx.fillStyle = palette.text;
       ctx.font = '700 30px "DM Mono", "DM Sans", monospace';
       ctx.textAlign = 'right';
-      ctx.fillText(money(s.monthly, currency) + '/mo', W - 110, y + 50);
+      ctx.fillText(money(s.monthly, currency) + t('cycle.mo'), W - 110, y + 50);
     });
 
     // Empty row placeholder
@@ -132,14 +134,14 @@
       ctx.fillStyle = palette.textFaint;
       ctx.font = '500 26px "DM Sans", system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText('(no subscriptions tracked yet)', 110, rowY + 50);
+      ctx.fillText(t('share.noSubs'), 110, rowY + 50);
     }
 
     // ── Footer ──
     ctx.fillStyle = palette.textDim;
     ctx.font = '500 26px "DM Sans", system-ui, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText(`${subs.length} subscription${subs.length === 1 ? '' : 's'} tracked`, 80, H - 130);
+    ctx.fillText(t('share.trackedCount', { count: subs.length }), 80, H - 130);
 
     ctx.fillStyle = palette.accent;
     ctx.font = '700 32px "DM Sans", system-ui, sans-serif';
@@ -149,7 +151,7 @@
     ctx.fillStyle = palette.textFaint;
     ctx.font = '500 22px "DM Sans", system-ui, sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText('Free · No account · Private', W - 80, H - 95);
+    ctx.fillText(t('share.features'), W - 80, H - 95);
 
     return canvas;
   }
