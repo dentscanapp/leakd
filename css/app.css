@@ -2705,6 +2705,124 @@ a.btn-primary {
 }
 .whatif-row.whatif-selected .whatif-check { color: var(--accent); }
 
+/* ── Sub tags (chips on home list) ── */
+.sub-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.sub-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--bg-card-hover);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  letter-spacing: 0.2px;
+}
+
+/* ── Inflation cells (amber tone) ── */
+.lifetime-inflation {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+.lifetime-cell.amber {
+  background: var(--amber-soft);
+  border-color: var(--amber);
+}
+.lifetime-cell.amber .lifetime-cell-label { color: var(--amber-text); opacity: 0.85; }
+.lifetime-cell.amber .lifetime-cell-val { color: var(--amber-text); }
+
+/* ── Compare modal ── */
+.compare-pick-prompt {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.compare-pick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+.compare-pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font);
+  color: var(--text);
+  text-align: left;
+}
+.compare-pick:hover { background: var(--bg-card-hover); }
+.compare-pick.selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-text); }
+.compare-pick .sub-icon { width: 28px; height: 28px; font-size: 12px; }
+.compare-pick-name { flex: 1; font-size: 14px; font-weight: 500; }
+.compare-pick-check {
+  font-size: 16px;
+  color: var(--accent);
+  font-weight: 700;
+  width: 16px;
+  text-align: center;
+}
+
+.compare-grid-wrap {
+  margin-top: 12px;
+  overflow-x: auto;
+}
+.compare-grid table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.compare-grid th, .compare-grid td {
+  padding: 8px 6px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.compare-grid thead th {
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-card-hover);
+}
+.compare-grid thead th:first-child { background: transparent; }
+.compare-grid tbody th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: var(--bg-card-hover);
+}
+.compare-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.compare-head .sub-icon { width: 28px; height: 28px; font-size: 12px; }
+.compare-head span { font-size: 12px; font-weight: 600; }
+.compare-worst {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+.compare-na { color: var(--text-3); font-size: 11px; }
+
 /* ── Budgets ── */
 .budget-row {
   width: 100%;

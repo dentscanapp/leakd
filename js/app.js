@@ -113,6 +113,7 @@
     a({ id: 'income',    label: t('menu.income'),      run: openIncomeModal,               keywords: ['salary','ratio'] });
     a({ id: 'goal',      label: t('menu.goal'),        run: openGoalModal,                 keywords: ['save','target'] });
     a({ id: 'whatif',    label: t('menu.whatif'),      run: openWhatIfModal,               keywords: ['scenario','simulate','cancel','preview'] });
+    a({ id: 'compare',   label: t('menu.compare'),     run: openCompareModal,              keywords: ['side','versus','vs'] });
     a({ id: 'bank',      label: t('menu.bank'),        run: openBankModal,                 keywords: ['csv','revolut','wise','statement'] });
     a({ id: 'import',    label: t('menu.import'),      run: openImportModal,               keywords: ['paste','bulk'] });
     a({ id: 'export',    label: t('menu.export'),      run: exportCSV,                     keywords: ['download','csv'] });
@@ -517,7 +518,8 @@
       filtered = filtered.filter(s =>
         s.name.toLowerCase().includes(q) ||
         s.category.toLowerCase().includes(q) ||
-        localizedCat(s.category).toLowerCase().includes(q)
+        localizedCat(s.category).toLowerCase().includes(q) ||
+        (Array.isArray(s.tags) && s.tags.some(tag => tag.toLowerCase().includes(q)))
       );
     }
 
@@ -568,6 +570,9 @@
       const notesLine = s.notes && s.notes.trim()
         ? `<div class="sub-notes">${escHtml(s.notes.trim())}</div>`
         : '';
+      const tagChips = Array.isArray(s.tags) && s.tags.length
+        ? `<div class="sub-tags">${s.tags.slice(0, 4).map(tg => '<span class="sub-tag">' + escHtml(tg) + '</span>').join('')}</div>`
+        : '';
       html += `
         <div class="sub-item ${s.paused ? 'is-paused' : ''}" data-id="${s.id}">
           <div class="sub-swipe-bg"><span>${t('btn.delete')}</span></div>
@@ -580,6 +585,7 @@
                 ${dateText ? '<span>·</span><span>' + dateText + '</span>' : ''}
                 ${badge}
               </div>
+              ${tagChips}
               ${notesLine}
             </div>
             <div class="sub-price">
@@ -992,6 +998,7 @@
     $('subPaused').checked = false;
     $('subNotes').value = '';
     $('subShared').value = '';
+    $('subTags').value = '';
     setRatingUI(0);
     $('lifetimeCard').style.display = 'none';
     $('playbookCard').style.display = 'none';
@@ -1024,6 +1031,7 @@
     $('subPaused').checked = s.paused || false;
     $('subNotes').value = s.notes || '';
     $('subShared').value = s.sharedWith && s.sharedWith > 1 ? String(s.sharedWith) : '';
+    $('subTags').value = Array.isArray(s.tags) ? s.tags.join(', ') : (s.tags || '');
     setRatingUI(s.rating || 0);
     renderLifetimeCard(s);
     renderAltCard(s);
@@ -1092,13 +1100,17 @@
     const rating = parseInt($('subRating').dataset.rating || '0', 10);
     const sharedRaw = parseInt($('subShared').value, 10);
     const sharedWith = isNaN(sharedRaw) || sharedRaw < 1 ? 1 : Math.min(20, sharedRaw);
+    const tagsRaw = $('subTags').value.trim();
+    const tags = tagsRaw
+      ? tagsRaw.split(',').map(t => t.trim()).filter(t => t.length > 0 && t.length <= 24).slice(0, 8)
+      : [];
     if (!name) { $('subName').focus(); return; }
     if (!price || price <= 0) { $('subPrice').focus(); return; }
     if (editingId) {
       const idx = subs.findIndex(x => x.id === editingId);
       if (idx !== -1) {
         const wasPaused = subs[idx].paused;
-        subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith };
+        subs[idx] = { ...subs[idx], name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith, tags };
         if (paused && !wasPaused) logActivity('paused', subs[idx]);
         else if (!paused && wasPaused) logActivity('resumed', subs[idx]);
         else logActivity('edited', subs[idx]);
@@ -1106,7 +1118,7 @@
     } else {
       const newSub = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith,
+        name, price, cycle, category, nextDate, isTrial, trialEnd, paused, notes, rating, sharedWith, tags,
         createdAt: new Date().toISOString()
       };
       subs.push(newSub);
@@ -1255,6 +1267,10 @@
     $('lifetimeNext10y').textContent = formatPrice(r.next10y);
     $('lifetimeInvest5y').textContent = formatPrice(r.invested5y);
     $('lifetimeInvest10y').textContent = formatPrice(r.invested10y);
+    const inf10y = $('lifetimeInflated10y');
+    const inf10m = $('lifetimeInflated10yMonthly');
+    if (inf10y) inf10y.textContent = formatPrice(r.inflated10yTotal);
+    if (inf10m) inf10m.textContent = formatPrice(r.inflated10yMonthly);
   }
 
   // ─── Cheaper alternatives card ───
@@ -1350,11 +1366,12 @@
 
   function exportCSV() {
     if (subs.length === 0) { toast(t('toast.nothing')); return; }
-    const headers = ['Name', 'Price', 'Currency', 'Cycle', 'Category', 'Next Payment', 'Is Trial', 'Trial End', 'Paused', 'Notes', 'Monthly Cost', 'Yearly Cost'];
+    const headers = ['Name', 'Price', 'Currency', 'Cycle', 'Category', 'Next Payment', 'Is Trial', 'Trial End', 'Paused', 'Notes', 'Tags', 'Monthly Cost', 'Yearly Cost'];
     const rows = subs.map(s => [
       s.name, s.price, settings.currencyCode, s.cycle, s.category,
       s.nextDate || '', s.isTrial ? 'Yes' : 'No', s.trialEnd || '',
       s.paused ? 'Yes' : 'No', s.notes || '',
+      Array.isArray(s.tags) ? s.tags.join('; ') : '',
       toMonthly(s.price, s.cycle).toFixed(2), toYearly(s.price, s.cycle).toFixed(2)
     ]);
     let csv = headers.join(',') + '\n';
@@ -1764,6 +1781,96 @@
       html += '</div>';
     });
     list.innerHTML = html;
+  }
+
+  // ─── Side-by-side compare ───
+  let compareSet = new Set();
+
+  function openCompareModal() {
+    if (!window.LeakdCompare) return;
+    compareSet = new Set();
+    renderCompareModal();
+    $('compareModal').classList.add('active');
+  }
+  function closeCompareModal() {
+    $('compareModal').classList.remove('active');
+    compareSet = new Set();
+  }
+
+  function renderCompareModal() {
+    const active = activeSubs();
+    const pickList = $('comparePickList');
+    const promptEl = $('comparePickPrompt');
+    const gridWrap = $('compareGridWrap');
+
+    if (active.length < 2) {
+      pickList.innerHTML = `<div class="empty-state-mini">${t('compare.minPrompt')}</div>`;
+      promptEl.style.display = 'none';
+      gridWrap.style.display = 'none';
+      return;
+    }
+
+    promptEl.style.display = 'block';
+    promptEl.textContent = t('compare.pickPrompt');
+
+    pickList.innerHTML = active.map(s => {
+      const sel = compareSet.has(s.id);
+      const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.name, s.category, 28) : '';
+      return `<button class="compare-pick${sel ? ' selected' : ''}" data-id="${s.id}">
+        ${iconHtml}
+        <span class="compare-pick-name">${escHtml(s.name)}</span>
+        <span class="compare-pick-check">${sel ? '✓' : ''}</span>
+      </button>`;
+    }).join('');
+
+    pickList.querySelectorAll('.compare-pick').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        if (compareSet.has(id)) compareSet.delete(id);
+        else if (compareSet.size < 3) compareSet.add(id);
+        renderCompareModal();
+      });
+    });
+
+    // Render comparison grid if at least 2 picked
+    if (compareSet.size >= 2) {
+      const picked = active.filter(s => compareSet.has(s.id));
+      const rows = window.LeakdCompare.build(picked);
+      const W = window.LeakdCompare.worstIndex;
+
+      const metricRow = (labelKey, getValue, metric) => {
+        const worstIdx = W(rows, metric);
+        const cells = rows.map((r, i) => {
+          const val = getValue(r);
+          const isWorst = i === worstIdx;
+          return `<td class="${isWorst ? 'compare-worst' : ''}">${val}</td>`;
+        }).join('');
+        return `<tr><th>${t(labelKey)}</th>${cells}</tr>`;
+      };
+
+      const diffLabel = (d) => t('compare.diff.' + d);
+      const ratingStars = (n) => n == null ? `<span class="compare-na">${t('compare.notRated')}</span>` : '★'.repeat(n) + '<span class="compare-na">' + '☆'.repeat(5-n) + '</span>';
+
+      const headerCells = rows.map(r => {
+        const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(r.name, r.category, 28) : '';
+        return `<th class="compare-head">${iconHtml}<span>${escHtml(r.name)}</span></th>`;
+      }).join('');
+
+      gridWrap.innerHTML = `<div class="compare-grid"><table>
+        <thead><tr><th></th>${headerCells}</tr></thead>
+        <tbody>
+          ${metricRow('compare.monthly',     r => formatPrice(r.monthly),                'monthly')}
+          ${metricRow('compare.yearly',      r => formatPrice(r.yearly),                 'yearly')}
+          ${metricRow('compare.lifetime',    r => formatPrice(r.lifetimePaid),           'lifetimePaid')}
+          ${metricRow('compare.rating',      r => ratingStars(r.rating),                 'rating')}
+          ${metricRow('compare.cancelDiff',  r => diffLabel(r.cancelDifficulty) + (r.cancelMinutes ? ' · ' + t('compare.minutesAbbr', { n: r.cancelMinutes }) : ''), 'cancelDifficulty')}
+          ${metricRow('compare.alternatives',r => t('compare.altCountN', { n: r.altCount }), null)}
+        </tbody>
+      </table></div>`;
+      gridWrap.style.display = 'block';
+    } else {
+      gridWrap.style.display = 'none';
+    }
   }
 
   // ─── What-If calculator ───
@@ -2349,6 +2456,12 @@
     const demoBtn = $('emptyDemoBtn');
     if (demoBtn) demoBtn.addEventListener('click', injectDemoData);
 
+    // Compare
+    $('menuCompare').addEventListener('click', () => { closeMenuModal(); openCompareModal(); });
+    $('closeCompareModal').addEventListener('click', closeCompareModal);
+    $('compareCloseBtn').addEventListener('click', closeCompareModal);
+    $('compareModal').addEventListener('click', e => { if (e.target === $('compareModal')) closeCompareModal(); });
+
     // What-if calculator
     $('menuWhatIf').addEventListener('click', () => { closeMenuModal(); openWhatIfModal(); });
     $('closeWhatIfModal').addEventListener('click', closeWhatIfModal);
@@ -2496,6 +2609,7 @@
         else if ($('activityModal').classList.contains('active')) closeActivityModal();
         else if ($('whatifModal').classList.contains('active')) closeWhatIfModal();
         else if ($('panicModal').classList.contains('active')) closePanicModal();
+        else if ($('compareModal').classList.contains('active')) closeCompareModal();
       }
       if (e.key === 'Enter' && modal.classList.contains('active')) saveSub();
     });

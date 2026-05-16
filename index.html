@@ -401,6 +401,12 @@
     </div>
 
     <div class="form-group">
+      <label for="subTags" data-i18n="field.tags">Tags</label>
+      <input type="text" id="subTags" data-i18n-placeholder="field.tagsPh" autocomplete="off">
+      <div class="field-note" data-i18n="field.tagsNote">Free-form labels. Separate with commas.</div>
+    </div>
+
+    <div class="form-group">
       <label for="subNotes" data-i18n="field.notes">Notes</label>
       <textarea id="subNotes" rows="2" data-i18n-placeholder="field.notesPh"></textarea>
     </div>
@@ -435,6 +441,21 @@
           <div class="lifetime-cell green">
             <span class="lifetime-cell-label" data-i18n="lifetime.invest10y">10 years invested</span>
             <span class="lifetime-cell-val" id="lifetimeInvest10y">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lifetime-inflation">
+        <div class="lifetime-invest-title" data-i18n="lifetime.inflationTitle">If prices keep rising</div>
+        <div class="lifetime-invest-note" data-i18n="lifetime.inflationNote">Most subs raise prices 3-7%/year. We project 5%.</div>
+        <div class="lifetime-grid">
+          <div class="lifetime-cell amber">
+            <span class="lifetime-cell-label" data-i18n="lifetime.inflated10y">10 years at +5%/yr</span>
+            <span class="lifetime-cell-val" id="lifetimeInflated10y">—</span>
+          </div>
+          <div class="lifetime-cell amber">
+            <span class="lifetime-cell-label">/mo in 10y</span>
+            <span class="lifetime-cell-val" id="lifetimeInflated10yMonthly">—</span>
           </div>
         </div>
       </div>
@@ -756,6 +777,17 @@
           <div>
             <div class="menu-row-label" data-i18n="menu.share">Share leakd.app</div>
             <div class="menu-row-sub" data-i18n="menu.shareSub">Help us grow</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuCompare">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">⚖️</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.compare">Compare side-by-side</div>
+            <div class="menu-row-sub" data-i18n="menu.compareSub">Pick 2 or 3 to compare</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1182,6 +1214,32 @@
   </div>
 </div>
 
+<!-- Compare Modal -->
+<div class="modal-overlay" id="compareModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <h2 data-i18n="compare.title">Compare side-by-side</h2>
+      <button class="btn-icon" id="closeCompareModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="compare.blurb">Pick 2 or 3 subscriptions.</p>
+
+    <div class="compare-picker" id="comparePickerSection">
+      <div class="compare-pick-prompt" id="comparePickPrompt" data-i18n="compare.pickPrompt">Tap to select up to 3 subscriptions</div>
+      <div class="compare-pick-list" id="comparePickList"></div>
+    </div>
+
+    <div class="compare-grid-wrap" id="compareGridWrap" style="display:none"></div>
+
+    <div class="modal-actions">
+      <div style="flex:1"></div>
+      <button class="btn-primary" id="compareCloseBtn" data-i18n="btn.done">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- What-If Calculator Modal -->
 <div class="modal-overlay" id="whatifModal">
   <div class="modal" style="max-width:480px">
@@ -1333,6 +1391,7 @@
 <script src="js/personality.js"></script>
 <script src="js/benchmarks.js"></script>
 <script src="js/whatif.js"></script>
+<script src="js/compare.js"></script>
 <script src="js/notifications.js"></script>
 <script src="js/streak.js"></script>
 <script src="js/leak.js"></script>

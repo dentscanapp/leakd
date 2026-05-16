@@ -55,6 +55,25 @@
     return monthly * ((Math.pow(1 + r, n) - 1) / r);
   }
 
+  // ── Inflation projection ──
+  // Most subscriptions raise prices by 3-7% annually. Netflix went from
+  // $7.99 → $15.99 in 10 years (7% annual). We project at 5% as a balanced
+  // estimate so the user sees the future cost of "just $10/month".
+  function projectedPriceAfter(sub, years, annualRaisePct) {
+    const r = (annualRaisePct == null ? 5 : annualRaisePct) / 100;
+    const monthly = toMonthly(sub.price, sub.cycle);
+    return monthly * Math.pow(1 + r, years);
+  }
+
+  // Total cost over N years assuming `annualRaisePct` price growth per year.
+  // This is the geometric series sum: m * 12 * ((1+r)^n - 1) / r
+  function inflatedFutureCost(sub, years, annualRaisePct) {
+    const r = (annualRaisePct == null ? 5 : annualRaisePct) / 100;
+    const monthly = toMonthly(sub.price, sub.cycle);
+    if (r === 0) return monthly * 12 * years;
+    return monthly * 12 * ((Math.pow(1 + r, years) - 1) / r);
+  }
+
   // ── Full report for the UI ──
   function report(sub, annualReturnPct) {
     const lt = lifetime(sub);
@@ -67,6 +86,9 @@
       next10y: monthly * 12 * 10,
       invested5y: investmentAlternative(sub, 5, annualReturnPct),
       invested10y: investmentAlternative(sub, 10, annualReturnPct),
+      // Inflation (5% annual price hikes — typical SaaS rate)
+      inflated10yMonthly: projectedPriceAfter(sub, 10, 5),
+      inflated10yTotal: inflatedFutureCost(sub, 10, 5),
     };
   }
 
@@ -83,5 +105,6 @@
 
   window.LeakdLifetime = {
     lifetime, futureCost, investmentAlternative, report, aggregateLifetime,
+    projectedPriceAfter, inflatedFutureCost,
   };
 })();
