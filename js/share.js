@@ -119,7 +119,8 @@
       ctx.fillStyle = palette.text;
       ctx.font = '600 30px "DM Sans", system-ui, sans-serif';
       ctx.textAlign = 'left';
-      const name = s.name.length > 22 ? s.name.slice(0, 21) + '…' : s.name;
+      const safeName = s.name || '???';
+      const name = safeName.length > 22 ? safeName.slice(0, 21) + '…' : safeName;
       ctx.fillText(name, 110, y + 50);
 
       // Amount
