@@ -13172,33 +13172,7 @@ const STRINGS = {
     "health.adviceBudget": "You went over a category budget this month. Trim or rebalance.",
     "health.adviceEmpty": "Add subscriptions and rate them to see your score.",
     "health.adviceGeneral": "Healthy mix. Keep your trials and ratings up to date.",
-    "health.adviceIncome": "Subscriptions are taking a big share of your income. Cancel 
-            const key = el.getAttribute(attr);
-            const val = this.t(key);
-            if (attr === 'data-i18n') {
-              if (val.includes('<') && val.includes('>')) el.innerHTML = val;
-              else el.textContent = val;
-            }
-            else if (attr === 'data-i18n-placeholder') el.placeholder = val;
-            else if (attr === 'data-i18n-title') el.title = val;
-          } catch (e) {
-            console.warn(`Translation failed for [${attr}]`, el, e);
-          }
-        });
-      });
-    },
-
-    onChange(fn) {
-      this._listeners.push(fn);
-    },
-
-    STRINGS,
-    FALLBACK,
-    SUPPORTED: supported,
-    lang: FALLBACK,
-    version: '2026-05-16.4'
-  };
-})(); candidates with low ratings.",
+    "health.adviceIncome": "Subscriptions are taking a big share of your income. Cancel candidates with low ratings.",
     "health.advicePerfect": "You\'re crushing it. Keep this up.",
     "health.adviceRating": "Some of your subs are rated low. Those are easy cuts.",
     "health.adviceTrial": "A free trial is about to auto-renew. Decide before it charges you.",
