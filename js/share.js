@@ -65,8 +65,8 @@
       ctx.fillStyle = palette.bg;
       ctx.fillRect(0, 0, W, H);
 
-      // Decorative leak drop
-      drawDrop(ctx, W - 140, 140, 120, palette.accent, 0.18);
+      // Logo badge (top right) — matches icons/icon.svg
+      drawLogoBadge(ctx, W - 220, 60, 160);
 
       // ── Header ──
       ctx.fillStyle = palette.text;
@@ -200,6 +200,27 @@
     ctx.bezierCurveTo(cx - r, cy + r / 2, cx - r, cy - r / 2, cx, cy - r);
     ctx.closePath();
     ctx.fill();
+    ctx.restore();
+  }
+
+  // Mirrors icons/icon.svg: black rounded square (rx=108 in 512 viewBox)
+  // with the red water-drop path. Caller passes top-left x,y and size in px.
+  function drawLogoBadge(ctx, x, y, size) {
+    ctx.save();
+    const k = size / 512;
+
+    // Black rounded square background
+    ctx.fillStyle = '#0f0f0f';
+    roundRect(ctx, x, y, size, size, 108 * k);
+    ctx.fill();
+
+    // Red water-drop path (translated/scaled from SVG viewBox)
+    ctx.translate(x, y);
+    ctx.scale(k, k);
+    ctx.fillStyle = '#ef4444';
+    const drop = new Path2D('M256 80C256 80 140 200 140 290a116 116 0 00232 0c0-90-116-210-116-210z');
+    ctx.fill(drop);
+
     ctx.restore();
   }
 
