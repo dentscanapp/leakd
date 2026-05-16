@@ -73,7 +73,7 @@
       ctx.fillStyle = palette.text;
       ctx.font = '700 56px "DM Sans", system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText('leakd', 80, 140);
+      ctx.fillText('Leakd', 80, 140);
 
       ctx.fillStyle = palette.textDim;
       ctx.font = '500 28px "DM Sans", system-ui, sans-serif';
