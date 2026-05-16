@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v28';
+const CACHE_NAME = 'leakd-v32';
 const ASSETS = [
   './',
   'index.html',

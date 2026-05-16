@@ -308,6 +308,12 @@
     if (s === '¥') return s + Math.round(amount).toLocaleString();
     return s + amount.toFixed(2);
   }
+  // alternatives.js / brands.js store reference prices in USD. Convert to the
+  // user's display currency so suggestions and savings math stay in one unit.
+  function fromUsd(amount) {
+    if (!window.LeakdCurrency || !settings.currencyCode || settings.currencyCode === 'USD') return amount;
+    return window.LeakdCurrency.convert(amount, 'USD', settings.currencyCode);
+  }
   function activeSubs() { return subs.filter(s => !s.paused); }
   function dueLabel(days) {
     if (days === 0) return t('time.today');
@@ -1342,7 +1348,8 @@
     const trAlt = (window.LeakdAlternatives && window.LeakdAlternatives.tr) || (s => s);
     $('altList').innerHTML = alts.map(alt => {
       const isFree = alt.price === 0;
-      const savings = currentMonthly - alt.price;
+      const altPriceLocal = fromUsd(alt.price);
+      const savings = currentMonthly - altPriceLocal;
       const badgeText = isFree ? t('alt.free') : (savings > 0 ? t('alt.cheaper', { amount: formatPrice(savings) }) : '');
       const badgeCls = isFree ? 'alt-free' : 'alt-cheaper';
       return `<div class="alt-row">
@@ -1350,7 +1357,7 @@
           <div class="alt-row-name">${escHtml(trAlt(alt.name))} ${badgeText ? '<span class="alt-badge ' + badgeCls + '">' + badgeText + '</span>' : ''}</div>
           <div class="alt-row-why">${escHtml(trAlt(alt.why))}</div>
         </div>
-        <div class="alt-row-price">${formatPrice(alt.price)}<span>/${t('cycle.mo').replace('/','')}</span></div>
+        <div class="alt-row-price">${formatPrice(altPriceLocal)}<span>/${t('cycle.mo').replace('/','')}</span></div>
       </div>`;
     }).join('');
   }
@@ -1400,7 +1407,7 @@
       return `<button type="button" class="suggest-item" data-i="${i}">
         <span class="suggest-icon" style="background:${b.bg};color:${b.fg};font-size:${fontSize}">${escHtml(b.symbol)}</span>
         <span class="suggest-name">${escHtml(it.name)}</span>
-        <span class="suggest-price">${formatPrice(it.price)}<span>/${t('cycle.mo').replace('/', '')}</span></span>
+        <span class="suggest-price">${formatPrice(fromUsd(it.price))}<span>/${t('cycle.mo').replace('/', '')}</span></span>
       </button>`;
     }).join('');
     box.style.display = 'block';
@@ -1416,7 +1423,9 @@
 
   function applySuggestion(item) {
     $('subName').value = item.name;
-    $('subPrice').value = item.price;
+    // brands.js prices are USD references — convert to the user's display currency
+    const localPrice = fromUsd(item.price);
+    $('subPrice').value = settings.currencyCode === 'HUF' ? Math.round(localPrice) : Number(localPrice.toFixed(2));
     $('subCategory').value = item.category;
     $('subCycle').value = 'monthly';
     hideSuggestions();
@@ -1427,7 +1436,7 @@
     if (subs.length === 0) { toast(t('toast.nothing')); return; }
     const headers = ['Name', 'Price', 'Currency', 'Cycle', 'Category', 'Next Payment', 'Is Trial', 'Trial End', 'Paused', 'Notes', 'Tags', 'Monthly Cost', 'Yearly Cost'];
     const rows = subs.map(s => [
-      s.name, s.price, settings.currencyCode, s.cycle, s.category,
+      s.name, s.price, s.currency || settings.currencyCode, s.cycle, s.category,
       s.nextDate || '', s.isTrial ? 'Yes' : 'No', s.trialEnd || '',
       s.paused ? 'Yes' : 'No', s.notes || '',
       Array.isArray(s.tags) ? s.tags.join('; ') : '',
@@ -1600,7 +1609,7 @@
           <div class="import-row-name">${escHtml(p.name)} ${p.matched ? '<span class="import-tag">' + t('import.detected') + '</span>' : ''}</div>
           <div class="import-row-meta">${escHtml(localizedCat(p.category))} · ${t('cycle.' + p.cycle)}</div>
         </div>
-        <div class="import-row-price">${formatPrice(p.price)}<span>${t('cycle.' + (p.cycle === 'monthly' ? 'mo' : p.cycle === 'yearly' ? 'yr' : 'wk'))}</span></div>
+        <div class="import-row-price">${formatPrice(p.price, p.currency)}<span>${t('cycle.' + (p.cycle === 'monthly' ? 'mo' : p.cycle === 'yearly' ? 'yr' : 'wk'))}</span></div>
       </div>`;
     }).join('');
     $('importPreview').style.display = 'block';
@@ -1616,6 +1625,7 @@
       subs.push({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         name: p.name, price: p.price, cycle: p.cycle, category: p.category,
+        currency: p.currency || settings.currencyCode,
         nextDate: p.nextDate || nextMonthIso(),
         isTrial: false, trialEnd: '', paused: false, notes: '',
         createdAt: new Date().toISOString()
@@ -1655,7 +1665,7 @@
             <div class="import-row-name">${escHtml(p.name)}</div>
             <div class="import-row-meta">${escHtml(localizedCat(p.category))} · ${t('cycle.' + p.cycle)}</div>
           </div>
-          <div class="import-row-price">${formatPrice(p.price)}<span>${t('cycle.' + (p.cycle === 'monthly' ? 'mo' : p.cycle === 'yearly' ? 'yr' : 'wk'))}</span></div>
+          <div class="import-row-price">${formatPrice(p.price, p.currency)}<span>${t('cycle.' + (p.cycle === 'monthly' ? 'mo' : p.cycle === 'yearly' ? 'yr' : 'wk'))}</span></div>
         </div>`;
       }).join('');
       $('importPreview').style.display = 'block';
@@ -2404,7 +2414,7 @@
   function resetAll() {
     if (!confirm(t('reset.confirm1'))) return;
     if (!confirm(t('reset.confirm2'))) return;
-    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done','leakd_activity']
+    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done','leakd_activity','leakd_rates','leakd_streak']
       .forEach(k => localStorage.removeItem(k));
     location.reload();
   }

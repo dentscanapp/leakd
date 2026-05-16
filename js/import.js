@@ -277,7 +277,13 @@
   }
 
   // Find a price-like number anywhere in a line. Accepts $, €, £, Ft, ¥, R$, A$.
-  const PRICE_RE = /(\$|€|£|¥|₹|R\$|A\$|Ft)?\s*([0-9]+(?:[.,][0-9]{1,2})?)/;
+  const PRICE_RE = /(\$|€|£|¥|₹|R\$|A\$|Ft|zł|kr|Kč|lei|₺|Rp|฿)?\s*([0-9]+(?:[.,][0-9]{1,2})?)/;
+
+  const SYMBOL_TO_CODE = {
+    '$': 'USD', '€': 'EUR', '£': 'GBP', '¥': 'JPY', '₹': 'INR',
+    'R$': 'BRL', 'A$': 'AUD', 'Ft': 'HUF', 'zł': 'PLN', 'kr': 'SEK',
+    'Kč': 'CZK', 'lei': 'RON', '₺': 'TRY', 'Rp': 'IDR', '฿': 'THB',
+  };
 
   function parseLine(raw) {
     const line = raw.trim();
@@ -289,12 +295,14 @@
     // Identify known service
     const known = KNOWN.find(k => k.match.test(line));
 
-    // Extract price
+    // Extract price (and currency from the symbol, if present)
     const m = line.match(PRICE_RE);
     let price = known ? known.price : null;
+    let currency = null;
     if (m) {
       const p = parseFloat(m[2].replace(',', '.'));
       if (!isNaN(p) && p > 0 && p < 10000) price = p;
+      if (m[1] && SYMBOL_TO_CODE[m[1]]) currency = SYMBOL_TO_CODE[m[1]];
     }
 
     // Name fallback: first 1-3 word phrase that's not a number
@@ -321,6 +329,7 @@
     return {
       name,
       price,
+      currency,
       cycle,
       category: known ? known.cat : 'Other',
       matched: !!known,
@@ -351,6 +360,7 @@
     const header = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
     const nameI = header.indexOf('name');
     const priceI = header.indexOf('price');
+    const currencyI = header.indexOf('currency');
     const cycleI = header.indexOf('cycle');
     const catI = header.indexOf('category');
     const dateI = header.indexOf('next payment');
@@ -365,6 +375,7 @@
       out.push({
         name,
         price,
+        currency: currencyI !== -1 ? (cells[currencyI] || null) : null,
         cycle: (cells[cycleI] || 'monthly').toLowerCase(),
         category: cells[catI] || 'Other',
         nextDate: cells[dateI] || '',
