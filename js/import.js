@@ -312,14 +312,16 @@
         } else {
           raw = raw.replace(/\./g, '').replace(',', '.'); // comma is decimal
         }
+      // 3. Heuristic for single separator (dot or comma)
       } else if (raw.includes(',')) {
-        // Only comma: if it's followed by 1-2 digits at the end, it's decimal
+        // Only comma: decimal if 1-2 digits after, else thousands (e.g. 1,200)
         if (raw.match(/,[0-9]{1,2}$/)) raw = raw.replace(',', '.');
         else raw = raw.replace(/,/g, '');
       } else if (raw.includes('.')) {
-        // Only dot: if it's followed by 1-2 digits at the end, it's decimal
-        // UNLESS it's a huge number like 1.200 where it's likely thousands
-        if (raw.match(/\.[0-9]{1,2}$/) && raw.length <= 6) { /* decimal */ }
+        // Only dot: thousands if followed by exactly 3 digits (e.g. 1.200)
+        if (raw.match(/\.[0-9]{3}$/)) raw = raw.replace(/\./g, '');
+        // Decimal if followed by 1-2 digits (e.g. 1.20)
+        else if (raw.match(/\.[0-9]{1,2}$/)) { /* keep dot */ }
         else raw = raw.replace(/\./g, '');
       }
       

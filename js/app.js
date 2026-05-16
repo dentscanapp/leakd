@@ -1680,7 +1680,7 @@
         </div>`;
       }).join('');
       $('importPreview').style.display = 'block';
-      $('importCount').textContent = String(importStaged.length);
+      $('importPreviewTitle').textContent = t('import.found', { count: importStaged.length });
       $('confirmImportBtn').disabled = false;
       $('confirmImportBtn').textContent = t('import.confirm', { count: importStaged.length });
     };

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v36';
+const CACHE_NAME = 'leakd-v38';
 const ASSETS = [
   './',
   'index.html',
@@ -72,20 +72,21 @@ const I18N = {
 
 // Install: cache all assets
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
 });
 
-// Activate: clean old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+    Promise.all([
+      self.clients.claim(),
+      caches.keys().then(keys =>
+        Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+      )
+    ])
   );
-  self.clients.claim();
 });
 
 // Fetch: cache first, then network. Cross-origin requests bypass the SW entirely
@@ -193,7 +194,7 @@ async function runScheduledCheck() {
         const key = `${s.id}|trial|${s.trialEnd}`;
         if (!log[key] && fireAt.getTime() <= now && trial.getTime() >= now - 86400000) {
           const title = L.trialTitle.replace('{name}', s.name).replace('{when}', whenLabel(prefs.trialDaysBefore));
-          const body = L.trialBody.replace('{price}', fmtMoney(s.price, s.currency));
+          const body = L.trialBody.replace('{price}', fmtMoney(s.price, s.currency, lang));
           await self.registration.showNotification(title, {
             body,
             icon: 'icons/icon-192.png',
@@ -215,7 +216,7 @@ async function runScheduledCheck() {
         if (!log[key] && fireAt.getTime() <= now && due.getTime() >= now - 86400000) {
           const title = L.renewTitle.replace('{name}', s.name).replace('{when}', whenLabel(prefs.daysBefore));
           const cycleLabel = L[s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk'] || '';
-          const body = L.renewBody.replace('{price}', fmtMoney(s.price, s.currency)).replace('{cycle}', cycleLabel);
+          const body = L.renewBody.replace('{price}', fmtMoney(s.price, s.currency, lang)).replace('{cycle}', cycleLabel);
           await self.registration.showNotification(title, {
             body,
             icon: 'icons/icon-192.png',
@@ -254,10 +255,10 @@ async function writeFiredLog(log) {
   }));
 }
 
-function fmtMoney(amount, currency) {
+function fmtMoney(amount, currency, lang) {
   const s = currency || '$';
-  const lang = 'hu'; // SW context is limited, but we can assume hu if needed or use simple logic
-  if (s === 'Ft') return Math.round(amount).toLocaleString(lang) + ' Ft';
-  if (s === '¥') return s + Math.round(amount).toLocaleString(lang);
-  return s + Number(amount).toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const l = lang || 'hu';
+  if (s === 'Ft') return Math.round(amount).toLocaleString(l) + ' Ft';
+  if (s === '¥') return s + Math.round(amount).toLocaleString(l);
+  return s + Number(amount).toLocaleString(l, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
