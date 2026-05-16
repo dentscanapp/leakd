@@ -1181,7 +1181,11 @@
     }
     saveData();
     closeModalFn();
-    render();
+    if (window.LeakdCurrency) {
+      window.LeakdCurrency.sync(subs).then(() => render());
+    } else {
+      render();
+    }
   }
 
   function deleteSub() {

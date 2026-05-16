@@ -18,7 +18,12 @@
   let ratesData = {
     base: 'EUR',
     date: '',
-    rates: { 'EUR': 1 },
+    rates: { 
+      'EUR': 1,
+      'HUF': 395, // Rough fallback to avoid 1:1 disaster before first sync
+      'USD': 1.08,
+      'GBP': 0.86
+    },
     updatedAt: 0
   };
 
