@@ -277,7 +277,8 @@
   }
 
   // Find a price-like number anywhere in a line. Accepts $, €, £, Ft, ¥, R$, A$.
-  const PRICE_RE = /(\$|€|£|¥|₹|R\$|A\$|Ft|zł|kr|Kč|lei|₺|Rp|฿)?\s*([0-9]+(?:[.,][0-9]{1,2})?)/;
+  // Currency symbol may appear before the number ("$15.99") OR after ("5000 Ft").
+  const PRICE_RE = /(\$|€|£|¥|₹|R\$|A\$|Ft|zł|kr|Kč|lei|₺|Rp|฿)?\s*([0-9]+(?:[.,][0-9]{1,2})?)\s*(\$|€|£|¥|₹|R\$|A\$|Ft|zł|kr|Kč|lei|₺|Rp|฿)?/;
 
   const SYMBOL_TO_CODE = {
     '$': 'USD', '€': 'EUR', '£': 'GBP', '¥': 'JPY', '₹': 'INR',
@@ -302,7 +303,8 @@
     if (m) {
       const p = parseFloat(m[2].replace(',', '.'));
       if (!isNaN(p) && p > 0 && p < 10000) price = p;
-      if (m[1] && SYMBOL_TO_CODE[m[1]]) currency = SYMBOL_TO_CODE[m[1]];
+      const sym = m[1] || m[3];
+      if (sym && SYMBOL_TO_CODE[sym]) currency = SYMBOL_TO_CODE[sym];
     }
 
     // Name fallback: first 1-3 word phrase that's not a number
