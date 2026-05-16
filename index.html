@@ -236,12 +236,19 @@
       <div id="bundlesList"></div>
     </div>
 
-    <div class="chart-card" id="goalCard" style="display:none">
-      <div class="chart-title" data-i18n="goal.title">Savings goal</div>
+    <div class="chart-card goal-card" id="goalCard" style="display:none">
+      <div class="goal-header">
+        <div class="goal-icon">🐷</div>
+        <div class="goal-titles">
+          <div class="chart-title" style="margin:0" id="goalTitleDisplay">Savings goal</div>
+          <div class="goal-subtitle" id="goalTargetDisplay">$0</div>
+        </div>
+      </div>
       <div class="goal-progress-wrap">
         <div class="goal-progress-bar"><div class="goal-progress-fill" id="goalProgressFill" style="width:0%"></div></div>
         <div class="goal-progress-text" id="goalProgressText">—</div>
       </div>
+      <div class="goal-estimate" id="goalEstimate" style="display:none"></div>
     </div>
 
     <div class="suggestions">
@@ -1222,7 +1229,10 @@
       </button>
     </div>
 
-    <p class="notif-blurb" data-i18n="goal.blurb">How much do you want to save this year?</p>
+    <div class="form-group">
+      <label for="goalName" data-i18n="goal.nameLabel">What are you saving for?</label>
+      <input type="text" id="goalName" placeholder="e.g. New iPhone, Vacation">
+    </div>
 
     <div class="form-group">
       <label for="goalAmount" data-i18n="goal.label">Target amount</label>

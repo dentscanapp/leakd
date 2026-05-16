@@ -1407,6 +1407,67 @@ a.btn-primary {
   padding: 0 20px 12px;
 }
 
+/* ── Savings Goal (Piggy Bank) ── */
+.goal-card {
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.goal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.goal-icon {
+  font-size: 28px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(236, 72, 153, 0.1);
+  border-radius: var(--radius-sm);
+}
+.goal-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.goal-progress-wrap {
+  margin-bottom: 12px;
+}
+.goal-progress-bar {
+  height: 8px;
+  background: var(--bg-card-hover);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.goal-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.goal-progress-text {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+.goal-estimate {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border-left: 3px solid #10b981;
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.goal-estimate strong {
+  color: #059669;
+}
+
 /* ── Backup & Restore cards ── */
 .backup-card {
   display: flex;

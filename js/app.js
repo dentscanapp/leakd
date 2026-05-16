@@ -284,6 +284,7 @@
     if (cycle === 'yearly') return p / 12;
     return p;
   }
+  window.toMonthly = toMonthly;
   function toYearly(price, cycle, currency) {
     let p = price;
     if (currency && window.LeakdCurrency) {
@@ -2111,9 +2112,10 @@
   // ─── Savings goal ───
   function openGoalModal() {
     if (!window.LeakdGoals) return;
-    $('goalCurrencySymbol').textContent = settings.currency;
+    $('goalCurrencySymbol').textContent = window.LeakdCurrency ? window.LeakdCurrency.getSymbol(settings.currencyCode) : settings.currency;
     const current = window.LeakdGoals.load();
     if (current) {
+      $('goalName').value = current.name || '';
       $('goalAmount').value = current.target;
       $('goalClearBtn').style.display = 'inline-block';
       const prog = window.LeakdGoals.progress();
@@ -2126,20 +2128,22 @@
         });
       }
     } else {
+      $('goalName').value = '';
       $('goalAmount').value = '';
       $('goalClearBtn').style.display = 'none';
       $('goalProgressBlock').style.display = 'none';
     }
     $('goalModal').classList.add('active');
-    setTimeout(() => $('goalAmount').focus(), 100);
+    setTimeout(() => $('goalName').focus(), 100);
   }
   function closeGoalModal() { $('goalModal').classList.remove('active'); }
 
   function saveGoal() {
     if (!window.LeakdGoals) return;
+    const name = $('goalName').value.trim();
     const amt = parseFloat($('goalAmount').value);
     if (!amt || amt <= 0) { $('goalAmount').focus(); return; }
-    window.LeakdGoals.set(amt);
+    window.LeakdGoals.set(amt, name);
     closeGoalModal();
     render();
     toast(t('toast.goalSaved'));
@@ -2159,6 +2163,10 @@
     const prog = window.LeakdGoals.progress();
     if (!prog) { card.style.display = 'none'; return; }
     card.style.display = 'block';
+
+    if ($('goalTitleDisplay')) $('goalTitleDisplay').textContent = prog.goal.name || t('goal.title');
+    if ($('goalTargetDisplay')) $('goalTargetDisplay').textContent = formatPrice(prog.target);
+
     $('goalProgressFill').style.width = Math.min(100, prog.pct) + '%';
     if (prog.complete) {
       $('goalProgressText').textContent = t('goal.complete');
@@ -2168,6 +2176,21 @@
         target: formatPrice(prog.target),
       });
     }
+
+    // Piggy Bank Estimate
+    const est = window.LeakdGoals.estimate(subs);
+    const estEl = $('goalEstimate');
+    if (est && !prog.complete) {
+      estEl.style.display = 'block';
+      estEl.innerHTML = t('goal.estimate', {
+        count: est.lowRatedCount,
+        months: est.monthsNeeded,
+        savings: formatPrice(est.monthlySavings)
+      });
+    } else {
+      estEl.style.display = 'none';
+    }
+
     // Check milestone (toast it + confetti)
     const ms = window.LeakdGoals.checkMilestone();
     if (ms != null) {

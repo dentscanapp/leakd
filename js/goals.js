@@ -20,17 +20,15 @@
     localStorage.setItem(KEY, JSON.stringify(goal));
   }
 
-  // Create or update the active goal.
-  // target: total amount the user wants to save annually (or by deadline).
-  // deadline: ISO date string (optional — defaults to end of current year).
-  function set(targetAmount, deadlineISO) {
+  // target: total amount the user wants to save.
+  function set(targetAmount, name) {
     if (!targetAmount || targetAmount <= 0) {
       localStorage.removeItem(KEY);
       return null;
     }
     const goal = {
+      name: name || 'Savings Goal',
       target: Number(targetAmount),
-      deadline: deadlineISO || new Date(new Date().getFullYear(), 11, 31).toISOString(),
       createdAt: new Date().toISOString(),
       milestones: { 25: false, 50: false, 75: false, 100: false },
     };
@@ -86,5 +84,34 @@
     return null;
   }
 
-  window.LeakdGoals = { set, clear, load, progress, checkMilestone };
+  // Calculate "If you cancel these low-rated subs, you'll reach the goal in X months"
+  function estimate(subs) {
+    const goal = load();
+    if (!goal || !subs || subs.length === 0) return null;
+
+    const lowRated = subs.filter(s => !s.paused && typeof s.rating === 'number' && s.rating > 0 && s.rating <= 2);
+    if (lowRated.length === 0) return null;
+
+    let monthlySavings = 0;
+    lowRated.forEach(s => {
+      // Use the toMonthly helper if available (it should be global or we can duplicate it)
+      const m = window.toMonthly ? window.toMonthly(s.price, s.cycle, s.currency) : (s.cycle === 'yearly' ? s.price / 12 : s.price);
+      monthlySavings += m;
+    });
+
+    if (monthlySavings <= 0) return null;
+
+    const prog = progress();
+    const remaining = prog ? prog.remaining : goal.target;
+    const monthsNeeded = Math.ceil(remaining / monthlySavings);
+
+    return {
+      lowRatedCount: lowRated.length,
+      monthlySavings,
+      monthsNeeded,
+      lowRatedNames: lowRated.map(s => s.name)
+    };
+  }
+
+  window.LeakdGoals = { set, clear, load, progress, checkMilestone, estimate };
 })();
