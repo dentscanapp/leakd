@@ -1,28 +1,34 @@
 // Leakd — Pro license gate
-// Stores the Gumroad license key locally and exposes a simple `isPro()` check.
+// Uses the Digital Goods API (Google Play Billing) for TWA.
 //
 // Verification strategy:
-//   • Cheap path (now): basic format check + presence flag. Trust-the-user.
-//   • Hardened path (later, when there are 500+ users): a tiny Cloudflare
-//     Worker calls the Gumroad license verify API and returns a signed JWT
-//     the client caches for 7 days. Until then we don't burn time on it.
+//   • We check with the Google Play Billing service on launch.
+//   • Purchases are tied to the user's Google Account.
 
 (function () {
   'use strict';
 
   const PRO_KEY = 'leakd_pro';
-  const GUMROAD_PRODUCT_URL = 'https://gumroad.com/l/leakd-pro';
-  const GUMROAD_VERIFY_URL = 'https://api.gumroad.com/v2/licenses/verify';
-  const GUMROAD_PERMALINK = 'leakd-pro'; // change to match your Gumroad product permalink
+  const PLAY_BILLING_METHOD = 'https://play.google.com/billing';
+  const SKUS = {
+    MONTHLY: 'pro_monthly',
+    YEARLY: 'pro_yearly'
+  };
 
   const Pro = {
-    state: { active: false, key: '', verifiedAt: 0, plan: '' },
+    state: { active: false, verifiedAt: 0, plan: '', sku: '' },
 
     load() {
       try {
         const raw = localStorage.getItem(PRO_KEY);
         if (raw) this.state = { ...this.state, ...JSON.parse(raw) };
       } catch {}
+      
+      // Auto-restore check if we're in a TWA
+      if (this.isTwa()) {
+        this.restore();
+      }
+      
       return this.state;
     },
 
@@ -34,65 +40,104 @@
       return !!this.state.active;
     },
 
-    productUrl() {
-      return GUMROAD_PRODUCT_URL;
+    isTwa() {
+      return window.matchMedia('(display-mode: standalone)').matches || 
+             (window.navigator.userAgent.includes('TWA') || !!window.DigitalGoodsService);
     },
 
-    // ── Activate via license key ──
-    // First tries the live Gumroad endpoint. If the network call fails or is
-    // blocked by CORS we fall back to a format check so the user is never
-    // locked out by a transient issue (we'll re-verify next launch).
-    async activate(key) {
-      key = (key || '').trim();
-      if (!this.looksValid(key)) {
-        return { ok: false, error: 'That key doesn\'t look right. Check your Gumroad receipt and try again.' };
+    // ── Google Play Billing ──
+    
+    async getService() {
+      if (!window.getDigitalGoodsService) return null;
+      try {
+        return await window.getDigitalGoodsService(PLAY_BILLING_METHOD);
+      } catch (e) {
+        console.warn('Digital Goods API not available', e);
+        return null;
+      }
+    },
+
+    async purchase(skuId = SKUS.MONTHLY) {
+      const service = await this.getService();
+      if (!service) {
+        return { ok: false, error: 'Google Play Billing is not available. Please ensure you are using the app from the Play Store.' };
       }
 
       try {
-        const res = await fetch(GUMROAD_VERIFY_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            product_permalink: GUMROAD_PERMALINK,
-            license_key: key,
-            increment_uses_count: 'false',
-          }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.success) {
-            this.state = {
-              active: true,
-              key,
-              verifiedAt: Date.now(),
-              plan: (data.purchase && data.purchase.variants) || 'pro',
-            };
-            this.save();
-            return { ok: true };
-          }
-          return { ok: false, error: 'Gumroad says this key isn\'t valid for Leakd Pro.' };
-        }
-      } catch {
-        // Fall through to offline activation
-      }
+        const paymentMethods = [{
+          supportedMethods: PLAY_BILLING_METHOD,
+          data: { sku: skuId }
+        }];
+        
+        const paymentDetails = {
+          total: { label: 'Total', amount: { currency: 'USD', value: '0' } } // Amount is defined in Play Console
+        };
 
-      // Offline fallback — accept it, re-check later
-      this.state = { active: true, key, verifiedAt: 0, plan: 'pro' };
-      this.save();
-      return { ok: true, offline: true };
+        const request = new PaymentRequest(paymentMethods, paymentDetails);
+        const response = await request.show();
+        
+        // At this point the user has completed the flow in the Play Store overlay
+        const { purchaseToken } = response.details;
+        
+        if (purchaseToken) {
+          // Tell the billing service that the purchase was successful and should be acknowledged
+          await service.acknowledge(purchaseToken, 'repeatable');
+          
+          this.state = {
+            active: true,
+            verifiedAt: Date.now(),
+            plan: skuId === SKUS.YEARLY ? 'yearly' : 'monthly',
+            sku: skuId
+          };
+          this.save();
+          await response.complete('success');
+          return { ok: true };
+        } else {
+          await response.complete('fail');
+          return { ok: false, error: 'Purchase failed or was cancelled.' };
+        }
+      } catch (e) {
+        console.error('Purchase error', e);
+        return { ok: false, error: e.message || 'An error occurred during purchase.' };
+      }
+    },
+
+    async restore() {
+      const service = await this.getService();
+      if (!service) return { ok: false };
+
+      try {
+        const purchases = await service.listPurchases();
+        const activePro = purchases.find(p => p.itemId === SKUS.MONTHLY || p.itemId === SKUS.YEARLY);
+        
+        if (activePro) {
+          this.state = {
+            active: true,
+            verifiedAt: Date.now(),
+            plan: activePro.itemId === SKUS.YEARLY ? 'yearly' : 'monthly',
+            sku: activePro.itemId
+          };
+          this.save();
+          return { ok: true };
+        } else {
+          // If we thought we were Pro but Play Store says no, deactivate
+          if (this.state.active) {
+            this.deactivate();
+          }
+          return { ok: false };
+        }
+      } catch (e) {
+        console.error('Restore error', e);
+        return { ok: false };
+      }
     },
 
     deactivate() {
-      this.state = { active: false, key: '', verifiedAt: 0, plan: '' };
+      this.state = { active: false, verifiedAt: 0, plan: '', sku: '' };
       this.save();
     },
 
-    looksValid(key) {
-      // Gumroad license keys are 4 groups of 8 hex chars separated by dashes
-      return /^[A-Z0-9]{4,}(-[A-Z0-9]{4,}){2,}$/i.test(key);
-    },
-
-    // ── Premium feature catalogue (so the UI can render lock icons) ──
+    // ── Premium feature catalogue ──
     features: {
       'csv-export':    { name: 'CSV export', free: true },
       'unlimited':     { name: 'Unlimited subscriptions', free: true },
@@ -110,3 +155,4 @@
 
   window.LeakdPro = Pro;
 })();
+

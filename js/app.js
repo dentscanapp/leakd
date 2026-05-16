@@ -1442,42 +1442,32 @@
     $('proStateActive').style.display = active ? 'block' : 'none';
     $('proStateInactive').style.display = active ? 'none' : 'block';
     if (active) {
-      $('proKeyDisplay').textContent = maskKey(P.state.key);
-    } else {
-      $('proBuyBtn').href = P.productUrl();
-      $('proKey').value = '';
-      $('proError').style.display = 'none';
+      const plan = P.state.plan || 'pro';
+      $('proPlanDisplay').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
     }
     m.classList.add('active');
   }
-  function maskKey(k) { if (!k || k.length < 8) return k || ''; return k.slice(0, 8) + '–•••••••••••• ' + k.slice(-4); }
   function closeProModal() { $('proModal').classList.remove('active'); }
-  async function activatePro() {
+  async function buyPro(skuId) {
     const P = window.LeakdPro;
-    const key = $('proKey').value;
-    const err = $('proError');
-    err.style.display = 'none';
-    const btn = $('proActivateBtn');
-    btn.disabled = true; btn.textContent = t('pro.verifying');
-    const result = await P.activate(key);
-    btn.disabled = false; btn.textContent = t('pro.activate');
-    if (!result.ok) {
-      // Map known error strings to translated ones
-      const msg = result.error && /key doesn|kulcs nem|schlüssel|chave|chiave|clé|clave/i.test(result.error)
-        ? t('pro.invalidKey') : t('pro.invalidServer');
-      err.textContent = msg;
-      err.style.display = 'block';
-      return;
+    const btnId = skuId === 'pro_yearly' ? 'proBuyYearlyBtn' : 'proBuyMonthlyBtn';
+    const btn = $(btnId);
+    btn.disabled = true;
+    const oldText = btn.textContent;
+    btn.textContent = t('pro.verifying');
+    
+    const result = await P.purchase(skuId);
+    btn.disabled = false;
+    btn.textContent = oldText;
+    
+    if (result.ok) {
+      refreshProUI();
+      openProModal();
+      toast(t('pro.activated'));
+      if (window.LeakdConfetti) window.LeakdConfetti.burst();
+    } else if (result.error) {
+      toast(result.error);
     }
-    refreshProUI();
-    openProModal();
-    toast(result.offline ? t('pro.activatedOffline') : t('pro.activated'));
-  }
-  function deactivatePro() {
-    if (!confirm(t('pro.confirmRemove'))) return;
-    window.LeakdPro.deactivate();
-    refreshProUI();
-    openProModal();
   }
   function refreshProUI() {
     const P = window.LeakdPro;
@@ -2505,8 +2495,8 @@
 
     $('closeProModal').addEventListener('click', closeProModal);
     $('proModal').addEventListener('click', e => { if (e.target === $('proModal')) closeProModal(); });
-    $('proActivateBtn').addEventListener('click', activatePro);
-    $('proDeactivateBtn').addEventListener('click', deactivatePro);
+    $('proBuyMonthlyBtn').addEventListener('click', () => buyPro('pro_monthly'));
+    $('proBuyYearlyBtn').addEventListener('click', () => buyPro('pro_yearly'));
     $('proCloseActiveBtn').addEventListener('click', closeProModal);
 
     const streakBtn = $('streakBtn');
