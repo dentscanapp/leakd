@@ -28,8 +28,20 @@
     return cur + Number(amount).toFixed(2);
   }
 
+  function tr(key, params) {
+    try {
+      if (window.LeakdI18n && typeof window.LeakdI18n.t === 'function') {
+        const r = window.LeakdI18n.t(key, params || {});
+        if (typeof r === 'string') return r;
+      }
+    } catch (e) {
+      console.warn('LeakdShare tr failed for', key, e);
+    }
+    return key;
+  }
+
   function pickTagline(monthly) {
-    const t = window.LeakdI18n ? window.LeakdI18n.t.bind(window.LeakdI18n) : (k) => k;
+    const t = tr;
     if (monthly === 0) return t('share.tag0');
     if (monthly < 10)  return t('share.tag1');
     if (monthly < 30)  return t('share.tag2');
@@ -47,7 +59,7 @@
     const ctx = canvas.getContext('2d');
 
     try {
-      const t = window.LeakdI18n ? window.LeakdI18n.t.bind(window.LeakdI18n) : (k) => k;
+      const t = tr;
 
       // Background
       ctx.fillStyle = palette.bg;
@@ -231,7 +243,7 @@
   async function shareOrDownload(subs, currency) {
     const { blob, canvas } = await generate(subs, currency);
     const file = new File([blob], 'my-leakd.png', { type: 'image/png' });
-    const t = window.LeakdI18n ? window.LeakdI18n.t.bind(window.LeakdI18n) : (k) => k;
+    const t = tr;
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
