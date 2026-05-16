@@ -101,6 +101,26 @@
     return symbols[code] || code;
   }
 
+  function toMonthly(price, cycle, currency) {
+    let p = price;
+    if (currency && window.LeakdCurrency && window.LeakdState) {
+      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
+    }
+    if (cycle === 'weekly') return p * 4.33;
+    if (cycle === 'yearly') return p / 12;
+    return p;
+  }
+
+  function toYearly(price, cycle, currency) {
+    let p = price;
+    if (currency && window.LeakdCurrency && window.LeakdState) {
+      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
+    }
+    if (cycle === 'weekly') return p * 52;
+    if (cycle === 'monthly') return p * 12;
+    return p;
+  }
+
   // Initialize
   load();
 
@@ -108,6 +128,8 @@
     sync,
     convert,
     getSymbol,
+    toMonthly,
+    toYearly,
     get rates() { return ratesData.rates; },
     get supported() { return SUPPORTED; }
   };

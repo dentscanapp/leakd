@@ -7,13 +7,14 @@
 (function () {
   'use strict';
 
-  function toMonthly(price, cycle) {
+  function toMonthly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
     return price;
   }
-
-  function toYearly(price, cycle) {
+  function toYearly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toYearly(price, cycle, currency);
     if (cycle === 'weekly') return price * 52;
     if (cycle === 'monthly') return price * 12;
     return price;
@@ -22,8 +23,8 @@
   // Build comparable metrics for each sub. Caller picks the columns.
   function build(subs) {
     return subs.map(s => {
-      const monthly = toMonthly(s.price, s.cycle);
-      const yearly = toYearly(s.price, s.cycle);
+      const monthly = toMonthly(s.price, s.cycle, s.currency);
+      const yearly = toYearly(s.price, s.cycle, s.currency);
       let lifetimePaid = 0;
       if (window.LeakdLifetime) {
         const lt = window.LeakdLifetime.lifetime(s);

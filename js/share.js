@@ -65,7 +65,7 @@
     ctx.fillText(t('share.tagline'), 80, 184);
 
     // big number
-    const monthly = subs.reduce((sum, s) => sum + toMonthly(s.price, s.cycle), 0);
+    const monthly = subs.reduce((sum, s) => sum + toMonthly(s.price, s.cycle, s.currency), 0);
     const yearly = monthly * 12;
 
     ctx.fillStyle = palette.textDim;
@@ -91,7 +91,7 @@
     ctx.fillText(t('share.topLeaks'), 80, 720);
 
     const top = [...subs]
-      .map(s => ({ ...s, monthly: toMonthly(s.price, s.cycle) }))
+      .map(s => ({ ...s, monthly: toMonthly(s.price, s.cycle, s.currency) }))
       .sort((a, b) => b.monthly - a.monthly)
       .slice(0, 5);
 
@@ -156,7 +156,8 @@
     return canvas;
   }
 
-  function toMonthly(price, cycle) {
+  function toMonthly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
     return price;

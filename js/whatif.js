@@ -7,13 +7,14 @@
 (function () {
   'use strict';
 
-  function toMonthly(price, cycle) {
+  function toMonthly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
     return price;
   }
-
-  function toYearly(price, cycle) {
+  function toYearly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toYearly(price, cycle, currency);
     if (cycle === 'weekly') return price * 52;
     if (cycle === 'monthly') return price * 12;
     return price;
@@ -32,10 +33,10 @@
     let cancelledItems = [];
 
     active.forEach(s => {
-      const m = toMonthly(s.price, s.cycle);
+      const m = toMonthly(s.price, s.cycle, s.currency);
       currentMonthly += m;
       if (cancelledSet.has(s.id)) {
-        cancelledItems.push({ ...s, monthly: m, yearly: toYearly(s.price, s.cycle) });
+        cancelledItems.push({ ...s, monthly: m, yearly: toYearly(s.price, s.cycle, s.currency) });
         // Investment alternative (7% annual, monthly compounding) — same math as lifetime.js
         const r = 0.07 / 12;
         const fv5 = m * ((Math.pow(1 + r, 60) - 1) / r);
@@ -74,10 +75,10 @@
       .filter(s => !s.paused)
       .map(s => ({
         ...s,
-        monthly: toMonthly(s.price, s.cycle),
+        monthly: toMonthly(s.price, s.cycle, s.currency),
         // score: low rating = high cancel score, expensive = higher score
         score: ((typeof s.rating === 'number' && s.rating > 0) ? (6 - s.rating) : 3) * 10
-             + toMonthly(s.price, s.cycle),
+             + toMonthly(s.price, s.cycle, s.currency),
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, n)

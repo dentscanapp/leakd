@@ -1,47 +1,74 @@
-const CACHE_NAME = 'leakd-v20';
+const CACHE_NAME = 'leakd-v21';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/privacy.html',
-  '/terms.html',
-  '/css/app.css',
-  '/js/app.js',
-  '/js/notifications.js',
-  '/js/insights.js',
-  '/js/pro.js',
-  '/js/share.js',
-  '/js/import.js',
-  '/js/i18n.js',
-  '/js/calendar.js',
-  '/js/yearend.js',
-  '/js/backup.js',
-  '/js/brands.js',
-  '/js/budgets.js',
-  '/js/history.js',
-  '/js/income.js',
-  '/js/locale.js',
-  '/js/cancelled.js',
-  '/js/lifetime.js',
-  '/js/calview.js',
-  '/js/bankparse.js',
-  '/js/goals.js',
-  '/js/bundles.js',
-  '/js/health.js',
-  '/js/confetti.js',
-  '/js/tour.js',
-  '/js/palette.js',
-  '/js/alternatives.js',
-  '/js/shortcuts.js',
-  '/js/activity.js',
-  '/js/personality.js',
-  '/js/benchmarks.js',
-  '/js/whatif.js',
-  '/js/compare.js',
-  '/manifest.json',
-  '/icons/icon.svg',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  './',
+  'index.html',
+  'privacy.html',
+  'terms.html',
+  'css/app.css',
+  'js/app.js',
+  'js/notifications.js',
+  'js/insights.js',
+  'js/pro.js',
+  'js/share.js',
+  'js/import.js',
+  'js/i18n.js',
+  'js/calendar.js',
+  'js/yearend.js',
+  'js/backup.js',
+  'js/brands.js',
+  'js/budgets.js',
+  'js/history.js',
+  'js/income.js',
+  'js/locale.js',
+  'js/cancelled.js',
+  'js/lifetime.js',
+  'js/calview.js',
+  'js/bankparse.js',
+  'js/goals.js',
+  'js/bundles.js',
+  'js/health.js',
+  'js/confetti.js',
+  'js/tour.js',
+  'js/palette.js',
+  'js/alternatives.js',
+  'js/shortcuts.js',
+  'js/activity.js',
+  'js/personality.js',
+  'js/benchmarks.js',
+  'js/whatif.js',
+  'js/compare.js',
+  'js/currency.js',
+  'js/pdf.js',
+  'js/streak.js',
+  'js/leak.js',
+  'manifest.json',
+  'icons/icon.svg',
+  'icons/icon-192.png',
+  'icons/icon-512.png'
 ];
+
+const I18N = {
+  en: {
+    trialTitle: '{name} free trial ends {when}',
+    trialBody: 'Will auto-renew at {price}. Cancel now if you don\'t want it.',
+    renewTitle: '{name} renews {when}',
+    renewBody: '{price} {cycle} — still using it?',
+    today: 'today',
+    tomorrow: 'tomorrow',
+    inDays: 'in {n} days',
+    mo: '/mo', yr: '/yr', wk: '/wk'
+  },
+  hu: {
+    trialTitle: '{name} próbaidőszak vége: {when}',
+    trialBody: 'Megújul ekkor: {price}. Mondd le most, ha nem akarod megtartani.',
+    renewTitle: '{name} megújul: {when}',
+    renewBody: '{price} {cycle} — használod még?',
+    today: 'ma',
+    tomorrow: 'holnap',
+    inDays: '{n} nap múlva',
+    mo: '/hó', yr: '/év', wk: '/hét'
+  }
+};
 
 // Install: cache all assets
 self.addEventListener('install', event => {
@@ -100,22 +127,19 @@ self.addEventListener('notificationclick', event => {
   );
 });
 
-// ─── Periodic Background Sync: re-evaluate subs and fire due notifications ───
-// Works on Chrome/Edge when the PWA is installed and permission was granted.
+// ─── Periodic Background Sync ───
 self.addEventListener('periodicsync', event => {
   if (event.tag === 'leakd-check') {
     event.waitUntil(runScheduledCheck());
   }
 });
 
-// One-shot sync fallback (broader support than periodicSync)
 self.addEventListener('sync', event => {
   if (event.tag === 'leakd-check') {
     event.waitUntil(runScheduledCheck());
   }
 });
 
-// ─── Manual ping from the page: "check now and fire any due notifications" ───
 self.addEventListener('message', event => {
   if (!event.data) return;
   if (event.data.type === 'check-now') {
@@ -136,20 +160,24 @@ self.addEventListener('message', event => {
   }
 });
 
-// ─── Core: read the same localStorage state the page uses, compute due events ───
-// Service workers can't access localStorage, so the page mirrors subs into the
-// Cache API as a JSON "virtual file" the SW can read. See app.js: mirrorState().
 async function runScheduledCheck() {
   try {
     const state = await readMirroredState();
     if (!state) return;
-    const { subs, prefs, log } = state;
+    const { subs, prefs, log, lang } = state;
     if (!prefs || !prefs.enabled) return;
 
+    const L = I18N[lang || 'en'] || I18N.en;
     const now = Date.now();
     const newlyFired = {};
 
     for (const s of subs) {
+      const whenLabel = (days) => {
+        if (days === 0) return L.today;
+        if (days === 1) return L.tomorrow;
+        return L.inDays.replace('{n}', days);
+      };
+
       // Trial end
       if (s.isTrial && s.trialEnd) {
         const trial = new Date(s.trialEnd + 'T09:00:00');
@@ -157,17 +185,16 @@ async function runScheduledCheck() {
         fireAt.setDate(fireAt.getDate() - prefs.trialDaysBefore);
         const key = `${s.id}|trial|${s.trialEnd}`;
         if (!log[key] && fireAt.getTime() <= now && trial.getTime() >= now - 86400000) {
-          await self.registration.showNotification(
-            `${s.name} free trial ends ${prefs.trialDaysBefore === 0 ? 'today' : prefs.trialDaysBefore === 1 ? 'tomorrow' : 'in ' + prefs.trialDaysBefore + ' days'}`,
-            {
-              body: `Will auto-renew at ${fmtMoney(s.price, s.currency)}. Cancel now if you don't want it.`,
-              icon: 'icons/icon-192.png',
-              badge: 'icons/icon-192.png',
-              tag: 'leakd-trial-' + s.id,
-              requireInteraction: true,
-              data: { url: '/', key },
-            }
-          );
+          const title = L.trialTitle.replace('{name}', s.name).replace('{when}', whenLabel(prefs.trialDaysBefore));
+          const body = L.trialBody.replace('{price}', fmtMoney(s.price, s.currency));
+          await self.registration.showNotification(title, {
+            body,
+            icon: 'icons/icon-192.png',
+            badge: 'icons/icon-192.png',
+            tag: 'leakd-trial-' + s.id,
+            requireInteraction: true,
+            data: { url: '/', key },
+          });
           newlyFired[key] = now;
         }
       }
@@ -179,17 +206,16 @@ async function runScheduledCheck() {
         fireAt.setDate(fireAt.getDate() - prefs.daysBefore);
         const key = `${s.id}|renewal|${s.nextDate}`;
         if (!log[key] && fireAt.getTime() <= now && due.getTime() >= now - 86400000) {
-          const dayLabel = prefs.daysBefore === 0 ? 'today' : prefs.daysBefore === 1 ? 'tomorrow' : 'in ' + prefs.daysBefore + ' days';
-          await self.registration.showNotification(
-            `${s.name} renews ${dayLabel}`,
-            {
-              body: `${fmtMoney(s.price, s.currency)} ${s.cycle === 'monthly' ? '/mo' : s.cycle === 'yearly' ? '/yr' : '/wk'} — still using it?`,
-              icon: 'icons/icon-192.png',
-              badge: 'icons/icon-192.png',
-              tag: 'leakd-renew-' + s.id,
-              data: { url: '/', key },
-            }
-          );
+          const title = L.renewTitle.replace('{name}', s.name).replace('{when}', whenLabel(prefs.daysBefore));
+          const cycleLabel = L[s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk'] || '';
+          const body = L.renewBody.replace('{price}', fmtMoney(s.price, s.currency)).replace('{cycle}', cycleLabel);
+          await self.registration.showNotification(title, {
+            body,
+            icon: 'icons/icon-192.png',
+            badge: 'icons/icon-192.png',
+            tag: 'leakd-renew-' + s.id,
+            data: { url: '/', key },
+          });
           newlyFired[key] = now;
         }
       }
@@ -198,20 +224,16 @@ async function runScheduledCheck() {
     if (Object.keys(newlyFired).length > 0) {
       await writeFiredLog({ ...log, ...newlyFired });
     }
-  } catch (err) {
-    // Silent: background sync should never throw
-  }
+  } catch (err) {}
 }
 
 async function readMirroredState() {
   try {
     const cache = await caches.open('leakd-state');
-    const res = await cache.match('/state.json');
+    const res = await cache.match('state.json');
     if (!res) return null;
     return await res.json();
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
 async function writeFiredLog(log) {
@@ -220,7 +242,7 @@ async function writeFiredLog(log) {
   if (!res) return;
   const state = await res.json();
   state.log = log;
-  await cache.put('/state.json', new Response(JSON.stringify(state), {
+  await cache.put('state.json', new Response(JSON.stringify(state), {
     headers: { 'Content-Type': 'application/json' },
   }));
 }

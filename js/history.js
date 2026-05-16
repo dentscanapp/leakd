@@ -23,7 +23,8 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(points));
   }
 
-  function toMonthly(price, cycle) {
+  function toMonthly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
     return price;
@@ -33,7 +34,7 @@
     let monthly = 0, count = 0;
     subs.forEach(s => {
       if (s.paused) return;
-      monthly += toMonthly(s.price, s.cycle);
+      monthly += toMonthly(s.price, s.cycle, s.currency);
       count++;
     });
     return { monthly, count };

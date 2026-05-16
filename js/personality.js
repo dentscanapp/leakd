@@ -18,7 +18,8 @@
 (function () {
   'use strict';
 
-  function toMonthly(price, cycle) {
+  function toMonthly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
     return price;
@@ -97,15 +98,11 @@
     },
   ];
 
-  // AI services we recognize for the aiHoarder check
   const AI_SERVICE_RE = /chatgpt|openai|claude|gemini|bard|perplexity|copilot|midjourney|runway|elevenlabs/i;
-
-  // Known bundle service names for bundleMaster check
   const BUNDLE_NAMES_RE = /apple one|disney bundle|microsoft 365 family|spotify family|nyt all access|google one premium/i;
 
   function classify(subs) {
     const active = (subs || []).filter(s => !s.paused);
-
     const byCat = { Entertainment: 0, Work: 0, Music: 0, Fitness: 0, Cloud: 0, Food: 0, News: 0, Other: 0 };
     let total = 0, monthly = 0, ratedSum = 0, ratedCount = 0;
     let aiCount = 0, hasBundle = false, oldUnratedCount = 0;
@@ -114,7 +111,7 @@
 
     active.forEach(s => {
       total++;
-      monthly += toMonthly(s.price, s.cycle);
+      monthly += toMonthly(s.price, s.cycle, s.currency);
       if (byCat[s.category] !== undefined) byCat[s.category]++;
       if (typeof s.rating === 'number' && s.rating > 0) {
         ratedSum += s.rating; ratedCount++;
@@ -128,13 +125,10 @@
 
     const avgRating = ratedCount > 0 ? ratedSum / ratedCount : 0;
     const cancelThisYear = window.LeakdCancelled ? window.LeakdCancelled.thisYearCount() : 0;
-
     const ctx = { total, monthly, byCat, avgRating, aiCount, hasBundle, oldUnratedCount, cancelThisYear };
 
     for (const arch of ARCHETYPES) {
-      if (arch.test(ctx)) {
-        return { ...arch, ctx };
-      }
+      if (arch.test(ctx)) return { ...arch, ctx };
     }
     return ARCHETYPES[ARCHETYPES.length - 1];
   }

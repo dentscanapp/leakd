@@ -6,7 +6,8 @@
 (function () {
   'use strict';
 
-  function toMonthly(price, cycle) {
+  function toMonthly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
     return price;
@@ -47,7 +48,7 @@
         if (next >= firstDay) {
           const day = next.getDate();
           if (!dayMap[day]) dayMap[day] = [];
-          dayMap[day].push({ id: s.id, name: s.name, price: s.price, cycle: s.cycle, category: s.category });
+          dayMap[day].push({ id: s.id, name: s.name, price: s.price, cycle: s.cycle, category: s.category, currency: s.currency });
         }
         if (s.cycle === 'monthly') next = new Date(next.getFullYear(), next.getMonth() + 1, next.getDate());
         else if (s.cycle === 'weekly') next = new Date(next.getTime() + 7 * 86400000);
@@ -65,7 +66,7 @@
       const date = new Date(year, month, day);
       const isToday = date.getTime() === today.getTime();
       const renewals = dayMap[day] || [];
-      const total = renewals.reduce((sum, r) => sum + toMonthly(r.price, r.cycle) * (r.cycle === 'monthly' ? 1 : r.cycle === 'weekly' ? 7/30.44 : 1/12), 0);
+      const total = renewals.reduce((sum, r) => sum + toMonthly(r.price, r.cycle, r.currency) * (r.cycle === 'monthly' ? 1 : r.cycle === 'weekly' ? 7/30.44 : 1/12), 0);
       week.push({
         day,
         isToday,

@@ -134,7 +134,7 @@
     <div class="insight-hero">
       <div class="insight-hero-label" data-i18n="insights.ytd">YEAR-TO-DATE</div>
       <div class="insight-hero-value" id="ytdValue">$0</div>
-      <div class="insight-hero-sub"><span data-i18n="insights.paidIn">paid so far in</span> <span id="ytdYear"></span></div>
+      <div class="insight-hero-sub"><span data-i18n="insights.paidIn">paid so far in</span> <span id="ytdYear"></span> (<span id="currencySymbol"></span>)</div>
     </div>
 
     <!-- Insights Filter -->
@@ -1440,6 +1440,6 @@
 <script src="js/pdf.js"></script>
 <script src="js/currency.js"></script>
 <script src="js/app.js"></script>
-<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
 </body>
 </html>

@@ -63,13 +63,10 @@
   }
 
   function toMonthly(price, cycle, currency) {
-    let p = price;
-    if (currency && window.LeakdCurrency && window.LeakdState) {
-      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
-    }
-    if (cycle === 'weekly') return p * 4.33;
-    if (cycle === 'yearly') return p / 12;
-    return p;
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
+    if (cycle === 'weekly') return price * 4.33;
+    if (cycle === 'yearly') return price / 12;
+    return price;
   }
 
   // Reset all budgets (used by reset-all-data)

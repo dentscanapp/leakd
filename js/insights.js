@@ -9,23 +9,16 @@
   const t = (k, vars) => window.LeakdI18n ? window.LeakdI18n.t(k, vars) : k;
 
   function toMonthly(price, cycle, currency) {
-    let p = price;
-    if (currency && window.LeakdCurrency && window.LeakdState) {
-      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
-    }
-    if (cycle === 'weekly') return p * 4.33;
-    if (cycle === 'yearly') return p / 12;
-    return p;
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
+    if (cycle === 'weekly') return price * 4.33;
+    if (cycle === 'yearly') return price / 12;
+    return price;
   }
-
   function toYearly(price, cycle, currency) {
-    let p = price;
-    if (currency && window.LeakdCurrency && window.LeakdState) {
-      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
-    }
-    if (cycle === 'weekly') return p * 52;
-    if (cycle === 'monthly') return p * 12;
-    return p;
+    if (window.LeakdCurrency) return window.LeakdCurrency.toYearly(price, cycle, currency);
+    if (cycle === 'weekly') return price * 52;
+    if (cycle === 'monthly') return price * 12;
+    return price;
   }
 
   // ── Spend buckets ──
@@ -190,11 +183,11 @@
 
   // ── Helpers ──
   function daysUntil(dateStr) {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const t = new Date(dateStr);
-    t.setHours(0, 0, 0, 0);
-    return Math.ceil((t - now) / 86400000);
+    if (!dateStr) return null;
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const target = new Date(dateStr.replace(/-/g, '/'));
+    target.setHours(0, 0, 0, 0);
+    return Math.ceil((target - now) / 86400000);
   }
 
   function money(amount, code) {

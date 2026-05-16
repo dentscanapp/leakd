@@ -5,7 +5,8 @@
 (function () {
   'use strict';
 
-  function toMonthly(price, cycle) {
+  function toMonthly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
     return price;
@@ -32,7 +33,7 @@
       const start = created < yearStart ? yearStart : created;
       if (start > cap) return;
       const monthsActive = Math.max(0, (cap - start) / (1000 * 60 * 60 * 24 * 30.44));
-      const paid = toMonthly(s.price, s.cycle) * monthsActive;
+      const paid = toMonthly(s.price, s.cycle, s.currency) * monthsActive;
       totalPaid += paid;
       byName[s.name] = (byName[s.name] || 0) + paid;
       byCategory[s.category] = (byCategory[s.category] || 0) + paid;

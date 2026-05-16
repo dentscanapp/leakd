@@ -222,8 +222,9 @@
     try {
       const prefs = (window.LeakdNotify && window.LeakdNotify.prefs) || {};
       const log = (window.LeakdNotify && window.LeakdNotify.log()) || {};
+      const lang = (window.LeakdI18n && window.LeakdI18n.lang) || 'en';
       const snapshot = subs.map(s => ({ ...s, currency: settings.currency }));
-      const payload = { subs: snapshot, prefs, log, updatedAt: Date.now() };
+      const payload = { subs: snapshot, prefs, log, lang, updatedAt: Date.now() };
       const cache = await caches.open('leakd-state');
       await cache.put('/state.json', new Response(JSON.stringify(payload), {
         headers: { 'Content-Type': 'application/json' },
@@ -276,27 +277,23 @@
 
   // ─── Calculations ───
   function toMonthly(price, cycle, currency) {
-    let p = price;
-    if (currency && window.LeakdCurrency) {
-      p = window.LeakdCurrency.convert(price, currency, settings.currencyCode);
-    }
-    if (cycle === 'weekly') return p * 4.33;
-    if (cycle === 'yearly') return p / 12;
-    return p;
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
+    if (cycle === 'weekly') return price * 4.33;
+    if (cycle === 'yearly') return price / 12;
+    return price;
   }
-  window.toMonthly = toMonthly;
   function toYearly(price, cycle, currency) {
-    let p = price;
-    if (currency && window.LeakdCurrency) {
-      p = window.LeakdCurrency.convert(price, currency, settings.currencyCode);
-    }
-    if (cycle === 'weekly') return p * 52;
-    if (cycle === 'monthly') return p * 12;
-    return p;
+    if (window.LeakdCurrency) return window.LeakdCurrency.toYearly(price, cycle, currency);
+    if (cycle === 'weekly') return price * 52;
+    if (cycle === 'monthly') return price * 12;
+    return price;
   }
   function daysUntil(dateStr) {
+    if (!dateStr) return null;
     const now = new Date(); now.setHours(0, 0, 0, 0);
-    const target = new Date(dateStr); target.setHours(0, 0, 0, 0);
+    // Force local time parsing for YYYY-MM-DD by using slashes
+    const target = new Date(dateStr.replace(/-/g, '/'));
+    target.setHours(0, 0, 0, 0);
     return Math.ceil((target - now) / 86400000);
   }
   function formatPrice(amount, code) {
@@ -330,7 +327,8 @@
     } else if (activeView === 'insights') {
       renderInsights();
     }
-    $('currencySymbol').textContent = settings.currency;
+    const csEl = $('currencySymbol');
+    if (csEl) csEl.textContent = settings.currency;
   }
 
   function refreshDynamicLabels() {

@@ -136,9 +136,10 @@
 
   function formatMoney(amount, currencyCode) {
     const meta = CURRENCY_META[currencyCode] || CURRENCY_META.USD;
+    const lang = (window.LeakdI18n && window.LeakdI18n.lang) || undefined;
     const num = meta.decimals === 0
-      ? Math.round(amount).toLocaleString()
-      : amount.toLocaleString(undefined, { minimumFractionDigits: meta.decimals, maximumFractionDigits: meta.decimals });
+      ? Math.round(amount).toLocaleString(lang)
+      : amount.toLocaleString(lang, { minimumFractionDigits: meta.decimals, maximumFractionDigits: meta.decimals });
     const space = meta.space ? ' ' : '';
     return meta.position === 'after'
       ? num + ' ' + meta.symbol

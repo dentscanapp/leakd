@@ -17,7 +17,8 @@
 (function () {
   'use strict';
 
-  function toMonthly(price, cycle) {
+  function toMonthly(price, cycle, currency) {
+    if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
     if (cycle === 'yearly') return price / 12;
     return price;
@@ -29,7 +30,7 @@
     if (!window.LeakdIncome) return null;
     const income = window.LeakdIncome.get();
     if (!income || income <= 0) return null; // can't score without income
-    const monthly = activeSubs(subs).reduce((sum, s) => sum + toMonthly(s.price, s.cycle), 0);
+    const monthly = activeSubs(subs).reduce((sum, s) => sum + toMonthly(s.price, s.cycle, s.currency), 0);
     const ratio = monthly / income;
     if (ratio <= 0.02) return 30;
     if (ratio <= 0.05) return 25;
