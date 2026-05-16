@@ -29,7 +29,7 @@
   }
 
   function pickTagline(monthly) {
-    const t = window.LeakdI18n ? window.LeakdI18n.t : (k) => k;
+    const t = window.LeakdI18n ? window.LeakdI18n.t.bind(window.LeakdI18n) : (k) => k;
     if (monthly === 0) return t('share.tag0');
     if (monthly < 10)  return t('share.tag1');
     if (monthly < 30)  return t('share.tag2');
@@ -47,7 +47,7 @@
     const ctx = canvas.getContext('2d');
 
     try {
-      const t = window.LeakdI18n ? window.LeakdI18n.t : (k) => k;
+      const t = window.LeakdI18n ? window.LeakdI18n.t.bind(window.LeakdI18n) : (k) => k;
 
       // Background
       ctx.fillStyle = palette.bg;
@@ -231,7 +231,7 @@
   async function shareOrDownload(subs, currency) {
     const { blob, canvas } = await generate(subs, currency);
     const file = new File([blob], 'my-leakd.png', { type: 'image/png' });
-    const t = window.LeakdI18n ? window.LeakdI18n.t : (k) => k;
+    const t = window.LeakdI18n ? window.LeakdI18n.t.bind(window.LeakdI18n) : (k) => k;
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
