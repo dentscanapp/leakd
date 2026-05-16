@@ -41,118 +41,132 @@
 
   // ── Main render ──
   function render(subs, currency) {
-    const t = window.LeakdI18n ? window.LeakdI18n.t : (k) => k;
     const canvas = document.createElement('canvas');
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d');
 
-    // Background
-    ctx.fillStyle = palette.bg;
-    ctx.fillRect(0, 0, W, H);
+    try {
+      const t = window.LeakdI18n ? window.LeakdI18n.t : (k) => k;
 
-    // Decorative leak drop
-    drawDrop(ctx, W - 140, 140, 120, palette.accent, 0.18);
+      // Background
+      ctx.fillStyle = palette.bg;
+      ctx.fillRect(0, 0, W, H);
 
-    // ── Header ──
-    ctx.fillStyle = palette.text;
-    ctx.font = '700 56px "DM Sans", system-ui, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText('leakd', 80, 140);
+      // Decorative leak drop
+      drawDrop(ctx, W - 140, 140, 120, palette.accent, 0.18);
 
-    ctx.fillStyle = palette.textDim;
-    ctx.font = '500 28px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(t('share.tagline'), 80, 184);
-
-    // big number
-    const monthly = subs.reduce((sum, s) => sum + toMonthly(s.price, s.cycle, s.currency), 0);
-    const yearly = monthly * 12;
-
-    ctx.fillStyle = palette.textDim;
-    ctx.font = '500 28px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(t('share.monthlySpend'), 80, 320);
-
-    ctx.fillStyle = palette.accent;
-    ctx.font = '700 180px "DM Mono", "DM Sans", monospace';
-    const monthlyText = money(monthly, currency);
-    ctx.fillText(monthlyText, 80, 490);
-
-    ctx.fillStyle = palette.textFaint;
-    ctx.font = '500 32px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(t('share.perYear', { amount: money(yearly, currency) }), 80, 540);
-
-    // Tagline pill
-    const tag = pickTagline(monthly);
-    drawPill(ctx, 80, 580, tag, palette.accentSoft, palette.accent);
-
-    // ── Top 5 leaks ──
-    ctx.fillStyle = palette.textDim;
-    ctx.font = '500 24px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(t('share.topLeaks'), 80, 720);
-
-    const top = [...subs]
-      .map(s => ({ ...s, monthly: toMonthly(s.price, s.cycle, s.currency) }))
-      .sort((a, b) => b.monthly - a.monthly)
-      .slice(0, 5);
-
-    const rowY = 770;
-    const rowH = 88;
-    const maxMonthly = top.length ? top[0].monthly : 1;
-
-    top.forEach((s, i) => {
-      const y = rowY + i * rowH;
-
-      // Row background
-      ctx.fillStyle = palette.bgAlt;
-      roundRect(ctx, 80, y, W - 160, rowH - 12, 18);
-      ctx.fill();
-
-      // Bar
-      const barW = (W - 220) * (s.monthly / maxMonthly);
-      ctx.fillStyle = palette.accent;
-      ctx.globalAlpha = 0.18;
-      roundRect(ctx, 80, y, barW + 60, rowH - 12, 18);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-
-      // Name
+      // ── Header ──
       ctx.fillStyle = palette.text;
-      ctx.font = '600 30px "DM Sans", system-ui, sans-serif';
+      ctx.font = '700 56px "DM Sans", system-ui, sans-serif';
       ctx.textAlign = 'left';
-      const safeName = s.name || '???';
-      const name = safeName.length > 22 ? safeName.slice(0, 21) + '…' : safeName;
-      ctx.fillText(name, 110, y + 50);
+      ctx.fillText('leakd', 80, 140);
 
-      // Amount
-      ctx.fillStyle = palette.text;
-      ctx.font = '700 30px "DM Mono", "DM Sans", monospace';
-      ctx.textAlign = 'right';
-      ctx.fillText(money(s.monthly, currency) + t('cycle.mo'), W - 110, y + 50);
-    });
+      ctx.fillStyle = palette.textDim;
+      ctx.font = '500 28px "DM Sans", system-ui, sans-serif';
+      ctx.fillText(t('share.tagline'), 80, 184);
 
-    // Empty row placeholder
-    if (top.length === 0) {
+      // big number
+      const monthly = subs.reduce((sum, s) => sum + (Number(toMonthly(s.price, s.cycle, s.currency)) || 0), 0);
+      const yearly = monthly * 12;
+
+      ctx.fillStyle = palette.textDim;
+      ctx.font = '500 28px "DM Sans", system-ui, sans-serif';
+      ctx.fillText(t('share.monthlySpend'), 80, 320);
+
+      ctx.fillStyle = palette.accent;
+      ctx.font = '700 180px "DM Mono", "DM Sans", monospace';
+      const monthlyText = money(monthly, currency);
+      ctx.fillText(monthlyText, 80, 490);
+
       ctx.fillStyle = palette.textFaint;
+      ctx.font = '500 32px "DM Sans", system-ui, sans-serif';
+      ctx.fillText(t('share.perYear', { amount: money(yearly, currency) }), 80, 540);
+
+      // Tagline pill
+      const tag = pickTagline(monthly);
+      drawPill(ctx, 80, 580, tag, palette.accentSoft, palette.accent);
+
+      // ── Top 5 leaks ──
+      ctx.fillStyle = palette.textDim;
+      ctx.font = '500 24px "DM Sans", system-ui, sans-serif';
+      ctx.fillText(t('share.topLeaks'), 80, 720);
+
+      const top = [...subs]
+        .map(s => ({ ...s, monthly: Number(toMonthly(s.price, s.cycle, s.currency)) || 0 }))
+        .sort((a, b) => b.monthly - a.monthly)
+        .slice(0, 5);
+
+      const rowY = 770;
+      const rowH = 88;
+      const maxMonthly = top.length ? (top[0].monthly || 1) : 1;
+
+      top.forEach((s, i) => {
+        const y = rowY + i * rowH;
+
+        // Row background
+        ctx.fillStyle = palette.bgAlt;
+        roundRect(ctx, 80, y, W - 160, rowH - 12, 18);
+        ctx.fill();
+
+        // Bar
+        const barW = (W - 220) * (s.monthly / maxMonthly);
+        ctx.fillStyle = palette.accent;
+        ctx.globalAlpha = 0.18;
+        roundRect(ctx, 80, y, (Number(barW) || 0) + 60, rowH - 12, 18);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        // Name
+        ctx.fillStyle = palette.text;
+        ctx.font = '600 30px "DM Sans", system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        const safeName = s.name || '???';
+        const name = safeName.length > 22 ? safeName.slice(0, 21) + '…' : safeName;
+        ctx.fillText(name, 110, y + 50);
+
+        // Amount
+        ctx.fillStyle = palette.text;
+        ctx.font = '700 30px "DM Mono", "DM Sans", monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(money(s.monthly, currency) + t('cycle.mo'), W - 110, y + 50);
+      });
+
+      // Empty row placeholder
+      if (top.length === 0) {
+        ctx.fillStyle = palette.textFaint;
+        ctx.font = '500 26px "DM Sans", system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(t('share.noSubs'), 110, rowY + 50);
+      }
+
+      // ── Footer ──
+      ctx.fillStyle = palette.textDim;
       ctx.font = '500 26px "DM Sans", system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(t('share.noSubs'), 110, rowY + 50);
+      ctx.fillText(t('share.trackedCount', { count: subs.length }), 80, H - 130);
+
+      ctx.fillStyle = palette.accent;
+      ctx.font = '700 32px "DM Sans", system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('leakd.app', W - 80, H - 130);
+
+      ctx.fillStyle = palette.textFaint;
+      ctx.font = '500 22px "DM Sans", system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(t('share.features'), W - 80, H - 95);
+    } catch (e) {
+      console.error('LeakdShare.render failed', e);
+      ctx.fillStyle = palette.bg;
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = palette.accent;
+      ctx.font = '500 40px "DM Sans", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Rendering Error', W/2, H/2);
+      ctx.fillStyle = palette.textDim;
+      ctx.font = '400 24px "DM Sans", system-ui, sans-serif';
+      ctx.fillText(e.message, W/2, H/2 + 60);
     }
-
-    // ── Footer ──
-    ctx.fillStyle = palette.textDim;
-    ctx.font = '500 26px "DM Sans", system-ui, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText(t('share.trackedCount', { count: subs.length }), 80, H - 130);
-
-    ctx.fillStyle = palette.accent;
-    ctx.font = '700 32px "DM Sans", system-ui, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText('leakd.app', W - 80, H - 130);
-
-    ctx.fillStyle = palette.textFaint;
-    ctx.font = '500 22px "DM Sans", system-ui, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(t('share.features'), W - 80, H - 95);
 
     return canvas;
   }

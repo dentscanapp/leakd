@@ -14019,21 +14019,20 @@ if (typeof window !== 'undefined') {
       this._listeners.push(cb);
     },
     translatePage: function() {
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        el.textContent = this.t(key);
-      });
-      document.querySelectorAll('[data-i18n-html]').forEach(el => {
-        const key = el.getAttribute('data-i18n-html');
-        el.innerHTML = this.t(key);
-      });
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        el.placeholder = this.t(key);
-      });
-      document.querySelectorAll('[data-i18n-title]').forEach(el => {
-        const key = el.getAttribute('data-i18n-title');
-        el.title = this.t(key);
+      const keys = ['data-i18n', 'data-i18n-html', 'data-i18n-placeholder', 'data-i18n-title'];
+      keys.forEach(attr => {
+        document.querySelectorAll(`[${attr}]`).forEach(el => {
+          try {
+            const key = el.getAttribute(attr);
+            const val = this.t(key);
+            if (attr === 'data-i18n') el.textContent = val;
+            else if (attr === 'data-i18n-html') el.innerHTML = val;
+            else if (attr === 'data-i18n-placeholder') el.placeholder = val;
+            else if (attr === 'data-i18n-title') el.title = val;
+          } catch (e) {
+            console.error('i18n error on element', el, e);
+          }
+        });
       });
     }
   };
