@@ -144,7 +144,18 @@
 
   function parseDate(raw) {
     if (!raw) return null;
-    // Try ISO first
+    // Try strict ISO YYYY-MM-DD first — reject month/day overflows
+    // (`new Date('2026-02-30')` silently rolls over to Mar 2).
+    const isoMatch = String(raw).trim().match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ].*)?$/);
+    if (isoMatch) {
+      const [, y, m, d] = isoMatch;
+      const yi = parseInt(y, 10), mi = parseInt(m, 10), di = parseInt(d, 10);
+      if (yi >= 2000 && mi >= 1 && mi <= 12 && di >= 1 && di <= 31) {
+        const dt = new Date(yi, mi - 1, di);
+        if (dt.getFullYear() === yi && dt.getMonth() === mi - 1 && dt.getDate() === di) return dt;
+      }
+      return null;
+    }
     const iso = new Date(raw);
     if (!isNaN(iso.getTime()) && iso.getFullYear() > 2000) return iso;
     // Try DD/MM/YYYY and MM/DD/YYYY and YYYY-MM-DD
@@ -153,12 +164,18 @@
       let [_, d, m, y] = m1;
       if (y.length === 2) y = '20' + y;
       // Heuristic: if first part > 12, it's DD/MM
-      const day = parseInt(d, 10), mon = parseInt(m, 10);
-      let dt;
-      if (day > 12) dt = new Date(parseInt(y, 10), mon - 1, day);
-      else if (mon > 12) dt = new Date(parseInt(y, 10), day - 1, mon);
-      else dt = new Date(parseInt(y, 10), mon - 1, day); // default DD/MM (Europe)
-      return isNaN(dt.getTime()) ? null : dt;
+      const day = parseInt(d, 10), mon = parseInt(m, 10), year = parseInt(y, 10);
+      // Reject impossible combinations — JS Date silently overflows otherwise
+      // ("2026-13-50" would otherwise become Jan 25, 2051).
+      const valid = (a, b) => a >= 1 && a <= 31 && b >= 1 && b <= 12;
+      let dt = null;
+      if (day > 12 && valid(day, mon)) dt = new Date(year, mon - 1, day);
+      else if (mon > 12 && valid(mon, day)) dt = new Date(year, day - 1, mon);
+      else if (valid(day, mon)) dt = new Date(year, mon - 1, day); // default DD/MM (Europe)
+      if (!dt || isNaN(dt.getTime())) return null;
+      // Final sanity: the Date round-trip must preserve our input
+      if (dt.getDate() !== day && dt.getDate() !== mon) return null;
+      return dt;
     }
     return null;
   }
