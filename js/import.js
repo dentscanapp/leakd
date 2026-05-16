@@ -398,11 +398,16 @@
       const name = cells[nameI];
       const price = parseFloat(cells[priceI]);
       if (!name || isNaN(price)) continue;
+      const rawCycle = (cells[cycleI] || 'monthly').toLowerCase();
+      const cycle = ['monthly','yearly','weekly'].includes(rawCycle) ? rawCycle : 'monthly';
+      const rawCurrency = currencyI !== -1 ? (cells[currencyI] || '').trim() : '';
+      // Only accept a 3-letter ISO-like code so a malicious cell can't carry markup.
+      const currency = /^[A-Z]{3}$/.test(rawCurrency) ? rawCurrency : null;
       out.push({
         name,
         price,
-        currency: currencyI !== -1 ? (cells[currencyI] || null) : null,
-        cycle: (cells[cycleI] || 'monthly').toLowerCase(),
+        currency,
+        cycle,
         category: cells[catI] || 'Other',
         nextDate: cells[dateI] || '',
         matched: false,

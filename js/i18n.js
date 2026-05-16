@@ -14040,7 +14040,10 @@ if (typeof window !== 'undefined') {
         localStorage.setItem('leakd_lang', lang);
         document.documentElement.lang = lang;
         this.translatePage();
-        this._listeners.forEach(cb => cb(lang));
+        // Snapshot + try/catch so a single bad listener can't break the rest.
+        [...this._listeners].forEach(cb => {
+          try { cb(lang); } catch (e) { console.error('LeakdI18n listener failed', e); }
+        });
       }
     },
     onChange: function(cb) {

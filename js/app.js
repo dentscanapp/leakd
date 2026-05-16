@@ -1534,10 +1534,17 @@
     btn.disabled = true;
     const oldText = btn.textContent;
     btn.textContent = t('pro.verifying');
-    
-    const result = await P.purchase(skuId);
-    btn.disabled = false;
-    btn.textContent = oldText;
+
+    let result;
+    try {
+      result = await P.purchase(skuId);
+    } catch (e) {
+      console.error('buyPro failed', e);
+      result = { ok: false };
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
     
     if (result.ok) {
       refreshProUI();
@@ -1674,7 +1681,7 @@
           <div class="sub-icon" style="background:${c.bg};color:${c.text}">${c.icon}</div>
           <div class="import-row-info">
             <div class="import-row-name">${escHtml(p.name)}</div>
-            <div class="import-row-meta">${escHtml(localizedCat(p.category))} · ${t('cycle.' + p.cycle)}</div>
+            <div class="import-row-meta">${escHtml(localizedCat(p.category))} · ${escHtml(t('cycle.' + p.cycle))}</div>
           </div>
           <div class="import-row-price">${formatPrice(p.price, p.currency)}<span>${t('cycle.' + (p.cycle === 'monthly' ? 'mo' : p.cycle === 'yearly' ? 'yr' : 'wk'))}</span></div>
         </div>`;
