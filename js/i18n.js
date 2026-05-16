@@ -6,115 +6,115 @@ const FALLBACK = 'en';
 const LANGUAGES = {
   "en": {
     "name": "English",
-    "flag": "🇬🇧"
+    "flag": "🇬🇧",
   },
   "hu": {
     "name": "Magyar",
-    "flag": "🇭🇺"
+    "flag": "🇭🇺",
   },
   "de": {
     "name": "Deutsch",
-    "flag": "🇩🇪"
+    "flag": "🇩🇪",
   },
   "es": {
     "name": "Español",
-    "flag": "🇪🇸"
+    "flag": "🇪🇸",
   },
   "fr": {
     "name": "Français",
-    "flag": "🇫🇷"
+    "flag": "🇫🇷",
   },
   "it": {
     "name": "Italiano",
-    "flag": "🇮🇹"
+    "flag": "🇮🇹",
   },
   "pt": {
     "name": "Português",
-    "flag": "🇵🇹"
+    "flag": "🇵🇹",
   },
   "nl": {
     "name": "Nederlands",
-    "flag": "🇳🇱"
+    "flag": "🇳🇱",
   },
   "pl": {
     "name": "Polski",
-    "flag": "🇵🇱"
+    "flag": "🇵🇱",
   },
   "sv": {
     "name": "Svenska",
-    "flag": "🇸🇪"
+    "flag": "🇸🇪",
   },
   "cs": {
     "name": "Čeština",
-    "flag": "🇨🇿"
+    "flag": "🇨🇿",
   },
   "ja": {
     "name": "日本語",
-    "flag": "🇯🇵"
+    "flag": "🇯🇵",
   },
   "ko": {
     "name": "한국어",
-    "flag": "🇰🇷"
+    "flag": "🇰🇷",
   },
   "zh": {
     "name": "中文",
-    "flag": "🇨🇳"
+    "flag": "🇨🇳",
   },
   "ru": {
     "name": "Русский",
-    "flag": "🇷🇺"
+    "flag": "🇷🇺",
   },
   "ro": {
     "name": "Română",
-    "flag": "🇷🇴"
+    "flag": "🇷🇴",
   },
   "id": {
     "name": "Indonesia",
-    "flag": "🇮🇩"
+    "flag": "🇮🇩",
   },
   "vi": {
     "name": "Tiếng Việt",
-    "flag": "🇻🇳"
+    "flag": "🇻🇳",
   },
   "tr": {
     "name": "Türkçe",
-    "flag": "🇹🇷"
+    "flag": "🇹🇷",
   },
   "el": {
     "name": "Ελληνικά",
-    "flag": "🇬🇷"
+    "flag": "🇬🇷",
   },
   "hi": {
     "name": "हिन्दी",
-    "flag": "🇮🇳"
+    "flag": "🇮🇳",
   },
   "uk": {
     "name": "Українська",
-    "flag": "🇺🇦"
+    "flag": "🇺🇦",
   },
   "hr": {
     "name": "Hrvatski",
-    "flag": "🇭🇷"
+    "flag": "🇭🇷",
   },
   "bg": {
     "name": "Български",
-    "flag": "🇧🇬"
+    "flag": "🇧🇬",
   },
   "th": {
     "name": "ไทย",
-    "flag": "🇹🇭"
+    "flag": "🇹🇭",
   },
   "fil": {
     "name": "Filipino",
-    "flag": "🇵🇭"
+    "flag": "🇵🇭",
   },
   "ca": {
     "name": "Català",
-    "flag": "🇦🇩"
+    "flag": "🇦🇩",
   },
   "sk": {
     "name": "Slovenčina",
-    "flag": "🇸🇰"
+    "flag": "🇸🇰",
   }
 };
 
@@ -603,7 +603,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   hu: {
     "activity.added": "{name} hozzáadva",
@@ -1057,17 +1057,17 @@ const STRINGS = {
     "toast.streakUpdated": "Sorozat frissítve! 🔥",
     "toast.subCancelled": "Előfizetés lemondva",
     "toast.subRestored": "Előfizetés visszaállítva",
-    "tour.done": "Got it",
-    "tour.next": "Next",
-    "tour.s1.body": "This is the total of every active subscription, updated as you add or pause them.",
-    "tour.s1.title": "Your monthly leak",
-    "tour.s2.body": "Tap the + button. Start typing — we know 60+ services and auto-fill the price.",
-    "tour.s2.title": "Add a subscription",
-    "tour.s3.body": "Insights shows your spending by category, lifetime cost, and what you would have had if you invested instead.",
-    "tour.s3.title": "See where it goes",
-    "tour.s4.body": "Language, currency, bank import, goals, cancelled subs — open the menu anytime.",
-    "tour.s4.title": "Everything else lives here",
-    "tour.skip": "Skip",
+    "tour.done": "Értem",
+    "tour.next": "Tovább",
+    "tour.s1.body": "Ez az összes aktív előfizetésed összege, ami frissül, amint hozzáadsz vagy szüneteltetsz valamit.",
+    "tour.s1.title": "A havi szivárgásod",
+    "tour.s2.body": "Koppints a + gombra. Kezdj el gépelni — több mint 60 szolgáltatást ismerünk és automatikusan kitöltjük az árat.",
+    "tour.s2.title": "Előfizetés hozzáadása",
+    "tour.s3.body": "Az Elemzés nézet megmutatja a költéseidet kategóriánként, az élettartam-költséget, és azt is, mennyi pénzed lenne, ha inkább befektetted volna.",
+    "tour.s3.title": "Nézd meg, hova megy a pénz",
+    "tour.s4.body": "Nyelv, pénznem, banki import, célok, lemondott előfizetések — nyisd meg a menüt bármikor.",
+    "tour.s4.title": "Minden más itt található",
+    "tour.skip": "Kihagyás",
     "tracked.both": "{years}y {months}mo",
     "tracked.months": "{n} months",
     "tracked.since": "Tracked since {when}",
@@ -1090,7 +1090,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   de: {
     "activity.added": "Added {name}",
@@ -1586,7 +1586,7 @@ const STRINGS = {
     "yearend.topBody": "{name} allein hat dich {amount} gekostet.",
     "yearend.topName": "Dein größtes Leck",
     "yearend.totalPaid": "Du hast bezahlt",
-    "yearend.totalPaidSub": "für alle Abos"
+    "yearend.totalPaidSub": "für alle Abos",
   },
   es: {
     "activity.added": "Added {name}",
@@ -2082,7 +2082,7 @@ const STRINGS = {
     "yearend.topBody": "{name} solo te costó {amount}.",
     "yearend.topName": "Tu mayor fuga",
     "yearend.totalPaid": "Pagaste",
-    "yearend.totalPaidSub": "en todas las suscripciones"
+    "yearend.totalPaidSub": "en todas las suscripciones",
   },
   fr: {
     "activity.added": "Added {name}",
@@ -2578,7 +2578,7 @@ const STRINGS = {
     "yearend.topBody": "{name} à lui seul t\'a coûté {amount}.",
     "yearend.topName": "Ta plus grosse fuite",
     "yearend.totalPaid": "Tu as payé",
-    "yearend.totalPaidSub": "sur tous les abonnements"
+    "yearend.totalPaidSub": "sur tous les abonnements",
   },
   it: {
     "activity.added": "Added {name}",
@@ -3074,7 +3074,7 @@ const STRINGS = {
     "yearend.topBody": "Solo {name} ti è costato {amount}.",
     "yearend.topName": "La tua perdita maggiore",
     "yearend.totalPaid": "Hai pagato",
-    "yearend.totalPaidSub": "su tutti gli abbonamenti"
+    "yearend.totalPaidSub": "su tutti gli abbonamenti",
   },
   pt: {
     "activity.added": "Added {name}",
@@ -3570,7 +3570,7 @@ const STRINGS = {
     "yearend.topBody": "{name} sozinho custou-te {amount}.",
     "yearend.topName": "A tua maior fuga",
     "yearend.totalPaid": "Pagaste",
-    "yearend.totalPaidSub": "em todas as subscrições"
+    "yearend.totalPaidSub": "em todas as subscrições",
   },
   nl: {
     "activity.added": "Added {name}",
@@ -4066,7 +4066,7 @@ const STRINGS = {
     "yearend.topBody": "Alleen {name} kostte je {amount}.",
     "yearend.topName": "Je grootste lek",
     "yearend.totalPaid": "Je betaalde",
-    "yearend.totalPaidSub": "aan alle abonnementen"
+    "yearend.totalPaidSub": "aan alle abonnementen",
   },
   pl: {
     "activity.added": "Added {name}",
@@ -4562,7 +4562,7 @@ const STRINGS = {
     "yearend.topBody": "Sam {name} kosztował cię {amount}.",
     "yearend.topName": "Twój największy wyciek",
     "yearend.totalPaid": "Zapłaciłeś",
-    "yearend.totalPaidSub": "na wszystkie subskrypcje"
+    "yearend.totalPaidSub": "na wszystkie subskrypcje",
   },
   sv: {
     "activity.added": "Added {name}",
@@ -5058,7 +5058,7 @@ const STRINGS = {
     "yearend.topBody": "Bara {name} kostade dig {amount}.",
     "yearend.topName": "Din största läcka",
     "yearend.totalPaid": "Du betalade",
-    "yearend.totalPaidSub": "för alla abonnemang"
+    "yearend.totalPaidSub": "för alla abonnemang",
   },
   cs: {
     "activity.added": "Added {name}",
@@ -5554,7 +5554,7 @@ const STRINGS = {
     "yearend.topBody": "Jen {name} tě stál {amount}.",
     "yearend.topName": "Tvůj největší únik",
     "yearend.totalPaid": "Zaplatil jsi",
-    "yearend.totalPaidSub": "za všechna předplatná"
+    "yearend.totalPaidSub": "za všechna předplatná",
   },
   ja: {
     "activity.added": "Added {name}",
@@ -6050,7 +6050,7 @@ const STRINGS = {
     "yearend.topBody": "{name}だけで{amount}。",
     "yearend.topName": "最大の漏れ",
     "yearend.totalPaid": "支払い額",
-    "yearend.totalPaidSub": "すべてのサブスクに"
+    "yearend.totalPaidSub": "すべてのサブスクに",
   },
   ko: {
     "activity.added": "Added {name}",
@@ -6546,7 +6546,7 @@ const STRINGS = {
     "yearend.topBody": "{name}만으로 {amount}.",
     "yearend.topName": "최대 누수",
     "yearend.totalPaid": "지불액",
-    "yearend.totalPaidSub": "모든 구독에"
+    "yearend.totalPaidSub": "모든 구독에",
   },
   zh: {
     "activity.added": "Added {name}",
@@ -7042,7 +7042,7 @@ const STRINGS = {
     "yearend.topBody": "仅 {name} 就花了你 {amount}。",
     "yearend.topName": "你最大的泄漏",
     "yearend.totalPaid": "你支付了",
-    "yearend.totalPaidSub": "所有订阅"
+    "yearend.totalPaidSub": "所有订阅",
   },
   ru: {
     "activity.added": "Added {name}",
@@ -7538,7 +7538,7 @@ const STRINGS = {
     "yearend.topBody": "Один {name} стоил {amount}.",
     "yearend.topName": "Крупнейшая утечка",
     "yearend.totalPaid": "Вы заплатили",
-    "yearend.totalPaidSub": "за все подписки"
+    "yearend.totalPaidSub": "за все подписки",
   },
   ro: {
     "activity.added": "Added {name}",
@@ -8034,7 +8034,7 @@ const STRINGS = {
     "yearend.topBody": "Doar {name} te-a costat {amount}.",
     "yearend.topName": "Cea mai mare scurgere",
     "yearend.totalPaid": "Ai plătit",
-    "yearend.totalPaidSub": "pentru toate abonamentele"
+    "yearend.totalPaidSub": "pentru toate abonamentele",
   },
   id: {
     "activity.added": "Menambahkan {name}",
@@ -8232,7 +8232,7 @@ const STRINGS = {
     "import.example": "Coba contoh",
     "import.found": "Ditemukan {count} langganan",
     "import.imported": "Berhasil mengimpor {count} langganan",
-    "import.nothingFound": "Tidak ada yang ditemukan — coba satu per baris, mis. \\"Netflix 15.99\\"",
+    "import.nothingFound": "Tidak ada yang ditemukan — coba satu per baris, mis. \"Netflix 15.99\"",
     "import.placeholder": "Netflix 15.99\nSpotify 10.99\nChatGPT 20\nNotion 10/bulan\nAdobe tahunan 599",
     "import.title": "Impor massal",
     "import.uploadCSV": "Unggah CSV",
@@ -8530,7 +8530,7 @@ const STRINGS = {
     "yearend.topBody": "{name} saja telah menghabiskan {amount}.",
     "yearend.topName": "Kebocoran terbesar Anda",
     "yearend.totalPaid": "Anda telah membayar",
-    "yearend.totalPaidSub": "untuk semua langganan"
+    "yearend.totalPaidSub": "untuk semua langganan",
   },
   vi: {
     "activity.added": "Đã thêm {name}",
@@ -8728,7 +8728,7 @@ const STRINGS = {
     "import.example": "Thử ví dụ",
     "import.found": "Tìm thấy {count} đăng ký",
     "import.imported": "Đã nhập {count} đăng ký",
-    "import.nothingFound": "Không phát hiện thấy gì — hãy thử một mục mỗi dòng, vd. \\"Netflix 15.99\\"",
+    "import.nothingFound": "Không phát hiện thấy gì — hãy thử một mục mỗi dòng, vd. \"Netflix 15.99\"",
     "import.placeholder": "Netflix 15.99\nSpotify 10.99\nChatGPT 20\nNotion 10/tháng\nAdobe hàng năm 599",
     "import.title": "Nhập hàng loạt",
     "import.uploadCSV": "Tải lên CSV",
@@ -8814,7 +8814,7 @@ const STRINGS = {
     "menu.themeSub": "Sáng, tối hoặc theo hệ thống của bạn",
     "menu.tour": "Show the tour again",
     "menu.tourSub": "Replay the first-time guided tour",
-    "menu.whatif": "Công cụ tính \\"Nếu như\\"",
+    "menu.whatif": "Công cụ tính \"Nếu như\"",
     "menu.whatifSub": "Chọn các đăng ký để hủy — xem tiết kiệm trực tiếp",
     "menu.yearend": "Báo cáo cuối năm",
     "menu.yearendSub": "Xem tóm tắt chi tiêu của bạn",
@@ -9015,7 +9015,7 @@ const STRINGS = {
     "whatif.suggestBtn": "Gợi ý lựa chọn hàng đầu",
     "whatif.summarySavings": "{monthly}/tháng · {yearly}/năm",
     "whatif.summarySelected": "Đã chọn {n}",
-    "whatif.title": "Công cụ tính \\"Nếu như\\"",
+    "whatif.title": "Công cụ tính \"Nếu như\"",
     "yearend.busiestCat": "Chi tiêu nhiều nhất vào",
     "yearend.close": "Đóng",
     "yearend.emptySub": "Thêm một số đăng ký và quay lại đây sau vào cuối năm.",
@@ -9026,7 +9026,7 @@ const STRINGS = {
     "yearend.topBody": "Riêng {name} đã tiêu tốn của bạn {amount}.",
     "yearend.topName": "Rò rỉ lớn nhất của bạn",
     "yearend.totalPaid": "Bạn đã trả",
-    "yearend.totalPaidSub": "trên tất cả đăng ký"
+    "yearend.totalPaidSub": "trên tất cả đăng ký",
   },
   tr: {
     "activity.added": "{name} eklendi",
@@ -9224,7 +9224,7 @@ const STRINGS = {
     "import.example": "Örnek dene",
     "import.found": "{count} abonelik bulundu",
     "import.imported": "{count} abonelik içe aktarıldı",
-    "import.nothingFound": "Hiçbir şey algılanmadı — her satıra bir öğe deneyin, örn: \\"Netflix 15.99\\"",
+    "import.nothingFound": "Hiçbir şey algılanmadı — her satıra bir öğe deneyin, örn: \"Netflix 15.99\"",
     "import.placeholder": "Netflix 15.99\nSpotify 10.99\nChatGPT 20\nNotion 10/ay\nAdobe yıllık 599",
     "import.title": "Toplu içe aktarma",
     "import.uploadCSV": "CSV Yükle",
@@ -9310,7 +9310,7 @@ const STRINGS = {
     "menu.themeSub": "Açık, koyu veya sisteminizi takip edin",
     "menu.tour": "Show the tour again",
     "menu.tourSub": "Replay the first-time guided tour",
-    "menu.whatif": "\\"Ya olursa\\" hesaplayıcı",
+    "menu.whatif": "\"Ya olursa\" hesaplayıcı",
     "menu.whatifSub": "İptal edilecekleri seçin — canlı tasarrufu görün",
     "menu.yearend": "Yıl sonu raporu",
     "menu.yearendSub": "Harcama özetinizi görün",
@@ -9511,7 +9511,7 @@ const STRINGS = {
     "whatif.suggestBtn": "En iyi seçenekleri öner",
     "whatif.summarySavings": "{monthly}/ay · {yearly}/yıl",
     "whatif.summarySelected": "{n} seçildi",
-    "whatif.title": "\\"Ya olursa\\" hesaplayıcı",
+    "whatif.title": "\"Ya olursa\" hesaplayıcı",
     "yearend.busiestCat": "En çok harcanan kategori",
     "yearend.close": "Kapat",
     "yearend.emptySub": "Birkaç abonelik ekleyin ve yıl sonunda burayı tekrar kontrol edin.",
@@ -9522,7 +9522,7 @@ const STRINGS = {
     "yearend.topBody": "Sadece {name} size {amount} maliyet yarattı.",
     "yearend.topName": "En büyük sızıntınız",
     "yearend.totalPaid": "Toplam ödemeniz",
-    "yearend.totalPaidSub": "tüm abonelikler için"
+    "yearend.totalPaidSub": "tüm abonelikler için",
   },
   el: {
     "activity.added": "Added {name}",
@@ -10018,7 +10018,7 @@ const STRINGS = {
     "yearend.topBody": "Alleen {name} kostte je {amount}.",
     "yearend.topName": "Je grootste lek",
     "yearend.totalPaid": "Je betaalde",
-    "yearend.totalPaidSub": "aan alle abonnementen"
+    "yearend.totalPaidSub": "aan alle abonnementen",
   },
   hi: {
     "activity.added": "Added {name}",
@@ -10514,7 +10514,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   uk: {
     "activity.added": "Added {name}",
@@ -11010,7 +11010,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   hr: {
     "activity.added": "Added {name}",
@@ -11506,7 +11506,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   bg: {
     "activity.added": "Added {name}",
@@ -12002,7 +12002,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   th: {
     "activity.added": "Added {name}",
@@ -12498,7 +12498,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   fil: {
     "activity.added": "Added {name}",
@@ -12994,7 +12994,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   ca: {
     "activity.added": "Added {name}",
@@ -13490,7 +13490,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   },
   sk: {
     "activity.added": "Added {name}",
@@ -13976,7 +13976,7 @@ const STRINGS = {
     "yearend.topBody": "{name} alone cost you {amount}.",
     "yearend.topName": "Your biggest leak",
     "yearend.totalPaid": "You paid",
-    "yearend.totalPaidSub": "across all subscriptions"
+    "yearend.totalPaidSub": "across all subscriptions",
   }
 };
 
