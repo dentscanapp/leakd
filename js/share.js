@@ -231,6 +231,7 @@
   async function shareOrDownload(subs, currency) {
     const { blob, canvas } = await generate(subs, currency);
     const file = new File([blob], 'my-leakd.png', { type: 'image/png' });
+    const t = window.LeakdI18n ? window.LeakdI18n.t : (k) => k;
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
