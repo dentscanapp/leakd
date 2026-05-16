@@ -24,7 +24,11 @@
   // ── Spend buckets ──
   function totals(subs) {
     let monthly = 0;
-    subs.forEach(s => { monthly += toMonthly(s.price, s.cycle, s.currency); });
+    (subs || []).forEach(s => {
+      if (!s || typeof s.price !== 'number' || !isFinite(s.price)) return;
+      const m = toMonthly(s.price, s.cycle, s.currency);
+      if (isFinite(m)) monthly += m;
+    });
     return {
       monthly,
       yearly: monthly * 12,
@@ -36,12 +40,15 @@
   // ── Category breakdown ──
   function byCategory(subs) {
     const map = {};
-    subs.forEach(s => {
+    (subs || []).forEach(s => {
+      if (!s || typeof s.price !== 'number' || !isFinite(s.price)) return;
       const m = toMonthly(s.price, s.cycle, s.currency);
-      if (!map[s.category]) map[s.category] = { category: s.category, monthly: 0, count: 0, subs: [] };
-      map[s.category].monthly += m;
-      map[s.category].count += 1;
-      map[s.category].subs.push(s);
+      if (!isFinite(m)) return;
+      const cat = s.category || 'Other';
+      if (!map[cat]) map[cat] = { category: cat, monthly: 0, count: 0, subs: [] };
+      map[cat].monthly += m;
+      map[cat].count += 1;
+      map[cat].subs.push(s);
     });
     return Object.values(map).sort((a, b) => b.monthly - a.monthly);
   }

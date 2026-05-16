@@ -94,8 +94,9 @@
 
     let monthlySavings = 0;
     lowRated.forEach(s => {
-      // Use the toMonthly helper if available (it should be global or we can duplicate it)
-      const m = window.toMonthly ? window.toMonthly(s.price, s.cycle, s.currency) : (s.cycle === 'yearly' ? s.price / 12 : s.price);
+      const m = window.LeakdCurrency
+        ? window.LeakdCurrency.toMonthly(s.price, s.cycle, s.currency)
+        : (s.cycle === 'weekly' ? s.price * 4.33 : s.cycle === 'yearly' ? s.price / 12 : s.price);
       monthlySavings += m;
     });
 

@@ -113,11 +113,17 @@
     win.document.close();
   }
 
-  // Use the main app's formatPrice logic if available, else fallback
-  function formatPrice(amount) {
-    if (window.formatPrice) return window.formatPrice(amount);
-    const settings = window.LeakdState || { currency: '$' };
-    return settings.currency + Number(amount).toFixed(2);
+  function formatPrice(amount, code) {
+    const settings = window.LeakdState || {};
+    const target = code || settings.currencyCode || 'USD';
+    if (window.LeakdLocale) return window.LeakdLocale.formatMoney(amount, target);
+    if (window.LeakdCurrency) {
+      const s = window.LeakdCurrency.getSymbol(target);
+      if (target === 'HUF' || s === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
+      if (s === '¥') return s + Math.round(amount).toLocaleString();
+      return s + Number(amount).toFixed(2);
+    }
+    return (settings.currency || '$') + Number(amount).toFixed(2);
   }
 
   window.LeakdPdf = { generate: generatePDF };
