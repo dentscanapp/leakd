@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v34';
+const CACHE_NAME = 'leakd-v36';
 const ASSETS = [
   './',
   'index.html',
@@ -256,7 +256,8 @@ async function writeFiredLog(log) {
 
 function fmtMoney(amount, currency) {
   const s = currency || '$';
-  if (s === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
-  if (s === '¥') return s + Math.round(amount).toLocaleString();
-  return s + Number(amount).toFixed(2);
+  const lang = 'hu'; // SW context is limited, but we can assume hu if needed or use simple logic
+  if (s === 'Ft') return Math.round(amount).toLocaleString(lang) + ' Ft';
+  if (s === '¥') return s + Math.round(amount).toLocaleString(lang);
+  return s + Number(amount).toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }

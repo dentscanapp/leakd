@@ -278,7 +278,7 @@
 
   // Find a price-like number anywhere in a line. Accepts $, €, £, Ft, ¥, R$, A$.
   // Currency symbol may appear before the number ("$15.99") OR after ("5000 Ft").
-  const PRICE_RE = /(\$|€|£|¥|₹|R\$|A\$|Ft|zł|kr|Kč|lei|₺|Rp|฿)?\s*([0-9]+(?:[.,][0-9]{1,2})?)\s*(\$|€|£|¥|₹|R\$|A\$|Ft|zł|kr|Kč|lei|₺|Rp|฿)?/;
+  const PRICE_RE = /(\$|€|£|¥|₹|R\$|A\$|Ft|zł|kr|Kč|lei|₺|Rp|฿)?\s*([0-9][0-9\s.,]*[0-9])\s*(\$|€|£|¥|₹|R\$|A\$|Ft|zł|kr|Kč|lei|₺|Rp|฿)?/;
 
   const SYMBOL_TO_CODE = {
     '$': 'USD', '€': 'EUR', '£': 'GBP', '¥': 'JPY', '₹': 'INR',
@@ -301,8 +301,30 @@
     let price = known ? known.price : null;
     let currency = null;
     if (m) {
-      const p = parseFloat(m[2].replace(',', '.'));
-      if (!isNaN(p) && p > 0 && p < 10000) price = p;
+      let raw = m[2].trim();
+      // If it looks like "1.200,50" or "1 200,50", normalize to "1200.50"
+      // 1. Remove all spaces
+      raw = raw.replace(/\s/g, '');
+      // 2. If it has both . and , then the LAST one is the decimal
+      if (raw.includes('.') && raw.includes(',')) {
+        if (raw.lastIndexOf('.') > raw.lastIndexOf(',')) {
+          raw = raw.replace(/,/g, ''); // dot is decimal
+        } else {
+          raw = raw.replace(/\./g, '').replace(',', '.'); // comma is decimal
+        }
+      } else if (raw.includes(',')) {
+        // Only comma: if it's followed by 1-2 digits at the end, it's decimal
+        if (raw.match(/,[0-9]{1,2}$/)) raw = raw.replace(',', '.');
+        else raw = raw.replace(/,/g, '');
+      } else if (raw.includes('.')) {
+        // Only dot: if it's followed by 1-2 digits at the end, it's decimal
+        // UNLESS it's a huge number like 1.200 where it's likely thousands
+        if (raw.match(/\.[0-9]{1,2}$/) && raw.length <= 6) { /* decimal */ }
+        else raw = raw.replace(/\./g, '');
+      }
+      
+      const p = parseFloat(raw);
+      if (!isNaN(p) && p > 0 && p < 10000000) price = p;
       const sym = m[1] || m[3];
       if (sym && SYMBOL_TO_CODE[sym]) currency = SYMBOL_TO_CODE[sym];
     }

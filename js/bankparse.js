@@ -35,7 +35,9 @@
     {
       id: 'paypal',
       name: 'PayPal',
-      fingerprint: /PayPal|"Date","Time","Time Zone","Name"/i,
+      // PayPal exports have a distinctive column trio: Time + Time Zone + Gross
+      // (quoted or unquoted), or just contain the word "PayPal".
+      fingerprint: /PayPal|"?Date"?,\s*"?Time"?,\s*"?Time Zone"?|"?Gross"?,\s*"?Fee"?,\s*"?Net"?/i,
       cols: { date: ['Date'], desc: ['Name', 'Item Title', 'Subject'], amount: ['Net', 'Gross', 'Amount'], currency: ['Currency'] },
     },
     {

@@ -23,9 +23,10 @@
 
   function money(amount, currency) {
     const cur = currency || '$';
-    if (cur === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
-    if (cur === '¥') return cur + Math.round(amount).toLocaleString();
-    return cur + Number(amount).toFixed(2);
+    const lang = (window.LeakdI18n && window.LeakdI18n.lang) || undefined;
+    if (cur === 'Ft') return Math.round(amount).toLocaleString(lang) + ' Ft';
+    if (cur === '¥') return cur + Math.round(amount).toLocaleString(lang);
+    return cur + Number(amount).toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function tr(key, params) {

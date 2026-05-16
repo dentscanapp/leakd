@@ -154,6 +154,17 @@
     if (!window.LeakdLocale) return false;
     const detected = window.LeakdLocale.detectCurrency();
     if (!detected) return false;
+
+    // Also detect language
+    if (window.LeakdI18n) {
+      const detectedLang = window.LeakdLocale.detectLanguage(window.LeakdI18n.SUPPORTED);
+      if (detectedLang) {
+        window.LeakdI18n.lang = detectedLang;
+        localStorage.setItem('leakd_lang', detectedLang);
+        document.documentElement.lang = detectedLang;
+      }
+    }
+
     settings.currency = detected.symbol;
     settings.currencyCode = detected.code;
     saveData();
@@ -1593,7 +1604,7 @@
     const list = $('importPreviewList');
     if (parsed.length === 0) {
       $('importPreview').style.display = 'block';
-      $('importCount').textContent = '0';
+      $('importPreviewTitle').textContent = t('import.found', { count: 0 });
       list.innerHTML = `<div class="empty-state-mini">${t('import.nothingFound')}</div>`;
       $('confirmImportBtn').disabled = true;
       $('confirmImportBtn').textContent = t('import.confirm', { count: 0 });
@@ -1613,7 +1624,7 @@
       </div>`;
     }).join('');
     $('importPreview').style.display = 'block';
-    $('importCount').textContent = String(parsed.length);
+    $('importPreviewTitle').textContent = t('import.found', { count: parsed.length });
     $('confirmImportBtn').disabled = false;
     $('confirmImportBtn').textContent = t('import.confirm', { count: parsed.length });
   }
