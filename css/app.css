@@ -1031,9 +1031,30 @@ a.btn-primary {
   padding: 16px;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  /* Stop touch scrolls from chaining to the body when content reaches
+     its scroll edge. Without this, mobile URL-bar shows/hides and the
+     overlay backdrop visibly jumps. */
+  overscroll-behavior: contain;
 }
 
 .modal-overlay.active { display: flex; }
+
+/* Freeze the page underneath whenever any modal is open. This is what
+   actually stops the background "jumping" on mobile — the URL bar only
+   collapses/expands when the body itself scrolls, so locking body scroll
+   keeps the viewport (and our liquid background) perfectly still. */
+html:has(.modal-overlay.active),
+body:has(.modal-overlay.active) {
+  overflow: hidden;
+  /* On iOS, overflow:hidden alone is not enough — touchmove still scrolls.
+     This combination plus overscroll-behavior on the modal is robust. */
+  overscroll-behavior: none;
+  touch-action: none;
+}
+/* But the modal content itself must remain scrollable. */
+.modal-overlay.active .modal {
+  touch-action: pan-y;
+}
 
 .modal {
   background: var(--bg-modal);
@@ -1044,6 +1065,7 @@ a.btn-primary {
   overflow-y: auto;
   padding: 24px;
   animation: slideUp 0.3s ease;
+  overscroll-behavior: contain;
 }
 
 .modal-header {
