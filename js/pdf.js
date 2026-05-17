@@ -3,6 +3,15 @@
 
   const t = (k, vars) => window.LeakdI18n ? window.LeakdI18n.t(k, vars) : k;
 
+  // HTML-escape for user-controlled strings (sub names, custom categories).
+  // The PDF window is same-origin so unescaped sub names = full XSS with
+  // access to localStorage including sync secrets.
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   function generatePDF(subs, totals) {
     if (window.LeakdPro && !window.LeakdPro.isPro()) {
       if (typeof openProModal === 'function') openProModal();
@@ -85,10 +94,10 @@
               const cat = window.LeakdI18n ? window.LeakdI18n.t('cat.' + s.category) : s.category;
               return `
                 <tr>
-                  <td><strong>${s.name}</strong></td>
-                  <td>${cat || s.category}</td>
-                  <td>${cycleLabel}</td>
-                  <td class="price-col">${formatPrice(s.price, s.currency)}</td>
+                  <td><strong>${esc(s.name)}</strong></td>
+                  <td>${esc(cat || s.category)}</td>
+                  <td>${esc(cycleLabel)}</td>
+                  <td class="price-col">${esc(formatPrice(s.price, s.currency))}</td>
                 </tr>
               `;
             }).join('')}

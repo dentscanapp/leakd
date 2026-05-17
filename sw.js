@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v63';
+const CACHE_NAME = 'leakd-v65';
 const ASSETS = [
   './',
   'index.html',
@@ -88,7 +88,9 @@ self.addEventListener('activate', event => {
     Promise.all([
       self.clients.claim(),
       caches.keys().then(keys =>
-        Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+        // Whitelist non-versioned caches so they survive a CACHE_NAME bump:
+        //   • leakd-state — the JSON state mirror + fired-notification log
+        Promise.all(keys.filter(k => k !== CACHE_NAME && k !== 'leakd-state').map(k => caches.delete(k)))
       )
     ])
   );
@@ -180,7 +182,9 @@ async function runScheduledCheck() {
     const { subs, prefs, log, lang } = state;
     if (!prefs || !prefs.enabled) return;
 
-    const L = I18N[lang || 'en'] || I18N.en;
+    // Prefer the page-mirrored localized templates (covers all 28 langs).
+    // Fall back to the SW's tiny inline en+hu I18N table for legacy state.
+    const L = (state.i18n && state.i18n.trialTitle) ? state.i18n : (I18N[lang || 'en'] || I18N.en);
     const now = Date.now();
     const newlyFired = {};
 
@@ -251,7 +255,7 @@ async function readMirroredState() {
 
 async function writeFiredLog(log) {
   const cache = await caches.open('leakd-state');
-  const res = await cache.match('/state.json');
+  const res = await cache.match('state.json');
   if (!res) return;
   const state = await res.json();
   state.log = log;

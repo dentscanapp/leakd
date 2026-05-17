@@ -35,8 +35,14 @@
   let CLIENT_ID = (typeof window !== 'undefined' && window.LeakdSyncConfig && window.LeakdSyncConfig.clientId) || '';
   const SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
   const FILE_NAME = 'sync_data.json';
-  const PBKDF2_ITERATIONS = 250000;
-  const ENVELOPE_VERSION = 1;
+  // PBKDF2-HMAC-SHA256 iteration count. OWASP 2024+ recommends ≥600 000.
+  // Envelope v2 records the count per-blob so we can keep decrypting
+  // legacy v1 (250 000) blobs while encrypting all new ones at 600 000.
+  // On the next successful push the user's data is re-encrypted with v2,
+  // transparently upgrading their cloud blob.
+  const PBKDF2_ITERATIONS = 600000;
+  const PBKDF2_LEGACY_ITERATIONS = 250000;
+  const ENVELOPE_VERSION = 2;
 
   // localStorage keys this module owns
   const META_KEY = 'leakd_sync_meta';     // { fileId, lastSync, remoteUpdated }
@@ -113,18 +119,33 @@
   }
   function clearSalt() { localStorage.removeItem(SALT_KEY); }
 
-  async function deriveKey(password, salt) {
+  async function deriveKey(password, salt, iterations) {
     const pwBytes = enc.encode(String(password || ''));
     const imported = await crypto.subtle.importKey(
       'raw', pwBytes, { name: 'PBKDF2' }, false, ['deriveKey']
     );
     return await crypto.subtle.deriveKey(
-      { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
+      { name: 'PBKDF2', salt, iterations: iterations || PBKDF2_ITERATIONS, hash: 'SHA-256' },
       imported,
       { name: 'AES-GCM', length: 256 },
       false,
       ['encrypt', 'decrypt']
     );
+  }
+
+  // Password is kept in memory (never persisted) so we can derive the
+  // legacy 250 000-iteration key on demand when reading v1 envelopes
+  // written before the 600 000 bump. Both copies are cleared by lock().
+  let cachedPassword = null;
+  let cryptoKeyLegacy = null;
+
+  async function getLegacyKey() {
+    if (cryptoKeyLegacy) return cryptoKeyLegacy;
+    if (cachedPassword == null) {
+      const e = new Error('LOCKED'); e.code = 'LOCKED'; throw e;
+    }
+    cryptoKeyLegacy = await deriveKey(cachedPassword, getSalt(), PBKDF2_LEGACY_ITERATIONS);
+    return cryptoKeyLegacy;
   }
 
   async function unlock(password) {
@@ -133,7 +154,9 @@
       const e = new Error('PASSWORD_TOO_SHORT'); e.code = 'PASSWORD_TOO_SHORT'; throw e;
     }
     const salt = getSalt();
-    cryptoKey = await deriveKey(password, salt);
+    cachedPassword = String(password);
+    cryptoKey = await deriveKey(cachedPassword, salt, PBKDF2_ITERATIONS);
+    cryptoKeyLegacy = null;
     notify('unlocked');
     return true;
   }
@@ -142,27 +165,40 @@
   // local state. Used when adding the app to a second device.
   async function unlockAndVerifyAgainstRemote(password) {
     checkPro();
-    const candidate = await deriveKey(password, getSalt());
+    const candidate = await deriveKey(password, getSalt(), PBKDF2_ITERATIONS);
     const file = await findSyncFile();
     if (!file) {
+      cachedPassword = String(password);
       cryptoKey = candidate;
+      cryptoKeyLegacy = null;
       notify('unlocked');
       return { ok: true, hadRemote: false };
     }
     const text = await downloadFile(file.id);
+    // Peek at envelope version so we know which iteration count to try
+    let env = null;
+    try { env = JSON.parse(text); } catch {}
+    let verifyKey = candidate;
+    if (env && env.v === 1) {
+      // Legacy blob — verify against the 250k key
+      verifyKey = await deriveKey(password, getSalt(), PBKDF2_LEGACY_ITERATIONS);
+    }
     try {
-      const snap = await decryptWithKey(text, candidate);
-      cryptoKey = candidate;
+      const snap = await decryptWithKey(text, verifyKey);
+      cachedPassword = String(password);
+      cryptoKey = candidate;            // current standard
+      cryptoKeyLegacy = (env && env.v === 1) ? verifyKey : null;
       notify('unlocked');
       return { ok: true, hadRemote: true, snapshot: snap };
     } catch (e) {
-      // Wrong password — leave cryptoKey untouched
       const err = new Error('WRONG_PASSWORD'); err.code = 'WRONG_PASSWORD'; throw err;
     }
   }
 
   function lock() {
     cryptoKey = null;
+    cryptoKeyLegacy = null;
+    cachedPassword = null;
     notify('locked');
   }
   function isUnlocked() { return cryptoKey !== null; }
@@ -176,12 +212,17 @@
   }
 
   // ── AES-GCM encrypt / decrypt ──────────────────────────────
+  // Envelope v2 layout:
+  //   { v: 2, iter: 600000, iv, salt, data }
+  // Envelope v1 layout (legacy, decrypt-only):
+  //   { v: 1,                 iv, salt, data }   (implicit iterations: 250 000)
   async function encryptWithKey(payload, key) {
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const pt = enc.encode(JSON.stringify(payload));
     const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, pt);
     return JSON.stringify({
       v: ENVELOPE_VERSION,
+      iter: PBKDF2_ITERATIONS,
       iv: b64encode(iv),
       salt: b64encode(getSalt()),
       data: b64encode(ct),
@@ -191,13 +232,19 @@
     let env;
     try { env = JSON.parse(text); }
     catch { const e = new Error('INVALID_FORMAT'); e.code = 'INVALID_FORMAT'; throw e; }
-    if (env.v !== ENVELOPE_VERSION) {
+    // Pick the correct key for this envelope's iteration count
+    let useKey = key;
+    if (env.v === 1) {
+      // Legacy 250 000-iteration blob → use the lazy-derived legacy key
+      try { useKey = await getLegacyKey(); }
+      catch { /* fall through; decrypt will throw WRONG_PASSWORD */ }
+    } else if (env.v !== ENVELOPE_VERSION) {
       const e = new Error('VERSION_MISMATCH'); e.code = 'VERSION_MISMATCH'; throw e;
     }
     try {
       const iv = b64decode(env.iv);
       const ct = b64decode(env.data);
-      const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+      const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, useKey, ct);
       return JSON.parse(dec.decode(pt));
     } catch {
       const e = new Error('WRONG_PASSWORD'); e.code = 'WRONG_PASSWORD'; throw e;

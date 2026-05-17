@@ -169,12 +169,17 @@
       // ("2026-13-50" would otherwise become Jan 25, 2051).
       const valid = (a, b) => a >= 1 && a <= 31 && b >= 1 && b <= 12;
       let dt = null;
-      if (day > 12 && valid(day, mon)) dt = new Date(year, mon - 1, day);
-      else if (mon > 12 && valid(mon, day)) dt = new Date(year, day - 1, mon);
-      else if (valid(day, mon)) dt = new Date(year, mon - 1, day); // default DD/MM (Europe)
+      let expDay = null, expMon = null; // what the round-trip should restore
+      if (day > 12 && valid(day, mon)) {
+        dt = new Date(year, mon - 1, day); expDay = day; expMon = mon - 1;
+      } else if (mon > 12 && valid(mon, day)) {
+        dt = new Date(year, day - 1, mon); expDay = mon; expMon = day - 1;
+      } else if (valid(day, mon)) {
+        dt = new Date(year, mon - 1, day); expDay = day; expMon = mon - 1; // default DD/MM (Europe)
+      }
       if (!dt || isNaN(dt.getTime())) return null;
-      // Final sanity: the Date round-trip must preserve our input
-      if (dt.getDate() !== day && dt.getDate() !== mon) return null;
+      // Round-trip check rejects e.g. 30/02 (which JS would auto-correct to Mar 2)
+      if (dt.getDate() !== expDay || dt.getMonth() !== expMon) return null;
       return dt;
     }
     return null;

@@ -281,9 +281,25 @@
       const log = (window.LeakdNotify && window.LeakdNotify.log()) || {};
       const lang = (window.LeakdI18n && window.LeakdI18n.lang) || 'en';
       const snapshot = subs.map(s => ({ ...s, currency: settings.currency }));
-      const payload = { subs: snapshot, prefs, log, lang, updatedAt: Date.now() };
+      // Pre-localized notification templates for the SW. SW used to only
+      // ship en+hu inline; this lets background notifications honour the
+      // user's actual language without bloating sw.js.
+      const tt = (k) => (window.LeakdI18n ? window.LeakdI18n.t(k) : k);
+      const i18n = {
+        trialTitle: tt('notif.trial.title'),
+        trialBody:  tt('notif.trial.body'),
+        renewTitle: tt('notif.renew.title'),
+        renewBody:  tt('notif.renew.body'),
+        today:      tt('time.today'),
+        tomorrow:   tt('time.tomorrow'),
+        inDays:     tt('time.inDays'),
+        mo:         tt('cycle.mo'),
+        yr:         tt('cycle.yr'),
+        wk:         tt('cycle.wk'),
+      };
+      const payload = { subs: snapshot, prefs, log, lang, i18n, updatedAt: Date.now() };
       const cache = await caches.open('leakd-state');
-      await cache.put('/state.json', new Response(JSON.stringify(payload), {
+      await cache.put('state.json', new Response(JSON.stringify(payload), {
         headers: { 'Content-Type': 'application/json' },
       }));
     } catch {}
@@ -362,15 +378,17 @@
   }
   function formatPrice(amount, code) {
     const targetCode = code || settings.currencyCode;
+    const n = Number(amount);
+    const safe = isFinite(n) ? n : 0;
     // Prefer the rich formatter from locale.js
     if (window.LeakdLocale && targetCode) {
-      return window.LeakdLocale.formatMoney(amount, targetCode);
+      return window.LeakdLocale.formatMoney(safe, targetCode);
     }
     // Legacy fallback
     const s = window.LeakdCurrency ? window.LeakdCurrency.getSymbol(targetCode) : (settings.currency || '$');
-    if (targetCode === 'HUF' || s === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
-    if (s === '¥') return s + Math.round(amount).toLocaleString();
-    return s + amount.toFixed(2);
+    if (targetCode === 'HUF' || s === 'Ft') return Math.round(safe).toLocaleString() + ' Ft';
+    if (s === '¥') return s + Math.round(safe).toLocaleString();
+    return s + safe.toFixed(2);
   }
   // alternatives.js / brands.js store reference prices in USD. Convert to the
   // user's display currency so suggestions and savings math stay in one unit.
@@ -594,7 +612,7 @@
     activeSubs().forEach(s => totalMonthly += toMonthly(s.price, s.cycle, s.currency));
     let html = `<button class="cat-btn ${activeCategory === 'all' ? 'active' : ''}" data-cat="all">${t('cat.all')} ${subs.length > 0 ? '(' + formatPrice(totalMonthly) + ')' : ''}</button>`;
     Object.entries(cats).sort((a, b) => b[1] - a[1]).forEach(([cat, amount]) => {
-      html += `<button class="cat-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${cat}">${localizedCat(cat)} (${formatPrice(amount)})</button>`;
+      html += `<button class="cat-btn ${activeCategory === cat ? 'active' : ''}" data-cat="${escHtml(cat)}">${escHtml(localizedCat(cat))} (${formatPrice(amount)})</button>`;
     });
     categoriesEl.innerHTML = html;
     categoriesEl.querySelectorAll('.cat-btn').forEach(btn => {
@@ -674,7 +692,7 @@
             <div class="sub-info">
               <div class="sub-name">${escHtml(s.name)}${s.isBusiness ? ' <span style="font-size: 14px; opacity: 0.8" title="Business expense">💼</span>' : ''}</div>
               <div class="sub-meta">
-                <span>${localizedCat(s.category)}</span>
+                <span>${escHtml(localizedCat(s.category))}</span>
                 ${dateText ? '<span>·</span><span>' + dateText + '</span>' : ''}
                 ${badge}
               </div>
@@ -2230,6 +2248,7 @@
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         name: s.displayName,
         price: s.price,
+        currency: s.currency || settings.currencyCode || 'EUR',
         cycle: s.cycle,
         category: s.category,
         nextDate: nextMonthIso(),
@@ -2553,14 +2572,14 @@
         .filter(s => s.category === cat)
         .reduce((sum, s) => sum + toMonthly(s.price, s.cycle, s.currency), 0);
       if (!limit) {
-        return `<button class="budget-row ${proLocked ? 'is-locked' : ''}" data-cat="${cat}">
+        return `<button class="budget-row ${proLocked ? 'is-locked' : ''}" data-cat="${escHtml(cat)}">
           <span class="budget-row-cat">${escHtml(localizedCat(cat))}</span>
           <span class="budget-row-meta">${formatPrice(spent)} · <span class="budget-row-add">+ ${t('budgets.setLimit')}</span></span>
         </button>`;
       }
       const pct = Math.min(100, (spent / limit) * 100);
       const status = p ? p.status : 'ok';
-      return `<button class="budget-row ${proLocked ? 'is-locked' : ''}" data-cat="${cat}">
+      return `<button class="budget-row ${proLocked ? 'is-locked' : ''}" data-cat="${escHtml(cat)}">
         <div class="budget-row-head">
           <span class="budget-row-cat">${escHtml(localizedCat(cat))}</span>
           <span class="budget-row-amount status-${status}">${formatPrice(spent)} / ${formatPrice(limit)}</span>
@@ -3026,6 +3045,50 @@
       if (e.key === 'Enter' && modal.classList.contains('active')) saveSub();
     });
   }
+
+  // ─── Modal focus management (a11y) ───
+  // Globally watches every .modal-overlay for the `active` class. On open
+  // we stash the previously-focused element and trap Tab inside the modal;
+  // on close we restore focus. Centralized so all 20+ openX/closeX paths
+  // get a11y for free without per-modal wiring.
+  (function modalA11y() {
+    const handlers = new Map();
+    let lastFocused = null;
+    const isFocusable = el => !el.disabled && el.offsetParent !== null && el.tabIndex !== -1;
+    function trap(e, modal) {
+      if (e.key !== 'Tab') return;
+      const items = Array.from(modal.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )).filter(isFocusable);
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+      else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+    }
+    const obs = new MutationObserver(muts => {
+      for (const m of muts) {
+        if (m.attributeName !== 'class') continue;
+        const el = m.target;
+        if (!el.classList || !el.classList.contains('modal-overlay')) continue;
+        const isOpen = el.classList.contains('active');
+        if (isOpen && !handlers.has(el)) {
+          lastFocused = document.activeElement;
+          const h = e => trap(e, el);
+          el.addEventListener('keydown', h);
+          handlers.set(el, h);
+        } else if (!isOpen && handlers.has(el)) {
+          el.removeEventListener('keydown', handlers.get(el));
+          handlers.delete(el);
+          if (lastFocused && typeof lastFocused.focus === 'function') {
+            try { lastFocused.focus({ preventScroll: true }); } catch {}
+          }
+        }
+      }
+    });
+    document.querySelectorAll('.modal-overlay').forEach(el =>
+      obs.observe(el, { attributes: true, attributeFilter: ['class'] })
+    );
+  })();
 
   init();
 })();

@@ -32,8 +32,12 @@
   }
 
   // Move a subscription to the cancelled registry.
+  // Dedupes on id: if the same sub was already cancelled, the record is
+  // replaced (with a fresh cancelledAt) instead of being appended again.
+  // Prevents savings() / thisYearCount() from inflating after a
+  // cancel → restore → cancel cycle.
   function add(sub) {
-    const list = load();
+    const list = load().filter(s => s.id !== sub.id);
     list.push({
       ...sub,
       cancelledAt: new Date().toISOString(),

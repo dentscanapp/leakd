@@ -2529,7 +2529,7 @@ body:has(.modal-overlay.active) {
     opacity: 1;
   }
   100% {
-    transform: translate(var(--horiz), 100vh) rotate(var(--rot));
+    transform: translate(var(--horiz), 100lvh) rotate(var(--rot));
     opacity: 0;
   }
 }
@@ -3451,7 +3451,7 @@ body:has(.modal-overlay.active) {
   vertical-align: middle;
 }
 .sync-status {
-  background: var(--card-bg);
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px 16px;
@@ -3466,7 +3466,7 @@ body:has(.modal-overlay.active) {
 .sync-status-meta {
   margin-top: 6px;
   font-size: 13px;
-  color: var(--text-dim);
+  color: var(--text-2);
 }
 .sync-dot {
   width: 10px;
@@ -3484,7 +3484,7 @@ body:has(.modal-overlay.active) {
 }
 .sync-section-help {
   font-size: 13px;
-  color: var(--text-dim);
+  color: var(--text-2);
   margin: 0 0 10px;
   line-height: 1.4;
 }
@@ -3498,9 +3498,8 @@ body:has(.modal-overlay.active) {
   line-height: 1.4;
   margin-top: 10px;
 }
-@media (prefers-color-scheme: dark) {
-  .sync-warning { color: #fbbf24; }
-}
+[data-theme="dark"] .sync-warning { color: #fbbf24; }
+
 .sync-error {
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.3);
@@ -3509,4 +3508,57 @@ body:has(.modal-overlay.active) {
   border-radius: 8px;
   font-size: 13px;
   margin-top: 12px;
+}
+[data-theme="dark"] .sync-error { color: #fca5a5; }
+
+/* Sync modal password input: shares styling with .form-group input but is
+   placed outside a .form-group, so duplicate the relevant rules here. */
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  transition: border-color 0.15s;
+}
+.form-input:focus { outline: none; border-color: var(--accent); }
+
+/* Pro modal: active-state display card */
+.pro-status-display {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 12px 0;
+}
+.pro-key-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+.pro-key-value {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--text);
+  word-break: break-all;
+}
+
+/* Pro-lock banner inside feature modals (Budgets, Sync, etc.) */
+.budgets-pro-lock {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--bg-card)), var(--bg-card));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.budgets-pro-lock-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
 }

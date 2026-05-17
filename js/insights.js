@@ -8,6 +8,17 @@
 
   const t = (k, vars) => window.LeakdI18n ? window.LeakdI18n.t(k, vars) : k;
 
+  // HTML-escape any user-controlled string before it goes into a t() param
+  // that lands in innerHTML. Server-side equivalent of htmlspecialchars().
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function toMonthly(price, cycle, currency) {
     if (window.LeakdCurrency) return window.LeakdCurrency.toMonthly(price, cycle, currency);
     if (cycle === 'weekly') return price * 4.33;
@@ -83,8 +94,8 @@
             id: 'dup-' + cat,
             severity: 'high',
             icon: '⚠️',
-            title: t('sug.dup.title', { count: matches.length, cat: (window.LeakdI18n ? window.LeakdI18n.t('cat.' + cat) : cat).toLowerCase() }),
-            body: t('sug.dup.body', { names: matches.map(s => s.name).join(', '), savings: money(savings) }),
+            title: t('sug.dup.title', { count: matches.length, cat: esc((window.LeakdI18n ? window.LeakdI18n.t('cat.' + cat) : cat).toLowerCase()) }),
+            body: t('sug.dup.body', { names: esc(matches.map(s => s.name).join(', ')), savings: money(savings) }),
             savingsYearly: savings,
           });
         }
@@ -101,7 +112,7 @@
           id: 'yearly-' + s.id,
           severity: 'medium',
           icon: '💡',
-          title: t('sug.yearly.title', { name: s.name }),
+          title: t('sug.yearly.title', { name: esc(s.name) }),
           body: t('sug.yearly.body', { savings: money(savings) }),
           savingsYearly: savings,
         });
@@ -116,7 +127,7 @@
           id: 'expensive-' + s.id,
           severity: 'medium',
           icon: '💸',
-          title: t('sug.expensive.title', { name: s.name }),
+          title: t('sug.expensive.title', { name: esc(s.name) }),
           body: t('sug.expensive.body', { monthly: money(m), yearly: money(m * 12) }),
           savingsYearly: m * 12,
         });
@@ -134,7 +145,7 @@
             id: 'trial-' + s.id,
             severity: 'high',
             icon: '⏰',
-            title: t('sug.trial.title', { name: s.name, when: when }),
+            title: t('sug.trial.title', { name: esc(s.name), when: when }),
             body: t('sug.trial.body', { price: money(s.price, s.currency) + cycleLabel }),
             savingsYearly: toYearly(s.price, s.cycle, s.currency),
           });
@@ -146,12 +157,12 @@
     const thirtyDaysAgo = Date.now() - 30 * 86400000;
     subs.forEach(s => {
       if (s.lastUsed && new Date(s.lastUsed).getTime() < thirtyDaysAgo && !s.paused) {
-        const m = toMonthly(s.price, s.cycle);
+        const m = toMonthly(s.price, s.cycle, s.currency);
         out.push({
           id: 'zombie-' + s.id,
           severity: 'high',
           icon: '🧟',
-          title: t('sug.zombie.title', { name: s.name }),
+          title: t('sug.zombie.title', { name: esc(s.name) }),
           body: t('sug.zombie.body', { monthly: money(m) }),
           savingsYearly: toYearly(s.price, s.cycle, s.currency),
         });
@@ -168,7 +179,7 @@
             id: 'old-' + s.id,
             severity: 'low',
             icon: '🕰️',
-            title: t('sug.old.title', { name: s.name }),
+            title: t('sug.old.title', { name: esc(s.name) }),
             body: t('sug.old.body', { paid: money(toMonthly(s.price, s.cycle, s.currency) * 6) }),
             savingsYearly: 0,
           });

@@ -17,6 +17,18 @@
     dailyDigestHour: 9,
   };
 
+  const t = (k, vars) => window.LeakdI18n ? window.LeakdI18n.t(k, vars) : k;
+  function whenLabel(days) {
+    if (days === 0) return t('time.today');
+    if (days === 1) return t('time.tomorrow');
+    return t('time.inDays', { n: days });
+  }
+  function cycleLabel(cycle) {
+    if (cycle === 'monthly') return t('cycle.mo');
+    if (cycle === 'yearly')  return t('cycle.yr');
+    return t('cycle.wk');
+  }
+
   const Notify = {
     prefs: { ...defaults },
     timers: [],
@@ -95,8 +107,8 @@
           const key = this.eventKey(s, 'trial', s.trialEnd);
           events.push({
             when: fireAt,
-            title: `${s.name} free trial ends ${this.prefs.trialDaysBefore === 0 ? 'today' : this.prefs.trialDaysBefore === 1 ? 'tomorrow' : 'in ' + this.prefs.trialDaysBefore + ' days'}`,
-            body: `Will auto-renew at ${formatMoney(s.price, s.currency)}. Cancel now if you don't want it.`,
+            title: t('notif.trial.title', { name: s.name, when: whenLabel(this.prefs.trialDaysBefore) }),
+            body: t('notif.trial.body', { price: formatMoney(s.price, s.currency) }),
             tag: 'leakd-trial-' + s.id,
             key,
             urgent: true,
@@ -109,11 +121,10 @@
           const fireAt = new Date(due);
           fireAt.setDate(fireAt.getDate() - this.prefs.daysBefore);
           const key = this.eventKey(s, 'renewal', s.nextDate);
-          const daysLabel = this.prefs.daysBefore === 0 ? 'today' : this.prefs.daysBefore === 1 ? 'tomorrow' : 'in ' + this.prefs.daysBefore + ' days';
           events.push({
             when: fireAt,
-            title: `${s.name} renews ${daysLabel}`,
-            body: `${formatMoney(s.price, s.currency)} ${s.cycle === 'monthly' ? '/mo' : s.cycle === 'yearly' ? '/yr' : '/wk'} — still using it?`,
+            title: t('notif.renew.title', { name: s.name, when: whenLabel(this.prefs.daysBefore) }),
+            body: t('notif.renew.body', { price: formatMoney(s.price, s.currency), cycle: cycleLabel(s.cycle) }),
             tag: 'leakd-renew-' + s.id,
             key,
             urgent: false,
@@ -206,8 +217,8 @@
         if (p !== 'granted') return false;
       }
       return this.fire({
-        title: 'Leakd notifications are on',
-        body: "You'll get a heads-up before your subscriptions renew.",
+        title: t('notif.test.title'),
+        body: t('notif.test.body'),
         tag: 'leakd-test',
         key: 'test-' + Date.now(),
         urgent: false,
@@ -215,12 +226,26 @@
     },
   };
 
-  // ── Helper: formatMoney shared with app.js ──
+  // ── Helper: formatMoney accepts both ISO codes (USD, EUR, HUF…) and raw
+  //   symbols ($, €, Ft). Delegates to LeakdLocale when available for proper
+  //   locale-aware formatting; otherwise falls back to a sane default.
   function formatMoney(amount, currency) {
-    const s = currency || '$';
-    if (s === 'Ft') return Math.round(amount).toLocaleString() + ' Ft';
-    if (s === '¥') return s + Math.round(amount).toLocaleString();
-    return s + Number(amount).toFixed(2);
+    const a = Number(amount);
+    if (!isFinite(a)) return String(currency || '');
+    if (window.LeakdLocale && typeof window.LeakdLocale.formatMoney === 'function') {
+      try { return window.LeakdLocale.formatMoney(a, currency); } catch {}
+    }
+    const c = currency || '$';
+    // ISO code → look up symbol via LeakdCurrency if available
+    if (/^[A-Z]{3}$/.test(c) && window.LeakdCurrency && window.LeakdCurrency.symbolFor) {
+      const sym = window.LeakdCurrency.symbolFor(c) || c + ' ';
+      if (c === 'HUF') return Math.round(a).toLocaleString() + ' Ft';
+      if (c === 'JPY' || c === 'KRW') return sym + Math.round(a).toLocaleString();
+      return sym + a.toFixed(2);
+    }
+    if (c === 'Ft') return Math.round(a).toLocaleString() + ' Ft';
+    if (c === '¥')  return c + Math.round(a).toLocaleString();
+    return c + a.toFixed(2);
   }
 
   // Expose
