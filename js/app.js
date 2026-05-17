@@ -2117,11 +2117,58 @@
   }
   function closeBankModal() { $('bankModal').classList.remove('active'); }
 
+  // Lazy-load the SheetJS XLSX library on first use. ~250KB, only fetched
+  // when the user actually picks an .xlsx/.xls file — keeps initial app
+  // load fast and the PWA cache small for users who only do CSV imports.
+  let xlsxLoaderPromise = null;
+  function loadXlsxLib() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    if (xlsxLoaderPromise) return xlsxLoaderPromise;
+    xlsxLoaderPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'js/vendor/xlsx.mini.min.js';
+      s.onload = () => window.XLSX ? resolve(window.XLSX) : reject(new Error('XLSX failed to expose global'));
+      s.onerror = () => reject(new Error('XLSX script load error'));
+      document.head.appendChild(s);
+    });
+    return xlsxLoaderPromise;
+  }
+
   function loadBankFile(file) {
+    const name = (file.name || '').toLowerCase();
+    const isExcel = /\.xlsx?$/.test(name) || /spreadsheetml|ms-excel/.test(file.type || '');
+
+    if (isExcel) {
+      loadXlsxLib().then(XLSX => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const wb = XLSX.read(new Uint8Array(reader.result), { type: 'array' });
+            const firstSheet = wb.Sheets[wb.SheetNames[0]];
+            const csv = XLSX.utils.sheet_to_csv(firstSheet);
+            processBankCsvText(csv);
+          } catch (e) {
+            $('bankError').textContent = t('bank.errorColumns');
+            $('bankError').style.display = 'block';
+            $('bankResult').style.display = 'none';
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }).catch(() => {
+        $('bankError').textContent = t('bank.errorColumns');
+        $('bankError').style.display = 'block';
+      });
+      return;
+    }
+
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = () => processBankCsvText(String(reader.result || ''));
+    reader.readAsText(file);
+  }
+
+  function processBankCsvText(csvText) {
       if (!window.LeakdBankParse) return;
-      const result = window.LeakdBankParse.parseStatement(String(reader.result || ''));
+      const result = window.LeakdBankParse.parseStatement(csvText);
       if (result.error === 'missing-columns') {
         $('bankError').textContent = t('bank.errorColumns');
         $('bankError').style.display = 'block';
@@ -2167,8 +2214,6 @@
         });
       });
       updateBankConfirm();
-    };
-    reader.readAsText(file);
   }
 
   function updateBankConfirm() {
