@@ -84,7 +84,7 @@
     return {
       year,
       month,
-      monthName: firstDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
+      monthName: firstDay.toLocaleDateString((window.LeakdI18n && window.LeakdI18n.lang) || 'en', { month: 'long', year: 'numeric' }),
       weeks,
       totalThisMonth: Object.values(dayMap).flat().reduce((sum, r) => sum + r.price, 0),
       countThisMonth: Object.values(dayMap).flat().length,
