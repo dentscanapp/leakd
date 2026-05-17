@@ -2729,6 +2729,16 @@
 
     $('menuBackup').addEventListener('click', () => { closeMenuModal(); openBackupModal(); });
 
+    // Email reminders (Pro) — opens Pro modal if not Pro, otherwise a quick info toast
+    // until the dedicated email-reminder modal UI is built.
+    $('menuEmailRem').addEventListener('click', () => {
+      closeMenuModal();
+      if (window.LeakdPro && !window.LeakdPro.isPro()) { openProModal(); return; }
+      toast(t('emailrem.title') + ' — ' + t('emailrem.langNote', {
+        lang: (window.LeakdI18n && window.LeakdI18n.LANGUAGES[window.LeakdI18n.lang] || {}).name || window.LeakdI18n.lang
+      }));
+    });
+
     // Cloud sync (Pro)
     $('menuSync').addEventListener('click', () => { closeMenuModal(); openSyncModal(); });
     $('closeSyncModal').addEventListener('click', closeSyncModal);

@@ -691,7 +691,7 @@ body {
 .menu-row:hover { background: var(--bg-card-hover); }
 .menu-row-main { display: flex; align-items: center; gap: 14px; flex: 1; }
 .menu-row-icon { font-size: 22px; line-height: 1; width: 28px; text-align: center; }
-.menu-row-label { font-size: 14px; font-weight: 600; }
+.menu-row-label { font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
 .menu-row-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
 .menu-row-danger .menu-row-label { color: var(--accent); }
 .menu-row svg { color: var(--text-3); }
@@ -3346,7 +3346,6 @@ a.btn-primary {
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 4px;
-  margin-left: 6px;
   letter-spacing: 0.5px;
   vertical-align: middle;
 }

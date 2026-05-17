@@ -704,8 +704,25 @@
         <div class="menu-row-main">
           <span class="menu-row-icon">🎁</span>
           <div>
-            <div class="menu-row-label" data-i18n="menu.yearend">Year-end report</div>
+            <div class="menu-row-label">
+              <span data-i18n="menu.yearend">Year-end report</span>
+              <span class="pro-badge">PRO</span>
+            </div>
             <div class="menu-row-sub" data-i18n="menu.yearendSub">See your spending wrap-up</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuEmailRem">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">📧</span>
+          <div>
+            <div class="menu-row-label">
+              <span data-i18n="menu.emailRem">Email reminders</span>
+              <span class="pro-badge">PRO</span>
+            </div>
+            <div class="menu-row-sub" data-i18n="menu.emailRemSub">Get an email before each renewal</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -759,7 +776,10 @@
         <div class="menu-row-main">
           <span class="menu-row-icon">📄</span>
           <div>
-            <div class="menu-row-label" data-i18n="menu.pdf">PDF report (Pro)</div>
+            <div class="menu-row-label">
+              <span data-i18n="menu.pdf">PDF report</span>
+              <span class="pro-badge">PRO</span>
+            </div>
             <div class="menu-row-sub" data-i18n="menu.pdfSub">Printable report for your accountant</div>
           </div>
         </div>
@@ -782,7 +802,10 @@
         <div class="menu-row-main">
           <span class="menu-row-icon">🎯</span>
           <div>
-            <div class="menu-row-label" data-i18n="menu.budgets">Category budgets</div>
+            <div class="menu-row-label">
+              <span data-i18n="menu.budgets">Category budgets</span>
+              <span class="pro-badge">PRO</span>
+            </div>
             <div class="menu-row-sub" data-i18n="menu.budgetsSub">Set monthly limits per category</div>
           </div>
         </div>
@@ -1490,12 +1513,12 @@
 </div>
 
 <script src="js/locale.js"></script>
-<script src="js/i18n.js?v=46"></script>
+<script src="js/i18n.js?v=48"></script>
 <script src="js/brands.js"></script>
 <script src="js/insights.js"></script>
 <script src="js/pro.js"></script>
 <script src="js/share.js"></script>
-<script src="js/import.js?v=46"></script>
+<script src="js/import.js?v=48"></script>
 <script src="js/calendar.js"></script>
 <script src="js/yearend.js"></script>
 <script src="js/backup.js"></script>
@@ -1528,9 +1551,9 @@
 <script src="js/sync.js"></script>
 <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
 <script src="js/emailreminder.js"></script>
-<script src="js/app.js?v=46"></script>
+<script src="js/app.js?v=48"></script>
   <script>
-    window.LeakdVersion = '2026-05-17.47';
+    window.LeakdVersion = '2026-05-17.48';
     console.log('Leakd Initializing v' + window.LeakdVersion);
     if('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js?v=' + window.LeakdVersion).then(reg => {
