@@ -77,6 +77,20 @@
     // from the Currency menu.
     if (!localStorage.getItem(SETTINGS_KEY)) {
       if (!autoDetectLocale()) defaultCurrencyUsd();
+    } else {
+      // Currency was set in a previous session. Re-detect when:
+      //   • it was explicitly marked as auto-detected (currencyAuto: true)
+      //   • OR migrating a legacy user whose currency is USD with no flag
+      //     (USD is our silent fallback, so on a Hungarian / German / ...
+      //     OS we should upgrade them to HUF / EUR / ... automatically).
+      const probablyAuto = settings.currencyAuto === true
+        || (settings.currencyAuto === undefined && settings.currencyCode === 'USD');
+      if (probablyAuto && window.LeakdLocale) {
+        const detected = window.LeakdLocale.detectCurrency();
+        if (detected && detected.code !== settings.currencyCode) {
+          autoDetectLocale();
+        }
+      }
     }
 
     if (!localStorage.getItem(ONBOARD_KEY)) {
@@ -156,10 +170,13 @@
 
   // Silent USD fallback for first-time visitors whose country isn't in the
   // locale map. We never show the currency picker on first load — they can
-  // change it from the menu later.
+  // change it from the menu later. We mark it as `currencyAuto` so future
+  // page loads can re-attempt detection (in case the user's locale becomes
+  // detectable later, e.g. they fixed regional settings or moved networks).
   function defaultCurrencyUsd() {
     settings.currency = '$';
     settings.currencyCode = 'USD';
+    settings.currencyAuto = true;
     saveData();
     refreshDynamicLabels();
     render();
@@ -187,6 +204,7 @@
 
     settings.currency = detected.symbol;
     settings.currencyCode = detected.code;
+    settings.currencyAuto = true;  // mark as auto so re-detect can run again
     saveData();
     refreshDynamicLabels();
     render();
@@ -1434,6 +1452,7 @@
   function setCurrency(btn) {
     settings.currency = btn.dataset.currency;
     settings.currencyCode = btn.dataset.code;
+    settings.currencyAuto = false;  // explicit user choice — never auto-overwrite
     saveData();
     currencyModal.style.display = 'none';
     refreshDynamicLabels();

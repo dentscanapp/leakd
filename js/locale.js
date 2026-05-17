@@ -114,8 +114,26 @@
     return out;
   }
 
+  // Same list but with the OS regional locale FIRST. Used for *country*
+  // detection because the OS region (Intl) reflects where the user actually
+  // is — even if their browser UI is in a different language. The plain
+  // `getBrowserLocales()` order is still right for *language* detection.
+  function getCountryLocales() {
+    const out = [];
+    try {
+      const intl = Intl.DateTimeFormat().resolvedOptions().locale;
+      if (intl) out.push(intl);
+    } catch {}
+    if (navigator.languages && navigator.languages.length) out.push(...navigator.languages);
+    if (navigator.language) out.push(navigator.language);
+    return out;
+  }
+
   function detectCountry() {
-    for (const raw of getBrowserLocales()) {
+    // Try OS regional locale first (Intl) — it's the most reliable signal
+    // of where the user actually is, even if their browser is in English.
+    // Then fall back to navigator.languages.
+    for (const raw of getCountryLocales()) {
       const m = String(raw).match(/[-_]([A-Z]{2})\b/i);
       if (m) {
         const cc = m[1].toUpperCase();
