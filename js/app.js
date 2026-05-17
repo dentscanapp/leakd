@@ -1266,7 +1266,10 @@
     // Soft-delete: route through the cancelled registry so the user can
     // find it again (and so cancellation savings are tracked). The user
     // can permanently purge from the Cancelled view via the × button.
-    if (target && window.LeakdCancelled) window.LeakdCancelled.add(target);
+    if (target && window.LeakdCancelled) {
+      window.LeakdCancelled.add(target);
+      console.log('[Leakd] soft-deleted to cancelled:', target.name);
+    }
     subs = subs.filter(x => x.id !== editingId);
     if (target) logActivity('deleted', target);
     saveData();
