@@ -72,16 +72,15 @@
     // First-time visit (no settings yet) — auto-pick currency from browser
     // locale BEFORE showing onboarding so the welcome screen is in their
     // native currency. Language was already detected in LeakdI18n.init().
+    // If the visitor's country isn't in the COUNTRY_CURRENCY map we silently
+    // default to USD instead of prompting — the user can change it later
+    // from the Currency menu.
     if (!localStorage.getItem(SETTINGS_KEY)) {
-      autoDetectLocale(); // best-effort, silent on failure
+      if (!autoDetectLocale()) defaultCurrencyUsd();
     }
 
     if (!localStorage.getItem(ONBOARD_KEY)) {
       showOnboard();
-    } else if (!localStorage.getItem(SETTINGS_KEY)) {
-      // Onboarded but somehow no settings — fall back to currency picker if
-      // auto-detect can't figure out the locale.
-      if (!autoDetectLocale()) currencyModal.style.display = 'flex';
     }
 
     handleUrlParams();
@@ -153,6 +152,17 @@
   // Keep palette's view of subs fresh
   function updatePaletteSubs() {
     window.__paletteSubs = subs;
+  }
+
+  // Silent USD fallback for first-time visitors whose country isn't in the
+  // locale map. We never show the currency picker on first load — they can
+  // change it from the menu later.
+  function defaultCurrencyUsd() {
+    settings.currency = '$';
+    settings.currencyCode = 'USD';
+    saveData();
+    refreshDynamicLabels();
+    render();
   }
 
   // Auto-detect currency (and confirm language) from browser locale.
@@ -2633,7 +2643,9 @@
     localStorage.setItem(ONBOARD_KEY, '1');
     $('onboard').style.display = 'none';
     if (!localStorage.getItem(SETTINGS_KEY)) {
-      if (!autoDetectLocale()) currencyModal.style.display = 'flex';
+      // Same silent USD fallback as init() — never prompt with a picker
+      // automatically; the user can switch from the Currency menu.
+      if (!autoDetectLocale()) defaultCurrencyUsd();
     }
     // Kick off the interactive tour after a beat — only the first time
     if (window.LeakdTour && !window.LeakdTour.isDone()) {
