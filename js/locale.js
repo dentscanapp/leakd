@@ -18,24 +18,27 @@
   // Country code (ISO 3166-1 alpha-2) → currency. Eurozone uses EUR.
   // Each entry: { code: ISO 4217 currency code, symbol: display glyph }.
   const COUNTRY_CURRENCY = {
-    // Eurozone
+    // Eurozone (Croatia joined 2023, Bulgaria stays BGN until at least 2026)
     AT: 'EUR', BE: 'EUR', CY: 'EUR', DE: 'EUR', EE: 'EUR', ES: 'EUR',
     FI: 'EUR', FR: 'EUR', GR: 'EUR', IE: 'EUR', IT: 'EUR', LT: 'EUR',
     LU: 'EUR', LV: 'EUR', MT: 'EUR', NL: 'EUR', PT: 'EUR', SI: 'EUR',
     SK: 'EUR', HR: 'EUR',
-    // Other major
+    // Americas
     US: 'USD', CA: 'CAD', MX: 'MXN', BR: 'BRL', AR: 'USD',
+    // Europe non-EUR
     GB: 'GBP', UK: 'GBP',
-    AU: 'AUD', NZ: 'NZD',
     CH: 'CHF', SE: 'SEK', NO: 'NOK', DK: 'DKK', IS: 'EUR',
-    PL: 'PLN', CZ: 'CZK', HU: 'HUF', RO: 'RON', BG: 'EUR',
-    RU: 'RUB', UA: 'USD', BY: 'USD',
+    PL: 'PLN', CZ: 'CZK', HU: 'HUF', RO: 'RON', BG: 'BGN',
+    RU: 'RUB', UA: 'UAH', BY: 'USD',
+    // Asia-Pacific
+    AU: 'AUD', NZ: 'NZD',
     JP: 'JPY', KR: 'KRW', CN: 'CNY', TW: 'CNY', HK: 'HKD', SG: 'SGD',
     IN: 'INR',
+    TH: 'THB', PH: 'PHP', ID: 'IDR', VN: 'VND', MY: 'USD',
+    // Middle East / Africa
     TR: 'TRY',
     ZA: 'ZAR',
     AE: 'AED',
-    // Common diaspora locales — fall back to USD if we know the language but no currency
   };
 
   // Currency metadata: how to display and format.
@@ -68,24 +71,36 @@
     AED: { symbol: 'AED', position: 'before', decimals: 2, space: true },
     RUB: { symbol: '₽',   position: 'after',  decimals: 0 },
     RON: { symbol: 'lei', position: 'after',  decimals: 2 },
+    BGN: { symbol: 'лв',  position: 'after',  decimals: 2, space: true },
+    UAH: { symbol: '₴',   position: 'before', decimals: 2 },
+    THB: { symbol: '฿',   position: 'before', decimals: 2 },
+    PHP: { symbol: '₱',   position: 'before', decimals: 2 },
+    IDR: { symbol: 'Rp',  position: 'before', decimals: 0, space: true },
+    VND: { symbol: '₫',   position: 'after',  decimals: 0 },
   };
 
   // Default language for each country, so we can also auto-pick a language
   // when the user is in a country we cover but their browser lang is
   // something obscure. Same priority as currency.
+  // Only languages we actually support (28 codes) appear as values.
   const COUNTRY_LANG = {
-    AT: 'de', BE: 'nl', CY: 'en', DE: 'de', EE: 'en', ES: 'es',
-    FI: 'en', FR: 'fr', GR: 'en', IE: 'en', IT: 'it', LT: 'en',
+    // Europe — Eurozone + neighbours
+    AT: 'de', BE: 'nl', CY: 'el', DE: 'de', EE: 'en', ES: 'es',
+    FI: 'en', FR: 'fr', GR: 'el', IE: 'en', IT: 'it', LT: 'en',
     LU: 'fr', LV: 'en', MT: 'en', NL: 'nl', PT: 'pt', SI: 'en',
-    SK: 'cs', HR: 'en',
-    US: 'en', CA: 'en', MX: 'es', BR: 'pt', AR: 'es',
+    SK: 'sk', HR: 'hr',
     GB: 'en', UK: 'en',
+    CH: 'de', SE: 'sv', NO: 'sv', DK: 'en', IS: 'en',
+    PL: 'pl', CZ: 'cs', HU: 'hu', RO: 'ro', BG: 'bg',
+    RU: 'ru', UA: 'uk', BY: 'ru',
+    // Americas
+    US: 'en', CA: 'en', MX: 'es', BR: 'pt', AR: 'es',
+    // Asia-Pacific
     AU: 'en', NZ: 'en',
-    CH: 'de', SE: 'sv', NO: 'sv', DK: 'sv',
-    PL: 'pl', CZ: 'cs', HU: 'hu', RO: 'ro', BG: 'ro',
-    RU: 'ru', UA: 'ru', BY: 'ru',
     JP: 'ja', KR: 'ko', CN: 'zh', TW: 'zh', HK: 'zh', SG: 'en',
-    IN: 'en', TR: 'en', ZA: 'en', AE: 'en',
+    IN: 'hi', TH: 'th', PH: 'fil', ID: 'id', VN: 'vi', MY: 'en',
+    // Middle East / Africa
+    TR: 'tr', ZA: 'en', AE: 'en',
   };
 
   function getBrowserLocales() {

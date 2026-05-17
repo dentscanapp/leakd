@@ -800,6 +800,20 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
+      <button class="menu-row" id="menuSync">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">☁️</span>
+          <div>
+            <div class="menu-row-label">
+              <span data-i18n="menu.sync">Cloud sync</span>
+              <span class="pro-badge">PRO</span>
+            </div>
+            <div class="menu-row-sub" data-i18n="menu.syncSub">End-to-end encrypted, your Google Drive</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
       <button class="menu-row" id="menuLanguage">
         <div class="menu-row-main">
           <span class="menu-row-icon">🌍</span>
@@ -1200,6 +1214,63 @@
   </div>
 </div>
 
+<!-- Cloud Sync Modal (Pro) -->
+<div class="modal-overlay" id="syncModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h2>
+        <span data-i18n="sync.title">Cloud sync</span>
+        <span class="pro-badge">PRO</span>
+      </h2>
+      <button class="btn-icon" id="closeSyncModal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <p class="notif-blurb" data-i18n="sync.blurb">End-to-end encrypted backup to your own Google Drive. Your master password never leaves this device.</p>
+
+    <!-- Pro lock — shown when isPro()===false -->
+    <div id="syncProLock" class="budgets-pro-lock" style="display:none">
+      <div class="budgets-pro-lock-title" data-i18n="sync.proLock">Cloud sync is a Pro feature.</div>
+      <button class="btn-primary" id="syncProUpgrade" data-i18n="pro.buy">Get Pro</button>
+    </div>
+
+    <!-- Status row -->
+    <div id="syncStatusCard" class="sync-status">
+      <div class="sync-status-row">
+        <span class="sync-dot" id="syncDot"></span>
+        <span id="syncStatusText" data-i18n="sync.statusDisabled">Sync is off</span>
+      </div>
+      <div class="sync-status-meta" id="syncLastText"></div>
+    </div>
+
+    <!-- Setup step 1: master password -->
+    <div id="syncSetupStep" style="display:none">
+      <div class="sync-section-title" data-i18n="sync.passwordTitle">Master password</div>
+      <p class="sync-section-help" id="syncPasswordHelp" data-i18n="sync.passwordHelp">Pick a strong password — only you know it, and we use it to encrypt your data before it leaves the device.</p>
+      <input type="password" id="syncPasswordInput" class="form-input" data-i18n-placeholder="sync.passwordPh" placeholder="Master password" autocomplete="new-password">
+      <input type="password" id="syncPasswordConfirm" class="form-input" data-i18n-placeholder="sync.passwordConfirmPh" placeholder="Confirm password" autocomplete="new-password" style="margin-top:8px">
+      <div class="sync-warning" data-i18n="sync.passwordWarn">If you forget this password, your encrypted data cannot be recovered.</div>
+    </div>
+
+    <!-- Unlock step (returning device) -->
+    <div id="syncUnlockStep" style="display:none">
+      <div class="sync-section-title" data-i18n="sync.unlockTitle">Unlock with your master password</div>
+      <input type="password" id="syncUnlockInput" class="form-input" data-i18n-placeholder="sync.passwordPh" placeholder="Master password" autocomplete="current-password">
+    </div>
+
+    <!-- Error display -->
+    <div id="syncError" class="sync-error" style="display:none"></div>
+
+    <div class="modal-actions">
+      <button class="btn-outline" id="syncDisableBtn" style="display:none" data-i18n="sync.disable">Disable sync</button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" id="cancelSyncBtn" data-i18n="btn.done">Done</button>
+      <button class="btn-primary" id="syncPrimaryBtn" data-i18n="sync.enable">Enable sync</button>
+    </div>
+  </div>
+</div>
+
 <!-- Bank Statement Import Modal -->
 <div class="modal-overlay" id="bankModal">
   <div class="modal" style="max-width:520px">
@@ -1453,9 +1524,11 @@
 <script src="js/leak.js"></script>
 <script src="js/pdf.js"></script>
 <script src="js/currency.js"></script>
+<!-- Pro-only cloud sync (E2EE via Google Drive). Set window.LeakdSyncConfig.clientId before this loads. -->
+<script src="js/sync.js"></script>
 <script src="js/app.js?v=39"></script>
   <script>
-    window.LeakdVersion = '2026-05-17.41';
+    window.LeakdVersion = '2026-05-17.44';
     console.log('Leakd Initializing v' + window.LeakdVersion);
     if('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js?v=' + window.LeakdVersion).then(reg => {

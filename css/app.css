@@ -3336,3 +3336,77 @@ a.btn-primary {
 }
 
 .btn-panic-cancel:hover { background: #dc2626; }
+
+/* ── Cloud sync (Pro) ────────────────────────────────────── */
+.pro-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+.sync-status {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 16px 0;
+}
+.sync-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.sync-status-meta {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.sync-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #6b7280;
+  flex-shrink: 0;
+}
+.sync-dot.active { background: #10b981; }
+.sync-dot.locked { background: #f59e0b; }
+.sync-dot.error  { background: #ef4444; }
+.sync-section-title {
+  font-weight: 600;
+  margin: 14px 0 6px;
+}
+.sync-section-help {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+.sync-warning {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #92400e;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  .sync-warning { color: #fbbf24; }
+}
+.sync-error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #dc2626;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 12px;
+}

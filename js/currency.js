@@ -12,17 +12,25 @@
   // Common currencies supported by Frankfurter + basic list
   const SUPPORTED = [
     'USD', 'EUR', 'HUF', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'CNY', 'INR',
-    'BRL', 'PLN', 'RON', 'CZK', 'SEK', 'NOK', 'DKK', 'TRY', 'IDR', 'THB'
+    'BRL', 'PLN', 'RON', 'CZK', 'SEK', 'NOK', 'DKK', 'TRY', 'IDR', 'THB',
+    'BGN', 'UAH', 'PHP', 'VND', 'KRW', 'MXN', 'HKD', 'SGD', 'NZD', 'ZAR', 'AED', 'RUB'
   ];
 
+  // Rough EUR-based fallback rates so the app behaves sensibly before the
+  // Frankfurter API responds (or when it's blocked, e.g. CORS on GH Pages).
+  // Numbers are deliberately approximate — they're replaced by live rates
+  // as soon as a sync succeeds.
   let ratesData = {
     base: 'EUR',
     date: '',
-    rates: { 
-      'EUR': 1,
-      'HUF': 395, // Rough fallback to avoid 1:1 disaster before first sync
-      'USD': 1.08,
-      'GBP': 0.86
+    rates: {
+      EUR: 1,
+      USD: 1.08, GBP: 0.86, JPY: 162, CHF: 0.95, CAD: 1.48,
+      AUD: 1.65, NZD: 1.80, CNY: 7.85, INR: 90, BRL: 5.5,
+      HUF: 395, PLN: 4.30, RON: 4.97, CZK: 25.2, SEK: 11.3,
+      NOK: 11.6, DKK: 7.46, TRY: 38, IDR: 17500, THB: 39,
+      BGN: 1.96, UAH: 45, PHP: 62, VND: 27500, KRW: 1500,
+      MXN: 22, HKD: 8.45, SGD: 1.45, ZAR: 20, AED: 3.97, RUB: 100,
     },
     updatedAt: 0
   };

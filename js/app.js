@@ -69,10 +69,18 @@
       buildCurrencyDropdown();
     }
 
+    // First-time visit (no settings yet) — auto-pick currency from browser
+    // locale BEFORE showing onboarding so the welcome screen is in their
+    // native currency. Language was already detected in LeakdI18n.init().
+    if (!localStorage.getItem(SETTINGS_KEY)) {
+      autoDetectLocale(); // best-effort, silent on failure
+    }
+
     if (!localStorage.getItem(ONBOARD_KEY)) {
       showOnboard();
     } else if (!localStorage.getItem(SETTINGS_KEY)) {
-      // First real launch after onboarding — try auto-detect first
+      // Onboarded but somehow no settings — fall back to currency picker if
+      // auto-detect can't figure out the locale.
       if (!autoDetectLocale()) currencyModal.style.display = 'flex';
     }
 
@@ -148,15 +156,17 @@
   }
 
   // Auto-detect currency (and confirm language) from browser locale.
-  // Only runs on a brand-new install. Returns true if we successfully picked
-  // a currency, false if the picker should still be shown.
+  // Idempotent — safe to call repeatedly. Returns true if we successfully
+  // picked a currency, false if the picker should still be shown.
+  // Language detection happens in LeakdI18n.init() too; this function keeps
+  // them in sync if i18n hasn't decided yet.
   function autoDetectLocale() {
     if (!window.LeakdLocale) return false;
     const detected = window.LeakdLocale.detectCurrency();
     if (!detected) return false;
 
-    // Also detect language
-    if (window.LeakdI18n) {
+    // Language: only set if not already chosen (don't overwrite explicit choice)
+    if (window.LeakdI18n && !localStorage.getItem('leakd_lang')) {
       const detectedLang = window.LeakdLocale.detectLanguage(window.LeakdI18n.SUPPORTED);
       if (detectedLang) {
         window.LeakdI18n.lang = detectedLang;
@@ -171,14 +181,18 @@
     refreshDynamicLabels();
     render();
 
-    // Build a friendly toast: "Detected: Magyar · HUF"
-    const langName = window.LeakdI18n
-      ? (window.LeakdI18n.LANGUAGES[window.LeakdI18n.lang] || {}).name
-      : null;
-    const parts = [];
-    if (langName) parts.push(langName);
-    parts.push(detected.code);
-    toast('🌍 ' + parts.join(' · '));
+    // Friendly toast: "🌍 Magyar · HUF" — only shown when called interactively
+    // (i.e. when SETTINGS_KEY was missing). The toast suppresses itself if
+    // called too early (before the toast element exists).
+    try {
+      const langName = window.LeakdI18n
+        ? (window.LeakdI18n.LANGUAGES[window.LeakdI18n.lang] || {}).name
+        : null;
+      const parts = [];
+      if (langName) parts.push(langName);
+      parts.push(detected.code);
+      toast('🌍 ' + parts.join(' · '));
+    } catch {}
     return true;
   }
 
@@ -226,6 +240,10 @@
     rescheduleNotifications();
     if (window.LeakdHistory) window.LeakdHistory.record(subs);
     updatePaletteSubs();
+    // Cloud sync (Pro): debounced push if enabled + unlocked
+    if (window.LeakdSync && window.LeakdSync.isEnabled() && window.LeakdSync.isUnlocked()) {
+      window.LeakdSync.schedulePush();
+    }
   }
 
   async function mirrorStateToCache() {
@@ -2269,6 +2287,150 @@
     setTimeout(() => location.reload(), 700);
   }
 
+  // ─── Cloud Sync (Pro) ───
+  function openSyncModal() {
+    const S = window.LeakdSync;
+    const isPro = window.LeakdPro && window.LeakdPro.isPro();
+    $('syncProLock').style.display = isPro ? 'none' : 'block';
+    if (!isPro || !S) {
+      $('syncStatusCard').style.display = 'none';
+      $('syncSetupStep').style.display = 'none';
+      $('syncUnlockStep').style.display = 'none';
+      $('syncPrimaryBtn').style.display = 'none';
+      $('syncDisableBtn').style.display = 'none';
+    } else {
+      $('syncStatusCard').style.display = '';
+      refreshSyncUI();
+    }
+    $('syncError').style.display = 'none';
+    $('syncError').textContent = '';
+    $('syncModal').classList.add('active');
+  }
+  function closeSyncModal() { $('syncModal').classList.remove('active'); }
+
+  function refreshSyncUI() {
+    const S = window.LeakdSync;
+    if (!S) return;
+    const st = S.status();
+    const dot = $('syncDot');
+    const txt = $('syncStatusText');
+    const last = $('syncLastText');
+    const setup = $('syncSetupStep');
+    const unlock = $('syncUnlockStep');
+    const primary = $('syncPrimaryBtn');
+    const disable = $('syncDisableBtn');
+
+    dot.className = 'sync-dot';
+    if (!st.enabled) {
+      txt.textContent = t('sync.statusDisabled');
+      last.textContent = '';
+      // First-time setup: ask for master password
+      setup.style.display = '';
+      unlock.style.display = 'none';
+      primary.style.display = '';
+      primary.textContent = t('sync.enable');
+      disable.style.display = 'none';
+    } else if (!st.unlocked) {
+      dot.classList.add('locked');
+      txt.textContent = t('sync.statusLocked');
+      last.textContent = '';
+      // Returning device or after page reload: ask to unlock
+      setup.style.display = 'none';
+      unlock.style.display = '';
+      primary.style.display = '';
+      primary.textContent = t('sync.unlock');
+      disable.style.display = '';
+    } else {
+      dot.classList.add('active');
+      txt.textContent = t('sync.statusActive');
+      last.textContent = st.lastSync
+        ? t('sync.lastSync', { when: new Date(st.lastSync).toLocaleString(window.LeakdI18n ? window.LeakdI18n.lang : 'en') })
+        : t('sync.neverSynced');
+      setup.style.display = 'none';
+      unlock.style.display = 'none';
+      primary.style.display = '';
+      primary.textContent = t('sync.syncNow');
+      disable.style.display = '';
+    }
+  }
+
+  function showSyncError(code) {
+    const map = {
+      WRONG_PASSWORD: t('sync.errWrongPw'),
+      PASSWORD_TOO_SHORT: t('sync.errPwShort'),
+      OFFLINE: t('sync.errOffline'),
+      NO_CLIENT_ID: t('sync.errNotConfigured'),
+      OAUTH_FAILED: t('sync.errOauth'),
+      LOCKED: t('sync.errLocked'),
+      SYNC_REQUIRES_PRO: t('sync.errPro'),
+    };
+    const el = $('syncError');
+    el.textContent = map[code] || t('sync.errGeneric', { code });
+    el.style.display = '';
+  }
+
+  async function onSyncPrimary() {
+    const S = window.LeakdSync;
+    if (!S) return;
+    const st = S.status();
+    const btn = $('syncPrimaryBtn');
+    const oldLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = t('pro.verifying');
+    $('syncError').style.display = 'none';
+    try {
+      if (!st.enabled) {
+        // Enable flow: create password (or unlock if salt exists), sign in, first sync
+        if (st.hasSalt) {
+          // Existing salt → user already had sync, just unlock + verify
+          const pw = $('syncPasswordInput').value;
+          await S.unlockAndVerifyAgainstRemote(pw);
+        } else {
+          const pw = $('syncPasswordInput').value;
+          const confirm = $('syncPasswordConfirm').value;
+          if (pw !== confirm) { showSyncError('WRONG_PASSWORD'); return; }
+          await S.unlock(pw);
+        }
+        await S.signIn();
+        S.setEnabled(true);
+        const r = await S.sync();
+        toast(r.action === 'pulled' ? t('sync.pulledOk') : t('sync.pushedOk'));
+      } else if (!st.unlocked) {
+        // Unlock flow
+        const pw = $('syncUnlockInput').value;
+        await S.unlockAndVerifyAgainstRemote(pw);
+        await S.sync();
+        toast(t('sync.unlockedOk'));
+      } else {
+        // Active → manual sync
+        const r = await S.sync();
+        toast(r.action === 'pulled' ? t('sync.pulledOk') : t('sync.pushedOk'));
+        if (r.action === 'pulled') {
+          // Local data changed underneath us — full reload to re-render
+          setTimeout(() => location.reload(), 600);
+        }
+      }
+      refreshSyncUI();
+    } catch (e) {
+      console.error('sync flow error', e);
+      showSyncError(e.code || 'GENERIC');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldLabel;
+    }
+  }
+
+  function disableSync() {
+    const S = window.LeakdSync;
+    if (!S) return;
+    if (!confirm(t('sync.confirmDisable'))) return;
+    S.lock();
+    S.signOut();
+    S.setEnabled(false);
+    toast(t('sync.disabledOk'));
+    refreshSyncUI();
+  }
+
   // ─── Budgets ───
   let editingBudgetCat = null;
 
@@ -2432,7 +2594,7 @@
   function resetAll() {
     if (!confirm(t('reset.confirm1'))) return;
     if (!confirm(t('reset.confirm2'))) return;
-    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done','leakd_activity','leakd_rates','leakd_streak']
+    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done','leakd_activity','leakd_rates','leakd_streak','leakd_sync_meta','leakd_sync_salt','leakd_sync_enabled']
       .forEach(k => localStorage.removeItem(k));
     location.reload();
   }
@@ -2566,6 +2728,15 @@
     $('budgetSetterModal').addEventListener('click', e => { if (e.target === $('budgetSetterModal')) closeBudgetSetter(); });
 
     $('menuBackup').addEventListener('click', () => { closeMenuModal(); openBackupModal(); });
+
+    // Cloud sync (Pro)
+    $('menuSync').addEventListener('click', () => { closeMenuModal(); openSyncModal(); });
+    $('closeSyncModal').addEventListener('click', closeSyncModal);
+    $('cancelSyncBtn').addEventListener('click', closeSyncModal);
+    $('syncModal').addEventListener('click', e => { if (e.target === $('syncModal')) closeSyncModal(); });
+    $('syncPrimaryBtn').addEventListener('click', onSyncPrimary);
+    $('syncDisableBtn').addEventListener('click', disableSync);
+    $('syncProUpgrade').addEventListener('click', () => { closeSyncModal(); openProModal(); });
 
     // Bank import
     $('menuBank').addEventListener('click', () => { closeMenuModal(); openBankModal(); });
