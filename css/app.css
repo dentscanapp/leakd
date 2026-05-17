@@ -3080,7 +3080,14 @@ a.btn-primary {
   --leak-color: #ef4444;
   --leak-opacity: 0.2;
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Stable height: `lvh` = large viewport height (URL bar collapsed). Doesn't
+     re-flow when the mobile URL bar slides in/out during scroll, so the
+     liquid level stays put. `vh` fallback for very old browsers. */
+  height: 100vh;
+  height: 100lvh;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
