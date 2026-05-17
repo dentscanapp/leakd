@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v44';
+const CACHE_NAME = 'leakd-v45';
 const ASSETS = [
   './',
   'index.html',
@@ -42,6 +42,7 @@ const ASSETS = [
   'js/streak.js',
   'js/leak.js',
   'js/sync.js',
+  'js/emailreminder.js',
   'manifest.json',
   'icons/icon.svg',
   'icons/icon-192.png',

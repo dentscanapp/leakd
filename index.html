@@ -1526,9 +1526,11 @@
 <script src="js/currency.js"></script>
 <!-- Pro-only cloud sync (E2EE via Google Drive). Set window.LeakdSyncConfig.clientId before this loads. -->
 <script src="js/sync.js"></script>
+<!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
+<script src="js/emailreminder.js"></script>
 <script src="js/app.js?v=39"></script>
   <script>
-    window.LeakdVersion = '2026-05-17.44';
+    window.LeakdVersion = '2026-05-17.45';
     console.log('Leakd Initializing v' + window.LeakdVersion);
     if('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js?v=' + window.LeakdVersion).then(reg => {
