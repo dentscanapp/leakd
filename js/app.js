@@ -1157,7 +1157,9 @@
     $('trialDateWrap').style.display = s.isTrial ? 'block' : 'none';
     $('subTrialEnd').value = s.trialEnd || '';
     $('deleteBtn').style.display = 'inline-block';
-    $('markCancelledBtn').style.display = 'inline-block';
+    // Mark-as-cancelled is now redundant — Delete already routes through
+    // the cancelled registry. Keep the element for backwards compat.
+    $('markCancelledBtn').style.display = 'none';
     $('presets').style.display = 'none';
     document.querySelector('.form-divider').style.display = 'none';
     hideSuggestions();
@@ -1261,11 +1263,16 @@
     if (!editingId) return;
     if (!confirm(t('confirm.deleteSub'))) return;
     const target = subs.find(x => x.id === editingId);
+    // Soft-delete: route through the cancelled registry so the user can
+    // find it again (and so cancellation savings are tracked). The user
+    // can permanently purge from the Cancelled view via the × button.
+    if (target && window.LeakdCancelled) window.LeakdCancelled.add(target);
     subs = subs.filter(x => x.id !== editingId);
     if (target) logActivity('deleted', target);
     saveData();
     closeModalFn();
     render();
+    toast(t('toast.subCancelled'));
   }
 
   function markAsCancelled() {

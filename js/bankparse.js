@@ -212,7 +212,12 @@
       const currency = currIdx !== -1 ? cells[currIdx] : null;
       if (!date || !desc || amount === 0) continue;
       // We only care about debits (money leaving)
-      if (amount > 0) continue;
+      const colName = header[amountIdx].toLowerCase();
+      let isOutflow = amount < 0;
+      if (amount > 0 && (colName.includes('paid out') || colName.includes('debit'))) {
+        isOutflow = true;
+      }
+      if (!isOutflow) continue;
       transactions.push({
         date,
         merchant: normalizeMerchant(desc),
