@@ -46,7 +46,15 @@
   --shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Kill the default Chrome/Android blue tap-flash and the iOS gray flash on
+     every interactive element. We supply our own native-feeling :active
+     feedback below (subtle background dim) for buttons/menu rows. */
+  -webkit-tap-highlight-color: transparent;
+}
 
 body {
   font-family: var(--font);
@@ -54,6 +62,40 @@ body {
   color: var(--text);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  /* Disable iOS long-press text-select on UI chrome (forms/inputs override). */
+  -webkit-touch-callout: none;
+}
+
+/* Re-enable text selection inside actual content fields. */
+input, textarea, [contenteditable="true"], .selectable {
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* App-styled :active feedback for any tappable control, instead of the OS
+   default. `filter: brightness()` works on any background colour (red, white,
+   transparent, dark) without overriding it, and feels native on both light
+   and dark themes. */
+button:active,
+.menu-row:active,
+.cat-btn:active,
+.sub-item:active,
+.suggest-item:active,
+[role="button"]:active,
+a:active {
+  filter: brightness(0.92);
+  transition: filter 0.06s linear;
+}
+[data-theme="dark"] button:active,
+[data-theme="dark"] .menu-row:active,
+[data-theme="dark"] .cat-btn:active,
+[data-theme="dark"] .sub-item:active,
+[data-theme="dark"] .suggest-item:active,
+[data-theme="dark"] [role="button"]:active,
+[data-theme="dark"] a:active {
+  /* On dark surfaces brightness < 1 makes things look "off"; brighten a bit. */
+  filter: brightness(1.18);
 }
 
 #app {
