@@ -302,8 +302,15 @@
     }
   }
   function toggleTheme() {
-    // Cycle: light → dark → auto → light
-    settings.theme = settings.theme === 'light' ? 'dark' : settings.theme === 'dark' ? 'auto' : 'light';
+    // Simple two-state toggle: just flip between dark and light. (The 'auto'
+    // mode is still settable from the theme picker modal.) When the user is
+    // currently in 'auto', we resolve the EFFECTIVE current theme first, then
+    // flip to the opposite explicit value — so the button always does the
+    // visually obvious thing in one click.
+    const cur = (settings.theme === 'auto')
+      ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : settings.theme;
+    settings.theme = cur === 'dark' ? 'light' : 'dark';
     applyTheme(); saveData();
     refreshDynamicLabels();
   }
