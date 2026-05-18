@@ -2135,54 +2135,16 @@
   }
   function closeBankModal() { $('bankModal').classList.remove('active'); }
 
-  // Lazy-load the SheetJS XLSX library on first use. ~250KB, only fetched
-  // when the user actually picks an .xlsx/.xls file — keeps initial app
-  // load fast and the PWA cache small for users who only do CSV imports.
-  let xlsxLoaderPromise = null;
-  function loadXlsxLib() {
-    if (window.XLSX) return Promise.resolve(window.XLSX);
-    if (xlsxLoaderPromise) return xlsxLoaderPromise;
-    xlsxLoaderPromise = new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = 'js/vendor/xlsx.mini.min.js';
-      s.onload = () => window.XLSX ? resolve(window.XLSX) : reject(new Error('XLSX failed to expose global'));
-      s.onerror = () => reject(new Error('XLSX script load error'));
-      document.head.appendChild(s);
-    });
-    return xlsxLoaderPromise;
-  }
-
   function loadBankFile(file) {
-    const name = (file.name || '').toLowerCase();
-    const isExcel = /\.xlsx?$/.test(name) || /spreadsheetml|ms-excel/.test(file.type || '');
-
-    if (isExcel) {
-      loadXlsxLib().then(XLSX => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          try {
-            const wb = XLSX.read(new Uint8Array(reader.result), { type: 'array' });
-            const firstSheet = wb.Sheets[wb.SheetNames[0]];
-            const csv = XLSX.utils.sheet_to_csv(firstSheet);
-            processBankCsvText(csv);
-          } catch (e) {
-            $('bankError').textContent = t('bank.errorColumns');
-            $('bankError').style.display = 'block';
-            $('bankResult').style.display = 'none';
-          }
-        };
-        reader.readAsArrayBuffer(file);
-      }).catch(() => {
-        $('bankError').textContent = t('bank.errorColumns');
-        $('bankError').style.display = 'block';
-      });
-      return;
-    }
-
-    // CSV path: read as bytes, then decode with encoding auto-detection.
-    // Revolut/Wise modern exports are UTF-8; older Excel-saved CSVs are often
-    // Windows-1252. Reading as UTF-8 when the bytes are 1252 produces mojibake
-    // like "KezdÃ©s dÃ¡tuma" which won't match any localized column name.
+    // CSV-only. Excel was tried but added complexity (lazy-loading SheetJS,
+    // 250KB vendor file, encoding issues) for marginal benefit since every
+    // bank that exports XLSX also exports CSV. If the user only has Excel,
+    // they can use File → Save As → CSV UTF-8 in Excel.
+    //
+    // Read as bytes then decode with encoding auto-detection: modern bank
+    // exports are UTF-8, but older Excel-saved CSVs are often Windows-1252.
+    // Reading 1252 bytes as UTF-8 produces mojibake ("KezdÃ©s dÃ¡tuma")
+    // that won't match any localized column name.
     file.arrayBuffer().then(buf => {
       processBankCsvText(decodeCsvBytes(new Uint8Array(buf)));
     }).catch(() => {

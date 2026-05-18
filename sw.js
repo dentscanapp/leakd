@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v68';
+const CACHE_NAME = 'leakd-v69';
 const ASSETS = [
   './',
   'index.html',
@@ -43,9 +43,6 @@ const ASSETS = [
   'js/leak.js',
   'js/sync.js',
   'js/emailreminder.js',
-  // Note: js/vendor/xlsx.mini.min.js (~250 KB) is NOT pre-cached. It loads
-  // lazily on first XLSX upload and is auto-cached by the fetch handler so
-  // subsequent imports work offline.
   'manifest.json',
   'icons/icon.svg',
   'icons/icon-192.png',
