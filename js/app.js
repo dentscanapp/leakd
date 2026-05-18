@@ -2434,6 +2434,7 @@
       primary.style.display = '';
       primary.textContent = t('sync.enable');
       disable.style.display = 'none';
+      $('cancelSyncBtn').textContent = t('btn.cancel');
     } else if (!st.unlocked) {
       dot.classList.add('locked');
       txt.textContent = t('sync.statusLocked');
@@ -2444,6 +2445,7 @@
       primary.style.display = '';
       primary.textContent = t('sync.unlock');
       disable.style.display = '';
+      $('cancelSyncBtn').textContent = t('btn.cancel');
     } else {
       dot.classList.add('active');
       txt.textContent = t('sync.statusActive');
@@ -2455,6 +2457,7 @@
       primary.style.display = '';
       primary.textContent = t('sync.syncNow');
       disable.style.display = '';
+      $('cancelSyncBtn').textContent = t('btn.done');
     }
   }
 

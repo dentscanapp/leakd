@@ -1300,7 +1300,7 @@
     <div class="modal-actions">
       <button class="btn-outline" id="syncDisableBtn" style="display:none" data-i18n="sync.disable">Disable sync</button>
       <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelSyncBtn" data-i18n="btn.done">Done</button>
+      <button class="btn-secondary" id="cancelSyncBtn">Done</button>
       <button class="btn-primary" id="syncPrimaryBtn" data-i18n="sync.enable">Enable sync</button>
     </div>
   </div>
@@ -1568,9 +1568,9 @@
 <script src="js/sync.js"></script>
 <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
 <script src="js/emailreminder.js"></script>
-<script src="js/app.js?v=79"></script>
+<script src="js/app.js?v=80"></script>
   <script>
-    window.LeakdVersion = '2026-05-18.79';
+    window.LeakdVersion = '2026-05-18.80';
     console.log('Leakd Initializing v' + window.LeakdVersion);
     if('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js?v=' + window.LeakdVersion).then(reg => {
