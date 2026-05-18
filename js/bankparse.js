@@ -100,6 +100,8 @@
           'Amount', 'Paid Out (GBP)',
           'Összeg', 'Betrag', 'Importe', 'Montant', 'Importo', 'Valor',
           'Bedrag', 'Kwota', 'Belopp', 'Sumă', 'Suma', 'Částka',
+          // Croatian / Serbian / Slovenian / Bosnian
+          'Iznos',
           // CJK
           '金額', '金额', '금액',
           // Cyrillic
@@ -164,30 +166,47 @@
       name: 'Generic CSV',
       fingerprint: /.*/, // fallback
       cols: {
-        // Recognize date/desc/amount headers across the major European
-        // banking-export languages. findColIndex() is case-insensitive and
-        // does a substring fuzzy match, so partial matches work too.
+        // Recognize date/desc/amount/currency headers across all 28
+        // languages the app ships. findColIndex() is case-insensitive and
+        // does a substring fuzzy match, so partial matches work too — e.g.
+        // 'dátum' matches both "Kezdés dátuma" and "Teljesítés dátuma".
         date: [
-          'date', 'Date', 'DATE', 'transaction date',
-          'dátum', 'datum', 'fecha', 'data',
-          'kezdés', 'started', 'completed', 'teljesítés',
-          'value date', 'booking date', 'posting date',
+          // English banking aliases
+          'date', 'Date', 'DATE', 'transaction date', 'value date', 'booking date', 'posting date',
+          'started', 'completed',
+          // 28-lang stems
+          'dátum', 'datum', 'fecha', 'data', 'kezdés', 'teljesítés', 'fin',
+          'tanggal', 'ngày', 'tarih', 'ημερομηνία', 'तिथि',
+          'дата', 'datum', 'дата', 'วันที่', 'petsa', "d'inici",
+          '日付', '日期', '날짜', '開始日', '开始日期', '시작일',
         ],
         desc: [
           'description', 'Description', 'merchant', 'name', 'payee',
-          'leírás', 'beschreibung', 'descripción', 'descrizione', 'descrição',
-          'omschrijving', 'opis', 'descriere', 'popis',
           'reference', 'memo', 'note', 'narration', 'details', 'subject',
+          // 28-lang stems
+          'leírás', 'beschreibung', 'descripción', 'descrizione', 'descrição',
+          'omschrijving', 'opis', 'beskrivning', 'descriere', 'popis',
+          'deskripsi', 'mô tả', 'açıklama', 'περιγραφή', 'विवरण',
+          'описание', 'опис', 'รายละเอียด', 'paglalarawan', 'descripció',
+          '説明', '摘要', '内容', '설명', '描述', '说明',
         ],
         amount: [
           'amount', 'Amount', 'value', 'debit', 'credit',
+          // 28-lang stems
           'összeg', 'betrag', 'importe', 'montant', 'importo', 'valor',
-          'bedrag', 'kwota', 'sumă', 'suma', 'částka',
+          'bedrag', 'kwota', 'belopp', 'sumă', 'suma', 'částka',
+          'jumlah', 'số tiền', 'tutar', 'ποσό', 'राशि', 'iznos',
+          'сумма', 'сума', 'จำนวนเงิน', 'halaga', 'import',
+          '金額', '金额', '금액',
         ],
         currency: [
           'currency', 'Currency',
+          // 28-lang stems
           'pénznem', 'währung', 'divisa', 'devise', 'valuta',
           'moeda', 'waluta', 'monedă', 'měna', 'mena',
+          'mata uang', 'tiền tệ', 'para birimi', 'νόμισμα', 'मुद्रा',
+          'валюта', 'สกุลเงิน', 'pera',
+          '通貨', '货币', '通货', '통화',
         ],
       },
     },
