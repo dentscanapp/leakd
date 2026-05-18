@@ -2179,9 +2179,34 @@
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => processBankCsvText(String(reader.result || ''));
-    reader.readAsText(file);
+    // CSV path: read as bytes, then decode with encoding auto-detection.
+    // Revolut/Wise modern exports are UTF-8; older Excel-saved CSVs are often
+    // Windows-1252. Reading as UTF-8 when the bytes are 1252 produces mojibake
+    // like "KezdÃ©s dÃ¡tuma" which won't match any localized column name.
+    file.arrayBuffer().then(buf => {
+      processBankCsvText(decodeCsvBytes(new Uint8Array(buf)));
+    }).catch(() => {
+      $('bankError').textContent = t('bank.errorColumns');
+      $('bankError').style.display = 'block';
+    });
+  }
+
+  function decodeCsvBytes(bytes) {
+    // Strip UTF-8/UTF-16 BOMs
+    if (bytes.length >= 3 && bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) {
+      bytes = bytes.subarray(3);
+    } else if (bytes.length >= 2 && bytes[0] === 0xFF && bytes[1] === 0xFE) {
+      return new TextDecoder('utf-16le').decode(bytes.subarray(2));
+    } else if (bytes.length >= 2 && bytes[0] === 0xFE && bytes[1] === 0xFF) {
+      return new TextDecoder('utf-16be').decode(bytes.subarray(2));
+    }
+    // Try strict UTF-8 — throws if any sequence is invalid
+    try {
+      return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    } catch {
+      // Fallback to Windows-1252 (Excel's classic CSV default in Europe)
+      return new TextDecoder('windows-1252').decode(bytes);
+    }
   }
 
   function processBankCsvText(csvText) {
