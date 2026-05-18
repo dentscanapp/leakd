@@ -2657,7 +2657,9 @@
   }
   function closeYearendModal() { $('yearendModal').classList.remove('active'); }
   async function shareYearend() {
-    // Reuse the share card for now
+    // Close yearend first so the share modal isn't stuck behind it (same
+    // z-index → users couldn't see the share card).
+    closeYearendModal();
     await openShareCard();
   }
 
