@@ -2596,17 +2596,31 @@
     $('budgetSetterTitle').textContent = localizedCat(cat);
     $('budgetCurrencySymbol').textContent = settings.currency;
     const existing = window.LeakdBudgets.getBudget(cat);
-    $('budgetAmount').value = existing || '';
-    $('budgetClearBtn').style.display = existing ? 'inline-block' : 'none';
+    // Pre-fill the existing limit so the user can see and confirm the current
+    // value without retyping it. If there's no limit yet, pre-fill a sensible
+    // default (50) — same approach used for the Savings Goal modal — so the
+    // placeholder '50' is never confused for a real saved value.
+    $('budgetAmount').value = existing != null ? existing : '50';
+    $('budgetClearBtn').style.display = existing != null ? 'inline-block' : 'none';
     $('budgetSetterModal').classList.add('active');
-    setTimeout(() => $('budgetAmount').focus(), 100);
+    // Auto-select the value so the user can immediately overtype it.
+    setTimeout(() => { const el = $('budgetAmount'); el.focus(); el.select(); }, 100);
   }
   function closeBudgetSetter() { $('budgetSetterModal').classList.remove('active'); editingBudgetCat = null; }
 
   function saveBudget() {
     if (!editingBudgetCat) return;
     const amount = parseFloat($('budgetAmount').value);
-    if (!amount || amount <= 0) { $('budgetAmount').focus(); return; }
+    // isNaN covers both empty string and non-numeric input; amount <= 0 rejects zeros.
+    if (isNaN(amount) || amount <= 0) {
+      const el = $('budgetAmount');
+      el.focus();
+      el.select();
+      // Brief shake animation to signal the error without a disruptive alert.
+      el.classList.add('input-shake');
+      setTimeout(() => el.classList.remove('input-shake'), 400);
+      return;
+    }
     window.LeakdBudgets.setBudget(editingBudgetCat, amount);
     closeBudgetSetter();
     renderBudgetsList();
