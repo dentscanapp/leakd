@@ -3586,3 +3586,15 @@ body:has(.modal-overlay.active) {
   border-color: var(--accent) !important;
   outline: none;
 }
+
+/* ── Mobile modal scrolling and safe area padding fixes ── */
+@media (max-width: 552px) {
+  .modal {
+    max-height: 85dvh;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom));
+  }
+  .modal-actions {
+    padding-bottom: env(safe-area-inset-bottom);
+    flex-wrap: wrap;
+  }
+}
