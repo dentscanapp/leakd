@@ -1252,6 +1252,14 @@ body:has(.modal-overlay.active) {
   transition: all 0.15s;
 }
 .btn-primary:hover { opacity: 0.9; }
+.btn-primary:disabled,
+.btn-primary[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.4);
+}
+.btn-primary:disabled:hover,
+.btn-primary[disabled]:hover { opacity: 0.4; }
 
 .btn-secondary {
   padding: 10px 20px;

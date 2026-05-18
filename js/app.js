@@ -1679,7 +1679,7 @@
     $('importText').value = '';
     $('importPreview').style.display = 'none';
     $('confirmImportBtn').disabled = true;
-    $('confirmImportBtn').textContent = t('import.confirm', { count: 0 });
+    $('confirmImportBtn').textContent = t('bank.selectToImport');
     importStaged = [];
     $('importModal').classList.add('active');
   }
@@ -1696,7 +1696,7 @@
       $('importPreviewTitle').textContent = t('import.found', { count: 0 });
       list.innerHTML = `<div class="empty-state-mini">${t('import.nothingFound')}</div>`;
       $('confirmImportBtn').disabled = true;
-      $('confirmImportBtn').textContent = t('import.confirm', { count: 0 });
+      $('confirmImportBtn').textContent = t('bank.selectToImport');
       return;
     }
     list.innerHTML = parsed.map(p => {
@@ -2129,7 +2129,7 @@
     $('bankResult').style.display = 'none';
     $('bankError').style.display = 'none';
     $('confirmBankBtn').disabled = true;
-    $('confirmBankBtn').textContent = t('bank.importSelected', { count: 0 });
+    $('confirmBankBtn').textContent = t('bank.selectToImport');
     bankSuggestions = [];
     $('bankModal').classList.add('active');
   }
@@ -2191,7 +2191,7 @@
         $('bankFound').textContent = t('bank.noRecurring');
         $('bankSuggestionList').innerHTML = '';
         $('confirmBankBtn').disabled = true;
-        $('confirmBankBtn').textContent = t('bank.importSelected', { count: 0 });
+        $('confirmBankBtn').textContent = t('bank.selectToImport');
         return;
       }
 
@@ -2224,7 +2224,11 @@
   function updateBankConfirm() {
     const selected = bankSuggestions.filter(s => s.selected).length;
     $('confirmBankBtn').disabled = selected === 0;
-    $('confirmBankBtn').textContent = t('bank.importSelected', { count: selected });
+    // When nothing is selected, "Import 0" / "0 importálása" reads as
+    // a confusing instruction. Show a hint to pick at least one row.
+    $('confirmBankBtn').textContent = selected === 0
+      ? t('bank.selectToImport')
+      : t('bank.importSelected', { count: selected });
   }
 
   function confirmBankImport() {
