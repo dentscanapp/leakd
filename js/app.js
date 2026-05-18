@@ -101,6 +101,44 @@
     initPalette();
     if (window.LeakdStreak) window.LeakdStreak.load();
     if (window.LeakdShortcuts) window.LeakdShortcuts.init();
+    initAutoSync();
+  }
+
+  // Auto-sync in the background
+  function initAutoSync() {
+    if (!window.LeakdSync) return;
+    
+    const runQuietSync = () => {
+      if (window.LeakdSync.isEnabled() && window.LeakdSync.isUnlocked()) {
+        window.LeakdSync.sync().then(res => {
+          if (res && (res.action === 'pulled' || res.action === 'merged-pushed')) {
+            // Data has changed locally, reload the db data and re-render
+            loadData();
+            render();
+            refreshDynamicLabels();
+            if (window.LeakdCurrency) {
+              window.LeakdCurrency.sync(subs).then(() => render());
+            }
+            toast(t('toast.syncRestored') || 'Data synced in background');
+          }
+        }).catch(err => {
+          console.warn('Auto-sync background check failed:', err);
+        });
+      }
+    };
+
+    // 1. Run on init (after 3 seconds)
+    setTimeout(runQuietSync, 3000);
+
+    // 2. Run when tab comes back into focus
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        runQuietSync();
+      }
+    });
+
+    // 3. Periodic run every 30 seconds
+    setInterval(runQuietSync, 30000);
   }
 
   // ─── Command palette setup ───
@@ -703,6 +741,11 @@
               <div class="sub-amount">${formatPrice(s.price, s.currency)}</div>
               ${s.currency && s.currency !== settings.currencyCode ? `<div class="sub-amount-converted">≈ ${formatPrice(window.LeakdCurrency.convert(s.price, s.currency, settings.currencyCode))}</div>` : ''}
               <div class="sub-cycle">${cycleLabel}</div>
+              ${s.sharedWith && s.sharedWith > 1 ? `
+                <div class="sub-share-line" title="${escHtml(t('field.shared'))} ${s.sharedWith}">
+                  <span class="sub-share-icon">👥</span>
+                  <span>${t('share.yourShare', { amount: formatPrice(s.price / s.sharedWith, s.currency) })}</span>
+                </div>` : ''}
             </div>
           </div>
         </div>`;
@@ -816,6 +859,9 @@
       return `<div class="chart-bar-col"><div class="chart-bar" style="height:${pct}%"></div><div class="chart-bar-label">${p.label}</div></div>`;
     }).join('');
     $('chartTotal').textContent = formatPrice(totals.yearly) + ' /' + t('cycle.yr').replace('/', '');
+
+    // Spending trend (historical) — line chart of monthly totals
+    renderTrends();
 
     // Donut chart for category breakdown
     renderDonut(cats, totals.monthly);
@@ -1039,6 +1085,75 @@
   }
 
   // SVG donut chart for category breakdown
+  // Spending trend (historical) — bucket history snapshots into months
+  // and render a small SVG line + summary delta. Hidden if there's not
+  // enough data (need at least 2 distinct months) so a fresh user
+  // doesn't see an empty chart.
+  function renderTrends() {
+    const card = $('trendsCard');
+    if (!card || !window.LeakdHistory) return;
+    const points = window.LeakdHistory.load();
+    if (!points || points.length === 0) { card.style.display = 'none'; return; }
+    // Bucket by YYYY-MM, take LAST snapshot of each month (closest to month-end)
+    const byMonth = {};
+    for (const p of points) {
+      if (!p.date) continue;
+      const ym = p.date.slice(0, 7);
+      byMonth[ym] = p.monthly;
+    }
+    const months = Object.keys(byMonth).sort().slice(-6);
+    if (months.length < 2) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    const values = months.map(m => byMonth[m]);
+    const max = Math.max(...values, 1);
+    const min = Math.min(...values, 0);
+    const range = max - min || 1;
+    // SVG path through normalized points (viewBox: 320×100, 10px padding)
+    const pad = 8, w = 320 - 2 * pad, h = 100 - 2 * pad;
+    const step = values.length === 1 ? 0 : w / (values.length - 1);
+    const coords = values.map((v, i) => {
+      const x = pad + i * step;
+      const y = pad + h - ((v - min) / range) * h;
+      return [x, y];
+    });
+    const path = coords.map((c, i) => (i ? 'L' : 'M') + c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ');
+    const area = path + ` L${pad + w},${pad + h} L${pad},${pad + h} Z`;
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ef4444';
+    const dots = coords.map((c, i) => {
+      const r = i === coords.length - 1 ? 4 : 2.5;
+      return `<circle cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="${r}" fill="${accent}"/>`;
+    }).join('');
+    $('trendsSvg').innerHTML = `
+      <defs>
+        <linearGradient id="trendsGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${accent}" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="${area}" fill="url(#trendsGrad)"/>
+      <path d="${path}" fill="none" stroke="${accent}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+    `;
+    // Month labels (localized short month)
+    const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+    $('trendsLabels').innerHTML = months.map(m => {
+      const [yy, mm] = m.split('-');
+      const d = new Date(parseInt(yy, 10), parseInt(mm, 10) - 1, 1);
+      return `<span>${d.toLocaleDateString(lang, { month: 'short' })}</span>`;
+    }).join('');
+    // Summary: delta from first → last month
+    const first = values[0], last = values[values.length - 1];
+    const delta = last - first;
+    const pct = first > 0 ? Math.round((delta / first) * 100) : 0;
+    const arrow = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
+    const sign = pct > 0 ? '+' : '';
+    const sumKey = delta > 0 ? 'trends.up' : delta < 0 ? 'trends.down' : 'trends.flat';
+    $('trendsSummary').textContent = t(sumKey, {
+      arrow, pct: sign + pct + '%',
+      amount: formatPrice(Math.abs(delta))
+    });
+  }
+
   function renderDonut(cats, total) {
     const svg = $('donutChart');
     const wrap = $('donutWrap');
@@ -1253,17 +1368,42 @@
     if (editingId) {
       const idx = subs.findIndex(x => x.id === editingId);
       if (idx !== -1) {
-        const wasPaused = subs[idx].paused;
-        subs[idx] = { ...subs[idx], name, price, currency, cycle, category, nextDate, isTrial, trialEnd, lastUsed, paused, isBusiness, notes, rating, sharedWith, tags };
+        const prev = subs[idx];
+        const wasPaused = prev.paused;
+        // Price-change detection: only when currency stayed the same and the
+        // user actually moved the number. Surfaces a toast with the delta %
+        // (+/-) so a hike is unmissable, and logs to the activity feed for
+        // history.
+        const priceChanged = prev.price !== price && prev.currency === currency;
+        const priceDelta = priceChanged ? price - prev.price : 0;
+        const pctChange = priceChanged && prev.price > 0
+          ? Math.round((priceDelta / prev.price) * 100)
+          : 0;
+        subs[idx] = { ...prev, name, price, currency, cycle, category, nextDate, isTrial, trialEnd, lastUsed, paused, isBusiness, notes, rating, sharedWith, tags, updatedAt: Date.now() };
         if (paused && !wasPaused) logActivity('paused', subs[idx]);
         else if (!paused && wasPaused) logActivity('resumed', subs[idx]);
         else logActivity('edited', subs[idx]);
+        if (priceChanged) {
+          // Separate activity entry so the user can see the price history
+          logActivity('priceChange', { ...subs[idx], _prevPrice: prev.price, _delta: priceDelta, _pct: pctChange });
+          // Visible toast — up/down emoji makes the direction instant
+          const arrow = priceDelta > 0 ? '↑' : '↓';
+          const sign = pctChange > 0 ? '+' : '';
+          toast(t('toast.priceChange', {
+            name: name,
+            from: formatPrice(prev.price, currency),
+            to: formatPrice(price, currency),
+            arrow,
+            pct: sign + pctChange + '%',
+          }));
+        }
       }
     } else {
       const newSub = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         name, price, currency, cycle, category, nextDate, isTrial, trialEnd, lastUsed, paused, isBusiness, notes, rating, sharedWith, tags,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: Date.now()
       };
       subs.push(newSub);
       logActivity('added', newSub);

@@ -594,6 +594,40 @@ a:active {
   margin-bottom: 16px;
 }
 
+/* Spending trends mini-chart */
+.trends-body { position: relative; }
+.trends-svg {
+  width: 100%;
+  height: 100px;
+  display: block;
+  margin-bottom: 6px;
+}
+.trends-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+.trends-summary {
+  font-size: 13px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+/* "Your share" indicator on a sub card (when sharedWith > 1) */
+.sub-share-line {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+.sub-share-icon { font-size: 12px; opacity: 0.8; }
+
 .chart-title {
   font-size: 12px;
   font-weight: 600;

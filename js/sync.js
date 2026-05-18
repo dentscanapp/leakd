@@ -467,7 +467,70 @@
     return { ok: true, snapshot };
   }
 
-  // Smart sync: pull if remote is newer than our last known sync, else push.
+  // ── Smart Snapshot Merging (Item-level Conflict Resolution) ──────
+  function mergeSnapshots(local, remote) {
+    const merged = {
+      lastUpdated: Math.max(local.lastUpdated || 0, remote.lastUpdated || 0),
+      appVersion: local.appVersion || remote.appVersion || 'unknown',
+      data: {}
+    };
+
+    function mergeArrays(localArr, remoteArr) {
+      const localMap = new Map((localArr || []).map(x => [x.id, x]));
+      const remoteMap = new Map((remoteArr || []).map(x => [x.id, x]));
+      const mergedItems = [];
+      const allIds = new Set([...localMap.keys(), ...remoteMap.keys()]);
+      
+      for (const id of allIds) {
+        const localItem = localMap.get(id);
+        const remoteItem = remoteMap.get(id);
+        
+        if (localItem && remoteItem) {
+          const localTime = localItem.updatedAt || new Date(localItem.createdAt || 0).getTime() || 0;
+          const remoteTime = remoteItem.updatedAt || new Date(remoteItem.createdAt || 0).getTime() || 0;
+          if (remoteTime > localTime) {
+            mergedItems.push(remoteItem);
+          } else {
+            mergedItems.push(localItem);
+          }
+        } else if (localItem) {
+          mergedItems.push(localItem);
+        } else {
+          mergedItems.push(remoteItem);
+        }
+      }
+      return mergedItems;
+    }
+
+    for (const key of SYNCED_KEYS) {
+      const localVal = local.data[key];
+      const remoteVal = remote.data[key];
+      
+      if (localVal === undefined) {
+        if (remoteVal !== undefined) merged.data[key] = remoteVal;
+        continue;
+      }
+      if (remoteVal === undefined) {
+        merged.data[key] = localVal;
+        continue;
+      }
+
+      if (key === 'leakd_subs' || key === 'leakd_cancelled') {
+        try {
+          const localArr = JSON.parse(localVal);
+          const remoteArr = JSON.parse(remoteVal);
+          merged.data[key] = JSON.stringify(mergeArrays(localArr, remoteArr));
+        } catch (e) {
+          merged.data[key] = local.lastUpdated > remote.lastUpdated ? localVal : remoteVal;
+        }
+      } else {
+        merged.data[key] = local.lastUpdated > remote.lastUpdated ? localVal : remoteVal;
+      }
+    }
+    return merged;
+  }
+
+  // Smart two-way sync: merges local offline state with remote cloud state
   async function sync() {
     checkPro();
     if (!cryptoKey) { const e = new Error('LOCKED'); e.code = 'LOCKED'; throw e; }
@@ -476,17 +539,38 @@
     if (!file) return await push();
 
     const text = await downloadFile(file.id);
-    const snapshot = await decryptPayload(text);
-    const remoteUpdated = snapshot.lastUpdated || 0;
-    const lastKnownRemote = meta.remoteUpdated || 0;
+    const remoteSnapshot = await decryptPayload(text);
+    const localSnapshot = snapshotLocal();
 
-    if (remoteUpdated > lastKnownRemote) {
-      applySnapshot(snapshot);
-      saveMeta({ fileId: file.id, lastSync: Date.now(), remoteUpdated });
-      notify('pulled', { lastUpdated: remoteUpdated });
-      return { ok: true, action: 'pulled', lastUpdated: remoteUpdated };
+    // Perform two-way merge
+    const mergedSnapshot = mergeSnapshots(localSnapshot, remoteSnapshot);
+
+    // Save the merged data locally
+    applySnapshot(mergedSnapshot);
+
+    // Determine if we need to push the merged state back to the cloud.
+    // We push if the local offline state had newer edits than the cloud.
+    const localHasNewerEdits = JSON.stringify(mergedSnapshot.data) !== JSON.stringify(remoteSnapshot.data);
+
+    if (localHasNewerEdits) {
+      const ciphertext = await encryptPayload(mergedSnapshot);
+      const result = await uploadFile(file.id, ciphertext);
+      saveMeta({
+        fileId: result.id,
+        lastSync: Date.now(),
+        remoteUpdated: mergedSnapshot.lastUpdated,
+      });
+      notify('pushed', { lastUpdated: mergedSnapshot.lastUpdated });
+      return { ok: true, action: 'merged-pushed', lastUpdated: mergedSnapshot.lastUpdated };
+    } else {
+      saveMeta({
+        fileId: file.id,
+        lastSync: Date.now(),
+        remoteUpdated: remoteSnapshot.lastUpdated || 0,
+      });
+      notify('pulled', { lastUpdated: remoteSnapshot.lastUpdated });
+      return { ok: true, action: 'pulled', lastUpdated: remoteSnapshot.lastUpdated };
     }
-    return await push();
   }
 
   // ── Debounced push (call after every saveData) ─────────────
