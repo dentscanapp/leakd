@@ -1525,7 +1525,7 @@
 </div>
 
 <script src="js/locale.js"></script>
-<script src="js/i18n.js?v=76"></script>
+<script src="js/i18n.js?v=77"></script>
 <script src="js/brands.js"></script>
 <script src="js/insights.js"></script>
 <script src="js/pro.js"></script>
@@ -1560,12 +1560,17 @@
 <script src="js/pdf.js"></script>
 <script src="js/currency.js"></script>
 <!-- Pro-only cloud sync (E2EE via Google Drive). Set window.LeakdSyncConfig.clientId before this loads. -->
+<script>
+  window.LeakdSyncConfig = {
+    clientId: '587744396356-qho928kuorkh8dufjnqa05u7cbdellho.apps.googleusercontent.com'
+  };
+</script>
 <script src="js/sync.js"></script>
 <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
 <script src="js/emailreminder.js"></script>
-<script src="js/app.js?v=75"></script>
+<script src="js/app.js?v=77"></script>
   <script>
-    window.LeakdVersion = '2026-05-18.76';
+    window.LeakdVersion = '2026-05-18.77';
     console.log('Leakd Initializing v' + window.LeakdVersion);
     if('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js?v=' + window.LeakdVersion).then(reg => {
