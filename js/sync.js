@@ -165,9 +165,10 @@
   // local state. Used when adding the app to a second device.
   async function unlockAndVerifyAgainstRemote(password) {
     checkPro();
-    const candidate = await deriveKey(password, getSalt(), PBKDF2_ITERATIONS);
     const file = await findSyncFile();
     if (!file) {
+      const salt = getSalt();
+      const candidate = await deriveKey(password, salt, PBKDF2_ITERATIONS);
       cachedPassword = String(password);
       cryptoKey = candidate;
       cryptoKeyLegacy = null;
@@ -175,13 +176,22 @@
       return { ok: true, hadRemote: false };
     }
     const text = await downloadFile(file.id);
-    // Peek at envelope version so we know which iteration count to try
+    // Peek at envelope version and salt so we know how to derive keys
     let env = null;
     try { env = JSON.parse(text); } catch {}
+    
+    // If the remote file exists and has a salt, we MUST use its salt
+    // to derive the candidate keys, and save it locally.
+    if (env && env.salt) {
+      localStorage.setItem(SALT_KEY, env.salt);
+    }
+    
+    const salt = getSalt();
+    const candidate = await deriveKey(password, salt, PBKDF2_ITERATIONS);
     let verifyKey = candidate;
     if (env && env.v === 1) {
       // Legacy blob — verify against the 250k key
-      verifyKey = await deriveKey(password, getSalt(), PBKDF2_LEGACY_ITERATIONS);
+      verifyKey = await deriveKey(password, salt, PBKDF2_LEGACY_ITERATIONS);
     }
     try {
       const snap = await decryptWithKey(text, verifyKey);
