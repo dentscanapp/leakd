@@ -17,8 +17,115 @@
     {
       id: 'revolut',
       name: 'Revolut',
-      fingerprint: /(Type,Product,Started Date|Date,Description,Paid Out|Date completed.*Description.*Amount)/i,
-      cols: { date: ['Started Date', 'Date completed (UTC)', 'Date'], desc: ['Description'], amount: ['Amount', 'Paid Out (GBP)'], currency: ['Currency'] },
+      // Revolut localizes its statement column headers per user country. We
+      // match either the canonical English layout, the legacy layout, or
+      // any localized "date + description + amount" triplet that contains
+      // a Revolut-distinctive token. The substantive recognition happens
+      // in `cols` below; the fingerprint just needs to be permissive
+      // enough so this format wins over the generic fallback (which would
+      // still work but show "Generic CSV" in the UI).
+      fingerprint: /(Type,Product,Started Date|Date,Description,Paid Out|Date completed.*Description.*Amount|T[íi]pus.*Term[ée]k|Typ.*Produkt.*Startdatum|Tipo.*Producto.*Fecha|Tipo.*Prodotto.*Data inizio|Typ.*Produkt.*Data rozpocz|Tip.*Produs.*Data|Typ.*Produkt.*Po[čc][aá]te[čc]n[íi]|Type.*Produit.*Date|Tipo.*Produto.*Data|Type.*Product.*Begindatum|Soort.*Product.*Begindatum|タイプ.*プロダクト.*開始日|유형.*제품.*시작일|类型.*产品.*开始日期|Тип.*Продукт.*Дата начала|Tipe.*Produk.*Tanggal mulai|Loại.*Sản phẩm.*Ngày bắt đầu|Tür.*Ürün.*Başlama|Τύπος.*Προϊόν.*Ημερομηνία|प्रकार.*उत्पाद.*प्रारंभ|Тип.*Продукт.*Дата початку|Vrsta.*Proizvod.*Datum početka|Тип.*Продукт.*Начална|ประเภท.*ผลิตภัณฑ์.*วันที่เริ่ม|Uri.*Produkto.*Petsa|Tipus.*Producte.*Data d'inici|Dátum začatia|Slags.*Produkt.*Startdatum)/i,
+      cols: {
+        date: [
+          // English
+          'Started Date', 'Date completed (UTC)', 'Date',
+          // Hungarian
+          'Kezdés dátuma', 'Teljesítés dátuma', 'Dátum',
+          // German
+          'Startdatum', 'Abgeschlossen am', 'Datum',
+          // Spanish
+          'Fecha inicio', 'Fecha completado', 'Fecha',
+          // French
+          'Date de début', 'Date de fin', 'Date',
+          // Italian
+          'Data inizio', 'Data completamento', 'Data',
+          // Portuguese
+          'Data início', 'Data conclusão',
+          // Dutch
+          'Begindatum', 'Voltooidatum',
+          // Polish
+          'Data rozpoczęcia', 'Data zakończenia',
+          // Swedish
+          'Startdatum', 'Slutdatum', 'Datum',
+          // Romanian
+          'Data început', 'Data finalizare',
+          // Czech / Slovak
+          'Počáteční datum', 'Dátum začatia', 'Dátum dokončenia', 'Datum dokončení',
+          // Japanese
+          '開始日', '完了日', '日付',
+          // Korean
+          '시작일', '완료일', '날짜',
+          // Chinese (Simplified)
+          '开始日期', '完成日期', '日期',
+          // Russian
+          'Дата начала', 'Дата завершения', 'Дата',
+          // Indonesian
+          'Tanggal mulai', 'Tanggal selesai', 'Tanggal',
+          // Vietnamese
+          'Ngày bắt đầu', 'Ngày hoàn tất', 'Ngày',
+          // Turkish
+          'Başlama tarihi', 'Tamamlanma tarihi', 'Tarih',
+          // Greek
+          'Ημερομηνία έναρξης', 'Ημερομηνία ολοκλήρωσης', 'Ημερομηνία',
+          // Hindi
+          'प्रारंभ तिथि', 'पूर्ण तिथि', 'तिथि',
+          // Ukrainian
+          'Дата початку', 'Дата завершення',
+          // Croatian
+          'Datum početka', 'Datum završetka',
+          // Bulgarian
+          'Начална дата', 'Крайна дата',
+          // Thai
+          'วันที่เริ่มต้น', 'วันที่เสร็จสิ้น', 'วันที่',
+          // Filipino
+          'Petsa ng simula', 'Petsa ng pagkumpleto', 'Petsa',
+          // Catalan
+          "Data d'inici", 'Data de finalització', 'Data',
+        ],
+        desc: [
+          'Description', 'Leírás', 'Beschreibung', 'Descripción', 'Descrizione',
+          'Descrição', 'Omschrijving', 'Opis', 'Beskrivning', 'Descriere', 'Popis',
+          // CJK
+          '説明', '摘要', '内容', '설명', '描述', '说明',
+          // Russian / Ukrainian / Bulgarian
+          'Описание', 'Опис', 'Описание',
+          // SE-Asian
+          'Deskripsi', 'Mô tả', 'Açıklama',
+          // Greek / Hindi
+          'Περιγραφή', 'विवरण',
+          // Thai / Filipino / Catalan
+          'รายละเอียด', 'Paglalarawan', 'Descripció',
+        ],
+        amount: [
+          'Amount', 'Paid Out (GBP)',
+          'Összeg', 'Betrag', 'Importe', 'Montant', 'Importo', 'Valor',
+          'Bedrag', 'Kwota', 'Belopp', 'Sumă', 'Suma', 'Částka',
+          // CJK
+          '金額', '金额', '금액',
+          // Cyrillic
+          'Сумма', 'Сума',
+          // SE-Asian
+          'Jumlah', 'Số tiền', 'Tutar',
+          // Greek / Hindi
+          'Ποσό', 'राशि',
+          // Thai / Filipino / Catalan
+          'จำนวนเงิน', 'Halaga', 'Import',
+        ],
+        currency: [
+          'Currency', 'Pénznem', 'Währung', 'Divisa', 'Devise', 'Valuta',
+          'Moeda', 'Waluta', 'Monedă', 'Měna', 'Mena',
+          // CJK
+          '通貨', '货币', '通货', '통화',
+          // Cyrillic
+          'Валюта',
+          // SE-Asian
+          'Mata uang', 'Tiền tệ', 'Para birimi',
+          // Greek / Hindi
+          'Νόμισμα', 'मुद्रा',
+          // Thai / Filipino / Catalan
+          'สกุลเงิน', 'Pera',
+        ],
+      },
     },
     {
       id: 'wise',
@@ -56,7 +163,33 @@
       id: 'generic',
       name: 'Generic CSV',
       fingerprint: /.*/, // fallback
-      cols: { date: ['date', 'Date', 'DATE', 'transaction date'], desc: ['description', 'Description', 'merchant', 'name', 'payee'], amount: ['amount', 'Amount', 'value'], currency: ['currency', 'Currency'] },
+      cols: {
+        // Recognize date/desc/amount headers across the major European
+        // banking-export languages. findColIndex() is case-insensitive and
+        // does a substring fuzzy match, so partial matches work too.
+        date: [
+          'date', 'Date', 'DATE', 'transaction date',
+          'dátum', 'datum', 'fecha', 'data',
+          'kezdés', 'started', 'completed', 'teljesítés',
+          'value date', 'booking date', 'posting date',
+        ],
+        desc: [
+          'description', 'Description', 'merchant', 'name', 'payee',
+          'leírás', 'beschreibung', 'descripción', 'descrizione', 'descrição',
+          'omschrijving', 'opis', 'descriere', 'popis',
+          'reference', 'memo', 'note', 'narration', 'details', 'subject',
+        ],
+        amount: [
+          'amount', 'Amount', 'value', 'debit', 'credit',
+          'összeg', 'betrag', 'importe', 'montant', 'importo', 'valor',
+          'bedrag', 'kwota', 'sumă', 'suma', 'částka',
+        ],
+        currency: [
+          'currency', 'Currency',
+          'pénznem', 'währung', 'divisa', 'devise', 'valuta',
+          'moeda', 'waluta', 'monedă', 'měna', 'mena',
+        ],
+      },
     },
   ];
 
