@@ -678,7 +678,7 @@
       </button>
     </div>
 
-    <div class="menu-list">
+        <div class="menu-list">
       <button class="menu-row" id="menuPro">
         <div class="menu-row-main">
           <span class="menu-row-icon">⭐</span>
@@ -690,12 +690,23 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <button class="menu-row" id="menuCancelled">
+      <button class="menu-row" id="menuCurrency">
         <div class="menu-row-main">
-          <span class="menu-row-icon">✂️</span>
+          <span class="menu-row-icon">💱</span>
           <div>
-            <div class="menu-row-label" data-i18n="menu.cancelled">Cancelled subscriptions</div>
-            <div class="menu-row-sub" id="menuCancelledSub" data-i18n="menu.cancelledSub">See what you killed and how much you saved</div>
+            <div class="menu-row-label" data-i18n="menu.currency">Currency</div>
+            <div class="menu-row-sub" id="menuCurrencySub">USD ($)</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuLanguage">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🌍</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.language">Language</div>
+            <div class="menu-row-sub" id="menuLanguageSub">English</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -712,40 +723,26 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <button class="menu-row" id="menuYearend">
+      <button class="menu-row" id="menuIncome">
         <div class="menu-row-main">
-          <span class="menu-row-icon">🎁</span>
+          <span class="menu-row-icon">💰</span>
           <div>
-            <div class="menu-row-label">
-              <span data-i18n="menu.yearend">Year-end report</span>
-              <span class="pro-badge">PRO</span>
-            </div>
-            <div class="menu-row-sub" data-i18n="menu.yearendSub">See your spending wrap-up</div>
+            <div class="menu-row-label" data-i18n="menu.income">Income & ratio</div>
+            <div class="menu-row-sub" data-i18n="menu.incomeSub">See what % of your income goes to subs</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <button class="menu-row" id="menuEmailRem">
+      <button class="menu-row" id="menuBudgets">
         <div class="menu-row-main">
-          <span class="menu-row-icon">📧</span>
+          <span class="menu-row-icon">🎯</span>
           <div>
             <div class="menu-row-label">
-              <span data-i18n="menu.emailRem">Email reminders</span>
+              <span data-i18n="menu.budgets">Category budgets</span>
               <span class="pro-badge">PRO</span>
             </div>
-            <div class="menu-row-sub" data-i18n="menu.emailRemSub">Get an email before each renewal</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuBank">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🏦</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.bank">Import bank statement</div>
-            <div class="menu-row-sub" data-i18n="menu.bankSub">Auto-detect subs from Revolut, Wise, Chase, etc.</div>
+            <div class="menu-row-sub" data-i18n="menu.budgetsSub">Set monthly limits per category</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -757,6 +754,50 @@
           <div>
             <div class="menu-row-label" data-i18n="menu.goal">Savings goal</div>
             <div class="menu-row-sub" id="menuGoalSub" data-i18n="menu.goalSub">Set a target — we celebrate every milestone</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuWhatIf">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🔮</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.whatif">What-if calculator</div>
+            <div class="menu-row-sub" data-i18n="menu.whatifSub">Pick subs to cancel — see savings live</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuCompare">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">⚖️</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.compare">Compare side-by-side</div>
+            <div class="menu-row-sub" data-i18n="menu.compareSub">Pick 2 or 3 to compare</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuCancelled">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">✂️</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.cancelled">Cancelled subscriptions</div>
+            <div class="menu-row-sub" id="menuCancelledSub" data-i18n="menu.cancelledSub">See what you killed and how much you saved</div>
+          </div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="menu-row" id="menuBank">
+        <div class="menu-row-main">
+          <span class="menu-row-icon">🏦</span>
+          <div>
+            <div class="menu-row-label" data-i18n="menu.bank">Import bank statement</div>
+            <div class="menu-row-sub" data-i18n="menu.bankSub">Auto-detect subs from Revolut, Wise, Chase, etc.</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -798,7 +839,6 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-
       <button class="menu-row" id="menuCalendar">
         <div class="menu-row-main">
           <span class="menu-row-icon">📅</span>
@@ -810,26 +850,12 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <button class="menu-row" id="menuBudgets">
+      <button class="menu-row" id="menuShare">
         <div class="menu-row-main">
-          <span class="menu-row-icon">🎯</span>
+          <span class="menu-row-icon">🔗</span>
           <div>
-            <div class="menu-row-label">
-              <span data-i18n="menu.budgets">Category budgets</span>
-              <span class="pro-badge">PRO</span>
-            </div>
-            <div class="menu-row-sub" data-i18n="menu.budgetsSub">Set monthly limits per category</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuBackup">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">💾</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.backup">Backup & restore</div>
-            <div class="menu-row-sub" data-i18n="menu.backupSub">Save your data to a file or restore it</div>
+            <div class="menu-row-label" data-i18n="menu.share">Share leakd.app</div>
+            <div class="menu-row-sub" data-i18n="menu.shareSub">Help us grow</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -849,67 +875,40 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <button class="menu-row" id="menuLanguage">
+      <button class="menu-row" id="menuBackup">
         <div class="menu-row-main">
-          <span class="menu-row-icon">🌍</span>
+          <span class="menu-row-icon">💾</span>
           <div>
-            <div class="menu-row-label" data-i18n="menu.language">Language</div>
-            <div class="menu-row-sub" id="menuLanguageSub">English</div>
+            <div class="menu-row-label" data-i18n="menu.backup">Backup & restore</div>
+            <div class="menu-row-sub" data-i18n="menu.backupSub">Save your data to a file or restore it</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <button class="menu-row" id="menuIncome">
+      <button class="menu-row" id="menuYearend">
         <div class="menu-row-main">
-          <span class="menu-row-icon">💰</span>
+          <span class="menu-row-icon">🎁</span>
           <div>
-            <div class="menu-row-label" data-i18n="menu.income">Income & ratio</div>
-            <div class="menu-row-sub" data-i18n="menu.incomeSub">See what % of your income goes to subs</div>
+            <div class="menu-row-label">
+              <span data-i18n="menu.yearend">Year-end report</span>
+              <span class="pro-badge">PRO</span>
+            </div>
+            <div class="menu-row-sub" data-i18n="menu.yearendSub">See your spending wrap-up</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <button class="menu-row" id="menuCurrency">
+      <button class="menu-row" id="menuEmailRem">
         <div class="menu-row-main">
-          <span class="menu-row-icon">💱</span>
+          <span class="menu-row-icon">📧</span>
           <div>
-            <div class="menu-row-label" data-i18n="menu.currency">Currency</div>
-            <div class="menu-row-sub" id="menuCurrencySub">USD ($)</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuShare">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🔗</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.share">Share leakd.app</div>
-            <div class="menu-row-sub" data-i18n="menu.shareSub">Help us grow</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuCompare">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">⚖️</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.compare">Compare side-by-side</div>
-            <div class="menu-row-sub" data-i18n="menu.compareSub">Pick 2 or 3 to compare</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuWhatIf">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🔮</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.whatif">What-if calculator</div>
-            <div class="menu-row-sub" data-i18n="menu.whatifSub">Pick subs to cancel — see savings live</div>
+            <div class="menu-row-label">
+              <span data-i18n="menu.emailRem">Email reminders</span>
+              <span class="pro-badge">PRO</span>
+            </div>
+            <div class="menu-row-sub" data-i18n="menu.emailRemSub">Get an email before each renewal</div>
           </div>
         </div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -969,6 +968,8 @@
         </div>
       </button>
     </div>
+
+
 
     <div class="menu-footer">
       <span data-i18n="menu.footer">leakd v1.2 · made for indie wallets</span>
