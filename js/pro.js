@@ -36,7 +36,15 @@
       localStorage.setItem(PRO_KEY, JSON.stringify(this.state));
     },
 
+    // ────────────────────────────────────────────────────────────────
+    // ⚠️ TEMP TEST FLAG — set to false to restore real Pro gating.
+    // While true, EVERY user sees Pro features unlocked for testing.
+    // Search for "TEMP_UNLOCK_PRO" to find and revert.
+    // ────────────────────────────────────────────────────────────────
+    TEMP_UNLOCK_PRO: true,
+
     isPro() {
+      if (this.TEMP_UNLOCK_PRO) return true;
       return !!this.state.active;
     },
 
