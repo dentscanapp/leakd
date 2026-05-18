@@ -18,7 +18,7 @@
     { match: /apple\s*music/i,      name: 'Apple Music',      price: 10.99, cat: 'Music', cancel: 'https://music.apple.com/account/subscriptions' },
     { match: /youtube\s*(premium|music)/i, name: 'YouTube Premium', price: 13.99, cat: 'Entertainment', cancel: 'https://www.youtube.com/paid_memberships' },
     { match: /disney\+?/i,          name: 'Disney+',          price: 13.99, cat: 'Entertainment', cancel: 'https://www.disneyplus.com/account/subscription' },
-    { match: /hbo|max/i,            name: 'HBO Max',          price: 15.99, cat: 'Entertainment', cancel: 'https://www.max.com/subscription' },
+    { match: /\b(hbo|hbo\s*max|max)\b/i, name: 'HBO Max',     price: 15.99, cat: 'Entertainment', cancel: 'https://www.max.com/subscription' },
     { match: /prime\s*video|amazon\s*prime/i, name: 'Amazon Prime', price: 14.99, cat: 'Entertainment', cancel: 'https://www.amazon.com/mc' },
     { match: /chatgpt|openai/i,     name: 'ChatGPT Plus',     price: 20.00, cat: 'Work', cancel: 'https://chatgpt.com/#settings/Subscription' },
     { match: /claude/i,             name: 'Claude Pro',       price: 20.00, cat: 'Work', cancel: 'https://claude.ai/settings/billing' },
@@ -35,10 +35,10 @@
     { match: /nytimes|nyt|new\s*york\s*times/i, name: 'NYT', price: 17.00, cat: 'News', cancel: 'https://myaccount.nytimes.com/seg/subscription' },
     { match: /economist/i,          name: 'The Economist',    price: 19.00, cat: 'News', cancel: 'https://myaccount.economist.com/' },
     { match: /substack/i,           name: 'Substack',         price: 5.00,  cat: 'News', cancel: 'https://substack.com/account' },
-    { match: /medium/i,             name: 'Medium',           price: 5.00,  cat: 'News', cancel: 'https://medium.com/me/membership' },
+    { match: /\bmedium\b/i,          name: 'Medium',           price: 5.00,  cat: 'News', cancel: 'https://medium.com/me/membership' },
     { match: /duolingo/i,           name: 'Duolingo Super',   price: 6.99,  cat: 'Other', cancel: 'https://www.duolingo.com/settings/subscription' },
     { match: /headspace/i,          name: 'Headspace',        price: 12.99, cat: 'Other', cancel: 'https://www.headspace.com/subscription' },
-    { match: /calm/i,               name: 'Calm',             price: 14.99, cat: 'Other', cancel: 'https://www.calm.com/account/subscription' },
+    { match: /\bcalm\b/i,            name: 'Calm',             price: 14.99, cat: 'Other', cancel: 'https://www.calm.com/account/subscription' },
     { match: /audible/i,            name: 'Audible',          price: 14.95, cat: 'Entertainment', cancel: 'https://www.audible.com/account/mship-cancel' },
     { match: /kindle\s*unlimited/i, name: 'Kindle Unlimited', price: 11.99, cat: 'Entertainment', cancel: 'https://www.amazon.com/kindle-dbs/ku/ku-central' },
     { match: /strava/i,             name: 'Strava',           price: 11.99, cat: 'Fitness', cancel: 'https://www.strava.com/account' },
@@ -61,8 +61,8 @@
     { match: /tidal/i,              name: 'Tidal',            price: 10.99, cat: 'Music', cancel: 'https://account.tidal.com/' },
     { match: /soundcloud/i,         name: 'SoundCloud Go',    price: 9.99,  cat: 'Music', cancel: 'https://soundcloud.com/settings/subscriptions' },
     { match: /telegraaf/i,          name: 'De Telegraaf',     price: 7.99,  cat: 'News', cancel: 'https://www.telegraaf.nl/mijn/abonnement' },
-    { match: /volkskrant|nrc|trouw|fd/i, name: 'Krant abonnement', price: 18.50, cat: 'News', cancel: null },
-    { match: /der\s*spiegel|zeit/i, name: 'Der Spiegel',      price: 19.99, cat: 'News', cancel: null },
+    { match: /\b(volkskrant|nrc|trouw|fd)\b/i, name: 'Krant abonnement', price: 18.50, cat: 'News', cancel: null },
+    { match: /\b(der\s*spiegel|zeit)\b/i, name: 'Der Spiegel',      price: 19.99, cat: 'News', cancel: null },
     { match: /el\s*pa[ií]s/i,       name: 'El País',          price: 10.00, cat: 'News', cancel: null },
     { match: /le\s*monde/i,         name: 'Le Monde',         price: 9.99,  cat: 'News', cancel: 'https://abo.lemonde.fr/' },
     { match: /onlyfans/i,           name: 'OnlyFans',         price: 9.99,  cat: 'Other', cancel: null },
@@ -290,8 +290,16 @@
     const line = raw.trim();
     if (!line || line.length < 2) return null;
 
-    // CSV detection: 5+ commas with leading "Name" header → skip header rows
+    // CSV detection: skip lines that look like a bank/PayPal CSV row instead
+    // of a "Netflix 15.99"-style subscription paste. Such rows have lots of
+    // quoted fields and many commas and tend to spuriously match brand
+    // regexes inside random words ("Neighborhood" contains "hbo", etc.).
     if (/^name\s*,/i.test(line)) return null;
+    const commaCount = (line.match(/,/g) || []).length;
+    const quoteCount = (line.match(/"/g) || []).length;
+    if (commaCount >= 5 && quoteCount >= 8) return null;
+    // Also reject date-only / timestamp-only fragments left from CSV splits
+    if (/^["']?\d{4}[.\-/\s]+\d{1,2}[.\-/\s]+\d{1,2}["']?\.?$/.test(line)) return null;
 
     // Identify known service
     const known = KNOWN.find(k => k.match.test(line));
