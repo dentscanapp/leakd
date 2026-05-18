@@ -2270,7 +2270,10 @@
       }
     } else {
       $('goalName').value = '';
-      $('goalAmount').value = '';
+      // Pre-fill a sensible default so the user can just hit Save. The
+      // placeholder used to show "500" which looked like a real value,
+      // confusing users who tapped Save and got rejected on an empty input.
+      $('goalAmount').value = '500';
       $('goalClearBtn').style.display = 'none';
       $('goalProgressBlock').style.display = 'none';
     }

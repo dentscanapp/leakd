@@ -52,7 +52,12 @@
       list.forEach(s => {
         if (!s.cancelledAt) return;
         const monthsSince = Math.max(0, (Date.now() - new Date(s.cancelledAt).getTime()) / (1000 * 60 * 60 * 24 * 30.44));
-        savedTotal += (s.monthlyAtCancel || 0) * monthsSince;
+        // Always credit at least one billing cycle the moment a sub is
+        // cancelled — that's the next would-be charge the user just
+        // avoided. Without this, a fresh cancellation shows $0 progress
+        // for ~30 days, which feels wrong (the user *did* save money).
+        const monthsToCredit = Math.max(1, monthsSince);
+        savedTotal += (s.monthlyAtCancel || 0) * monthsToCredit;
       });
     }
     const pct = Math.min(100, (savedTotal / goal.target) * 100);
