@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roadmap — leakd</title>
+<link rel="icon" type="image/svg+xml" href="landing/assets/favicon.svg">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="What we shipped, what's next, and what we'll probably never build.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#000;--bg-1:#0a0a0a;--fg:#f4f3f0;--fg-dim:rgba(244,243,240,0.62);--fg-mute:rgba(244,243,240,0.38);--red:#ef3a3a;--red-dim:rgba(239,58,58,0.14);--red-line:rgba(239,58,58,0.32);--green:#10b981;--green-dim:rgba(16,185,129,0.12);--green-line:rgba(16,185,129,0.32);--amber:#f59e0b;--amber-dim:rgba(245,158,11,0.12);--amber-line:rgba(245,158,11,0.32);--line:rgba(255,255,255,0.08);--line-2:rgba(255,255,255,0.14);--display:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;--body:ui-sans-serif,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.65}
+  a{color:var(--red)}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:840px;margin:0 auto;padding:64px 24px 96px}
+  .back{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--fg-dim);margin-bottom:32px;border:1px solid var(--line);padding:6px 12px;border-radius:999px}
+  .back:hover{color:var(--fg);border-color:var(--line-2);text-decoration:none}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--red-line);background:var(--red-dim);border-radius:999px;font-family:var(--mono);font-size:12px;color:#ffb4b4;margin-bottom:24px}
+  .dot{width:6px;height:6px;background:var(--red);border-radius:50%;box-shadow:0 0 0 4px rgba(239,58,58,0.18)}
+  h1{font-family:var(--display);font-size:clamp(36px,5vw,56px);line-height:1;letter-spacing:-0.03em;margin-bottom:14px;text-wrap:balance}
+  h1 .r{color:var(--red)}
+  .subtitle{color:var(--fg-dim);font-size:18px;margin-bottom:40px;text-wrap:pretty;max-width:600px}
+  h2{font-family:var(--display);font-size:22px;letter-spacing:-0.02em;margin:48px 0 16px;display:flex;align-items:center;gap:12px}
+  .col-tag{font-family:var(--mono);font-size:11px;font-weight:500;padding:4px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:0.06em}
+  .col-tag.done{background:var(--green-dim);border:1px solid var(--green-line);color:var(--green)}
+  .col-tag.doing{background:var(--amber-dim);border:1px solid var(--amber-line);color:var(--amber)}
+  .col-tag.next{background:var(--red-dim);border:1px solid var(--red-line);color:var(--red)}
+  .col-tag.maybe{background:rgba(255,255,255,0.04);border:1px solid var(--line-2);color:var(--fg-dim)}
+  .col-tag.no{background:rgba(255,255,255,0.02);border:1px solid var(--line);color:var(--fg-mute)}
+  ul.items{list-style:none;padding:0}
+  ul.items li{background:var(--bg-1);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:10px}
+  ul.items li strong{color:var(--fg);font-weight:500;display:block;margin-bottom:4px;font-size:15px}
+  ul.items li span{color:var(--fg-dim);font-size:14px}
+  .quarter{font-family:var(--mono);font-size:11px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:0.08em;margin-top:6px;display:inline-block}
+  .feedback{background:var(--bg-1);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:8px;padding:18px 22px;margin:32px 0;font-size:14px;color:var(--fg-dim)}
+  .feedback strong{color:var(--fg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="back">← Back to leakd</a>
+  <div class="eyebrow"><span class="dot"></span>Roadmap</div>
+  <h1>What's been shipped,<br>what's <span class="r">coming next.</span></h1>
+  <p class="subtitle">A small, independent project — so the roadmap is honest and short. Last updated: <span style="font-family:var(--mono)">May 2026</span>.</p>
+
+  <h2><span class="col-tag done">✓ Shipped</span> already in the app</h2>
+  <ul class="items">
+    <li><strong>Local subscription tracking</strong><span>Add, edit, delete, pause subs. Categories, tags, ratings, notes. Multi-currency with daily ECB rates.</span></li>
+    <li><strong>Smart bank-CSV import</strong><span>Revolut, Wise, N26, PayPal, Chase, Amex — column headers detected in 28 languages.</span></li>
+    <li><strong>Renewal &amp; trial notifications</strong><span>Local browser notifications 1/3/7 days before. Trial-end warnings.</span></li>
+    <li><strong>Spending insights &amp; trends</strong><span>Monthly/yearly totals, category donut, 6-month trend line, lifetime cost, "if invested instead" math.</span></li>
+    <li><strong>Cloud Sync (Pro)</strong><span>End-to-end encrypted, AES-GCM 256, PBKDF2 600 000. Stored in your own Google Drive.</span></li>
+    <li><strong>Email Reminders (Pro)</strong><span>Backup channel for renewal alerts via Cloudflare Worker → Brevo.</span></li>
+    <li><strong>Business Tax Report (Pro)</strong><span>PDF + CSV of every business-flagged subscription, ready for your accountant.</span></li>
+    <li><strong>28 languages, dark/light modes, PWA install</strong><span>Full-localized UI, A11y improvements (focus trap, ARIA labels), offline-first.</span></li>
+    <li><strong>Goals, budgets, streaks</strong><span>Yearly savings goal, monthly category budgets, "clean days" streak counter.</span></li>
+    <li><strong>Privacy &amp; legal foundation</strong><span>GDPR-compliant privacy policy in 2 langs, T&amp;C with EU consumer rights, ÁSZF acceptance recorded with timestamp + version, DPIA for Cloud Sync.</span></li>
+  </ul>
+
+  <h2><span class="col-tag doing">⟳ In progress</span> shipping this quarter</h2>
+  <ul class="items">
+    <li><strong>Auto-delete Drive blob when Cloud Sync is turned off</strong><span>Currently the user has to manually delete from drive.google.com → Manage apps. Soon: in-app one-click confirm.</span><span class="quarter">Q3 2026</span></li>
+    <li><strong>Master-password strength meter</strong><span>Real-time entropy hint when setting up Cloud Sync. Helps users pick something better than "password1".</span><span class="quarter">Q3 2026</span></li>
+    <li><strong>Play Store TWA release</strong><span>Trusted Web Activity wrapper, native Android purchase via Google Play Billing.</span><span class="quarter">Q3 2026</span></li>
+  </ul>
+
+  <h2><span class="col-tag next">→ Next</span> on the list</h2>
+  <ul class="items">
+    <li><strong>Spending alerts beyond budget</strong><span>"You're trending 12% higher than last quarter" — proactive nudges based on the trend chart.</span></li>
+    <li><strong>Multi-account profiles</strong><span>Switch between "personal" and "company" lists without two separate browsers.</span></li>
+    <li><strong>iOS Safari "Add to Home Screen" polish</strong><span>iOS PWAs have quirks — push notifications via APNs require Safari 16.4+, sync via Apple ID requires more work.</span></li>
+    <li><strong>Bank format support</strong><span>Adding more European banks (OTP, Erste, ING, BBVA, Santander, BNP Paribas).</span></li>
+    <li><strong>"Cancel link" expansion</strong><span>Currently ~60 services have a built-in cancel URL. Goal: 200+.</span></li>
+  </ul>
+
+  <h2><span class="col-tag maybe">? Considering</span> if enough users ask</h2>
+  <ul class="items">
+    <li><strong>Web-extension companion</strong><span>Detect "Are you sure you want to subscribe?" moments in the browser and offer a one-click add-to-leakd.</span></li>
+    <li><strong>Bulk SMS / WhatsApp reminders</strong><span>For users who want renewal alerts outside email and push.</span></li>
+    <li><strong>Family plan UI</strong><span>The data model already supports `sharedWith`. A proper family-pricing view could go further.</span></li>
+    <li><strong>Self-hosted Pro Sync</strong><span>For users who don't want Google Drive — point sync at their own WebDAV server.</span></li>
+  </ul>
+
+  <h2><span class="col-tag no">✗ Not planned</span> on purpose</h2>
+  <ul class="items">
+    <li><strong>Bank integration (Plaid / Tink / GoCardless)</strong><span>Invasive, geographically limited, requires us to be a regulated entity. Not happening.</span></li>
+    <li><strong>Analytics &amp; behaviour tracking</strong><span>The whole point of leakd is that we don't watch you.</span></li>
+    <li><strong>"Enterprise" / "Teams" pricing</strong><span>This is a personal-finance tool. Pricing is $0 or $5/mo. No tiers.</span></li>
+    <li><strong>AI chat / "Ask leakd anything"</strong><span>The math is simple enough that you don't need a chatbot. LLM costs would force us to track usage. Not worth it.</span></li>
+    <li><strong>Cryptocurrency support</strong><span>Out of scope. Use a dedicated crypto-tracker if you need it.</span></li>
+  </ul>
+
+  <div class="feedback">
+    <strong>Got a feature request?</strong> Email <a href="mailto:hello@leakd.app?subject=Feature%20request">hello@leakd.app</a> with the subject "Feature request". If multiple people ask for the same thing it bubbles up the list.
+  </div>
+
+  <p style="margin-top:48px;font-family:var(--mono);font-size:12px;color:var(--fg-mute)">© 2026 leakd · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="/">Home</a></p>
+</div>
+</body>
+</html>

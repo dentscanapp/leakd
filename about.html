@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About — leakd</title>
+<link rel="icon" type="image/svg+xml" href="landing/assets/favicon.svg">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="Why leakd was built, who built it, and what it is (and isn't).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#000;--bg-1:#0a0a0a;--fg:#f4f3f0;--fg-dim:rgba(244,243,240,0.62);--fg-mute:rgba(244,243,240,0.38);--red:#ef3a3a;--red-dim:rgba(239,58,58,0.14);--red-line:rgba(239,58,58,0.32);--line:rgba(255,255,255,0.08);--line-2:rgba(255,255,255,0.14);--display:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;--body:ui-sans-serif,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.65}
+  a{color:var(--red)}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:760px;margin:0 auto;padding:64px 24px 96px}
+  .back{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--fg-dim);margin-bottom:32px;border:1px solid var(--line);padding:6px 12px;border-radius:999px}
+  .back:hover{color:var(--fg);border-color:var(--line-2);text-decoration:none}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--red-line);background:var(--red-dim);border-radius:999px;font-family:var(--mono);font-size:12px;color:#ffb4b4;margin-bottom:24px}
+  .dot{width:6px;height:6px;background:var(--red);border-radius:50%;box-shadow:0 0 0 4px rgba(239,58,58,0.18)}
+  h1{font-family:var(--display);font-size:clamp(36px,5vw,56px);line-height:1;letter-spacing:-0.03em;margin-bottom:14px;text-wrap:balance}
+  h1 .r{color:var(--red)}
+  .subtitle{color:var(--fg-dim);font-size:18px;margin-bottom:48px;text-wrap:pretty}
+  h2{font-family:var(--display);font-size:24px;letter-spacing:-0.02em;margin:48px 0 14px}
+  p{color:var(--fg-dim);margin-bottom:14px;font-size:16px}
+  p strong{color:var(--fg);font-weight:500}
+  ul{padding-left:22px;margin-bottom:14px;color:var(--fg-dim)}
+  li{margin-bottom:8px}
+  .card{background:var(--bg-1);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin:24px 0}
+  .card-label{font-family:var(--mono);font-size:11px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+  @media (max-width:680px){.stat-row{grid-template-columns:1fr}}
+  .stat{background:var(--bg-1);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .stat-num{font-family:var(--display);font-size:32px;font-weight:600;color:var(--red);letter-spacing:-0.02em}
+  .stat-label{font-family:var(--mono);font-size:11px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="back">← Back to leakd</a>
+  <div class="eyebrow"><span class="dot"></span>About</div>
+  <h1>A subscription tracker that <span class="r">doesn't want your bank login.</span></h1>
+  <p class="subtitle">Most finance apps grow by asking for more access. leakd grew by asking for less.</p>
+
+  <h2>Why we built it</h2>
+  <p>The "small recurring charge" model conquered software. Netflix, Spotify, Adobe, ChatGPT, Notion, your VPN, your cloud storage, your three different AI tools, your gym, your meditation app — every one of them costs less than dinner, and together they cost more than your car payment.</p>
+  <p>The existing tools that track this either (a) want your bank login, which is invasive and geographically limited, or (b) live on a server we'd have to trust with your spending data, which we shouldn't have to.</p>
+  <p>So we built leakd: <strong>you type in what you pay for, or drop a CSV from your bank — entirely in your browser, no upload, no account.</strong> Then it does the math, watches the calendar, and gives you a clean view of what's leaking.</p>
+
+  <h2>What it is</h2>
+  <ul>
+    <li>A Progressive Web App that runs on any modern browser and installs to your home screen.</li>
+    <li>Local-first by default — every byte lives in your browser unless you specifically enable a Pro feature that goes to the network.</li>
+    <li>Available in 28 languages, with 32 currencies and daily ECB exchange rates.</li>
+    <li>Free forever for the core feature set. $5/mo Pro adds Cloud Sync, Email Reminders, and the Business Tax Report.</li>
+  </ul>
+
+  <h2>What it isn't</h2>
+  <ul>
+    <li><strong>Not a budgeting app.</strong> We don't categorise every coffee. We track recurring spend.</li>
+    <li><strong>Not a Plaid wrapper.</strong> We don't connect to your bank, scrape transactions, or ask for OAuth.</li>
+    <li><strong>Not an AI advisor.</strong> The "insights" are basic math — sums, averages, the cost over time. No black box.</li>
+    <li><strong>Not a venture-backed growth machine.</strong> Built and maintained by one person. No analytics, no upsell ladder, no enterprise tier.</li>
+  </ul>
+
+  <h2>The numbers</h2>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-num">28</div><div class="stat-label">UI languages</div></div>
+    <div class="stat"><div class="stat-num">32</div><div class="stat-label">Currencies</div></div>
+    <div class="stat"><div class="stat-num">600k</div><div class="stat-label">PBKDF2 iterations</div></div>
+  </div>
+
+  <h2>Who's behind it</h2>
+  <div class="card">
+    <div class="card-label">Maker · data controller</div>
+    <p style="margin-bottom:6px"><strong>Petor Péter</strong></p>
+    <p style="margin-bottom:6px">2233 Ecser, Nádas Béla utca 10, Hungary</p>
+    <p style="margin-bottom:0"><a href="mailto:hello@leakd.app">hello@leakd.app</a></p>
+  </div>
+  <p>Indie maker, based in Hungary. Built leakd because the alternatives are either invasive, abandoned, or charge by the seat for what should be a simple personal tool.</p>
+
+  <h2>Principles</h2>
+  <ul>
+    <li><strong>Local storage by default.</strong> Your subscription list lives in your browser's localStorage. Nothing leaves your device unless you turn on a Pro feature that needs the network — and even then it's end-to-end encrypted or minimum-data.</li>
+    <li><strong>No bank access.</strong> Manual entry takes a few minutes once. CSV import takes 30 seconds. Bank tokens take a lifetime of risk.</li>
+    <li><strong>Simple pricing.</strong> $0 or $5/mo. No "Enterprise" upsell. Price changes announced in advance.</li>
+    <li><strong>Portable, cancellable.</strong> Export to CSV / JSON / .ics anytime. If you cancel Pro, the Free features keep working and your data stays with you.</li>
+  </ul>
+
+  <h2>Reach out</h2>
+  <p>Bug, feature request, or just want to say hi — write to <a href="mailto:hello@leakd.app">hello@leakd.app</a>. We answer within a few business days.</p>
+  <p style="margin-top:24px;font-family:var(--mono);font-size:12px;color:var(--fg-mute)">© 2026 leakd · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="/">Home</a></p>
+</div>
+</body>
+</html>

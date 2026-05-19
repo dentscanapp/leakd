@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Changelog — Leakd</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf9;
+  --text: #0f0f0f;
+  --text-2: #57534e;
+  --text-3: #a8a29e;
+  --border: #e7e5e4;
+  --accent: #ef4444;
+  --bg-card: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f0f;
+    --text: #fafaf9;
+    --text-2: #a8a29e;
+    --text-3: #57534e;
+    --border: #2a2a2a;
+    --bg-card: #1a1a1a;
+  }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 40px 20px 80px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 720px; margin: 0 auto; }
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 32px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: all 0.2s;
+}
+.back:hover { color: var(--accent); border-color: var(--accent); }
+h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+.subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 48px; }
+
+/* Timeline styling */
+.timeline {
+  position: relative;
+  margin-top: 24px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  width: 2px;
+  height: calc(100% - 20px);
+  background: var(--border);
+}
+.release {
+  position: relative;
+  padding-left: 36px;
+  margin-bottom: 48px;
+}
+.release:last-child {
+  margin-bottom: 0;
+}
+.release-dot {
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+.release-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.version {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+.date {
+  font-size: 13px;
+  color: var(--text-3);
+  font-family: monospace;
+}
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--border);
+  color: var(--text-2);
+}
+.badge.pro {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--accent);
+}
+.release-body {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+.release-body ul {
+  list-style-type: none;
+}
+.release-body li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: var(--text-2);
+}
+.release-body li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: bold;
+}
+.release-body li:last-child {
+  margin-bottom: 0;
+}
+.feat-tag {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  margin-right: 6px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="/" class="back">← Back to Leakd</a>
+
+  <h1>Changelog</h1>
+  <div class="subtitle">Real-time updates, security logs, and product changes.</div>
+
+  <div class="timeline">
+    <!-- RELEASE v1.2.0 -->
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-header">
+        <span class="version">v1.2.0</span>
+        <span class="date">19 May 2026</span>
+        <span class="badge pro">Security & Core</span>
+      </div>
+      <div class="release-body">
+        <ul>
+          <li><span class="feat-tag">Security:</span> Fully closed Year-End Report and PDF generation behind the PRO paywall registry checks, ensuring a robust, secure subscription experience.</li>
+          <li><span class="feat-tag">Privacy:</span> Reorganized the static website documents (Terms of Service, Privacy Policy, and Main Landing Page) to be clean, English-only for legal compliance, while fully preserving localization inside the core PWA client.</li>
+          <li><span class="feat-tag">Localization:</span> Seamlessly updated default pricing placeholders from $39 to $40 (and save factor to 33%) across all 28 supported world languages in the i18n translation registry.</li>
+          <li><span class="feat-tag">Caching:</span> Standardized Service Worker versioning (sw.js v97) for instantaneous client-side PWA cache updates upon deployment.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RELEASE v1.1.5 -->
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-header">
+        <span class="version">v1.1.5</span>
+        <span class="date">18 May 2026</span>
+        <span class="badge pro">Sync & Performance</span>
+      </div>
+      <div class="release-body">
+        <ul>
+          <li><span class="feat-tag">Sync:</span> Introduced end-to-end encrypted Multi-Device Cloud Sync using your own Google Drive storage (appDataFolder). Backups are secured client-side via AES-GCM 256-bit keys derived using PBKDF2-SHA256 from your master password.</li>
+          <li><span class="feat-tag">Performance:</span> Optimized offline-first load states using enhanced Service Worker asset precaching.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RELEASE v1.1.0 -->
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-header">
+        <span class="version">v1.1.0</span>
+        <span class="date">17 May 2026</span>
+        <span class="badge">Budgets & Goals</span>
+      </div>
+      <div class="release-body">
+        <ul>
+          <li><span class="feat-tag">Budgets:</span> Implemented Monthly Category Budgets (Entertainment, Productivity, Hosting, cloud storage) to set visual limits and track actual spending.</li>
+          <li><span class="feat-tag">Goals:</span> Designed the Piggy Bank savings goal tracker, allowing users to define savings targets and automatically estimate months needed based on underused subscription cancellations.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RELEASE v1.0.0 -->
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-header">
+        <span class="version">v1.0.0</span>
+        <span class="date">16 May 2026</span>
+        <span class="badge">Official Launch</span>
+      </div>
+      <div class="release-body">
+        <ul>
+          <li><span class="feat-tag">Core:</span> Launched Leakd core subscription tracking engine with fully offline-first local storage model.</li>
+          <li><span class="feat-tag">Alerts:</span> Integrated in-app browser renewal notification systems.</li>
+          <li><span class="feat-tag">Utility:</span> Added simple CSV/JSON local backup export and import registries.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -48,15 +48,6 @@ a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .tldr { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; }
 .tldr-label { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; margin-bottom: 6px; }
-.lang-switch { display: flex; gap: 8px; margin-bottom: 32px; }
-.lang-switch button {
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
-  padding: 6px 14px; cursor: pointer; font-family: inherit; color: var(--text-2); font-size: 13px;
-  transition: all 0.15s;
-}
-.lang-switch button.active { background: var(--accent); color: white; border-color: var(--accent); }
-section[lang] { display: none; }
-section[lang].active { display: block; }
 .controller {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -79,368 +70,171 @@ td { color: var(--text-2); }
 <div class="container">
   <a href="/" class="back">← Back to Leakd</a>
 
-  <div class="lang-switch">
-    <button data-lang="en" class="active">English</button>
-    <button data-lang="hu">Magyar</button>
+  <h1>Privacy Policy</h1>
+  <div class="subtitle">Last updated: 19 May 2026</div>
+
+  <div class="tldr">
+    <div class="tldr-label">TL;DR</div>
+    <p>Leakd is a privacy-first app. Your subscription data lives <strong>only on your device</strong> by default. Two Pro features (Cloud Sync, Email Reminders) are opt-in and transmit data only with your explicit consent — Cloud Sync uses your own Google Drive with end-to-end encryption, and Email Reminders go through our minimal server only to deliver the emails you requested.</p>
   </div>
 
-  <!-- ─── ENGLISH ─── -->
-  <section lang="en" class="active">
-    <h1>Privacy Policy</h1>
-    <div class="subtitle">Last updated: 19 May 2026</div>
+  <h2>1. Data Controller</h2>
+  <p>For the purposes of the EU General Data Protection Regulation (GDPR, Regulation (EU) 2016/679), the data controller is:</p>
+  <div class="controller">
+    <strong>Data Controller</strong>
+    Petor Péter<br>
+    2233 Ecser, Nádas Béla utca 10<br>
+    Hungary<br>
+    Email: <a href="mailto:hello@leakd.app">hello@leakd.app</a>
+  </div>
+  <p>For any privacy-related question or request, write to us at the email above or reach out via our community channels.</p>
 
-    <div class="tldr">
-      <div class="tldr-label">TL;DR</div>
-      <p>Leakd is a privacy-first app. Your subscription data lives <strong>only on your device</strong> by default. Two Pro features (Cloud Sync, Email Reminders) are opt-in and transmit data only with your explicit consent — Cloud Sync uses your own Google Drive with end-to-end encryption, and Email Reminders go through our minimal server only to deliver the emails you requested.</p>
-    </div>
+  <h2>2. What Leakd is</h2>
+  <p>Leakd is a Progressive Web App for tracking personal and business subscriptions. It runs entirely in your browser and stores your data locally in your device's <em>localStorage</em> and the <em>Cache API</em>. Without enabling Pro features, no part of your subscription data leaves your device.</p>
 
-    <h2>1. Data Controller</h2>
-    <p>For the purposes of the EU General Data Protection Regulation (GDPR, Regulation (EU) 2016/679), the data controller is:</p>
-    <div class="controller">
-      <strong>Data Controller</strong>
-      Petor Péter<br>
-      2233 Ecser, Nádas Béla utca 10<br>
-      Hungary<br>
-      Email: <a href="mailto:hello@leakd.app">hello@leakd.app</a>
-    </div>
-    <p>For any privacy-related question or request, write to us at the email above or reach out via our community channels.</p>
+  <h2>3. Data we process locally (never sent to us)</h2>
+  <ul>
+    <li>Subscriptions: name, price, currency, billing cycle, next-payment date, trial dates, notes, tags, rating, business flag, sharing factor</li>
+    <li>Settings: theme, language, display currency, notification preferences</li>
+    <li>Cancellation log, savings goal, monthly budgets, optional income</li>
+    <li>Activity log (added / edited / deleted / paused / price-changed events)</li>
+    <li>Daily history snapshots used for the trend chart</li>
+    <li>Streak counter, onboarding state</li>
+    <li>Pro license status (per device)</li>
+  </ul>
+  <p>All of the above is stored on your device. You can wipe everything instantly via Settings → Reset all data.</p>
 
-    <h2>2. What Leakd is</h2>
-    <p>Leakd is a Progressive Web App for tracking personal and business subscriptions. It runs entirely in your browser and stores your data locally in your device's <em>localStorage</em> and the <em>Cache API</em>. Without enabling Pro features, no part of your subscription data leaves your device.</p>
+  <h2>4. Data we DO NOT collect</h2>
+  <ul>
+    <li>No analytics, telemetry or crash reports</li>
+    <li>No advertising IDs, no third-party trackers, no fingerprinting</li>
+    <li>No cookies (Leakd does not set any cookies)</li>
+    <li>No bank credentials — we never ask for them</li>
+    <li>No user account on Leakd's side (we don't even know you exist)</li>
+  </ul>
 
-    <h2>3. Data we process locally (never sent to us)</h2>
-    <ul>
-      <li>Subscriptions: name, price, currency, billing cycle, next-payment date, trial dates, notes, tags, rating, business flag, sharing factor</li>
-      <li>Settings: theme, language, display currency, notification preferences</li>
-      <li>Cancellation log, savings goal, monthly budgets, optional income</li>
-      <li>Activity log (added / edited / deleted / paused / price-changed events)</li>
-      <li>Daily history snapshots used for the trend chart</li>
-      <li>Streak counter, onboarding state</li>
-      <li>Pro license status (per device)</li>
-    </ul>
-    <p>All of the above is stored on your device. You can wipe everything instantly via Settings → Reset all data.</p>
+  <h2>5. Third-party services we connect to</h2>
+  <p>The following endpoints may be contacted from your device. We list each one and what (if anything) is sent.</p>
+  <table>
+    <thead>
+      <tr><th>Service</th><th>When</th><th>What is sent</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Google Fonts</strong><br>fonts.googleapis.com</td>
+        <td>Every page load</td>
+        <td>Your IP address and User-Agent (visible to Google). No subscription data. Can be blocked without breaking the app.</td>
+      </tr>
+      <tr>
+        <td><strong>Frankfurter API</strong><br>api.frankfurter.app</td>
+        <td>Only if you have subscriptions in multiple currencies, max once per day</td>
+        <td>Anonymous GET for current exchange rates. No personal or subscription data is included.</td>
+      </tr>
+      <tr>
+        <td><strong>Google Identity Services + Google Drive API</strong><br>accounts.google.com, googleapis.com</td>
+        <td>Only if you turn on Pro Cloud Sync</td>
+        <td>OAuth2 token + an end-to-end encrypted file (AES-GCM 256, key derived from your master password via PBKDF2 600 000 iterations). Stored in Google Drive's hidden <em>appDataFolder</em> tied to your Google account. Neither Google nor we can read the contents.</td>
+      </tr>
+      <tr>
+        <td><strong>Leakd Reminder Worker</strong><br>reminders.leakd.app (Cloudflare)</td>
+        <td>Only if you turn on Pro Email Reminders</td>
+        <td>Your email address, the name of the subscription, expiry date, and language. The worker schedules a single email per reminder.</td>
+      </tr>
+      <tr>
+        <td><strong>Brevo (Sendinblue)</strong><br>brevo.com (EU)</td>
+        <td>Triggered by the Reminder Worker</td>
+        <td>Delivers the reminder email. Receives your email address and the email content for delivery purposes only.</td>
+      </tr>
+      <tr>
+        <td><strong>Google Play Billing</strong></td>
+        <td>Only if you purchase Pro via the Play Store version</td>
+        <td>Handled by Google; we receive only a purchase confirmation token.</td>
+      </tr>
+    </tbody>
+  </table>
 
-    <h2>4. Data we DO NOT collect</h2>
-    <ul>
-      <li>No analytics, telemetry or crash reports</li>
-      <li>No advertising IDs, no third-party trackers, no fingerprinting</li>
-      <li>No cookies (Leakd does not set any cookies)</li>
-      <li>No bank credentials — we never ask for them</li>
-      <li>No user account on Leakd's side (we don't even know you exist)</li>
-    </ul>
+  <h2>6. Pro features — opt-in data transmission</h2>
+  <h3>6.1 Cloud Sync</h3>
+  <p>You provide a master password that we never receive or store. From the password we derive a key via PBKDF2-SHA256 (600 000 iterations) and AES-GCM 256-encrypt your snapshot before upload. The ciphertext is stored only in your own Google Drive (appDataFolder). To remove the data, turn off sync in Settings and delete the file from your Google Drive.</p>
+  <p><strong>Legal basis (GDPR Art. 6):</strong> Consent (Art. 6(1)(a)). You can withdraw consent at any time by turning sync off.</p>
 
-    <h2>5. Third-party services we connect to</h2>
-    <p>The following endpoints may be contacted from your device. We list each one and what (if anything) is sent.</p>
-    <table>
-      <thead>
-        <tr><th>Service</th><th>When</th><th>What is sent</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Google Fonts</strong><br>fonts.googleapis.com</td>
-          <td>Every page load</td>
-          <td>Your IP address and User-Agent (visible to Google). No subscription data. Can be blocked without breaking the app.</td>
-        </tr>
-        <tr>
-          <td><strong>Frankfurter API</strong><br>api.frankfurter.app</td>
-          <td>Only if you have subscriptions in multiple currencies, max once per day</td>
-          <td>Anonymous GET for current exchange rates. No personal or subscription data is included.</td>
-        </tr>
-        <tr>
-          <td><strong>Google Identity Services + Google Drive API</strong><br>accounts.google.com, googleapis.com</td>
-          <td>Only if you turn on Pro Cloud Sync</td>
-          <td>OAuth2 token + an end-to-end encrypted file (AES-GCM 256, key derived from your master password via PBKDF2 600 000 iterations). Stored in Google Drive's hidden <em>appDataFolder</em> tied to your Google account. Neither Google nor we can read the contents.</td>
-        </tr>
-        <tr>
-          <td><strong>Leakd Reminder Worker</strong><br>reminders.leakd.app (Cloudflare)</td>
-          <td>Only if you turn on Pro Email Reminders</td>
-          <td>Your email address, the name of the subscription, expiry date, and language. The worker schedules a single email per reminder.</td>
-        </tr>
-        <tr>
-          <td><strong>Brevo (Sendinblue)</strong><br>brevo.com (EU)</td>
-          <td>Triggered by the Reminder Worker</td>
-          <td>Delivers the reminder email. Receives your email address and the email content for delivery purposes only.</td>
-        </tr>
-        <tr>
-          <td><strong>Google Play Billing</strong></td>
-          <td>Only if you purchase Pro via the Play Store version</td>
-          <td>Handled by Google; we receive only a purchase confirmation token.</td>
-        </tr>
-      </tbody>
-    </table>
+  <h3>6.2 Email Reminders</h3>
+  <p>When enabled, the app sends to <code>reminders.leakd.app</code>: your email address, the subscription name, the expiry date, and your language. The worker stores this temporarily, sends one email near the expiry date, then deletes the record. No analytics, no marketing emails — you receive only the reminders you scheduled.</p>
+  <p><strong>Legal basis (GDPR Art. 6):</strong> Performance of contract (Art. 6(1)(b)) — the reminder is the Pro feature you purchased. To delete a pending reminder, use the in-app cancel action or write to <a href="mailto:hello@leakd.app">hello@leakd.app</a>.</p>
 
-    <h2>6. Pro features — opt-in data transmission</h2>
-    <h3>6.1 Cloud Sync</h3>
-    <p>You provide a master password that we never receive or store. From the password we derive a key via PBKDF2-SHA256 (600 000 iterations) and AES-GCM 256-encrypt your snapshot before upload. The ciphertext is stored only in your own Google Drive (appDataFolder). To remove the data, turn off sync in Settings and delete the file from your Google Drive.</p>
-    <p><strong>Legal basis (GDPR Art. 6):</strong> Consent (Art. 6(1)(a)). You can withdraw consent at any time by turning sync off.</p>
+  <h2>7. Notifications</h2>
+  <p>If you enable in-app renewal reminders, your browser fires local notifications based on dates stored on your device. These do not pass through any server. The Service Worker may use Periodic Background Sync (Chrome only) to check timing while the app is closed — still entirely on-device.</p>
 
-    <h3>6.2 Email Reminders</h3>
-    <p>When enabled, the app sends to <code>reminders.leakd.app</code>: your email address, the subscription name, the expiry date, and your language. The worker stores this temporarily, sends one email near the expiry date, then deletes the record. No analytics, no marketing emails — you receive only the reminders you scheduled.</p>
-    <p><strong>Legal basis (GDPR Art. 6):</strong> Performance of contract (Art. 6(1)(b)) — the reminder is the Pro feature you purchased. To delete a pending reminder, use the in-app cancel action or write to <a href="mailto:hello@leakd.app">hello@leakd.app</a>.</p>
+  <h2>8. Backup files, PDF and CSV exports</h2>
+  <p>Backup / export / Tax Report / Calendar features produce files that you download or share at your own discretion. We never see those files. Treat them as sensitive — anyone who opens them sees your subscriptions.</p>
 
-    <h2>7. Notifications</h2>
-    <p>If you enable in-app renewal reminders, your browser fires local notifications based on dates stored on your device. These do not pass through any server. The Service Worker may use Periodic Background Sync (Chrome only) to check timing while the app is closed — still entirely on-device.</p>
+  <h2>9. Local storage and cookies</h2>
+  <p>Leakd does <strong>not</strong> use cookies. We use the browser's <em>localStorage</em> and <em>Cache API</em> to persist data on your device. These are required for the app to function and store no personal data accessible to anyone but you.</p>
 
-    <h2>8. Backup files, PDF and CSV exports</h2>
-    <p>Backup / export / Tax Report / Calendar features produce files that you download or share at your own discretion. We never see those files. Treat them as sensitive — anyone who opens them sees your subscriptions.</p>
+  <h2>10. Children</h2>
+  <p>Leakd is not directed at children under 16. We do not knowingly process data from minors. If you believe a minor has used the app, contact us and we will assist with deletion of any locally-stored data.</p>
 
-    <h2>9. Local storage and cookies</h2>
-    <p>Leakd does <strong>not</strong> use cookies. We use the browser's <em>localStorage</em> and <em>Cache API</em> to persist data on your device. These are required for the app to function and store no personal data accessible to anyone but you.</p>
+  <h2>11. Your rights under GDPR</h2>
+  <p>As a data subject in the EU/EEA you have the right to:</p>
+  <ul>
+    <li><strong>Access</strong> (Art. 15) — request what data we hold about you</li>
+    <li><strong>Rectification</strong> (Art. 16) — correct inaccurate data</li>
+    <li><strong>Erasure</strong> (Art. 17) — request deletion of data</li>
+    <li><strong>Restriction</strong> (Art. 18) — restrict processing</li>
+    <li><strong>Data portability</strong> (Art. 20) — receive your data in a structured format</li>
+    <li><strong>Object</strong> (Art. 21) — object to processing</li>
+    <li><strong>Withdraw consent</strong> (Art. 7(3)) at any time</li>
+    <li><strong>Lodge a complaint</strong> with a supervisory authority (in Hungary: NAIH — <a href="https://naih.hu" target="_blank" rel="noopener">naih.hu</a>)</li>
+  </ul>
+  <p>For locally-stored data, you can exercise rights instantly: Settings → Backup &amp; restore (portability), Settings → Reset all data (erasure). For Pro Email Reminders or any other concern, contact <a href="mailto:hello@leakd.app">hello@leakd.app</a> and we will respond within 30 days.</p>
 
-    <h2>10. Children</h2>
-    <p>Leakd is not directed at children under 16. We do not knowingly process data from minors. If you believe a minor has used the app, contact us and we will assist with deletion of any locally-stored data.</p>
+  <h2>12. Data retention</h2>
+  <ul>
+    <li><strong>Local data:</strong> stays on your device until you delete it.</li>
+    <li><strong>Email reminder requests:</strong> kept by the worker only until the email is sent (or up to 30 days if scheduling fails), then deleted.</li>
+    <li><strong>Cloud Sync ciphertext:</strong> stays in your own Google Drive until you delete it. We have no access.</li>
+  </ul>
 
-    <h2>11. Your rights under GDPR</h2>
-    <p>As a data subject in the EU/EEA you have the right to:</p>
-    <ul>
-      <li><strong>Access</strong> (Art. 15) — request what data we hold about you</li>
-      <li><strong>Rectification</strong> (Art. 16) — correct inaccurate data</li>
-      <li><strong>Erasure</strong> (Art. 17) — request deletion of data</li>
-      <li><strong>Restriction</strong> (Art. 18) — restrict processing</li>
-      <li><strong>Data portability</strong> (Art. 20) — receive your data in a structured format</li>
-      <li><strong>Object</strong> (Art. 21) — object to processing</li>
-      <li><strong>Withdraw consent</strong> (Art. 7(3)) at any time</li>
-      <li><strong>Lodge a complaint</strong> with a supervisory authority (in Hungary: NAIH — <a href="https://naih.hu" target="_blank" rel="noopener">naih.hu</a>)</li>
-    </ul>
-    <p>For locally-stored data, you can exercise rights instantly: Settings → Backup &amp; restore (portability), Settings → Reset all data (erasure). For Pro Email Reminders or any other concern, contact <a href="mailto:hello@leakd.app">hello@leakd.app</a> and we will respond within 30 days.</p>
+  <h2>13. International data transfers</h2>
+  <p>Some third-party services we rely on may process data outside the EU/EEA:</p>
+  <ul>
+    <li>Google services (Fonts, Drive, Play Billing, Identity Services) — global infrastructure including the United States, covered by Standard Contractual Clauses and other Google safeguards.</li>
+    <li>Cloudflare (workers and CDN) — global edge network.</li>
+    <li>Brevo — EU-based (France).</li>
+  </ul>
 
-    <h2>12. Data retention</h2>
-    <ul>
-      <li><strong>Local data:</strong> stays on your device until you delete it.</li>
-      <li><strong>Email reminder requests:</strong> kept by the worker only until the email is sent (or up to 30 days if scheduling fails), then deleted.</li>
-      <li><strong>Cloud Sync ciphertext:</strong> stays in your own Google Drive until you delete it. We have no access.</li>
-    </ul>
+  <h2>14. Data security</h2>
+  <p>Cloud Sync uses AES-GCM 256-bit encryption with a key derived via PBKDF2-SHA256 (600 000 iterations) from your master password. The master password never leaves your device. Email Reminder payloads are sent over HTTPS to a Cloudflare Worker that holds only the minimum data needed to deliver the email, then deletes it. We do not store credit card information — payments are handled by Google Play Billing.</p>
 
-    <h2>13. International data transfers</h2>
-    <p>Some third-party services we rely on may process data outside the EU/EEA:</p>
-    <ul>
-      <li>Google services (Fonts, Drive, Play Billing, Identity Services) — global infrastructure including the United States, covered by Standard Contractual Clauses and other Google safeguards.</li>
-      <li>Cloudflare (workers and CDN) — global edge network.</li>
-      <li>Brevo — EU-based (France).</li>
-    </ul>
+  <h2>15. Changes to this policy</h2>
+  <p>We may update this policy as the app evolves. Material changes will be highlighted in-app. The "Last updated" date at the top reflects the most recent revision.</p>
 
-    <h2>14. Data security</h2>
-    <p>Cloud Sync uses AES-GCM 256-bit encryption with a key derived via PBKDF2-SHA256 (600 000 iterations) from your master password. The master password never leaves your device. Email Reminder payloads are sent over HTTPS to a Cloudflare Worker that holds only the minimum data needed to deliver the email, then deletes it. We do not store credit card information — payments are handled by Google Play Billing.</p>
+  <h2>16. Contact</h2>
+  <p>For privacy questions, data-subject requests, or any concerns related to this policy, contact us at <a href="mailto:hello@leakd.app">hello@leakd.app</a> or reach out via our community channels. We will respond within 30 days as required by GDPR.</p>
 
-    <h2>15. Changes to this policy</h2>
-    <p>We may update this policy as the app evolves. Material changes will be highlighted in-app. The "Last updated" date at the top reflects the most recent revision.</p>
+  <h2 id="data-deletion">17. Data Deletion &amp; Account Termination</h2>
+  <p>Because Leakd does not maintain user accounts on its servers, there is no "account" in the traditional sense to delete. Instead, you can remove every piece of data the app touches through the following paths:</p>
+  <h3>17.1 Local data on your device</h3>
+  <p>Settings → <strong>Reset all data</strong> wipes your subscription list, settings, history, activity log, cancellation registry, goals, budgets, income, streak data, and Pro license cache. Action is immediate and irreversible. You may also uninstall the PWA / clear site data via your browser to remove everything stored by the app.</p>
+  <h3>17.2 Cloud Sync data (Pro)</h3>
+  <p>If you enabled Cloud Sync, turn it off in Settings → Cloud Sync. To delete the encrypted blob stored in your own Google Drive:</p>
+  <ul>
+    <li>Open <a href="https://drive.google.com" target="_blank" rel="noopener">drive.google.com</a> → Settings → Manage apps → find Leakd → Delete hidden app data, <em>or</em></li>
+    <li>Email us at <a href="mailto:hello@leakd.app">hello@leakd.app</a> and we will guide you through the steps.</li>
+  </ul>
+  <p>We have no access to the contents of the file at any time.</p>
+  <h3>17.3 Email reminder records (Pro)</h3>
+  <p>Pending email reminders are stored briefly on our Cloudflare Worker until delivered. To delete an outstanding reminder before it is sent, use the in-app cancel action, or send a deletion request to <a href="mailto:hello@leakd.app">hello@leakd.app</a> identifying the email address and subscription name. Records are automatically deleted after delivery (or within 30 days if delivery fails).</p>
+  <h3>17.4 Pro subscription</h3>
+  <p>Cancel auto-renewal at any time via your Google Play account → Subscriptions → Leakd Pro → Cancel. Your Pro features remain active until the end of the paid period. Cancellation does not delete any data; combine it with the steps above if you also want all data removed.</p>
+  <h3>17.5 Backup, PDF and CSV files</h3>
+  <p>Any file you exported (backup JSON, tax report PDF/CSV, calendar .ics, share card image) is stored where you saved it. We never see those files. Delete them from your device or cloud storage if you no longer want them.</p>
+  <h3>17.6 Deletion request via email</h3>
+  <p>Even though we hold little to no personal data, you can always send a written deletion request to <a href="mailto:hello@leakd.app">hello@leakd.app</a>. We will acknowledge within 7 days and complete the action within 30 days, as required by GDPR.</p>
 
-    <h2>16. Contact</h2>
-    <p>For privacy questions, data-subject requests, or any concerns related to this policy, contact us at <a href="mailto:hello@leakd.app">hello@leakd.app</a> or reach out via our community channels. We will respond within 30 days as required by GDPR.</p>
-
-    <h2 id="data-deletion">17. Data Deletion &amp; Account Termination</h2>
-    <p>Because Leakd does not maintain user accounts on its servers, there is no "account" in the traditional sense to delete. Instead, you can remove every piece of data the app touches through the following paths:</p>
-    <h3>17.1 Local data on your device</h3>
-    <p>Settings → <strong>Reset all data</strong> wipes your subscription list, settings, history, activity log, cancellation registry, goals, budgets, income, streak data, and Pro license cache. Action is immediate and irreversible. You may also uninstall the PWA / clear site data via your browser to remove everything stored by the app.</p>
-    <h3>17.2 Cloud Sync data (Pro)</h3>
-    <p>If you enabled Cloud Sync, turn it off in Settings → Cloud Sync. To delete the encrypted blob stored in your own Google Drive:</p>
-    <ul>
-      <li>Open <a href="https://drive.google.com" target="_blank" rel="noopener">drive.google.com</a> → Settings → Manage apps → find Leakd → Delete hidden app data, <em>or</em></li>
-      <li>Email us at <a href="mailto:hello@leakd.app">hello@leakd.app</a> and we will guide you through the steps.</li>
-    </ul>
-    <p>We have no access to the contents of the file at any time.</p>
-    <h3>17.3 Email reminder records (Pro)</h3>
-    <p>Pending email reminders are stored briefly on our Cloudflare Worker until delivered. To delete an outstanding reminder before it is sent, use the in-app cancel action, or send a deletion request to <a href="mailto:hello@leakd.app">hello@leakd.app</a> identifying the email address and subscription name. Records are automatically deleted after delivery (or within 30 days if delivery fails).</p>
-    <h3>17.4 Pro subscription</h3>
-    <p>Cancel auto-renewal at any time via your Google Play account → Subscriptions → Leakd Pro → Cancel. Your Pro features remain active until the end of the paid period. Cancellation does not delete any data; combine it with the steps above if you also want all data removed.</p>
-    <h3>17.5 Backup, PDF and CSV files</h3>
-    <p>Any file you exported (backup JSON, tax report PDF/CSV, calendar .ics, share card image) is stored where you saved it. We never see those files. Delete them from your device or cloud storage if you no longer want them.</p>
-    <h3>17.6 Deletion request via email</h3>
-    <p>Even though we hold little to no personal data, you can always send a written deletion request to <a href="mailto:hello@leakd.app">hello@leakd.app</a>. We will acknowledge within 7 days and complete the action within 30 days, as required by GDPR.</p>
-
-    <h2>18. Disclaimer</h2>
-    <p>Reports generated by Leakd (PDF tax reports, CSV exports, year-end summary) are for informational purposes only and do not constitute official tax or accounting advice. You are responsible for the accuracy of any data you submit and for verifying its suitability with your accountant or tax advisor.</p>
-  </section>
-
-  <!-- ─── MAGYAR ─── -->
-  <section lang="hu">
-    <h1>Adatvédelmi tájékoztató</h1>
-    <div class="subtitle">Utolsó frissítés: 2026. május 19.</div>
-
-    <div class="tldr">
-      <div class="tldr-label">A LÉNYEG</div>
-      <p>A Leakd egy adatvédelem-első alkalmazás. Az előfizetési adataid alapból <strong>csak a saját eszközödön</strong> élnek. Két Pro funkció (Felhő Szinkronizáció, Email Emlékeztetők) opcionális — csak akkor küld adatot, ha kifejezetten bekapcsolod őket. A Felhő Szinkronizáció a te saját Google Drive-odat használja végpontok közötti titkosítással, az Email Emlékeztetők pedig a minimális szerverünkön át mennek pusztán a kért emailek kézbesítéséhez.</p>
-    </div>
-
-    <h2>1. Adatkezelő</h2>
-    <p>Az Európai Unió általános adatvédelmi rendelete (GDPR, (EU) 2016/679 rendelet) értelmében az adatkezelő:</p>
-    <div class="controller">
-      <strong>Adatkezelő</strong>
-      Petor Péter<br>
-      2233 Ecser, Nádas Béla utca 10<br>
-      Magyarország<br>
-      Email: <a href="mailto:hello@leakd.app">hello@leakd.app</a>
-    </div>
-    <p>Bármilyen adatvédelmi kérdés vagy kérés esetén írj nekünk a fenti email címen, vagy keress minket a közösségi csatornáinkon.</p>
-
-    <h2>2. Mi a Leakd</h2>
-    <p>A Leakd egy Progressive Web App személyes és üzleti előfizetések követésére. Teljes egészében a böngésződben fut, és az adataidat lokálisan tárolja az eszközöd <em>localStorage</em>-ában és <em>Cache API</em>-jában. Pro funkciók bekapcsolása nélkül az előfizetési adataidnak egyetlen része sem hagyja el az eszközödet.</p>
-
-    <h2>3. Lokálisan kezelt adatok (sosem kerülnek hozzánk)</h2>
-    <ul>
-      <li>Előfizetések: név, ár, pénznem, számlázási ciklus, következő fizetés dátuma, próbaidőszak dátumai, jegyzetek, címkék, értékelés, üzleti jelölés, megosztási faktor</li>
-      <li>Beállítások: téma, nyelv, megjelenítési pénznem, értesítési preferenciák</li>
-      <li>Lemondási napló, megtakarítási cél, havi költségvetések, opcionális jövedelem</li>
-      <li>Tevékenységnapló (hozzáadás / szerkesztés / törlés / szüneteltetés / árváltozás események)</li>
-      <li>Napi history snapshotok a költési trend grafikonhoz</li>
-      <li>Sorozatszámláló, onboarding állapot</li>
-      <li>Pro licenc állapot (eszközönként)</li>
-    </ul>
-    <p>Minden fenti adat az eszközödön tárolódik. A Beállítások → Minden adat törlése gombbal azonnal mindent eltüntethetsz.</p>
-
-    <h2>4. Adatok amiket NEM gyűjtünk</h2>
-    <ul>
-      <li>Semmi analytics, telemetria vagy crash jelentés</li>
-      <li>Semmi hirdetési ID, harmadik fél tracker, fingerprinting</li>
-      <li>Semmi süti (a Leakd nem állít be sütiket)</li>
-      <li>Semmi bank-belépő — sosem kérjük</li>
-      <li>Semmi felhasználói fiók a Leakd oldalán (nem is tudunk a létezésedről)</li>
-    </ul>
-
-    <h2>5. Harmadik fél szolgáltatások</h2>
-    <p>A következő végpontokkal léphet kapcsolatba az eszközöd. Mindegyiknél felsoroljuk hogy mi (ha bármi) kerül elküldésre.</p>
-    <table>
-      <thead>
-        <tr><th>Szolgáltatás</th><th>Mikor</th><th>Mi kerül továbbításra</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Google Fonts</strong><br>fonts.googleapis.com</td>
-          <td>Minden oldalbetöltéskor</td>
-          <td>Az IP címed és böngésződ User-Agent-je (a Google látja). Semmi előfizetési adat. Content blocker-rel letiltható az app megtörése nélkül.</td>
-        </tr>
-        <tr>
-          <td><strong>Frankfurter API</strong><br>api.frankfurter.app</td>
-          <td>Csak ha különböző pénznemekben vannak előfizetéseid, max naponta egyszer</td>
-          <td>Névtelen GET az aktuális árfolyamokért. Semmilyen személyes vagy előfizetési adat nem szerepel benne.</td>
-        </tr>
-        <tr>
-          <td><strong>Google Identity Services + Google Drive API</strong><br>accounts.google.com, googleapis.com</td>
-          <td>Csak ha bekapcsolod a Pro Felhő Szinkronizációt</td>
-          <td>OAuth2 token + egy végpontok közötti titkosított fájl (AES-GCM 256, kulcs a master jelszavadból PBKDF2 600 000 iterációval). A Google Drive rejtett <em>appDataFolder</em>-ében tárolódik a saját Google-fiókodhoz kötve. Sem a Google, sem mi nem tudjuk elolvasni a tartalmat.</td>
-        </tr>
-        <tr>
-          <td><strong>Leakd Emlékeztető Worker</strong><br>reminders.leakd.app (Cloudflare)</td>
-          <td>Csak ha bekapcsolod a Pro Email Emlékeztetőket</td>
-          <td>Az email címed, az előfizetés neve, lejárati dátum, és a nyelv. A worker emlékeztetőnként egy egy emailt ütemez.</td>
-        </tr>
-        <tr>
-          <td><strong>Brevo (Sendinblue)</strong><br>brevo.com (EU)</td>
-          <td>Az Emlékeztető Worker indítja</td>
-          <td>Kézbesíti az emlékeztető emailt. Csak a kézbesítés céljából kapja meg az email címed és az email tartalmát.</td>
-        </tr>
-        <tr>
-          <td><strong>Google Play Billing</strong></td>
-          <td>Csak ha a Play Store verzión keresztül vásárolsz Pro-t</td>
-          <td>A Google kezeli; mi csak egy vásárlási megerősítő tokent kapunk.</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>6. Pro funkciók — opcionális adattovábbítás</h2>
-    <h3>6.1 Felhő Szinkronizáció</h3>
-    <p>Te adsz meg egy master jelszót, amit mi sosem kapunk meg vagy tárolunk. A jelszóból PBKDF2-SHA256 (600 000 iteráció) útján vezetünk le egy kulcsot, és AES-GCM 256-tal titkosítjuk a snapshotodat a feltöltés előtt. A titkosított blob kizárólag a te saját Google Drive-odban tárolódik (appDataFolder). Az adatok eltávolításához kapcsold ki a szinkronizációt a Beállításokban, és töröld a fájlt a Google Drive-odból.</p>
-    <p><strong>Jogalap (GDPR 6. cikk):</strong> Hozzájárulás (6. cikk (1) bek. a) pont). A hozzájárulásodat bármikor visszavonhatod a szinkronizáció kikapcsolásával.</p>
-
-    <h3>6.2 Email Emlékeztetők</h3>
-    <p>Bekapcsolt állapotban az app a <code>reminders.leakd.app</code>-nak küldi: az email címedet, az előfizetés nevét, a lejárati dátumot, és a nyelvedet. A worker ezt ideiglenesen tárolja, küld egy egy emailt a lejárati dátum közelében, majd törli a rekordot. Nincs analytics, nincs marketing email — csak az általad kért emlékeztetőket kapod meg.</p>
-    <p><strong>Jogalap (GDPR 6. cikk):</strong> Szerződés teljesítése (6. cikk (1) bek. b) pont) — az emlékeztető az általad megvásárolt Pro szolgáltatás része. Függőben lévő emlékeztető törléséhez használd az app-ban a lemondás funkciót, vagy írj a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre.</p>
-
-    <h2>7. Értesítések</h2>
-    <p>Ha bekapcsolod az app-on belüli megújulási emlékeztetőket, a böngésződ lokális értesítéseket küld az eszközödön tárolt dátumok alapján. Ezek nem mennek át semmilyen szerveren. A Service Worker használhat Periodic Background Sync-et (csak Chrome) az időzítés ellenőrzéséhez, amikor az app zárva van — ez is teljes egészében az eszközön történik.</p>
-
-    <h2>8. Mentési fájlok, PDF és CSV exportok</h2>
-    <p>A mentés / export / Adójelentés / Naptár funkciók olyan fájlokat hoznak létre, amelyeket te magad döntesz el hova mented vagy hogyan osztasz meg. Mi sosem látjuk ezeket a fájlokat. Kezeld őket érzékenyként — aki megnyitja, látja az előfizetéseidet.</p>
-
-    <h2>9. Helyi tárolás és sütik</h2>
-    <p>A Leakd <strong>nem</strong> használ sütiket. A böngésződ <em>localStorage</em>-át és <em>Cache API</em>-ját használjuk az adataid lokális megőrzéséhez. Ezek az app működéséhez szükségesek, és nem tárolnak semmilyen olyan személyes adatot, amihez rajtad kívül bárki hozzáférne.</p>
-
-    <h2>10. Gyermekek</h2>
-    <p>A Leakd nem 16 év alattiaknak van szánva. Tudatosan nem dolgozunk fel kiskorúak adatait. Ha úgy gondolod, hogy egy kiskorú használta az appot, lépj kapcsolatba velünk, és segítünk a lokálisan tárolt adatok törlésében.</p>
-
-    <h2>11. A jogaid a GDPR alatt</h2>
-    <p>Az EU/EGT területén élő érintettként az alábbi jogokkal rendelkezel:</p>
-    <ul>
-      <li><strong>Hozzáférés</strong> (15. cikk) — kérheted milyen adatokat kezelünk rólad</li>
-      <li><strong>Helyesbítés</strong> (16. cikk) — pontatlan adatok javítása</li>
-      <li><strong>Törlés</strong> (17. cikk) — adatok törlésének kérése</li>
-      <li><strong>Korlátozás</strong> (18. cikk) — a kezelés korlátozása</li>
-      <li><strong>Adathordozhatóság</strong> (20. cikk) — strukturált formátumban megkapni az adataidat</li>
-      <li><strong>Tiltakozás</strong> (21. cikk) — tiltakozhatsz a kezelés ellen</li>
-      <li><strong>Hozzájárulás visszavonása</strong> (7. cikk (3) bek.) bármikor</li>
-      <li><strong>Panasz</strong> a felügyeleti hatóságnál (Magyarországon a NAIH — <a href="https://naih.hu" target="_blank" rel="noopener">naih.hu</a>)</li>
-    </ul>
-    <p>A lokálisan tárolt adatok esetében azonnal gyakorolhatod a jogaidat: Beállítások → Mentés és visszaállítás (hordozhatóság), Beállítások → Minden adat törlése (törlés). Pro Email Emlékeztetőkkel vagy bármilyen más kérdéssel kapcsolatban írj a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre, és 30 napon belül válaszolunk.</p>
-
-    <h2>12. Adatmegőrzési idők</h2>
-    <ul>
-      <li><strong>Lokális adatok:</strong> addig maradnak az eszközödön amíg te magad nem törlöd őket.</li>
-      <li><strong>Email emlékeztető kérések:</strong> a worker csak az email kiküldéséig tárolja (vagy maximum 30 napig, ha az ütemezés meghiúsul), majd törli.</li>
-      <li><strong>Felhő Szinkronizáció titkosított blob:</strong> a te saját Google Drive-odban marad, amíg te magad nem törlöd. Nekünk nincs hozzáférésünk.</li>
-    </ul>
-
-    <h2>13. Nemzetközi adattovábbítás</h2>
-    <p>A használt harmadik fél szolgáltatások egy része az EU/EGT területén kívül is feldolgozhat adatokat:</p>
-    <ul>
-      <li>Google szolgáltatások (Fonts, Drive, Play Billing, Identity Services) — globális infrastruktúra, beleértve az Egyesült Államokat, Standard Szerződéses Klauzulákkal és más Google adatvédelmi biztosítékokkal lefedve.</li>
-      <li>Cloudflare (worker és CDN) — globális edge hálózat.</li>
-      <li>Brevo — EU bázisú (Franciaország).</li>
-    </ul>
-
-    <h2>14. Adatbiztonság</h2>
-    <p>A Felhő Szinkronizáció AES-GCM 256-bites titkosítást használ, a kulcs a master jelszavadból PBKDF2-SHA256 (600 000 iteráció) útján van levezetve. A master jelszó sosem hagyja el az eszközödet. Az Email Emlékeztetők kérései HTTPS-en mennek egy Cloudflare Worker-hez, amely csak a minimálisan szükséges adatokat tartja a kézbesítéshez, majd törli őket. Hitelkártya-adatokat nem tárolunk — a fizetést a Google Play Billing kezeli.</p>
-
-    <h2>15. A tájékoztató módosulása</h2>
-    <p>Az app fejlődésével frissíthetjük ezt a tájékoztatót. A lényeges változásokat az app-ban is kiemeljük. A tetején lévő „Utolsó frissítés" dátum mutatja a legutóbbi módosítás időpontját.</p>
-
-    <h2>16. Kapcsolat</h2>
-    <p>Adatvédelmi kérdésekkel, érintetti jogokkal kapcsolatos kérésekkel vagy a tájékoztatóra vonatkozó bármilyen aggállyal kapcsolatban írj a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre, vagy keress minket a közösségi csatornáinkon. A GDPR előírásai szerint 30 napon belül válaszolunk.</p>
-
-    <h2 id="data-deletion-hu">17. Adatok törlése és fiók megszüntetése</h2>
-    <p>Mivel a Leakd a szervereinken nem tart fenn felhasználói fiókokat, hagyományos értelemben véve nincs „fiók", amit törölni lehetne. Ehelyett az app által érintett összes adatot az alábbi módokon távolíthatod el:</p>
-    <h3>17.1 Az eszközödön lévő helyi adatok</h3>
-    <p>Beállítások → <strong>Minden adat törlése</strong> töröl minden előfizetést, beállítást, history-t, tevékenységnaplót, lemondási nyilvántartást, célokat, költségvetéseket, jövedelmet, sorozat-adatot és Pro licenc cache-t. A művelet azonnali és visszafordíthatatlan. Az appot el is távolíthatod (PWA uninstall) vagy törölheted a böngészőben az oldal adatait — ez minden tárolt adatot eltüntet.</p>
-    <h3>17.2 Felhő Szinkronizáció adatok (Pro)</h3>
-    <p>Ha bekapcsoltad a Felhő Szinkronizációt, kapcsold ki a Beállítások → Felhő Szinkronizáció pontnál. A saját Google Drive-odban tárolt titkosított blob törléséhez:</p>
-    <ul>
-      <li>Nyisd meg a <a href="https://drive.google.com" target="_blank" rel="noopener">drive.google.com</a>-ot → Beállítások → Alkalmazások kezelése → Leakd → Rejtett alkalmazás-adatok törlése, <em>vagy</em></li>
-      <li>Írj nekünk a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre, és végigvezetünk a lépéseken.</li>
-    </ul>
-    <p>A fájl tartalmához soha semmilyen hozzáférésünk nincs.</p>
-    <h3>17.3 Email emlékeztető rekordok (Pro)</h3>
-    <p>A függőben lévő email emlékeztetőket rövid ideig tároljuk a Cloudflare Worker-en a kézbesítésig. Egy függőben lévő emlékeztető törléséhez a kiküldés előtt használd az app-on belüli lemondás funkciót, vagy küldj törlési kérést a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre, megadva az email címet és az előfizetés nevét. A rekordok automatikusan törlődnek a kézbesítés után (vagy 30 napon belül, ha a kézbesítés meghiúsul).</p>
-    <h3>17.4 Pro előfizetés</h3>
-    <p>Az automatikus megújulást bármikor lemondhatod a Google Play fiókodban → Előfizetések → Leakd Pro → Lemondás menüpontnál. A Pro funkciók a kifizetett időszak végéig aktívak maradnak. A lemondás nem törli az adatokat; ha minden adatot el szeretnél tüntetni, kombináld a fenti lépésekkel.</p>
-    <h3>17.5 Mentési, PDF és CSV fájlok</h3>
-    <p>Minden általad exportált fájl (mentés JSON, adójelentés PDF/CSV, naptár .ics, megosztás-kártya kép) ott van, ahova mentetted. Mi sosem látjuk ezeket. Töröld az eszközödről vagy a felhő-tárhelyedből, ha már nincs rájuk szükséged.</p>
-    <h3>17.6 Törlési kérés emailben</h3>
-    <p>Annak ellenére, hogy alig vagy semmilyen személyes adatot nem tárolunk, bármikor küldhetsz írásbeli törlési kérést a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre. 7 napon belül visszaigazoljuk és a GDPR előírásai szerint 30 napon belül teljesítjük.</p>
-
-    <h2>18. Felelősségi nyilatkozat</h2>
-    <p>A Leakd által generált jelentések (PDF adójelentés, CSV exportok, év végi összegzés) kizárólag tájékoztató jellegűek, és nem minősülnek hivatalos adó- vagy könyvelési tanácsadásnak. A beküldött adatok helyességéért, és azoknak a könyvelőddel vagy adótanácsadóddal való egyeztetéséért a felhasználó felel.</p>
-  </section>
+  <h2>18. Disclaimer</h2>
+  <p>Reports generated by Leakd (PDF tax reports, CSV exports, year-end summary) are for informational purposes only and do not constitute official tax or accounting advice. You are responsible for the accuracy of any data you submit and for verifying its suitability with your accountant or tax advisor.</p>
 </div>
-
-<script>
-  // Auto-detect language from URL hash or browser
-  const supported = ['en', 'hu'];
-  const stored = localStorage.getItem('leakd_lang');
-  const browser = (navigator.language || 'en').toLowerCase().split('-')[0];
-  let lang = (stored && supported.includes(stored)) ? stored
-           : supported.includes(browser) ? browser
-           : 'en';
-  showLang(lang);
-
-  document.querySelectorAll('.lang-switch button').forEach(btn => {
-    btn.addEventListener('click', () => showLang(btn.dataset.lang));
-  });
-
-  function showLang(l) {
-    document.querySelectorAll('section[lang]').forEach(s => s.classList.toggle('active', s.lang === l));
-    document.querySelectorAll('.lang-switch button').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
-    document.documentElement.lang = l;
-  }
-</script>
 
 </body>
 </html>

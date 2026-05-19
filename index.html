@@ -1,13 +1,12 @@
 <!doctype html>
-<html lang="hu">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <script>
-  // Smart router: if the visitor arrived via the installed PWA (Play Store /
-  // home-screen icon), or the URL explicitly says source=pwa, jump straight
-  // to the app. Otherwise stay on this landing page.
-  // Runs BEFORE any other resource loads so there's no landing-flash.
+  // Smart router: visitors arriving via the installed PWA (Play Store /
+  // home-screen icon) jump straight to the app. Web visitors stay on the
+  // landing. Runs BEFORE anything else loads so there's no flash.
   (function () {
     try {
       var inStandalone = window.matchMedia('(display-mode: standalone)').matches
@@ -24,7 +23,8 @@
 <link rel="icon" type="image/svg+xml" href="landing/assets/favicon.svg">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0a0a0a">
-<title>leakd — Lásd, mire szivárog a pénzed.</title>
+<meta name="description" content="Privacy-first subscription tracker. Track recurring spending, get renewal alerts, export a clean tax report. 28 languages. Local-first, E2EE cloud sync optional.">
+<title>leakd — See where your money is leaking.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -266,7 +266,7 @@
   @media (max-width:780px){.pricing{grid-template-columns:1fr}}
   .plan{padding:40px;border:1px solid var(--line);border-radius:20px;background:var(--panel);position:relative;display:flex;flex-direction:column}
   .plan.pro{border-color:var(--red-line);background:linear-gradient(180deg,var(--panel),var(--bg))}
-  .plan.pro::before{content:"AJÁNLOTT";position:absolute;top:-1px;right:24px;background:var(--red);color:#fff;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:6px 12px;border-radius:0 0 8px 8px}
+  .plan.pro::before{content:"RECOMMENDED";position:absolute;top:-1px;right:24px;background:var(--red);color:#fff;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:6px 12px;border-radius:0 0 8px 8px}
   .plan h3{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:-0.01em;margin:0 0 6px}
   .plan .plan-sub{font-size:14px;color:var(--fg-dim);margin:0 0 28px}
   .plan-price{display:flex;align-items:baseline;gap:8px;margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--line)}
@@ -364,15 +364,15 @@
       leakd
     </a>
     <div class="nav-links">
-      <a href="#hogyan">Hogyan működik</a>
-      <a href="#funkciok">Funkciók</a>
-      <a href="#alapelvek">Alapelvek</a>
-      <a href="#arazas">Árazás</a>
-      <a href="#faq">GYIK</a>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#principles">Principles</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
     </div>
     <div class="nav-cta">
-      <a class="btn btn-ghost" href="app.html">Megnyitás</a>
-      <a class="btn btn-primary" href="#cta">Ingyen kipróbálom →</a>
+      <a class="btn btn-ghost" href="app.html">Open app</a>
+      <a class="btn btn-primary" href="#cta">Try it free →</a>
     </div>
   </div>
 </nav>
@@ -383,33 +383,32 @@
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-left">
-        <div class="eyebrow"><span class="eyebrow-dot"></span>v1.2 — most már offline export · privacy-first</div>
+        <div class="eyebrow"><span class="eyebrow-dot"></span>now: smart bank-CSV import · tax report · 28 languages</div>
         <h1 class="hero-title">
-          A pénzed<br>
-          <span class="accent">csendben szivárog.</span><br>
-          Megmutatjuk, hová.
+          Your money is<br>
+          <span class="accent">quietly leaking.</span><br>
+          We'll show you where.
         </h1>
         <p class="hero-sub">
-          A <strong>leakd</strong> egy egyszerű előfizetés-nyomkövető kisvállalkozásoknak.
-          Banki integráció nélkül, böngészőben futó eszköz: az adataid alapból a saját böngésződben tárolódnak.
-          Beírod, figyelmeztet, te döntesz.
+          <strong>leakd</strong> is a privacy-first subscription tracker.
+          Drop a bank CSV from Revolut, Wise, PayPal, Chase, Amex — we surface recurring charges automatically. Get alerts before renewals, an accountant-ready tax report, and end-to-end encrypted multi-device sync. <strong>Free forever, $5/mo Pro</strong> when you need more.
         </p>
         <div class="hero-ctas">
-          <a class="gp-badge lg" href="app.html" aria-label="Megnyitás az appban"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
-          <a class="btn btn-ghost btn-lg" href="#hogyan">Megnézem, hogy működik</a>
+          <a class="gp-badge lg" href="app.html" aria-label="Open the app"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
+          <a class="btn btn-ghost btn-lg" href="#how-it-works">See how it works</a>
         </div>
         <div class="hero-meta">
           <div class="hero-meta-item">
             <svg class="hero-meta-check" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Bankkártya nélkül
+            No credit card
           </div>
           <div class="hero-meta-item">
             <svg class="hero-meta-check" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Magyar nyelven
+            Browser-based
           </div>
           <div class="hero-meta-item">
             <svg class="hero-meta-check" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Adatok a böngészőben
+            Data stays in your browser
           </div>
         </div>
       </div>
@@ -443,17 +442,17 @@
               </div>
             </div>
             <div class="phone-card">
-              <div class="label">HAVI KÖLTÉS</div>
-              <div class="value">€46<small>,97</small></div>
+              <div class="label">MONTHLY SPEND</div>
+              <div class="value">$46<small>.97</small></div>
               <div class="bar"><i></i></div>
             </div>
             <div class="phone-row">
               <div class="mini-card">
-                <div class="label">ÉVES ÖSSZEG</div>
-                <div class="value">€563,64</div>
+                <div class="label">YEARLY TOTAL</div>
+                <div class="value">$563.64</div>
               </div>
               <div class="mini-card">
-                <div class="label">AKTÍV</div>
+                <div class="label">ACTIVE</div>
                 <div class="value">4</div>
               </div>
             </div>
@@ -463,40 +462,40 @@
                   <div class="sub-logo" style="background:#000;border:1px solid #1a1a1a">N</div>
                   <div class="sub-meta">
                     <div class="sub-name">Netflix Standard</div>
-                    <div class="sub-due">megújul · 3 nap</div>
+                    <div class="sub-due">renews in 3d</div>
                   </div>
                 </div>
-                <div class="sub-price">€13,99</div>
+                <div class="sub-price">$13.99</div>
               </div>
               <div class="sub-item">
                 <div class="left">
                   <div class="sub-logo" style="background:#0d3a1f">S</div>
                   <div class="sub-meta">
                     <div class="sub-name">Spotify Family</div>
-                    <div class="sub-due">megújul · 12 nap</div>
+                    <div class="sub-due">renews in 12d</div>
                   </div>
                 </div>
-                <div class="sub-price">€17,99</div>
+                <div class="sub-price">$17.99</div>
               </div>
               <div class="sub-item">
                 <div class="left">
                   <div class="sub-logo" style="background:#1d1d3a">F</div>
                   <div class="sub-meta">
                     <div class="sub-name">Figma Pro</div>
-                    <div class="sub-due">megújul · 21 nap</div>
+                    <div class="sub-due">renews in 21d</div>
                   </div>
                 </div>
-                <div class="sub-price">€15,00</div>
+                <div class="sub-price">$15.00</div>
               </div>
             </div>
             <div class="phone-tabbar">
               <div class="phone-tab active">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
-                Kezdőlap
+                Home
               </div>
               <div class="phone-tab">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>
-                Elemzés
+                Insights
               </div>
             </div>
           </div>
@@ -512,68 +511,67 @@
     <div class="strip-grid">
       <div class="strip-cell">
         <div class="strip-num">42<span class="u">%</span></div>
-        <div class="strip-lbl">Tipikus felhasználó alulbecsüli az előfizetés-költését*</div>
+        <div class="strip-lbl">Typical users underestimate their subscription spend*</div>
       </div>
       <div class="strip-cell">
-        <div class="strip-num">€<span>219</span></div>
-        <div class="strip-lbl">Tipikus havi előfizetés-számla egy önfoglalkoztatónál*</div>
+        <div class="strip-num">$<span>219</span></div>
+        <div class="strip-lbl">Typical monthly subscription bill for a solo founder*</div>
       </div>
       <div class="strip-cell">
         <div class="strip-num">3<span class="u">×</span></div>
-        <div class="strip-lbl">Annyi nem használt előfizetés a látható mellett, tapasztalataink szerint*</div>
+        <div class="strip-lbl">More unused subscriptions than you think you have, in our experience*</div>
       </div>
       <div class="strip-cell">
         <div class="strip-num">2<span class="u"> </span></div>
-        <div class="strip-lbl">Csomag van: Free és Pro €5/hó — semmi rejtett</div>
+        <div class="strip-lbl">Plans only: Free and Pro $5/mo — nothing hidden</div>
       </div>
     </div>
     <div style="padding:0 24px 28px;font-family:var(--mono);font-size:11px;color:var(--fg-mute);letter-spacing:0.04em;text-wrap:pretty">
-      * Becsült értékek belső megfigyelések és iparági közvélemény-kutatások alapján. Saját adataidnál a leakd pontos számokat mutat.
+      * Estimated figures based on internal observations and industry surveys. With your own data, leakd shows the exact numbers.
     </div>
   </div>
 </div>
 
 <!-- ============ PROBLEM ============ -->
-<section class="s" id="problema">
+<section class="s" id="problem">
   <div class="wrap">
     <div class="problem-grid">
       <div class="problem-left">
-        <div class="s-tag">A probléma</div>
-        <h2 class="s-title">A havi <span class="r">€563-os</span> számlát<br>senki nem nyitja meg.</h2>
+        <div class="s-tag">The problem</div>
+        <h2 class="s-title">Nobody opens<br>the <span class="r">$563/mo</span> invoice.</h2>
         <p class="s-sub" style="margin-bottom:32px">
-          A bank-integrált eszközök bonyolultak, US-only-k és túl mélyre nyúlnak.
-          A táblázat meg túl egyszerű — elfelejted frissíteni. A leakd a kettő közé áll be.
+          Bank-integrated tools are heavy and invasive. A spreadsheet is too light — you forget to update it. leakd sits exactly between the two.
         </p>
 
         <div class="problem-list">
           <div class="problem-item">
             <div class="problem-item-h">
               <span class="problem-num">01</span>
-              <h3>Egy hely, ahol végre összeáll a kép.</h3>
+              <h3>One place where it finally adds up.</h3>
             </div>
-            <p>Notion, Adobe, Figma, Canva, Vercel, ChatGPT — mind külön számláz. Sehol nem látod egyben, hogy ez együtt mennyi havonta. Mire észbe kapsz, már €560 ment el évente.</p>
+            <p>Notion, Adobe, Figma, Canva, Vercel, ChatGPT — each bills you separately. Nowhere do you see the combined monthly total. By the time you notice, that's $560 gone for the year.</p>
           </div>
           <div class="problem-item">
             <div class="problem-item-h">
               <span class="problem-num">02</span>
-              <h3>A táblázat egy hónap múlva halott.</h3>
+              <h3>Your spreadsheet dies in a month.</h3>
             </div>
-            <p>Nincs figyelmeztetés, nincs vizualizáció, nincs streak. Megnyitod, frissíted, kétszer. Aztán soha többé.</p>
+            <p>No alerts, no visualization, no streak. You open it, you update it, twice. Then never again.</p>
           </div>
           <div class="problem-item">
             <div class="problem-item-h">
               <span class="problem-num">03</span>
-              <h3>A többi app a banki tokeneddel akar játszani.</h3>
+              <h3>Every other app wants your banking token.</h3>
             </div>
-            <p>OAuth, harmadik fél a vagyonkezelő-adataidon. Egy ennyire egyszerű feladathoz — tudni, mire fizetsz elő — ez aránytalanul sok.</p>
+            <p>OAuth, a third party touching your account data. For something this simple — knowing what you pay for — that's wildly disproportionate.</p>
           </div>
         </div>
       </div>
 
       <div class="leak-bucket">
         <div class="leak-grid"></div>
-        <div class="leak-label">PÉLDA · KISVÁLLALKOZÁS · ÉVES</div>
-        <div class="leak-amount">~€2 247</div>
+        <div class="leak-label">EXAMPLE · SMALL TEAM · YEARLY</div>
+        <div class="leak-amount">~$2,247</div>
         <div class="leak-drips" aria-hidden="true">
           <span class="d" style="color:var(--red)"><svg width="100%" height="100%"><use href="#drop"/></svg></span>
           <span class="d" style="color:var(--red)"><svg width="100%" height="100%"><use href="#drop"/></svg></span>
@@ -581,7 +579,7 @@
           <span class="d" style="color:var(--red)"><svg width="100%" height="100%"><use href="#drop"/></svg></span>
         </div>
         <div class="leak-cap">
-          <b>Tapasztalataink szerint</b> egy egyszemélyes csapat évente ennyit költhet olyan szoftverekre, melyek jelentős részét ritkán használja. Saját adataidnál a leakd pontos számot mutat.
+          <b>In our experience,</b> a one-person team can spend this much yearly on software it rarely opens. With your own data, leakd shows the exact number.
         </div>
       </div>
     </div>
@@ -589,41 +587,41 @@
 </section>
 
 <!-- ============ STEPS / HOW IT WORKS ============ -->
-<section class="s" id="hogyan" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+<section class="s" id="how-it-works" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
   <div class="wrap">
     <div class="s-head">
-      <div class="s-tag">Hogyan működik</div>
-      <h2 class="s-title">Három lépés. <span class="r">Nincs banki belépés.</span></h2>
-      <p class="s-sub">Manuális beírás — szándékosan. Így nem felejtesz el róla, és nem adsz át banki hozzáférést egy SaaS-nak.</p>
+      <div class="s-tag">How it works</div>
+      <h2 class="s-title">Three steps. <span class="r">Zero bank login.</span></h2>
+      <p class="s-sub">Manual entry — on purpose. That way you don't forget about it, and you don't hand bank access to a SaaS.</p>
     </div>
 
     <div class="steps">
       <div class="step">
-        <div class="step-num">01 · BEÍRÁS</div>
+        <div class="step-num">01 · ENTER</div>
         <div class="step-vis">
           <div class="vis-input">
-            <div class="vis-field">név: Netflix<span class="vis-cursor"></span></div>
-            <div class="vis-field active">összeg: €13,99 / hó</div>
-            <div class="vis-field">megújul: 14-én</div>
+            <div class="vis-field">name: Netflix<span class="vis-cursor"></span></div>
+            <div class="vis-field active">amount: $13.99 / mo</div>
+            <div class="vis-field">renews: 14th</div>
           </div>
         </div>
-        <h3>Vidd be az előfizetéseidet</h3>
-        <p>Név, összeg, megújulás dátuma. Logót automatikusan rendelünk hozzá. Tipikus app pár perc alatt felvéve — egyszer, és kész.</p>
+        <h3>Enter your subscriptions</h3>
+        <p>Name, amount, renewal date. We auto-match a logo. Typical app added in a few minutes — once, and done.</p>
       </div>
 
       <div class="step">
-        <div class="step-num">02 · FIGYELMEZTETÉS</div>
+        <div class="step-num">02 · ALERT</div>
         <div class="step-vis">
           <div class="vis-bell">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
           </div>
         </div>
-        <h3>Szólunk megújulás előtt</h3>
-        <p>3 nappal a megújulás előtt push / email / böngésző-notif. Időben tudsz dönteni: marad, vagy lemondod még a terhelés előtt.</p>
+        <h3>We warn you before renewal</h3>
+        <p>Push, email, or browser notification 3 days before renewal. Plenty of time to decide: keep it, or cancel before you're charged.</p>
       </div>
 
       <div class="step">
-        <div class="step-num">03 · ELEMZÉS</div>
+        <div class="step-num">03 · ANALYZE</div>
         <div class="step-vis">
           <div class="vis-chart">
             <div class="b" style="height:30%"></div>
@@ -637,19 +635,19 @@
             <div class="b" style="height:60%"></div>
           </div>
         </div>
-        <h3>Lásd, mit fizetsz feleslegesen</h3>
-        <p>Havi / éves bontás, kategóriák, „zombi-flag" arra, amit ritkán használsz. Lemondási javaslat egy kattintással.</p>
+        <h3>See what you're paying for nothing</h3>
+        <p>Monthly and yearly breakdowns, categories, a "zombie flag" for what you barely use. One-click cancel suggestions.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ FEATURES ============ -->
-<section class="s" id="funkciok">
+<section class="s" id="features">
   <div class="wrap">
     <div class="s-head">
-      <div class="s-tag">Funkciók</div>
-      <h2 class="s-title">Mindent, amit egy táblázat nem tud.<br>Semmit, amit nem kértél.</h2>
+      <div class="s-tag">Features</div>
+      <h2 class="s-title">Everything a spreadsheet can't do.<br>Nothing you didn't ask for.</h2>
     </div>
 
     <div class="features">
@@ -657,95 +655,149 @@
         <div class="feature-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
-        <h3>Privacy-first felépítés</h3>
-        <p>Az előfizetés-adataid alapból a böngésződ localStorage-ában tárolódnak. Nem futtatunk külső analitikát, és az adataid alapértelmezetten nem hagyják el a böngésződet.</p>
-        <div class="tag">localStorage · helyi tárolás</div>
+        <h3>Privacy-first by default</h3>
+        <p>All your data lives in your browser's localStorage. No account. No tracking. No third-party analytics. The app works fully offline once loaded.</p>
+        <div class="tag">localStorage · offline-first · zero tracking</div>
       </div>
 
       <div class="feature">
         <div class="feature-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         </div>
-        <h3>Megújulás-figyelmeztetés</h3>
-        <p>Push / email / böngésző-értesítés 1, 3 vagy 7 nappal előtte — te döntöd el. Egyetlen kattintás a lemondási linkre.</p>
-        <div class="tag">3 csatorna · testreszabható</div>
+        <h3>Renewal &amp; trial alerts</h3>
+        <p>Local browser notifications fire 1, 3, or 7 days before a renewal — you choose. Trial-end warnings prevent surprise charges. One click to the cancel link.</p>
+        <div class="tag">push · trial guard · cancel-deeplinks</div>
       </div>
 
       <div class="feature">
         <div class="feature-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
         </div>
-        <h3>Költés-elemzés</h3>
-        <p>Havi és éves összesítés, kategória-bontás (média, produktivitás, hosting, marketing). Megnézheted, mire ment a negyedéves büdzsé.</p>
-        <div class="tag">12 hónap visszamenőleg</div>
+        <h3>Spending trends &amp; insights</h3>
+        <p>Monthly/yearly totals, category donut, 6-month trend line, lifetime cost vs. "if you had invested it instead". Spot leaks before they balloon.</p>
+        <div class="tag">trends · insights · lifetime cost</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <h3>Smart bank-statement import</h3>
+        <p>Drop your Revolut, Wise, N26, PayPal, Chase, or Amex CSV. Recurring charges are detected automatically — column headers recognised in 28 languages, fully on-device.</p>
+        <div class="tag">CSV · 28 languages · no bank login</div>
       </div>
 
       <div class="feature">
         <div class="feature-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
-        <h3>„Zombi" flag</h3>
-        <p>Megjelölheted, hogy mikor használtad utoljára egy adott appot. 30 nap után figyelmeztetünk, hogy talán törölhető.</p>
-        <div class="tag">manuális · te döntesz</div>
+        <h3>Zombie &amp; price-change detection</h3>
+        <p>Subs you haven't used in 30+ days get a zombie badge. Edit a sub's price and we ping you with the % change — never miss a stealth hike.</p>
+        <div class="tag">price hikes · zombies · auto-detect</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M16 11a4 4 0 1 0 0-8"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        </div>
+        <h3>Shared subscriptions</h3>
+        <p>Sharing Netflix with the family? Mark a sub as shared with N people; we'll show your real share alongside the full price — so the per-person cost is honest.</p>
+        <div class="tag">family plans · per-person cost</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 6v6a8 8 0 1 1-8-8h6"/></svg>
+        </div>
+        <h3>End-to-end encrypted cloud sync <span class="mono red" style="font-size:11px">PRO</span></h3>
+        <p>Sync between your phone and laptop via your own Google Drive. AES-GCM 256 + PBKDF2 600 000. The master password never leaves your device — we couldn't read your data if we tried.</p>
+        <div class="tag">E2EE · your Drive · zero-knowledge</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v6H4z"/><path d="M4 14h16v6H4z"/><path d="M8 7h.01M8 17h.01"/></svg>
+        </div>
+        <h3>Business tax report <span class="mono red" style="font-size:11px">PRO</span></h3>
+        <p>Flag a sub as a business expense and the Pro tax report bundles them into an accountant-ready PDF + CSV. Vendor links, monthly/yearly totals, your share when shared.</p>
+        <div class="tag">PDF · CSV · deductibles</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+        </div>
+        <h3>Email reminders <span class="mono red" style="font-size:11px">PRO</span></h3>
+        <p>Add a backup email channel for renewal alerts — even if you've cleared the browser or your phone is off. Independent of in-app notifications.</p>
+        <div class="tag">backup channel · resilient</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10"/><path d="M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10"/></svg>
+        </div>
+        <h3>28 languages, 32 currencies</h3>
+        <p>Native UI in 28 languages (EN, HU, DE, ES, FR, IT, PT, NL, PL, SV, CS, JA, KO, ZH, RU, RO, ID, VI, TR, EL, HI, UK, HR, BG, TH, FIL, CA, SK). Daily ECB exchange rates handle multi-currency totals.</p>
+        <div class="tag">28 langs · ECB rates · auto-detect</div>
       </div>
 
       <div class="feature">
         <div class="feature-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7"/><path d="M16 21l5-5"/><path d="M21 21h-5v-5"/></svg>
         </div>
-        <h3>Export bárhová</h3>
-        <p>CSV, JSON, vagy egy PDF-jelentés a könyvelődnek. Nincs vendor lock-in — az adat a tied marad, akkor is, ha kiszállsz.</p>
-        <div class="tag">CSV · JSON · PDF</div>
+        <h3>Export anywhere</h3>
+        <p>Round-trip CSV import/export, JSON backup, .ics calendar of every renewal, share-card PNG for social. No vendor lock-in — your data leaves with you.</p>
+        <div class="tag">CSV · JSON · ICS · PDF</div>
       </div>
 
       <div class="feature">
         <div class="feature-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
         </div>
-        <h3>Tiszta-streak</h3>
-        <p>Számoljuk, hány napja nem iratkoztál fel új előfizetésre. Apró játékosítás — meglepően jól működik a fegyelmezésre.</p>
-        <div class="tag">gamification · light</div>
+        <h3>Clean streak &amp; savings goals</h3>
+        <p>Days since you last added a new sub — gentle gamification that actually works. Set a yearly savings goal and watch cancellations chip away at it.</p>
+        <div class="tag">goals · streaks · milestones</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ PRINCIPLES ============ -->
-<section class="s" id="alapelvek" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+<section class="s" id="principles" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
   <div class="wrap">
     <div class="s-head">
-      <div class="s-tag">Alapelveink</div>
-      <h2 class="s-title">Négy elv, <span class="r">ami szerint tervezzük a terméket.</span></h2>
-      <p class="s-sub">A legtöbb pénzügyi app azzal nő, hogy egyre több hozzáférést kér. Mi ennek az ellenkezőjére törekszünk — a részletes működést a Biztonság és az Adatkezelési tájékoztatóban írjuk le.</p>
+      <div class="s-tag">Our principles</div>
+      <h2 class="s-title">Four principles <span class="r">we design the product around.</span></h2>
+      <p class="s-sub">Most finance apps grow by asking for more access. We aim for the opposite — full details are in our Security page and Privacy Policy.</p>
     </div>
 
     <div class="principles">
       <article class="principle">
         <div class="principle-num">01</div>
-        <h3>Helyi tárolás alapból.</h3>
-        <p>Az előfizetés-listád a böngésződ <span class="mono red">localStorage</span>-ában tárolódik. Nem elemezzük marketing célra, és nem osztjuk meg harmadik féllel. Pro szinkron csak titkosítva, a részleteket a Biztonság oldalon írjuk le.</p>
-        <div class="principle-foot mono">helyi tárolás · minimális telemetria</div>
+        <h3>Local storage by default.</h3>
+        <p>Your subscription list is stored in your browser's <span class="mono red">localStorage</span>. We don't use it for marketing analytics, and we don't share it with third parties. Pro sync is stored encrypted — full details on the Security page.</p>
+        <div class="principle-foot mono">local-first · minimal telemetry</div>
       </article>
 
       <article class="principle">
         <div class="principle-num">02</div>
-        <h3>Nem kérünk banki hozzáférést.</h3>
-        <p>Nincs OAuth-kapcsolódás a bankodhoz, nincs harmadik fél a tranzakciós adataidon, nincs „kapcsold össze a számládat" lépés. Te írod be, mire fizetsz elő — egyszer, jellemzően pár perc alatt. Cserébe a pontosság a tied marad.</p>
-        <div class="principle-foot mono">banki integráció nélkül</div>
+        <h3>We don't ask for bank access.</h3>
+        <p>No OAuth to your bank, no third party on your transaction data, no "connect your account" step. You enter what you pay for — once, typically in a few minutes. In return, the accuracy stays yours.</p>
+        <div class="principle-foot mono">no bank integration</div>
       </article>
 
       <article class="principle">
         <div class="principle-num">03</div>
-        <h3>Egyszerű árazás, két csomag.</h3>
-        <p>Free vagy Pro €5/hó. Most nincs „Enterprise", nincs „kezdő → növekedés → vállalati" létra — egyszerű ár, áttekinthető funkciók. Az árazás változásait előre kommunikáljuk, és a meglévő előfizetőknek opciót adunk.</p>
-        <div class="principle-foot mono">€0 vagy €5 · áttekinthető</div>
+        <h3>Simple pricing, two plans.</h3>
+        <p>Free or Pro $5/mo. No "Enterprise" upsell, no "Starter → Growth → Business" ladder right now — simple price, clear features. Pricing changes will be announced in advance, with options for existing subscribers.</p>
+        <div class="principle-foot mono">$0 or $5 · transparent</div>
       </article>
 
       <article class="principle">
         <div class="principle-num">04</div>
-        <h3>Lemondható, exportálható, hordozható.</h3>
-        <p>Egy kattintással exportálhatod az adataidat CSV vagy JSON formátumban — bármikor. Nincs vendor lock-in: ha leiratkozol, az adatok nálad maradnak, és a Free funkciók a böngésződben tovább működnek.</p>
-        <div class="principle-foot mono">no lock-in · saját adat</div>
+        <h3>Cancellable, exportable, portable.</h3>
+        <p>One click to export your data as CSV or JSON — anytime. No vendor lock-in: if you cancel, your data stays with you, and Free features keep working in your browser.</p>
+        <div class="principle-foot mono">no lock-in · your data</div>
       </article>
     </div>
 
@@ -754,53 +806,54 @@
 </section>
 
 <!-- ============ PRICING ============ -->
-<section class="s" id="arazas">
+<section class="s" id="pricing">
   <div class="wrap">
     <div class="s-head" style="text-align:center;margin:0 auto 64px">
-      <div class="s-tag" style="justify-content:center">Árazás</div>
-      <h2 class="s-title">Egy ingyenes csomag.<br>Egy <span class="r">€5/hó</span> csomag. Kész.</h2>
-      <p class="s-sub" style="margin:0 auto">Nincs „Enterprise", nincs „Növekedés", nincs „Hívj minket". Ha kell, fizetsz €5-öt és kapsz extra dolgokat.</p>
+      <div class="s-tag" style="justify-content:center">Pricing</div>
+      <h2 class="s-title">One free plan.<br>One <span class="r">$5/mo</span> plan. That's it.</h2>
+      <p class="s-sub" style="margin:0 auto">No "Enterprise", no "Growth", no "Talk to sales". If you need more, pay $5 and get the extras.</p>
     </div>
 
     <div class="pricing">
       <div class="plan">
         <h3>Free</h3>
-        <p class="plan-sub">Mindenre, amire elindításhoz szükséged van.</p>
+        <p class="plan-sub">Everything you need to get started.</p>
         <div class="plan-price">
-          <span class="num free">€0</span>
-          <span class="per">örökre</span>
+          <span class="num free">$0</span>
+          <span class="per">forever</span>
         </div>
         <ul class="plan-features">
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Korlátlan előfizetés</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Havi / éves költés-összegzés</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Megújulás-figyelmeztetés (email)</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Egy eszköz, helyileg tárolt adatok</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Unlimited subscriptions</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Monthly / yearly spend totals</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Renewal alerts (email)</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> One device, locally stored data</li>
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> CSV export</li>
         </ul>
-        <a class="btn btn-ghost" href="#cta">Ingyen indítok</a>
+        <a class="btn btn-ghost" href="#cta">Start free</a>
       </div>
 
       <div class="plan pro">
         <h3>Pro</h3>
-        <p class="plan-sub">Több eszköz, push-értesítés, PDF-export.</p>
+        <p class="plan-sub">Cloud sync, email reminders, tax report &amp; more.</p>
         <div class="plan-price">
-          <span class="num">€5</span>
-          <span class="per">/ hó · Google Play</span>
+          <span class="num">$5</span>
+          <span class="per">/ month · or $40 / year</span>
         </div>
         <ul class="plan-features">
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> <b>Minden, ami a Free-ben.</b></li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Push & böngésző-értesítés</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Több eszköz szinkron (titkosítva tárolva)</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> PDF-jelentés</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Egyedi kategóriák & címkék</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Prioritás-támogatás (24h)</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> <b>Everything in Free.</b></li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> End-to-end encrypted Cloud Sync via your Google Drive</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Email reminders (backup channel for renewal alerts)</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Business Tax Report — PDF + CSV for your accountant</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Year-end spending report</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Category budgets &amp; over-spend alerts</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Priority email support (within 24h)</li>
         </ul>
-        <a class="gp-badge" href="app.html" aria-label="Megnyitás az appban"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
+        <a class="gp-badge" href="app.html" aria-label="Open the app"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
       </div>
     </div>
 
     <p style="text-align:center;margin-top:32px;font-family:var(--mono);font-size:12px;color:var(--fg-mute)">
-      Csapatoknak (5+ fő): írj nekünk, csinálunk árajánlatot.
+      Teams of 5+: drop us a line and we'll send a quote.
     </p>
   </div>
 </section>
@@ -809,34 +862,42 @@
 <section class="s" id="faq" style="background:var(--bg-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
   <div class="wrap">
     <div class="s-head" style="text-align:center;margin:0 auto 56px">
-      <div class="s-tag" style="justify-content:center">Gyakori kérdések</div>
-      <h2 class="s-title">Tényleg nem fér hozzá<br>a bankszámlámhoz?</h2>
+      <div class="s-tag" style="justify-content:center">FAQ</div>
+      <h2 class="s-title">It really doesn't<br>touch my bank account?</h2>
     </div>
 
     <div class="faq">
       <details class="faq-item">
-        <summary class="faq-q">Hova kerülnek az adataim?</summary>
-        <div class="faq-a">A Free csomagon az előfizetés-adataid a böngésződ localStorage-ában tárolódnak — alapértelmezetten nem küldjük szerverre. A működéshez minimális, nem személyazonosító technikai adatokat (pl. anonim oldal-betöltés) használhatunk; ezt az Adatkezelési Tájékoztatóban részletezzük. A Pro csomagon van több eszköz közötti szinkron, amelyet titkosítva tárolunk; a részletes biztonsági modellt a Biztonság oldalon írjuk le.</div>
+        <summary class="faq-q">Where does my data go?</summary>
+        <div class="faq-a">By default — nowhere. Your subscription list lives in your browser's localStorage on this device. No account, no analytics, no third-party trackers. If you opt into Pro Cloud Sync, the data is end-to-end encrypted on your device (AES-GCM 256, key derived from your master password) and stored in your own Google Drive's hidden app folder. We literally cannot read it. Full breakdown in our <a href="privacy.html">Privacy Policy</a>.</div>
       </details>
       <details class="faq-item">
-        <summary class="faq-q">Miért nem köti össze magát a bankommal automatikusan?</summary>
-        <div class="faq-a">Mert (1) EU-s bankokhoz nehéz hozzáférést szerezni, (2) a manuális beírás pár percet vesz igénybe egyszer, és onnantól pontosabb adatod van, mint amit a tranzakció-felismerés ad, (3) sokan nem szeretnek banki tokeneket adni harmadik félnek. Mi a privacy-first irányt választottuk — szándékosan.</div>
+        <summary class="faq-q">How does the bank-statement import work?</summary>
+        <div class="faq-a">Download a CSV from Revolut, Wise, N26, PayPal, Chase, or Amex (all banks let you do this in 2 clicks), drop it into Leakd. The parser detects recurring charges by amount + interval, in 28 languages of column headers. The whole thing runs in your browser — no upload, no bank login, no third-party aggregator.</div>
       </details>
       <details class="faq-item">
-        <summary class="faq-q">Mi történik, ha törlöm a böngésző-cache-t?</summary>
-        <div class="faq-a">Free csomagon az adat elveszik — pont ezért javasoljuk, hogy heti egyszer exportálj CSV-be (kétféle export gomb a Beállítások alatt). Pro csomagon szinkronizáljuk, így új böngészőből is visszanyered az adatot.</div>
+        <summary class="faq-q">What's the Business Tax Report?</summary>
+        <div class="faq-a">Mark any subscription as a business expense, and the Pro Tax Report bundles them into an accountant-ready PDF + CSV: vendor links, billing cycles, monthly/yearly totals, your share when split with family. Most freelancers recoup the $5/mo Pro fee just from the time saved during tax season.</div>
       </details>
       <details class="faq-item">
-        <summary class="faq-q">Hol lehet megvásárolni a Pro csomagot?</summary>
-        <div class="faq-a">A vásárlás a Google Play Áruházon keresztül történik — ők kezelik a fizetést és a számlázást is, a saját szabályaik szerint. A számlád a Google Play fiókodban érhető el a vásárlás után.</div>
+        <summary class="faq-q">What if I clear my browser cache?</summary>
+        <div class="faq-a">On Free, the data is gone — which is why we have one-click backup to JSON and a calendar (.ics) export under Settings. On Pro, multi-device sync via your Google Drive pulls it back automatically when you sign in.</div>
       </details>
       <details class="faq-item">
-        <summary class="faq-q">Mi van, ha leálltok a szolgáltatással?</summary>
-        <div class="faq-a">Az adataidat bármikor egy kattintással exportálhatod CSV / JSON formátumba. Mivel a Free működés a böngésződben fut, egy esetleges leállítás után is hozzá tudsz férni a már beírt adatokhoz az exporton keresztül. A leállítást — ha valaha sor kerülne rá — előre jelezzük, és átállási időt biztosítunk.</div>
+        <summary class="faq-q">Where can I buy the Pro plan?</summary>
+        <div class="faq-a">Pro is sold via Google Play Billing — $5/month or $40/year. Your invoice lives in your Google Play account. Refunds within 48 hours are processed automatically by Google; later requests via <a href="mailto:hello@leakd.app">hello@leakd.app</a>. Full details in our <a href="terms.html#refund-policy">Refund Policy</a>.</div>
       </details>
       <details class="faq-item">
-        <summary class="faq-q">Egyébként miért „leakd"?</summary>
-        <div class="faq-a">Mert a pénz sokszor nem nagy összegekben fogy el, hanem szivárog: kis havi tételekben, amik együtt évente komoly összeget tehetnek ki. A nevünk arra emlékeztet, miért nyitod meg az appot.</div>
+        <summary class="faq-q">Does it work offline?</summary>
+        <div class="faq-a">Yes. After the first load it's a Progressive Web App — installable to your home screen, fully usable offline. Currency rates refresh once a day when online; everything else is local.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">What if you shut down the service?</summary>
+        <div class="faq-a">Free Leakd runs in your browser — even if our domain went away tomorrow, the installed PWA would keep working and you could export your data to CSV/JSON. Pro features that touch the network (Cloud Sync, Email Reminders) would stop, but your data is yours either way.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Why "leakd"?</summary>
+        <div class="faq-a">Money rarely disappears in big chunks — it leaks: small recurring amounts that compound into a serious yearly bill. The name reminds you why you opened the app.</div>
       </details>
     </div>
   </div>
@@ -846,13 +907,12 @@
 <section class="cta-wrap" id="cta">
   <div class="cta-drip"></div>
   <div class="wrap cta-inner">
-    <h2>Csukd be a csapot.<br><span class="r">Indítsd el a leakd-et.</span></h2>
-    <p>Gyors beállítás. Nem kérünk banki belépést. €5/hó ha akarod, €0 ha nem.</p>
+    <h2>Plug the leak.<br><span class="r">Start using leakd.</span></h2>
+    <p>Quick setup. We don't ask for bank login. $5/mo if you want, $0 if not.</p>
     <div class="cta-ctas">
-      <a class="gp-badge lg" href="app.html" aria-label="Megnyitás az appban"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
-      <a class="btn btn-ghost btn-lg" href="app.html">Megnyitás az appban</a>
+      <a class="gp-badge lg" href="app.html" aria-label="Open the app"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
     </div>
-    <div class="cta-note">Nincs bankkártya a kipróbáláshoz · Magyar nyelven · Helyi tárolás</div>
+    <div class="cta-note">No credit card to try · Browser-based · Local storage</div>
   </div>
 </section>
 
@@ -865,41 +925,41 @@
           <svg class="brand-drop" style="color:var(--red)"><use href="#drop"/></svg>
           leakd
         </div>
-        <p>Egyszerű előfizetés-nyomkövető, helyi tárolással. Magyarul.</p>
+        <p>A simple subscription tracker with local storage.</p>
       </div>
       <div class="foot-cols">
         <div class="foot-col">
-          <h4>Termék</h4>
-          <a href="#funkciok">Funkciók</a>
-          <a href="#arazas">Árazás</a>
-          <a href="#alapelvek">Alapelvek</a>
-          <a href="#">Changelog</a>
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#principles">Principles</a>
+          <a href="changelog.html">Changelog</a>
         </div>
         <div class="foot-col">
-          <h4>Tudnivalók</h4>
-          <a href="#">A projektről</a>
-          <a href="#">Blog</a>
-          <a href="#">Kapcsolat</a>
-          <a href="#">Roadmap</a>
+          <h4>About</h4>
+          <a href="about.html">About</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+          <a href="roadmap.html">Roadmap</a>
         </div>
         <div class="foot-col">
-          <h4>Jogi</h4>
-          <a href="../privacy.html">Adatvédelmi tájékoztató</a>
-          <a href="../terms.html">Felhasználási feltételek</a>
-          <a href="../terms.html#refund-policy-hu">Visszatérítési szabályzat</a>
-          <a href="../privacy.html#data-deletion-hu">Adatok törlése</a>
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="terms.html#refund-policy">Refund Policy</a>
+          <a href="privacy.html#data-deletion">Data Deletion</a>
         </div>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 leakd · v1.2.0 · <a href="../terms.html">ÁSZF</a> · <a href="../privacy.html">Adatkezelés</a></span>
-      <span class="made">Készült Budapesten <span class="heart">●</span> banki integráció nélkül</span>
+      <span>© 2026 leakd · v1.2.0 · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></span>
+      <span class="made">Made with care <span class="heart">●</span> no bank integration</span>
     </div>
   </div>
 </footer>
 
 <!-- ============ CONSENT BAR ============ -->
-<div class="consent-bar" id="leakd-consent" role="dialog" aria-label="Adatkezelési beállítások">
+<div class="consent-bar" id="leakd-consent" role="dialog" aria-label="Privacy preferences">
   <div class="consent-icon" aria-hidden="true">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12c0 5-4 9-9 9s-9-4-9-9 4-9 9-9c0 2 2 4 4 4s2-1 2-1 1 2 3 2c0 2-1 4 0 4z"/>
@@ -909,12 +969,12 @@
     </svg>
   </div>
   <div class="consent-text">
-    <strong>Sütiket használunk</strong>
-    Az oldal működéséhez szükséges sütiket alapból betöltjük. Mérési és teljesítmény-sütik használatához a hozzájárulásodat kérjük. Részletek az <a href="../privacy.html">Adatkezelési Tájékoztatóban</a>.
+    <strong>We use cookies</strong>
+    Essential cookies are loaded by default. We ask for your consent before using analytics or performance cookies. Details in our <a href="privacy.html">Privacy Policy</a>.
   </div>
   <div class="consent-actions">
-    <button id="consent-essential" type="button">Csak szükséges</button>
-    <button id="consent-all" class="primary" type="button">Mindet elfogadom</button>
+    <button id="consent-essential" type="button">Essential only</button>
+    <button id="consent-all" class="primary" type="button">Accept all</button>
   </div>
 </div>
 
