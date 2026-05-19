@@ -1978,7 +1978,11 @@
     demoSubs.forEach(d => {
       subs.push({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        name: d.name, price: d.price, cycle: d.cycle, category: d.category,
+        name: d.name, 
+        price: settings.currencyCode === 'HUF' ? Math.round(fromUsd(d.price)) : Number(fromUsd(d.price).toFixed(2)), 
+        cycle: d.cycle, 
+        category: d.category,
+        currency: settings.currencyCode,
         nextDate: d.nextDate, isTrial: false, trialEnd: '', paused: false,
         notes: '', rating: d.rating, sharedWith: 1,
         createdAt: createdOffset(d.monthsBack),
