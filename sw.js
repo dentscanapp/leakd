@@ -1,9 +1,12 @@
-const CACHE_NAME = 'leakd-v93';
+const CACHE_NAME = 'leakd-v95';
 const ASSETS = [
   './',
   'index.html',
+  'app.html',
   'privacy.html',
   'terms.html',
+  'landing/assets/favicon.svg',
+  'landing/assets/google-play.png',
   'css/app.css',
   'js/app.js',
   'js/notifications.js',
@@ -113,7 +116,11 @@ self.addEventListener('fetch', event => {
         return response;
       }).catch(async () => {
         if (event.request.mode === 'navigate') {
-          const fallback = await caches.match('index.html');
+          // Pick the right offline fallback: navigation requests to
+          // anything in the app shell get app.html; everything else
+          // (root, marketing routes) gets the landing index.html.
+          const wantsApp = /\/app(\.html)?(\?|$)/.test(url.pathname + url.search);
+          const fallback = await caches.match(wantsApp ? 'app.html' : 'index.html');
           if (fallback) return fallback;
         }
         return new Response('', { status: 504, statusText: 'Offline' });
