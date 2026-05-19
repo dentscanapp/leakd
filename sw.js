@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v101';
+const CACHE_NAME = 'leakd-v102';
 const ASSETS = [
   './',
   'index.html',
@@ -54,7 +54,20 @@ const ASSETS = [
   'manifest.json',
   'icons/icon.svg',
   'icons/icon-192.png',
-  'icons/icon-512.png'
+  'icons/icon-512.png',
+  'fonts/fonts.css',
+  'fonts/DMSans-400.ttf',
+  'fonts/DMSans-500.ttf',
+  'fonts/DMSans-600.ttf',
+  'fonts/DMSans-700.ttf',
+  'fonts/DMMono-400.ttf',
+  'fonts/DMMono-500.ttf',
+  'fonts/SpaceGrotesk-400.ttf',
+  'fonts/SpaceGrotesk-500.ttf',
+  'fonts/SpaceGrotesk-600.ttf',
+  'fonts/SpaceGrotesk-700.ttf',
+  'fonts/JetBrainsMono-400.ttf',
+  'fonts/JetBrainsMono-500.ttf'
 ];
 
 const I18N = {

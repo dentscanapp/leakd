@@ -1,5 +1,13 @@
 {
   "rewrites": [
+    { "source": "/app.html", "destination": "/app.html" },
+    { "source": "/privacy.html", "destination": "/privacy.html" },
+    { "source": "/terms.html", "destination": "/terms.html" },
+    { "source": "/about.html", "destination": "/about.html" },
+    { "source": "/blog.html", "destination": "/blog.html" },
+    { "source": "/contact.html", "destination": "/contact.html" },
+    { "source": "/roadmap.html", "destination": "/roadmap.html" },
+    { "source": "/changelog.html", "destination": "/changelog.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
