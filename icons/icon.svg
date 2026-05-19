@@ -1,4 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="108" fill="#0f0f0f"/>
-  <path d="M256 80C256 80 140 200 140 290a116 116 0 00232 0c0-90-116-210-116-210z" fill="#ef4444"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Rounded black background -->
+  <rect width="512" height="512" rx="96" fill="#0a0a0a"/>
+
+  <!-- Faucet (light grey/white) -->
+  <g fill="#e8e8e3">
+    <!-- Cross handle: horizontal bar -->
+    <rect x="118" y="98" width="160" height="30" rx="15"/>
+    <!-- Cross handle: vertical bar -->
+    <rect x="183" y="68" width="30" height="90" rx="15"/>
+    <!-- Vertical stem from handle to spout body -->
+    <rect x="181" y="128" width="34" height="68"/>
+    <!-- Horizontal spout body — extends right, drops down on the right end -->
+    <path d="M58,196
+             h268
+             a16,16 0 0 1 16,16
+             v110
+             a16,16 0 0 1 -16,16
+             h-46
+             a16,16 0 0 1 -16,-16
+             v-78
+             h-206
+             a16,16 0 0 1 -16,-16
+             v-16
+             a16,16 0 0 1 16,-16
+             z"/>
+  </g>
+
+  <!-- Red water drop with $ — hangs below the right end of the spout -->
+  <g transform="translate(232, 326)">
+    <!-- Teardrop shape -->
+    <path d="M70,0
+             C50,28 18,72 18,114
+             C18,150 41,176 70,176
+             C99,176 122,150 122,114
+             C122,72 90,28 70,0 Z"
+          fill="#ef3a3a"/>
+    <!-- $ symbol -->
+    <text x="70" y="148"
+          font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif"
+          font-size="86"
+          font-weight="900"
+          fill="#ffffff"
+          text-anchor="middle">$</text>
+  </g>
 </svg>
