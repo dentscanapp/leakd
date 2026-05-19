@@ -89,17 +89,33 @@
   }
 
   function summarize(rows) {
-    const totalMonthly = rows.reduce((sum, r) => sum + r.myMonthly, 0);
-    const totalYearly = rows.reduce((sum, r) => sum + r.myYearly, 0);
+    const settings = window.LeakdState || {};
+    const baseCode = settings.currencyCode || 'USD';
+    const convert = (amount, fromCode) => {
+      if (window.LeakdCurrency && typeof window.LeakdCurrency.convert === 'function') {
+        return window.LeakdCurrency.convert(amount, fromCode, baseCode);
+      }
+      return amount;
+    };
+
+    let totalMonthly = 0;
+    let totalYearly = 0;
+    const byCategory = {};
+
+    for (const r of rows) {
+      const convertedMonthly = convert(r.myMonthly, r.currency);
+      const convertedYearly = convert(r.myYearly, r.currency);
+      
+      totalMonthly += convertedMonthly;
+      totalYearly += convertedYearly;
+      byCategory[r.category] = (byCategory[r.category] || 0) + convertedYearly;
+    }
+
     // YTD: monthly × elapsed months of the tax year
     const now = new Date();
     const monthsElapsed = now.getMonth() + (now.getDate() / 30.44);
     const ytd = totalMonthly * monthsElapsed;
-    // Group by category
-    const byCategory = {};
-    for (const r of rows) {
-      byCategory[r.category] = (byCategory[r.category] || 0) + r.myYearly;
-    }
+
     return { totalMonthly, totalYearly, ytd, byCategory, count: rows.length };
   }
 

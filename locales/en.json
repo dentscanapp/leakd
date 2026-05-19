@@ -229,6 +229,7 @@
   "insights.ytd": "ESTIMATED YEAR-TO-DATE",
   "lang.choose": "Choose language",
   "lifetime.inflated10y": "10 years at +5%/yr",
+  "lifetime.inflated10yMonthly": "/mo in 10y",
   "lifetime.inflationNote": "Most subs raise prices 3-7%/year. We project 5% — typical for SaaS.",
   "lifetime.inflationTitle": "If prices keep rising",
   "lifetime.invest10y": "10 years invested",
