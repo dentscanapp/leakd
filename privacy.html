@@ -90,7 +90,7 @@ td { color: var(--text-2); }
   <p>For any privacy-related question or request, write to us at the email above or reach out via our community channels.</p>
 
   <h2>2. What Leakd is</h2>
-  <p>Leakd is a Progressive Web App for tracking personal and business subscriptions. It runs entirely in your browser and stores your data locally in your device's <em>localStorage</em> and the <em>Cache API</em>. Without enabling Pro features, no part of your subscription data leaves your device.</p>
+  <p>Leakd is a Progressive Web App for tracking personal and business subscriptions. It runs entirely in your browser and stores your data locally in your device's <em>localStorage</em>, <em>IndexedDB</em>, and the <em>Cache API</em>. Without enabling Pro features, no part of your subscription data leaves your device.</p>
 
   <h2>3. Data we process locally (never sent to us)</h2>
   <ul>
@@ -169,7 +169,7 @@ td { color: var(--text-2); }
   <p>Backup / export / Tax Report / Calendar features produce files that you download or share at your own discretion. We never see those files. Treat them as sensitive — anyone who opens them sees your subscriptions.</p>
 
   <h2>9. Local storage and cookies</h2>
-  <p>Leakd does <strong>not</strong> use cookies. We use the browser's <em>localStorage</em> and <em>Cache API</em> to persist data on your device. These are required for the app to function and store no personal data accessible to anyone but you.</p>
+  <p>Leakd does <strong>not</strong> use cookies. We use the browser's <em>localStorage</em>, <em>IndexedDB</em> (as a backup when localStorage reaches its quota), and the <em>Cache API</em> to persist data on your device. These are required for the app to function and store no personal data accessible to anyone but you.</p>
 
   <h2>10. Children</h2>
   <p>Leakd is not directed at children under 16. We do not knowingly process data from minors. If you believe a minor has used the app, contact us and we will assist with deletion of any locally-stored data.</p>

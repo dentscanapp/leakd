@@ -229,14 +229,61 @@
   }
 
   // ── 12-month projection bar chart data ──
+
+  // Explicit short month names for reliable localization.
+  // The Intl/toLocaleDateString API is unreliable in some environments
+  // (file:// protocol, minimal ICU builds) so we hardcode the most
+  // common languages. Unknown languages fall back to Intl.
+  const SHORT_MONTHS = {
+    en: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    hu: ['jan.','feb.','már.','ápr.','máj.','jún.','júl.','aug.','szept.','okt.','nov.','dec.'],
+    de: ['Jan.','Feb.','Mär.','Apr.','Mai','Jun.','Jul.','Aug.','Sep.','Okt.','Nov.','Dez.'],
+    es: ['ene.','feb.','mar.','abr.','may.','jun.','jul.','ago.','sept.','oct.','nov.','dic.'],
+    fr: ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'],
+    it: ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'],
+    pt: ['jan.','fev.','mar.','abr.','mai.','jun.','jul.','ago.','set.','out.','nov.','dez.'],
+    nl: ['jan.','feb.','mrt.','apr.','mei','jun.','jul.','aug.','sep.','okt.','nov.','dec.'],
+    pl: ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'],
+    cs: ['led','úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro'],
+    sk: ['jan','feb','mar','apr','máj','jún','júl','aug','sep','okt','nov','dec'],
+    ro: ['ian.','feb.','mar.','apr.','mai','iun.','iul.','aug.','sept.','oct.','nov.','dec.'],
+    sv: ['jan.','feb.','mars','apr.','maj','juni','juli','aug.','sep.','okt.','nov.','dec.'],
+    ja: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    ko: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+    zh: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    ru: ['янв.','фев.','мар.','апр.','май','июн.','июл.','авг.','сен.','окт.','ноя.','дек.'],
+    tr: ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'],
+    uk: ['січ.','лют.','бер.','кві.','тра.','чер.','лип.','сер.','вер.','жов.','лис.','гру.'],
+    hr: ['sij','vlj','ožu','tra','svi','lip','srp','kol','ruj','lis','stu','pro'],
+    bg: ['яну','фев','мар','апр','май','юни','юли','авг','сеп','окт','ное','дек'],
+    el: ['Ιαν','Φεβ','Μάρ','Απρ','Μάι','Ιού','Ιού','Αύγ','Σεπ','Οκτ','Νοέ','Δεκ'],
+    hi: ['जन','फर','मार्च','अप्रैल','मई','जून','जुल','अग','सित','अक्टू','नव','दिस'],
+    th: ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],
+    vi: ['Th1','Th2','Th3','Th4','Th5','Th6','Th7','Th8','Th9','Th10','Th11','Th12'],
+    id: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'],
+    fil: ['Ene','Peb','Mar','Abr','May','Hun','Hul','Ago','Set','Okt','Nob','Dis'],
+    ca: ['gen.','feb.','març','abr.','maig','juny','jul.','ag.','set.','oct.','nov.','des.'],
+  };
+
+  function shortMonthLabel(monthIndex, lang) {
+    const table = SHORT_MONTHS[lang];
+    if (table) return table[monthIndex];
+    // Fallback for any language not in the table
+    try {
+      const d = new Date(2000, monthIndex, 1);
+      return d.toLocaleDateString(lang, { month: 'short' });
+    } catch { return SHORT_MONTHS.en[monthIndex]; }
+  }
+
   function twelveMonthProjection(subs) {
     const monthly = totals(subs).monthly;
     const result = [];
     const now = new Date();
+    const lang = (window.LeakdI18n && window.LeakdI18n.lang) || 'en';
     for (let i = 0; i < 12; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
       result.push({
-        label: d.toLocaleDateString((window.LeakdI18n && window.LeakdI18n.lang) || 'en', { month: 'short' }),
+        label: shortMonthLabel(d.getMonth(), lang),
         amount: monthly,
       });
     }

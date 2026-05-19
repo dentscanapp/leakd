@@ -934,9 +934,6 @@
     const maxBar = Math.max(1, ...proj.map(p => p.amount));
     $('chartBars').innerHTML = proj.map(p => {
       const pct = (p.amount / maxBar) * 100;
-      const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
-      const label = new Date(2000, parseInt(p.label === 'Jan' ? 0 : 0, 10)); // fallback, see below
-      // Just use the engine's labels for now; localize if needed later
       return `<div class="chart-bar-col"><div class="chart-bar" style="height:${pct}%"></div><div class="chart-bar-label">${p.label}</div></div>`;
     }).join('');
     $('chartTotal').textContent = formatPrice(totals.yearly) + ' /' + t('cycle.yr').replace('/', '');
