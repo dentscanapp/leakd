@@ -2809,6 +2809,10 @@
 
   // ─── Year-end report ───
   function openYearendModal() {
+    if (window.LeakdPro && !window.LeakdPro.isPro()) {
+      openProModal();
+      return;
+    }
     if (!window.LeakdYearEnd) return;
     const report = window.LeakdYearEnd.computeReport(activeSubs());
     $('yearendTitle').textContent = t('yearend.title', { year: report.year });
@@ -2952,6 +2956,7 @@
     $('menuExport').addEventListener('click', () => { closeMenuModal(); exportCSV(); });
     $('menuPdf').addEventListener('click', () => {
       closeMenuModal();
+      if (window.LeakdPro && !window.LeakdPro.isPro()) { openProModal(); return; }
       let list = activeSubs();
       if (insightsFilter === 'business') list = list.filter(s => s.isBusiness);
       if (insightsFilter === 'personal') list = list.filter(s => !s.isBusiness);
