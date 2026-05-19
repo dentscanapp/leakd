@@ -292,15 +292,96 @@
   }
 
   // ─── Data ───
+
+  // IndexedDB fallback — used when localStorage quota is exceeded.
+  // IndexedDB has ~50-100MB of space vs localStorage's ~5MB.
+  const IDB_NAME = 'leakd_fallback';
+  const IDB_STORE = 'kv';
+  let idbFallbackActive = false;
+
+  function openIDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function idbSet(key, value) {
+    try {
+      const db = await openIDB();
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).put(value, key);
+      await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+    } catch (e) {
+      console.error('IndexedDB write failed', e);
+    }
+  }
+
+  async function idbGet(key) {
+    try {
+      const db = await openIDB();
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const req = tx.objectStore(IDB_STORE).get(key);
+      return await new Promise((res, rej) => { req.onsuccess = () => res(req.result); req.onerror = rej; });
+    } catch { return undefined; }
+  }
+
   function loadData() {
     try { const raw = localStorage.getItem(STORAGE_KEY); subs = raw ? JSON.parse(raw) : []; } catch { subs = []; }
     try { const raw = localStorage.getItem(SETTINGS_KEY); if (raw) settings = { ...settings, ...JSON.parse(raw) }; } catch {}
+
+    // If localStorage was empty, check IndexedDB for a fallback copy
+    if (subs.length === 0) {
+      idbGet(STORAGE_KEY).then(raw => {
+        if (raw) {
+          try {
+            const restored = JSON.parse(raw);
+            if (Array.isArray(restored) && restored.length > 0) {
+              subs = restored;
+              idbFallbackActive = true;
+              render();
+              toast('♻️ ' + t('error.restoredFromFallback'));
+            }
+          } catch {}
+        }
+      });
+    }
+    if (!settings.currencyCode) {
+      idbGet(SETTINGS_KEY).then(raw => {
+        if (raw) {
+          try { const s = JSON.parse(raw); if (s) { settings = { ...settings, ...s }; window.LeakdState = settings; } } catch {}
+        }
+      });
+    }
+
     window.LeakdState = settings;
   }
 
   function saveData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(subs));
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    const subsJson = JSON.stringify(subs);
+    const settingsJson = JSON.stringify(settings);
+
+    try {
+      localStorage.setItem(STORAGE_KEY, subsJson);
+      localStorage.setItem(SETTINGS_KEY, settingsJson);
+      idbFallbackActive = false;
+    } catch (e) {
+      console.error('saveData: localStorage full, falling back to IndexedDB', e);
+      idbFallbackActive = true;
+
+      // Save to IndexedDB as fallback
+      idbSet(STORAGE_KEY, subsJson);
+      idbSet(SETTINGS_KEY, settingsJson);
+
+      // Show helpful message with sync CTA for non-Pro users
+      if (window.LeakdPro && window.LeakdPro.isPro()) {
+        toast('⚠️ ' + t('error.storageFull'));
+      } else {
+        toast('⚠️ ' + t('error.storageFullUpgrade'));
+      }
+    }
     window.LeakdState = settings;
     mirrorStateToCache();
     rescheduleNotifications();

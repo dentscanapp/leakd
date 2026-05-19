@@ -590,5 +590,8 @@
   "pdf.colCategory": "Kategória",
   "pdf.colBilling": "Számlázási ciklus",
   "pdf.colAmount": "Összeg",
-  "pdf.footer": "Automatikusan generálva a Leakd alkalmazással (leakd.app)"
+  "pdf.footer": "Automatikusan generálva a Leakd alkalmazással (leakd.app)",
+  "error.storageFull": "A tárhely megtelt — az adataid biztonsági tárhelyre lettek mentve. Engedélyezd a felhő szinkronizálást a biztonság érdekében.",
+  "error.storageFullUpgrade": "A tárhely megtelt — az adataid biztonsági tárhelyre lettek mentve. Váltás Pro-ra a felhő szinkronizálásért!",
+  "error.restoredFromFallback": "Adatok visszaállítva a biztonsági tárhelyről."
 }

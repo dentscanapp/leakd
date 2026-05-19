@@ -590,5 +590,8 @@
   "pdf.colCategory": "Category",
   "pdf.colBilling": "Billing Cycle",
   "pdf.colAmount": "Amount",
-  "pdf.footer": "Generated automatically by Leakd App (leakd.app)"
+  "pdf.footer": "Generated automatically by Leakd App (leakd.app)",
+  "error.storageFull": "Storage full — your data was saved to backup storage. Enable cloud sync for safety.",
+  "error.storageFullUpgrade": "Storage full — your data was saved to backup storage. Upgrade to Pro for cloud sync!",
+  "error.restoredFromFallback": "Data restored from backup storage."
 }
