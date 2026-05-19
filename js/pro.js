@@ -41,7 +41,7 @@
     // While true, EVERY user sees Pro features unlocked for testing.
     // Search for "TEMP_UNLOCK_PRO" to find and revert.
     // ────────────────────────────────────────────────────────────────
-    TEMP_UNLOCK_PRO: true,
+    TEMP_UNLOCK_PRO: false,
 
     isPro() {
       if (this.TEMP_UNLOCK_PRO) return true;

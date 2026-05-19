@@ -403,6 +403,40 @@
     if (!res.ok) { const e = new Error('DRIVE_GET_FAILED:' + res.status); e.code = 'DRIVE_FAILED'; throw e; }
     return await res.text();
   }
+  // Permanently delete the encrypted blob from the user's Google Drive
+  // appDataFolder. Used by the in-app "Disable + delete remote" flow so
+  // turning off Cloud Sync actually removes the data (GDPR Art. 17).
+  // Looks the file up by name if no fileId is provided. Returns:
+  //   { ok: true,  deleted: true }   — file was found and DELETE returned 2xx
+  //   { ok: true,  deleted: false }  — no file existed in the first place
+  //   { ok: false, code, status }    — Drive API rejected (caller decides UX)
+  async function deleteRemoteFile() {
+    checkPro();
+    await ensureToken();
+    let fileId = (loadMeta().fileId) || null;
+    if (!fileId) {
+      const f = await findSyncFile();
+      fileId = f && f.id;
+    }
+    if (!fileId) {
+      return { ok: true, deleted: false };
+    }
+    const res = await driveFetch(
+      'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(fileId),
+      { method: 'DELETE' }
+    );
+    // 204 No Content on success; 404 = already gone (treat as success).
+    if (res.status === 204 || res.status === 200 || res.status === 404) {
+      const meta = loadMeta();
+      delete meta.fileId;
+      delete meta.remoteUpdated;
+      saveMeta(meta);
+      notify('remote-deleted', { fileId });
+      return { ok: true, deleted: res.status !== 404 };
+    }
+    return { ok: false, code: 'DRIVE_DELETE_FAILED', status: res.status };
+  }
+
   async function uploadFile(fileId, content) {
     const boundary = 'leakd-' + Math.random().toString(36).slice(2);
     const metadata = fileId
@@ -635,6 +669,7 @@
       isEnabled, setEnabled,
       // Operations
       push, pull, sync, schedulePush,
+      deleteRemoteFile,
       // Inspection
       status,
       // Reset

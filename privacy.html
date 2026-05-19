@@ -217,7 +217,8 @@ td { color: var(--text-2); }
   <h3>17.1 Local data on your device</h3>
   <p>Settings → <strong>Reset all data</strong> wipes your subscription list, settings, history, activity log, cancellation registry, goals, budgets, income, streak data, and Pro license cache. Action is immediate and irreversible. You may also uninstall the PWA / clear site data via your browser to remove everything stored by the app.</p>
   <h3>17.2 Cloud Sync data (Pro)</h3>
-  <p>If you enabled Cloud Sync, turn it off in Settings → Cloud Sync. To delete the encrypted blob stored in your own Google Drive:</p>
+  <p>If you enabled Cloud Sync, turn it off in Settings → Cloud Sync. When you disable sync, the app asks whether you'd also like to <strong>permanently delete the encrypted backup file from your Google Drive in the same step</strong> — a single confirmation calls Google Drive's <code>files.delete</code> API and the blob is gone for good.</p>
+  <p>If for any reason the in-app deletion fails, you can also remove the file manually:</p>
   <ul>
     <li>Open <a href="https://drive.google.com" target="_blank" rel="noopener">drive.google.com</a> → Settings → Manage apps → find Leakd → Delete hidden app data, <em>or</em></li>
     <li>Email us at <a href="mailto:hello@leakd.app">hello@leakd.app</a> and we will guide you through the steps.</li>

@@ -2830,14 +2830,31 @@
     }
   }
 
-  function disableSync() {
+  async function disableSync() {
     const S = window.LeakdSync;
     if (!S) return;
     if (!confirm(t('sync.confirmDisable'))) return;
+    // Offer to also wipe the encrypted blob from the user's Google Drive
+    // appDataFolder. Without this the file stays in their Drive forever,
+    // even though we've cleared every local trace — a GDPR rough edge.
+    let deletedRemote = false;
+    if (confirm(t('sync.confirmDeleteRemote'))) {
+      try {
+        const r = await S.deleteRemoteFile();
+        if (r && r.ok) {
+          deletedRemote = r.deleted;
+        } else {
+          toast(t('sync.deleteRemoteFailed'));
+        }
+      } catch (e) {
+        console.warn('Remote delete failed', e);
+        toast(t('sync.deleteRemoteFailed'));
+      }
+    }
     S.lock();
     S.signOut();
     S.setEnabled(false);
-    toast(t('sync.disabledOk'));
+    toast(t(deletedRemote ? 'sync.disabledAndWiped' : 'sync.disabledOk'));
     refreshSyncUI();
   }
 
