@@ -249,7 +249,15 @@
       'My Monthly', 'My Yearly',
       'Vendor URL', 'Notes', 'Sub ID', 'Created'
     ].map(q).join(',');
-    const lines = [header];
+    // Legal disclaimer as a leading `#`-comment row. Most CSV importers
+    // (Python csv with comment.char, PostgreSQL COPY, R read.csv) treat
+    // lines starting with `#` as comments; Excel and Google Sheets render
+    // it as a single cell in row 1 — still safe, still readable.
+    const disclaimer = t('tax.disclaimer').replace(/[\r\n]+/g, ' ');
+    const lines = [
+      '# ' + disclaimer,
+      header,
+    ];
     for (const r of rows) {
       lines.push([
         r.name, r.category, r.cycle, r.currency,
