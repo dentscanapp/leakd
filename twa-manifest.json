@@ -4,19 +4,24 @@
   "name": "Leakd",
   "launcherName": "Leakd",
   "display": "standalone",
-  "themeColor": "#ef4444",
-  "navigationColor": "#0f0f0f",
-  "navigationColorDark": "#0f0f0f",
-  "navigationDividerColor": "#0f0f0f",
-  "navigationDividerColorDark": "#0f0f0f",
-  "backgroundColor": "#0f0f0f",
+  "themeColor": "#EF4444",
+  "themeColorDark": "#000000",
+  "navigationColor": "#0F0F0F",
+  "navigationColorDark": "#0F0F0F",
+  "navigationDividerColor": "#0F0F0F",
+  "navigationDividerColorDark": "#0F0F0F",
+  "backgroundColor": "#0F0F0F",
   "enableNotifications": true,
   "startUrl": "/",
   "iconUrl": "https://leakd.app/icons/icon-512.png",
   "maskableIconUrl": "https://leakd.app/icons/icon-512.png",
   "splashScreenFadeOutDuration": 300,
-  "appVersionName": "1.7.0",
-  "appVersionCode": 17,
+  "signingKey": {
+    "path": "c:/Users/local_user/Documents/leakd/leakd/android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1.0",
+  "appVersionCode": 19,
   "shortcuts": [
     {
       "name": "Add subscription",
@@ -36,7 +41,7 @@
   "fallbackType": "customtabs",
   "features": {
     "playBilling": {
-      "enabled": false
+      "enabled": true
     }
   },
   "alphaDependencies": {
@@ -47,5 +52,10 @@
   "isMetaQuest": false,
   "fullScopeUrl": "https://leakd.app/",
   "minSdkVersion": 21,
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "displayOverride": [],
+  "appVersion": "1.0"
 }

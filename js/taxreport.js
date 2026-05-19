@@ -258,9 +258,25 @@
       '# ' + disclaimer,
       header,
     ];
+    // Localized labels for category + cycle, matching what the user sees
+    // in the app and the PDF report. The CSV's column HEADERS stay in
+    // English so cross-language tools (pivot tables, accounting software)
+    // still find them by name.
+    const localCat = (key) => {
+      if (!window.LeakdI18n) return key;
+      const v = window.LeakdI18n.t('cat.' + key);
+      return v && v !== 'cat.' + key ? v : key;
+    };
+    const localCycle = (cycle) => {
+      const map = { monthly: 'cycle.monthly', yearly: 'cycle.yearly', weekly: 'cycle.weekly' };
+      const k = map[cycle];
+      if (!k || !window.LeakdI18n) return cycle;
+      const v = window.LeakdI18n.t(k);
+      return v && v !== k ? v : cycle;
+    };
     for (const r of rows) {
       lines.push([
-        r.name, r.category, r.cycle, r.currency,
+        r.name, localCat(r.category), localCycle(r.cycle), r.currency,
         Number(r.price).toFixed(2),
         r.sharedWith,
         Number(r.myPrice).toFixed(2),
