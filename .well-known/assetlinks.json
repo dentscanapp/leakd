@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "app.leakd.twa",
       "sha256_cert_fingerprints": [
-        "15:05:DE:C2:47:E4:C0:DE:5B:B2:17:9C:6F:6A:CA:D7:46:D2:FA:E7:8D:90:15:2A:24:88:17:62:D4:84:E3:F9"
+        "15:05:DE:C2:47:E4:C0:DE:5B:B2:17:9C:6F:6A:CA:D7:46:D2:FA:E7:8D:90:15:2A:24:88:17:62:D4:84:E3:F9",
+        "11:39:25:F8:06:D8:20:0E:6B:02:57:16:8D:1C:BB:0D:A9:C6:D1:F1:24:C2:BA:D0:2F:44:60:F6:A6:82:51:37"
       ]
     }
   }
