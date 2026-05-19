@@ -91,7 +91,20 @@
           // Tell the billing service that the purchase was successful.
           // Note: In Digital Goods API 2.0, acknowledge() was removed from the client.
           // It MUST be done via a backend server, otherwise Google Play refunds the purchase in 3 days.
-          // await service.acknowledge(purchaseToken, 'repeatable');
+          
+          try {
+            const ackRes = await fetch('https://leakd-billing-worker.peterpetor1987.workers.dev', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                purchaseToken: purchaseToken,
+                subscriptionId: skuId
+              })
+            });
+            if (!ackRes.ok) console.error('Failed to acknowledge purchase via backend');
+          } catch (err) {
+            console.error('Backend ack error:', err);
+          }
           
           this.state = {
             active: true,

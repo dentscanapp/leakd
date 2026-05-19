@@ -49,12 +49,12 @@
   const modal          = $('modal');
   const currencyModal  = $('currencyModal');
 
-  function init() {
+  async function init() {
     loadData();
     applyTheme();
     if (window.LeakdPro) window.LeakdPro.load();
     if (window.LeakdI18n) {
-      window.LeakdI18n.init();
+      await window.LeakdI18n.init();
       window.LeakdI18n.onChange(() => { render(); refreshDynamicLabels(); });
     }
     buildLanguageGrid();
