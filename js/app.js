@@ -2648,6 +2648,9 @@
     }
     $('syncError').style.display = 'none';
     $('syncError').textContent = '';
+    $('syncPasswordInput').value = '';
+    $('syncPasswordConfirm').value = '';
+    $('syncStrengthWrapper').style.display = 'none';
     $('syncModal').classList.add('active');
   }
   function closeSyncModal() { $('syncModal').classList.remove('active'); }
@@ -2714,6 +2717,66 @@
     const el = $('syncError');
     el.textContent = map[code] || t('sync.errGeneric', { code });
     el.style.display = '';
+  }
+
+  function checkPasswordStrength(pw) {
+    if (!pw) return null;
+    if (pw.length < 4) {
+      return { score: 0, label: 'sync.pwStrength.tooShort', color: '#ef4444', pct: 15 };
+    }
+
+    let score = 0;
+    if (pw.length >= 8) score += 1;
+    if (pw.length >= 12) score += 1;
+
+    const hasLower = /[a-z]/.test(pw);
+    const hasUpper = /[A-Z]/.test(pw);
+    const hasDigit = /[0-9]/.test(pw);
+    const hasSpecial = /[^A-Za-z0-9]/.test(pw);
+
+    let types = 0;
+    if (hasLower) types++;
+    if (hasUpper) types++;
+    if (hasDigit) types++;
+    if (hasSpecial) types++;
+
+    if (types >= 2) score += 1;
+    if (types >= 4) score += 1;
+
+    const isRepeated = /^(.)\1+$/.test(pw);
+    const isSequential = "abcdefghijklmnopqrstuvwxyz01234567890".indexOf(pw.toLowerCase()) !== -1 ||
+                         "9876543210zyxwvutsrqponmlkjihgfedcba".indexOf(pw.toLowerCase()) !== -1;
+    
+    if (isRepeated || isSequential) {
+      score = Math.max(0, score - 2);
+    }
+
+    const levels = [
+      { score: 0, label: 'sync.pwStrength.weak', color: '#ef4444', pct: 25 },
+      { score: 1, label: 'sync.pwStrength.weak', color: '#f97316', pct: 40 },
+      { score: 2, label: 'sync.pwStrength.fair', color: '#eab308', pct: 60 },
+      { score: 3, label: 'sync.pwStrength.strong', color: '#22c55e', pct: 80 },
+      { score: 4, label: 'sync.pwStrength.excellent', color: '#10b981', pct: 100 }
+    ];
+
+    return levels[score];
+  }
+
+  function updateSyncPasswordStrengthUI() {
+    const pw = $('syncPasswordInput').value;
+    const wrapper = $('syncStrengthWrapper');
+    const fill = $('syncStrengthFill');
+    const label = $('syncStrengthLabel');
+    if (!pw) {
+      wrapper.style.display = 'none';
+      return;
+    }
+    wrapper.style.display = 'block';
+    const strength = checkPasswordStrength(pw);
+    fill.style.width = strength.pct + '%';
+    fill.style.backgroundColor = strength.color;
+    label.textContent = t(strength.label);
+    label.style.color = strength.color;
   }
 
   async function onSyncPrimary() {
@@ -3134,6 +3197,7 @@
     $('syncPrimaryBtn').addEventListener('click', onSyncPrimary);
     $('syncDisableBtn').addEventListener('click', disableSync);
     $('syncProUpgrade').addEventListener('click', () => { closeSyncModal(); openProModal(); });
+    $('syncPasswordInput').addEventListener('input', updateSyncPasswordStrengthUI);
 
     // Bank import
     $('menuBank').addEventListener('click', () => { closeMenuModal(); openBankModal(); });

@@ -593,5 +593,10 @@
   "pdf.footer": "Automatikusan generálva a Leakd alkalmazással (leakd.app)",
   "error.storageFull": "A tárhely megtelt — az adataid biztonsági tárhelyre lettek mentve. Engedélyezd a felhő szinkronizálást a biztonság érdekében.",
   "error.storageFullUpgrade": "A tárhely megtelt — az adataid biztonsági tárhelyre lettek mentve. Váltás Pro-ra a felhő szinkronizálásért!",
-  "error.restoredFromFallback": "Adatok visszaállítva a biztonsági tárhelyről."
+  "error.restoredFromFallback": "Adatok visszaállítva a biztonsági tárhelyről.",
+  "sync.pwStrength.tooShort": "Túl rövid",
+  "sync.pwStrength.weak": "Gyenge",
+  "sync.pwStrength.fair": "Közepes",
+  "sync.pwStrength.strong": "Erős",
+  "sync.pwStrength.excellent": "Kiváló"
 }

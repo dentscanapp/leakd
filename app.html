@@ -1309,6 +1309,12 @@
       <div class="sync-section-title" data-i18n="sync.passwordTitle">Master password</div>
       <p class="sync-section-help" id="syncPasswordHelp" data-i18n="sync.passwordHelp">Pick a strong password — only you know it, and we use it to encrypt your data before it leaves the device.</p>
       <input type="password" id="syncPasswordInput" class="form-input" data-i18n-placeholder="sync.passwordPh" placeholder="Master password" autocomplete="new-password">
+      <div class="sync-strength-wrapper" id="syncStrengthWrapper" style="display:none; margin-top: 8px; margin-bottom: 4px;">
+        <div class="sync-strength-bar" style="background: rgba(150, 150, 150, 0.2); height: 4px; border-radius: 2px; overflow: hidden; width: 100%;">
+          <div id="syncStrengthFill" style="height: 100%; width: 0%; border-radius: 2px; transition: width 0.3s ease, background-color 0.3s ease;"></div>
+        </div>
+        <div id="syncStrengthLabel" style="font-size: 0.75rem; font-weight: 500; margin-top: 4px; text-align: left;"></div>
+      </div>
       <input type="password" id="syncPasswordConfirm" class="form-input" data-i18n-placeholder="sync.passwordConfirmPh" placeholder="Confirm password" autocomplete="new-password" style="margin-top:8px">
       <div class="sync-warning" data-i18n="sync.passwordWarn">If you forget this password, your encrypted data cannot be recovered.</div>
     </div>

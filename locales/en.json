@@ -593,5 +593,10 @@
   "pdf.footer": "Generated automatically by Leakd App (leakd.app)",
   "error.storageFull": "Storage full — your data was saved to backup storage. Enable cloud sync for safety.",
   "error.storageFullUpgrade": "Storage full — your data was saved to backup storage. Upgrade to Pro for cloud sync!",
-  "error.restoredFromFallback": "Data restored from backup storage."
+  "error.restoredFromFallback": "Data restored from backup storage.",
+  "sync.pwStrength.tooShort": "Too short",
+  "sync.pwStrength.weak": "Weak",
+  "sync.pwStrength.fair": "Fair",
+  "sync.pwStrength.strong": "Strong",
+  "sync.pwStrength.excellent": "Excellent"
 }
