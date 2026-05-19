@@ -1,13 +1,23 @@
 {
   "rewrites": [
     { "source": "/app.html", "destination": "/app.html" },
+    { "source": "/app", "destination": "/app.html" },
+    { "source": "/landing.html", "destination": "/landing.html" },
+    { "source": "/landing", "destination": "/landing.html" },
     { "source": "/privacy.html", "destination": "/privacy.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/terms.html", "destination": "/terms.html" },
+    { "source": "/terms", "destination": "/terms.html" },
     { "source": "/about.html", "destination": "/about.html" },
+    { "source": "/about", "destination": "/about.html" },
     { "source": "/blog.html", "destination": "/blog.html" },
+    { "source": "/blog", "destination": "/blog.html" },
     { "source": "/contact.html", "destination": "/contact.html" },
+    { "source": "/contact", "destination": "/contact.html" },
     { "source": "/roadmap.html", "destination": "/roadmap.html" },
+    { "source": "/roadmap", "destination": "/roadmap.html" },
     { "source": "/changelog.html", "destination": "/changelog.html" },
+    { "source": "/changelog", "destination": "/changelog.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [

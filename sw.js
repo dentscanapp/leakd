@@ -1,7 +1,8 @@
-const CACHE_NAME = 'leakd-v102';
+const CACHE_NAME = 'leakd-v103';
 const ASSETS = [
   './',
   'index.html',
+  'landing.html',
   'app.html',
   'privacy.html',
   'terms.html',
@@ -9,6 +10,7 @@ const ASSETS = [
   'blog.html',
   'contact.html',
   'roadmap.html',
+  'changelog.html',
   'landing/assets/favicon.svg',
   'landing/assets/google-play.png',
   'css/app.css',
