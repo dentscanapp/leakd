@@ -1049,6 +1049,39 @@ a.btn-primary {
 .onboard-card h2 { font-size: 24px; font-weight: 700; margin-bottom: 10px; }
 .onboard-card p { font-size: 14px; color: var(--text-2); line-height: 1.55; margin-bottom: 24px; }
 .onboard-card .btn-primary { width: 100%; padding: 12px; font-size: 15px; }
+
+/* Legal acceptance block on onboarding step 1.
+   Required for the Terms of Service / Privacy Policy to be enforceable
+   in Hungary (explicit user acceptance is a precondition for valid ÁSZF). */
+.onboard-legal {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+.onboard-legal input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.onboard-legal a {
+  color: var(--accent);
+  text-decoration: underline;
+  font-weight: 500;
+}
+.onboard-legal a:hover { text-decoration: none; }
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }

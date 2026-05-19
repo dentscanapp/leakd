@@ -2879,7 +2879,7 @@
   function resetAll() {
     if (!confirm(t('reset.confirm1'))) return;
     if (!confirm(t('reset.confirm2'))) return;
-    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done','leakd_activity','leakd_rates','leakd_streak','leakd_sync_meta','leakd_sync_salt','leakd_sync_enabled']
+    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done','leakd_activity','leakd_rates','leakd_streak','leakd_sync_meta','leakd_sync_salt','leakd_sync_enabled','leakd_terms_accepted']
       .forEach(k => localStorage.removeItem(k));
     location.reload();
   }
@@ -3197,9 +3197,30 @@
     document.querySelectorAll('[data-onboard-next]').forEach(btn => {
       btn.addEventListener('click', () => {
         const step = parseInt(btn.closest('.onboard-step').dataset.step, 10);
+        // On step 1, persist the user's explicit acceptance of the Terms +
+        // Privacy Policy with a timestamp and the current app version.
+        // This is the audit trail required for the ÁSZF to be enforceable
+        // (Hungarian consumer law) and the GDPR consent record (Art. 7(1)).
+        if (step === 1) {
+          const cb = $('onboardAcceptTerms');
+          if (cb && cb.checked) {
+            localStorage.setItem('leakd_terms_accepted', JSON.stringify({
+              acceptedAt: new Date().toISOString(),
+              version: window.LeakdVersion || 'unknown',
+              terms: 'terms.html',
+              privacy: 'privacy.html',
+            }));
+          }
+        }
         if (step < 3) setOnboardStep(step + 1); else finishOnboard();
       });
     });
+    // Gate the step-1 Next button on the legal-acceptance checkbox.
+    const acceptCb = $('onboardAcceptTerms');
+    const step1Next = $('onboardStep1Next');
+    if (acceptCb && step1Next) {
+      acceptCb.addEventListener('change', () => { step1Next.disabled = !acceptCb.checked; });
+    }
     document.querySelectorAll('[data-onboard-skip]').forEach(btn => btn.addEventListener('click', finishOnboard));
     $('onboardEnableNotif').addEventListener('click', async () => {
       const N = window.LeakdNotify;

@@ -28,65 +28,56 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: 'DM Sans', -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.6;
-  padding: 40px 20px 80px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
 }
-.container { max-width: 720px; margin: 0 auto; }
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--text-2);
-  text-decoration: none;
-  font-size: 14px;
-  margin-bottom: 32px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-}
-.back:hover { color: var(--accent); border-color: var(--accent); }
+.container { max-width: 720px; margin: 0 auto; padding: 48px 24px 96px; }
+.back { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-block; margin-bottom: 32px; }
+.back:hover { text-decoration: underline; }
 h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
-.subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 40px; }
-h2 { font-size: 20px; font-weight: 600; margin: 32px 0 12px; }
-p { margin-bottom: 12px; color: var(--text-2); }
-strong { color: var(--text); }
-ul { margin: 10px 0 14px 22px; }
-li { margin-bottom: 6px; color: var(--text-2); }
-.tldr {
+.subtitle { color: var(--text-3); font-size: 14px; margin-bottom: 32px; }
+h2 { font-size: 18px; font-weight: 700; margin-top: 32px; margin-bottom: 10px; color: var(--text); }
+h3 { font-size: 15px; font-weight: 700; margin-top: 18px; margin-bottom: 6px; color: var(--text); }
+p { color: var(--text-2); margin-bottom: 12px; font-size: 15px; }
+ul { padding-left: 20px; margin-bottom: 14px; color: var(--text-2); font-size: 15px; }
+li { margin-bottom: 6px; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.tldr { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; }
+.tldr-label { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; margin-bottom: 6px; }
+.lang-switch { display: flex; gap: 8px; margin-bottom: 32px; }
+.lang-switch button {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 6px 14px; cursor: pointer; font-family: inherit; color: var(--text-2); font-size: 13px;
+  transition: all 0.15s;
+}
+.lang-switch button.active { background: var(--accent); color: white; border-color: var(--accent); }
+section[lang] { display: none; }
+section[lang].active { display: block; }
+.controller {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
   border-radius: 8px;
-  padding: 16px 20px;
-  margin: 24px 0;
+  padding: 12px 16px;
+  margin: 12px 0 16px;
+  font-size: 14px;
+  color: var(--text);
 }
-.tldr-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.lang-switch { display: flex; gap: 8px; margin-bottom: 32px; }
-.lang-switch button {
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
+.controller strong { display: block; margin-bottom: 4px; font-size: 13px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
+.callout {
+  background: rgba(217, 119, 6, 0.08);
+  border-left: 3px solid #d97706;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin: 14px 0;
+  font-size: 14px;
   color: var(--text-2);
-  font-family: inherit;
-  font-size: 13px;
-  cursor: pointer;
 }
-.lang-switch button.active { border-color: var(--accent); color: var(--accent); }
-section[lang] { display: none; }
-section.active { display: block; }
-a { color: var(--accent); }
+.callout strong { color: var(--text); }
 </style>
 </head>
 <body>
@@ -99,114 +90,309 @@ a { color: var(--accent); }
     <button data-lang="hu">Magyar</button>
   </div>
 
+  <!-- ─── ENGLISH ─── -->
   <section lang="en" class="active">
     <h1>Terms of Service</h1>
-    <div class="subtitle">Last updated: May 15, 2026</div>
+    <div class="subtitle">Last updated: 19 May 2026</div>
 
     <div class="tldr">
       <div class="tldr-label">TL;DR</div>
-      <p>Leakd is free to use. We don't promise it works perfectly. We can't be sued if you forget to cancel a subscription. Don't try to break the app. That's basically it.</p>
+      <p>Leakd is a personal subscription tracker. The core app is free; some features are unlocked via a paid Pro plan. The app is provided "as is" — we cannot guarantee uninterrupted service, accuracy of reports, or that you won't miss a renewal. Your data lives on your device; backups are your responsibility. EU consumer rights are preserved. These terms are governed by Hungarian law.</p>
     </div>
 
-    <h2>1. Acceptance</h2>
-    <p>By using Leakd, you agree to these terms. If you don't agree, don't use the app. That's fine.</p>
+    <h2>1. Service Provider</h2>
+    <p>The Leakd application and website ("Service") are provided by:</p>
+    <div class="controller">
+      <strong>Service Provider</strong>
+      Petor Péter<br>
+      2233 Ecser, Nádas Béla utca 10<br>
+      Hungary<br>
+      Email: <a href="mailto:hello@leakd.app">hello@leakd.app</a>
+    </div>
+    <p>For any question related to these Terms, contact us at the email above or via our community channels.</p>
 
-    <h2>2. The service</h2>
-    <p>Leakd is a free Progressive Web App that helps you track your own subscriptions on your own device. The Pro version unlocks additional features through a Google Play subscription.</p>
+    <h2>2. Acceptance of Terms</h2>
+    <p>By accessing or using Leakd you agree to be bound by these Terms of Service ("Terms"), the <a href="privacy.html">Privacy Policy</a>, and any additional rules referenced herein. If you do not agree, do not use the Service.</p>
 
-    <h2>3. Free and Pro tiers</h2>
-    <p>The free tier includes core tracking, insights, calendar export, notifications, and more. The Pro tier ($5/month or $40/year) unlocks email reminders, multi-device sync, year-end report, category budgets, and priority support. Pro is billed by Google Play, our payment processor. Subscriptions are managed through your Google Play account.</p>
-
-    <h2>4. Your data</h2>
-    <p>All data you enter into Leakd stays on your device. You are responsible for backing it up. Use the "Backup & restore" feature in Settings to download your data as a JSON file. If you lose your device or clear browser data without backing up, the data is gone — we cannot recover it because we never had it.</p>
-
-    <h2>5. Notifications</h2>
-    <p>Leakd can send local browser notifications about upcoming renewals and trial endings. These run in your browser's service worker. Browser limitations apply — notifications are best-effort and not guaranteed. You should not rely solely on Leakd for critical financial reminders.</p>
-
-    <h2>6. No financial advice</h2>
-    <p>Leakd is a tracking tool. Anything that looks like financial advice ("you could save $X", "if you invested instead") is illustrative math, not investment advice. Past S&P 500 returns do not guarantee future results. Consult a qualified financial advisor before making investment decisions.</p>
-
-    <h2>7. Disclaimer of warranties</h2>
-    <p>Leakd is provided <strong>"as is"</strong> without warranties of any kind. We don't guarantee it will work on your specific device or browser, or that it will be available at any given time. We are not responsible if you miss a renewal reminder, if a subscription auto-renews you didn't want, or if your data gets corrupted.</p>
-
-    <h2>8. Limitation of liability</h2>
-    <p>To the maximum extent permitted by law, our liability for any claim related to Leakd is limited to the amount you paid us in the 12 months preceding the claim (which for most users is zero). We are not liable for indirect, incidental, or consequential damages.</p>
-
-    <h2>9. Acceptable use</h2>
-    <p>Don't:</p>
+    <h2>3. Definitions</h2>
     <ul>
-      <li>Reverse engineer the app to extract Pro features without paying</li>
-      <li>Use the app for anything illegal</li>
-      <li>Try to disrupt or hack the app or its users</li>
+      <li><strong>"Leakd"</strong> / <strong>"Service"</strong> — the Progressive Web App, websites, and Pro features operated by the Service Provider.</li>
+      <li><strong>"You"</strong> / <strong>"User"</strong> — any natural or legal person accessing the Service.</li>
+      <li><strong>"Pro"</strong> — the paid subscription tier of the Service.</li>
+      <li><strong>"Content"</strong> — any data you enter into the Service (subscriptions, notes, budgets, etc.).</li>
     </ul>
-    <p>Beyond that, do whatever you want with it.</p>
 
-    <h2>10. Termination</h2>
-    <p>You can stop using Leakd anytime by closing the tab, uninstalling the PWA, or wiping data with "Reset all data". We can stop offering Leakd anytime — though we'll try to give notice if we do.</p>
+    <h2>4. Eligibility</h2>
+    <p>You must be at least 16 years old to use the Service. By using the Service you represent that you have the legal capacity to enter into these Terms in your jurisdiction.</p>
 
-    <h2>11. Changes to terms</h2>
-    <p>If we change these terms, the updated version will appear here with a new "Last updated" date.</p>
+    <h2>5. Description of Service</h2>
+    <h3>5.1 Free tier</h3>
+    <p>Leakd is a Progressive Web App that helps you track your own personal and business subscriptions on your own device. The free tier includes the core tracking, insights, calendar export, local notifications, bulk import, and other features described in the app.</p>
+    <h3>5.2 Pro tier</h3>
+    <p>The Pro tier unlocks additional features which may include (without limitation): end-to-end encrypted Cloud Sync via Google Drive, Email Reminders, year-end report, the Business Tax Report (PDF + CSV), category budgets, and priority support. The exact feature set is described in-app and may evolve.</p>
 
-    <h2>12. Governing law</h2>
-    <p>These terms are governed by the laws of Hungary (where the developer is based), without regard to conflict of laws principles. EU consumer protection laws apply where relevant.</p>
+    <h2>6. License</h2>
+    <p>Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to access and use the Service for your personal or internal business purposes. No other rights are granted; in particular, you are not permitted to:</p>
+    <ul>
+      <li>copy, modify, or distribute the Service except as expressly allowed;</li>
+      <li>reverse engineer, decompile, or bypass technical limits to unlock Pro features without paying;</li>
+      <li>resell, sublicense, or otherwise commercially exploit the Service;</li>
+      <li>use the Service in violation of applicable law.</li>
+    </ul>
 
-    <h2>13. Contact</h2>
-    <p><a href="mailto:hello@leakd.app">hello@leakd.app</a></p>
+    <h2>7. Pro Subscriptions</h2>
+    <h3>7.1 Billing and renewal</h3>
+    <p>Pro is sold as a monthly or annual subscription via Google Play Billing (or such other payment processor we may add). Subscriptions renew automatically at the price displayed at the time of purchase until cancelled. You can cancel renewal at any time in your Google Play account; cancellation takes effect at the end of the current billing period.</p>
+    <h3>7.2 Refunds</h3>
+    <p>Refunds for Pro are handled by Google Play under Google's refund policy. For consumers in the EU/EEA, additional statutory withdrawal rights apply — see section 7.3.</p>
+    <h3>7.3 EU right of withdrawal (consumer cooling-off)</h3>
+    <p>If you are a consumer resident in the EU/EEA you generally have 14 days to withdraw from a digital service contract under Directive 2011/83/EU. However, by purchasing Pro and immediately accessing Pro features (Cloud Sync, Email Reminders, Tax Report etc.) you expressly request that performance begin during the withdrawal period and you acknowledge that you lose the right of withdrawal once full performance has begun — as permitted by Art. 16(m) of the Directive. To exercise withdrawal before performance has begun, contact us within 14 days of purchase at <a href="mailto:hello@leakd.app">hello@leakd.app</a>.</p>
+    <h3>7.4 Price changes</h3>
+    <p>We may change Pro prices for future billing periods. Where required by law, you will be notified in advance and may cancel before the new price takes effect.</p>
+
+    <h2>8. Your Data and Responsibility</h2>
+    <p>You own and are solely responsible for all Content you enter into the Service. The free tier stores Content only on your device; Pro features may transmit Content as described in the Privacy Policy. <strong>You are responsible for maintaining backups</strong> (use the in-app "Backup &amp; restore" feature). We cannot recover data we never had. If you uninstall the app, clear your browser data, or lose your device without a backup, the Content may be permanently lost.</p>
+
+    <h2>9. Notifications</h2>
+    <p>Leakd can schedule local browser notifications about upcoming renewals or trial endings. These run inside your browser's Service Worker subject to operating-system and browser limitations. Notifications are best-effort and not guaranteed to fire. <strong>Do not rely solely on Leakd for time-critical financial reminders.</strong></p>
+
+    <h2>10. No Financial, Tax, Legal or Accounting Advice</h2>
+    <p>Anything generated by Leakd — including insights, savings comparisons, "if invested instead" math, the Business Tax Report (PDF and CSV), and the year-end summary — is for informational and illustrative purposes only and does not constitute financial, tax, legal, or accounting advice. Past returns do not guarantee future results. You are responsible for the accuracy of the data you enter and for verifying the suitability of any output with a qualified professional.</p>
+    <div class="callout">
+      <strong>Disclaimer.</strong> Reports generated by Leakd are for informational purposes only and do not constitute official tax or accounting advice. The User is responsible for the accuracy of the submitted data.
+    </div>
+
+    <h2>11. Third-Party Services</h2>
+    <p>The Service relies on third parties (Google Fonts, Frankfurter API, Google Drive, Google Identity Services, Cloudflare, Brevo, Google Play Billing). Use of those services is subject to their own terms and privacy policies. We are not responsible for outages, errors, or changes in those services.</p>
+
+    <h2>12. Acceptable Use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>use the Service for any unlawful, fraudulent, harmful, or abusive purpose;</li>
+      <li>attempt to gain unauthorized access to the Service or any related system;</li>
+      <li>interfere with or disrupt the Service, our infrastructure, or other users;</li>
+      <li>upload malware or harmful code;</li>
+      <li>scrape, copy, or otherwise extract content or features beyond what is needed for normal personal use;</li>
+      <li>bypass paid-feature gating, license verification, or rate limits.</li>
+    </ul>
+    <p>We may suspend or terminate access for breach.</p>
+
+    <h2>13. Intellectual Property</h2>
+    <p>The Service, including its source code, design, trademarks, and content (excluding Content you supply), is the intellectual property of the Service Provider or its licensors and is protected by copyright, trademark, and other laws. No rights are transferred to you except the limited license in section 6.</p>
+
+    <h2>14. Disclaimer of Warranties</h2>
+    <p>The Service is provided <strong>"AS IS" and "AS AVAILABLE"</strong> without warranty of any kind, whether express, implied, statutory, or otherwise. To the maximum extent permitted by law we disclaim all warranties, including but not limited to merchantability, fitness for a particular purpose, accuracy, reliability, non-infringement, and that the Service will be uninterrupted, timely, secure, or error-free.</p>
+
+    <h2>15. Limitation of Liability</h2>
+    <p>To the maximum extent permitted by applicable law:</p>
+    <ul>
+      <li>We are not liable for any indirect, incidental, consequential, special, exemplary, or punitive damages, including loss of profits, data, business, or goodwill, arising out of or related to your use of the Service.</li>
+      <li>Our total aggregate liability for any claim related to the Service is limited to the greater of (a) the amount you actually paid us for Pro in the 12 months preceding the event giving rise to the claim, or (b) EUR 50.</li>
+      <li>For users who qualify as consumers in the EU, statutory liability for death, personal injury, gross negligence, intentional misconduct, or any liability that cannot be limited by law is unaffected.</li>
+    </ul>
+
+    <h2>16. Indemnification</h2>
+    <p>To the extent permitted by law, you agree to indemnify and hold harmless the Service Provider and his affiliates against any third-party claim arising from (a) your breach of these Terms, (b) your misuse of the Service, or (c) Content you have entered. This section does not limit consumer rights that cannot be waived under applicable law.</p>
+
+    <h2>17. Termination</h2>
+    <p>You may stop using the Service at any time by closing the app, uninstalling the PWA, or wiping data via Settings → Reset all data. You may cancel a Pro subscription via your Google Play account. We may suspend or terminate access if you breach these Terms or if we discontinue the Service. Surviving sections: 8, 10, 13, 14, 15, 16, 19, 20.</p>
+
+    <h2>18. Force Majeure</h2>
+    <p>We are not liable for any failure or delay caused by events beyond our reasonable control, including (without limitation) acts of God, war, terrorism, riot, embargoes, acts of civil or military authorities, fires, floods, pandemics, internet or telecommunication failures, or third-party service outages.</p>
+
+    <h2>19. Governing Law and Dispute Resolution</h2>
+    <p>These Terms are governed by the laws of Hungary, without regard to its conflict-of-law rules, except for mandatory consumer protection provisions of the country where you reside as a consumer. Disputes shall first be attempted to be resolved amicably by email at <a href="mailto:hello@leakd.app">hello@leakd.app</a>. If unresolved, the competent Hungarian courts have jurisdiction, save for the mandatory jurisdiction of the consumer's place of residence under EU consumer law.</p>
+    <p>For EU consumers, the European Commission's Online Dispute Resolution platform is available at <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</p>
+
+    <h2>20. Severability</h2>
+    <p>If any provision of these Terms is held invalid or unenforceable, the remaining provisions remain in full force and effect; the invalid provision will be replaced by a valid one that most closely reflects the original intent.</p>
+
+    <h2>21. No Waiver</h2>
+    <p>Failure to enforce any provision of these Terms is not a waiver of our right to enforce it later.</p>
+
+    <h2>22. Assignment</h2>
+    <p>You may not assign or transfer your rights under these Terms without our prior written consent. We may assign these Terms to a successor in connection with a merger, acquisition, or sale of assets.</p>
+
+    <h2>23. Changes to Terms</h2>
+    <p>We may update these Terms from time to time. Material changes will be highlighted in-app or via email (where you have provided one for Pro features). The "Last updated" date at the top reflects the current version. Continued use after changes constitutes acceptance.</p>
+
+    <h2>24. Entire Agreement</h2>
+    <p>These Terms together with the Privacy Policy constitute the entire agreement between you and the Service Provider concerning the Service and supersede any prior agreements regarding the same subject matter.</p>
+
+    <h2 id="refund-policy">25. Refund Policy</h2>
+    <p>This section explains how refunds for the Pro subscription work. The free tier costs nothing and is not subject to refunds.</p>
+    <h3>25.1 Refunds via Google Play (default route)</h3>
+    <p>Because Pro is sold through Google Play Billing, refunds are handled by Google under <a href="https://support.google.com/googleplay/answer/2479637" target="_blank" rel="noopener">Google's refund policy</a>:</p>
+    <ul>
+      <li><strong>Within 48 hours of purchase</strong> — you can request an automatic refund directly in Google Play (Play Store → Profile → Payments &amp; subscriptions → Budget &amp; history → tap the purchase → Refund).</li>
+      <li><strong>After 48 hours</strong> — Google reviews requests case-by-case. You may also contact us, but the refund is ultimately processed by Google.</li>
+    </ul>
+    <h3>25.2 EU statutory withdrawal right (14-day cooling-off)</h3>
+    <p>If you are a consumer in the EU/EEA you have 14 days to withdraw from the Pro contract under Directive 2011/83/EU. However, by accessing Pro features (Cloud Sync, Email Reminders, Tax Report etc.) you expressly consent to immediate performance and acknowledge that you lose the withdrawal right once the service has been fully performed (Art. 16(m) of the Directive). To withdraw before performance begins, email <a href="mailto:hello@leakd.app">hello@leakd.app</a> within 14 days of purchase using the wording: <em>"I hereby withdraw from the contract for Leakd Pro purchased on [date]."</em></p>
+    <h3>25.3 EU statutory rights for defective digital content</h3>
+    <p>If Pro fails to conform to the contract (e.g. core advertised features are broken), you have remedies under Directive (EU) 2019/770 (digital content). Contact <a href="mailto:hello@leakd.app">hello@leakd.app</a> with a description and we will work in good faith to bring the service into conformity or, where required by law, provide a refund.</p>
+    <h3>25.4 Manual refund requests</h3>
+    <p>If your situation falls outside the above (e.g. accidental purchase outside Google's 48-hour window, billing error), email <a href="mailto:hello@leakd.app">hello@leakd.app</a> with your order ID. We will review in good faith and respond within 7 business days. Refunds are issued via Google Play's mechanism whenever possible.</p>
+    <h3>25.5 How long refunds take</h3>
+    <p>Once approved by Google, refunds typically appear on your payment method within 1–7 business days, depending on your bank or card issuer.</p>
+    <h3>25.6 Effect on access</h3>
+    <p>Once a refund is issued, your Pro entitlement ends immediately or at the end of the current billing period (Google's decision). Local data on your device is not affected.</p>
+
+    <h2>26. Contact</h2>
+    <p>For any question about these Terms write to <a href="mailto:hello@leakd.app">hello@leakd.app</a> or reach out via our community channels.</p>
   </section>
 
+  <!-- ─── MAGYAR ─── -->
   <section lang="hu">
     <h1>Felhasználási feltételek</h1>
-    <div class="subtitle">Utolsó frissítés: 2026. május 15.</div>
+    <div class="subtitle">Utolsó frissítés: 2026. május 19.</div>
 
     <div class="tldr">
       <div class="tldr-label">A LÉNYEG</div>
-      <p>A Leakd ingyenes. Nem ígérjük hogy tökéletesen működik. Nem perelhetsz be ha elfelejtesz lemondani egy előfizetést. Ne próbáld feltörni az appot. Ennyi.</p>
+      <p>A Leakd egy személyes előfizetés-követő alkalmazás. Az alap funkciók ingyenesek; egyes funkciók fizetős Pro csomaggal érhetők el. A Szolgáltatás „ahogy van" alapon biztosított — nem tudjuk garantálni a megszakítás nélküli működést, a jelentések pontosságát, vagy hogy nem mulasztasz el egy megújulást. Az adataid a saját eszközödön élnek; a mentés a te felelősséged. Az EU fogyasztói jogok érintetlenek. Ezekre a feltételekre a magyar jog vonatkozik.</p>
     </div>
 
-    <h2>1. Elfogadás</h2>
-    <p>A Leakd használatával elfogadod ezeket a feltételeket. Ha nem értesz egyet, ne használd az appot. Ez teljesen rendben van.</p>
+    <h2>1. Szolgáltató</h2>
+    <p>A Leakd alkalmazást és weboldalt („Szolgáltatás") a következő szolgáltató biztosítja:</p>
+    <div class="controller">
+      <strong>Szolgáltató</strong>
+      Petor Péter<br>
+      2233 Ecser, Nádas Béla utca 10<br>
+      Magyarország<br>
+      Email: <a href="mailto:hello@leakd.app">hello@leakd.app</a>
+    </div>
+    <p>A Feltételekkel kapcsolatos bármilyen kérdés esetén lépj kapcsolatba velünk a fenti email címen vagy a közösségi csatornáinkon.</p>
 
-    <h2>2. A szolgáltatás</h2>
-    <p>A Leakd egy ingyenes Progressive Web App, ami segít az előfizetéseid követésében a saját eszközödön. A Pro verzió Google Play előfizetéssel old fel további funkciókat.</p>
+    <h2>2. A Feltételek elfogadása</h2>
+    <p>A Leakd használatával elfogadod, hogy a jelen Felhasználási feltételek („Feltételek"), az <a href="privacy.html">Adatvédelmi tájékoztató</a>, és minden itt hivatkozott további szabály köt téged. Ha nem értesz egyet, ne használd a Szolgáltatást.</p>
 
-    <h2>3. Ingyenes és Pro</h2>
-    <p>Az ingyenes verzió tartalmazza az alap követést, insights-ot, naptár exportot, értesítéseket és többet. A Pro ($5/hó vagy $40/év) feloldja az email emlékeztetőket, multi-device szinkront, év végi jelentést, kategória költségvetést és prioritás támogatást. A Pro-t a Google Play számlázza, ami a fizetési szolgáltatónk. Az előfizetéseket a Google Play fiókodban kezelheted.</p>
-
-    <h2>4. Az adataid</h2>
-    <p>Minden adat amit beviszel a Leakd-be az eszközödön marad. Te felelsz a mentésért. Használd a "Mentés és visszaállítás" funkciót a beállításokban hogy letöltsd JSON fájlként. Ha elveszíted az eszközöd vagy törlöd a böngésző adatokat mentés nélkül, az adatok elvesznek — nem tudjuk visszaállítani, mert sosem voltak nálunk.</p>
-
-    <h2>5. Értesítések</h2>
-    <p>A Leakd lokális böngésző értesítéseket küldhet a közelgő megújulásokról és próbaidő-lejáratokról. Ezek a böngésződ service worker-jén keresztül futnak. Böngésző-korlátozások érvényesek — az értesítések best-effort alapon működnek, nem garantáltak. Ne támaszkodj egyedül a Leakd-re kritikus pénzügyi emlékeztetőkre.</p>
-
-    <h2>6. Nem pénzügyi tanácsadás</h2>
-    <p>A Leakd egy követő eszköz. Bármi ami pénzügyi tanácsnak tűnik ("spórolhatnál $X-et", "ha helyette befektettél volna") szemléltető matematika, nem befektetési tanácsadás. A korábbi S&P 500 hozamok nem garantálják a jövőbeli eredményeket. Konzultálj minősített pénzügyi tanácsadóval mielőtt befektetési döntést hozol.</p>
-
-    <h2>7. Garancia kizárása</h2>
-    <p>A Leakd <strong>"ahogy van"</strong> állapotban szolgáltatott, mindenféle garancia nélkül. Nem garantáljuk hogy a te specifikus eszközödön vagy böngésződben működik, sem hogy bármikor elérhető. Nem vagyunk felelősek ha lekésel egy emlékeztetőt, ha egy előfizetés automatikusan megújul amit nem akartál, vagy ha az adataid korrumpálódnak.</p>
-
-    <h2>8. Felelősség korlátozása</h2>
-    <p>A törvény által megengedett legnagyobb mértékben, a Leakd-del kapcsolatos bármilyen igényért való felelősségünk a kérelem előtti 12 hónapban nekünk fizetett összegre korlátozott (ami a legtöbb usernél nulla). Nem vagyunk felelősek közvetett, járulékos vagy következményi károkért.</p>
-
-    <h2>9. Elfogadható használat</h2>
-    <p>Ne:</p>
+    <h2>3. Fogalommeghatározások</h2>
     <ul>
-      <li>Próbáld visszafejteni az appot hogy fizetés nélkül használd a Pro funkciókat</li>
-      <li>Használd illegális célokra</li>
-      <li>Próbáld megzavarni vagy feltörni az appot vagy más felhasználókat</li>
+      <li><strong>„Leakd"</strong> / <strong>„Szolgáltatás"</strong> — a Szolgáltató által üzemeltetett Progressive Web App, weboldalak és Pro funkciók.</li>
+      <li><strong>„Te"</strong> / <strong>„Felhasználó"</strong> — bármely természetes vagy jogi személy, aki hozzáfér a Szolgáltatáshoz.</li>
+      <li><strong>„Pro"</strong> — a Szolgáltatás fizetős előfizetési szintje.</li>
+      <li><strong>„Tartalom"</strong> — minden adat, amit beviszel a Szolgáltatásba (előfizetések, jegyzetek, költségvetések stb.).</li>
     </ul>
-    <p>Ezen kívül csinálj vele bármit.</p>
 
-    <h2>10. Megszüntetés</h2>
-    <p>Bármikor abbahagyhatod a Leakd használatát: zárd be a tabot, távolítsd el a PWA-t, vagy töröld az adatokat a "Minden adat törlése" gombbal. Mi is bármikor leállíthatjuk a Leakd-et — de értesíteni próbálunk ha igen.</p>
+    <h2>4. Jogosultság</h2>
+    <p>A Szolgáltatás használatához legalább 16 évesnek kell lenned. A Szolgáltatás használatával kijelented, hogy a saját joghatóságodban rendelkezel a Feltételek megkötéséhez szükséges jogképességgel.</p>
 
-    <h2>11. Feltételek módosítása</h2>
-    <p>Ha módosítjuk ezeket a feltételeket, a frissített verzió itt jelenik meg új "Utolsó frissítés" dátummal.</p>
+    <h2>5. A Szolgáltatás leírása</h2>
+    <h3>5.1 Ingyenes szint</h3>
+    <p>A Leakd egy Progressive Web App, amely segít a saját személyes és üzleti előfizetéseid követésében a saját eszközödön. Az ingyenes szint tartalmazza az alapvető követést, insights-ot, naptár-exportot, helyi értesítéseket, tömeges importot és a többi, az appban leírt funkciót.</p>
+    <h3>5.2 Pro szint</h3>
+    <p>A Pro szint további funkciókat old fel, amelyek (a teljesség igénye nélkül) tartalmazhatják: végpontok közötti titkosított Felhő Szinkronizáció Google Drive-on át, Email Emlékeztetők, év végi jelentés, Üzleti Adójelentés (PDF + CSV), kategória költségvetések, és prioritás támogatás. A pontos funkciókészlet az appban van leírva és változhat.</p>
 
-    <h2>12. Irányadó jog</h2>
-    <p>Ezek a feltételek Magyarország (ahol a fejlesztő található) jogszabályai szerint értelmezendők, a jogszabály-ütközések elveinek figyelmen kívül hagyásával. EU fogyasztóvédelmi törvények érvényesek ahol releváns.</p>
+    <h2>6. Licenc</h2>
+    <p>A Feltételek betartásával feltételesen korlátozott, nem-kizárólagos, nem-átruházható, visszavonható licencet adunk a Szolgáltatás eléréséhez és személyes vagy belső üzleti célokra történő használatához. Egyéb jogok nem kerülnek átadásra; különösen nem vagy jogosult:</p>
+    <ul>
+      <li>a Szolgáltatás másolására, módosítására vagy terjesztésére, kivéve ha azt kifejezetten engedélyeztük;</li>
+      <li>visszafejteni, dekompilálni vagy technikai korlátozásokat megkerülni a Pro funkciók fizetés nélküli feloldása érdekében;</li>
+      <li>továbbértékesíteni, allicencbe adni vagy a Szolgáltatást egyébként kereskedelmi célból kihasználni;</li>
+      <li>a Szolgáltatást a vonatkozó jogszabályok megsértésével használni.</li>
+    </ul>
 
-    <h2>13. Kapcsolat</h2>
-    <p><a href="mailto:hello@leakd.app">hello@leakd.app</a></p>
+    <h2>7. Pro előfizetések</h2>
+    <h3>7.1 Számlázás és megújulás</h3>
+    <p>A Pro havi vagy éves előfizetésként vásárolható meg a Google Play Billing-en keresztül (vagy más, később hozzáadott fizetési szolgáltatón keresztül). Az előfizetések automatikusan megújulnak a vásárláskor megjelenített áron, amíg le nem mondod. A megújulást bármikor lemondhatod a Google Play fiókodban; a lemondás az aktuális számlázási időszak végén lép hatályba.</p>
+    <h3>7.2 Visszatérítések</h3>
+    <p>A Pro visszatérítéseket a Google Play kezeli a Google visszatérítési szabályzata szerint. Az EU/EGT területén élő fogyasztóknak további törvényi elállási joguk lehet — lásd a 7.3. pontot.</p>
+    <h3>7.3 EU elállási jog (fogyasztói gondolkodási idő)</h3>
+    <p>Ha az EU/EGT területén élő fogyasztó vagy, általában 14 napon belül elállhatsz egy digitális szolgáltatás-szerződéstől a 2011/83/EU irányelv alapján. Ugyanakkor a Pro megvásárlásával és a Pro funkciók (Felhő Szinkronizáció, Email Emlékeztetők, Adójelentés stb.) azonnali igénybevételével kifejezetten kéred, hogy a teljesítés az elállási időszakban megkezdődjön, és elismered, hogy a teljes teljesítés megkezdése után elveszíted az elállási jogot — ahogyan azt az irányelv 16(m) cikke megengedi. Az elállási jog gyakorlása a teljesítés megkezdése előtt: a vásárlástól számított 14 napon belül írj a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre.</p>
+    <h3>7.4 Árváltozások</h3>
+    <p>A jövőbeli számlázási időszakok árát módosíthatjuk. Ahol a jogszabály előírja, előzetes értesítést kapsz, és lemondhatod az új ár hatálybalépése előtt.</p>
+
+    <h2>8. Adataid és felelősséged</h2>
+    <p>Te tulajdonolsz és kizárólag te vagy felelős minden olyan Tartalomért, amelyet bevittél a Szolgáltatásba. Az ingyenes szint a Tartalmat csak az eszközödön tárolja; a Pro funkciók a Tartalmat az Adatvédelmi tájékoztatóban leírtak szerint továbbíthatják. <strong>Te vagy felelős a biztonsági mentések elkészítéséért</strong> (használd az app-on belüli „Mentés és visszaállítás" funkciót). Nem tudunk olyan adatot visszaállítani, amely sosem volt nálunk. Ha eltávolítod az appot, törlöd a böngésződ adatait, vagy elveszíted az eszközödet biztonsági mentés nélkül, a Tartalom véglegesen elveszhet.</p>
+
+    <h2>9. Értesítések</h2>
+    <p>A Leakd lokális böngésző-értesítéseket képes ütemezni a közelgő megújulásokról vagy próbaidőszak-lejáratokról. Ezek a böngésződ Service Worker-jén belül futnak, az operációs rendszer és böngésző korlátainak alávetve. Az értesítések „best-effort" alapon működnek és nem garantáltan jelennek meg. <strong>Ne támaszkodj egyedül a Leakd-re időkritikus pénzügyi emlékeztetőkhöz.</strong></p>
+
+    <h2>10. Nincs pénzügyi, adó-, jogi vagy könyvelési tanácsadás</h2>
+    <p>Minden, amit a Leakd generál — beleértve az insights-ot, megtakarítás-összehasonlításokat, „ha helyette befektetted volna" számítást, az Üzleti Adójelentést (PDF és CSV), valamint az év végi összegzést — kizárólag tájékoztató és szemléltető jellegű, és nem minősül pénzügyi, adó-, jogi vagy könyvelési tanácsadásnak. A múltbeli hozamok nem garantálják a jövőbeli eredményeket. Te felelsz a bevitt adatok pontosságáért és a kimenetek alkalmasságának ellenőrzéséért szakképzett szakemberrel.</p>
+    <div class="callout">
+      <strong>Felelősségi nyilatkozat.</strong> A Leakd által generált jelentések kizárólag tájékoztató jellegűek, és nem minősülnek hivatalos adó- vagy könyvelési tanácsadásnak. A beküldött adatok helyességéért a Felhasználó felel.
+    </div>
+
+    <h2>11. Harmadik fél szolgáltatások</h2>
+    <p>A Szolgáltatás harmadik felekre támaszkodik (Google Fonts, Frankfurter API, Google Drive, Google Identity Services, Cloudflare, Brevo, Google Play Billing). Ezekre a szolgáltatásokra a saját feltételeik és adatvédelmi szabályzataik vonatkoznak. Nem vagyunk felelősek ezen szolgáltatások kimaradásaiért, hibáiért vagy változásaiért.</p>
+
+    <h2>12. Elfogadható használat</h2>
+    <p>Vállalod, hogy nem:</p>
+    <ul>
+      <li>használod a Szolgáltatást jogellenes, csalárd, káros vagy visszaélésszerű célokra;</li>
+      <li>próbálsz jogosulatlan hozzáférést szerezni a Szolgáltatáshoz vagy bármely kapcsolódó rendszerhez;</li>
+      <li>zavarod meg vagy szakítod meg a Szolgáltatást, az infrastruktúránkat, vagy más felhasználókat;</li>
+      <li>töltesz fel kártevőt vagy káros kódot;</li>
+      <li>kaparod, másolod vagy más módon vonod ki a tartalmat vagy funkciókat a normál személyes használat keretein túl;</li>
+      <li>kerülöd meg a fizetős funkciók kapuit, a licencellenőrzést vagy a sebességkorlátozást.</li>
+    </ul>
+    <p>A Feltételek megsértése esetén felfüggeszthetjük vagy megszüntethetjük a hozzáférésedet.</p>
+
+    <h2>13. Szellemi tulajdon</h2>
+    <p>A Szolgáltatás, beleértve a forráskódját, dizájnját, védjegyeit és tartalmait (kivéve az általad megadott Tartalmat), a Szolgáltató vagy licencadói szellemi tulajdona, és szerzői jogi, védjegyi és egyéb törvények védik. Semmilyen jogot nem ruházunk át rád, kivéve a 6. pontban biztosított korlátozott licencet.</p>
+
+    <h2>14. Garancia kizárása</h2>
+    <p>A Szolgáltatás <strong>„AHOGY VAN" és „AHOGY ELÉRHETŐ"</strong> alapon biztosított, mindenféle garancia nélkül, legyen az kifejezett, ráutaló, jogszabályi vagy egyéb. A jogszabály által megengedett legnagyobb mértékben kizárunk minden garanciát, beleértve a forgalomképességet, adott célra való alkalmasságot, pontosságot, megbízhatóságot, jogtisztaságot, és azt, hogy a Szolgáltatás megszakítás nélküli, időbeni, biztonságos vagy hibamentes.</p>
+
+    <h2>15. Felelősség korlátozása</h2>
+    <p>A vonatkozó jogszabályok által megengedett legnagyobb mértékben:</p>
+    <ul>
+      <li>Nem vagyunk felelősek közvetett, járulékos, következményi, különleges, exemplary vagy büntető jellegű károkért, beleértve a nyereség, adat, üzlet vagy jó hírnév elvesztését, amelyek a Szolgáltatás használatából erednek vagy azzal kapcsolatosak.</li>
+      <li>A Szolgáltatással kapcsolatos bármilyen igényért való teljes összesített felelősségünk a következő közül a nagyobb értékre korlátozott: (a) az az összeg, amit ténylegesen fizettél nekünk Pro-ért az igénylést megalapozó esemény előtti 12 hónapban, vagy (b) 50 EUR.</li>
+      <li>Az EU-ban fogyasztónak minősülő felhasználók esetében a halál, személyi sérülés, súlyos gondatlanság, szándékos kötelességszegés, vagy bármely olyan felelősség, amelyet a jogszabály nem enged korlátozni, érintetlen marad.</li>
+    </ul>
+
+    <h2>16. Kártalanítás</h2>
+    <p>A jogszabály által megengedett mértékben vállalod, hogy kártalanítod és mentesíted a Szolgáltatót és kapcsolt vállalkozásait minden olyan harmadik fél igénytől, amely (a) a Feltételek megsértéséből, (b) a Szolgáltatás visszaéléséből, vagy (c) az általad bevitt Tartalomból ered. Ez a pont nem korlátozza azokat a fogyasztói jogokat, amelyek a vonatkozó jog szerint nem mondhatók le.</p>
+
+    <h2>17. Megszüntetés</h2>
+    <p>Bármikor abbahagyhatod a Szolgáltatás használatát az app bezárásával, a PWA eltávolításával vagy az adatok törlésével a Beállítások → Minden adat törlése gombbal. A Pro előfizetést a Google Play fiókodban mondhatod le. Felfüggeszthetjük vagy megszüntethetjük a hozzáférést, ha megsértettéd a Feltételeket vagy ha leállítjuk a Szolgáltatást. Megszüntetést túlélő szakaszok: 8, 10, 13, 14, 15, 16, 19, 20.</p>
+
+    <h2>18. Vis Maior</h2>
+    <p>Nem vagyunk felelősek olyan hibákért vagy késedelmekért, amelyek észszerű ellenőrzésünkön kívül álló eseményekből erednek, beleértve (a teljesség igénye nélkül) az isteni cselekményeket, háborút, terrorizmust, lázadást, embargókat, polgári vagy katonai hatóságok cselekedeteit, tüzeket, árvizeket, járványokat, internet- vagy távközlési hibákat, vagy harmadik fél szolgáltatások kimaradásait.</p>
+
+    <h2>19. Irányadó jog és vitarendezés</h2>
+    <p>Ezekre a Feltételekre Magyarország jogszabályai irányadók, a jogszabály-ütközések elveinek figyelmen kívül hagyásával, kivéve azon kötelező fogyasztóvédelmi rendelkezéseket, amelyek azon ország területén alkalmazandók, ahol fogyasztóként élsz. A vitákat először békés úton próbáljuk megoldani a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címen. Ha nem oldódnak meg, a magyar bíróságok hatáskörrel rendelkeznek, kivéve az EU fogyasztóvédelmi jog szerinti, a fogyasztó lakóhelye szerinti kötelező joghatóságot.</p>
+    <p>EU fogyasztók számára az Európai Bizottság Online Vitarendezési platformja elérhető a következő címen: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</p>
+    <p>Magyar fogyasztók megyei (fővárosi) Békéltető Testülethez is fordulhatnak: <a href="https://www.bekeltetes.hu" target="_blank" rel="noopener">www.bekeltetes.hu</a>.</p>
+
+    <h2>20. Részleges érvénytelenség</h2>
+    <p>Ha a Feltételek bármely rendelkezése érvénytelennek vagy végrehajthatatlannak minősül, a többi rendelkezés teljes mértékben hatályban marad; az érvénytelen rendelkezést olyan érvényes rendelkezés váltja fel, amely a legközelebb áll az eredeti szándékhoz.</p>
+
+    <h2>21. Joglemondás kizárása</h2>
+    <p>Ha nem érvényesítjük a Feltételek valamely rendelkezését, az nem jelenti azt, hogy később ne érvényesíthetnénk.</p>
+
+    <h2>22. Engedményezés</h2>
+    <p>A jelen Feltételek szerinti jogaidat nem ruházhatod át vagy engedményezheted előzetes írásbeli hozzájárulásunk nélkül. Mi átruházhatjuk ezeket a Feltételeket egyesülés, felvásárlás vagy vagyonértékesítés keretében jogutódra.</p>
+
+    <h2>23. A Feltételek módosítása</h2>
+    <p>A Feltételeket időről időre frissíthetjük. A lényeges változásokat az appban vagy e-mailben (ha a Pro funkciókhoz megadtál egyet) kiemeljük. A tetején lévő „Utolsó frissítés" dátum mutatja az aktuális verziót. A változások utáni folytatólagos használat elfogadásnak minősül.</p>
+
+    <h2>24. Teljes megállapodás</h2>
+    <p>Ezek a Feltételek az Adatvédelmi tájékoztatóval együtt a Szolgáltatásra vonatkozó teljes megállapodást alkotják közted és a Szolgáltató között, és felülírnak minden korábbi azonos tárgyú megállapodást.</p>
+
+    <h2 id="refund-policy-hu">25. Visszatérítési szabályzat</h2>
+    <p>Ez a szakasz a Pro előfizetés visszatérítésének menetét magyarázza. Az ingyenes szint nem kerül semmibe, és nem tartozik visszatérítés alá.</p>
+    <h3>25.1 Visszatérítés a Google Play-en keresztül (alapértelmezett út)</h3>
+    <p>Mivel a Pro-t a Google Play Billing-en keresztül értékesítjük, a visszatérítéseket a Google kezeli a <a href="https://support.google.com/googleplay/answer/2479637" target="_blank" rel="noopener">Google visszatérítési szabályzata</a> alapján:</p>
+    <ul>
+      <li><strong>A vásárlástól számított 48 órán belül</strong> — automatikus visszatérítést kérhetsz közvetlenül a Google Play-en (Play Áruház → Profil → Fizetések és előfizetések → Költségvetés és előzmények → koppints a vásárlásra → Visszatérítés).</li>
+      <li><strong>48 órán túl</strong> — a Google eseti alapon vizsgálja a kérelmeket. Velünk is felveheted a kapcsolatot, de a visszatérítést végül a Google dolgozza fel.</li>
+    </ul>
+    <h3>25.2 EU törvényi elállási jog (14 napos gondolkodási idő)</h3>
+    <p>Ha az EU/EGT területén élő fogyasztó vagy, 14 napod van elállni a Pro szerződéstől a 2011/83/EU irányelv alapján. Ugyanakkor a Pro funkciók (Felhő Szinkronizáció, Email Emlékeztetők, Adójelentés stb.) igénybevételével kifejezetten hozzájárulsz az azonnali teljesítéshez, és elismered, hogy a teljes teljesítés után elveszíted az elállási jogot (az irányelv 16(m) cikke). A teljesítés megkezdése előtti elállás: küldj emailt a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre a vásárlástól számított 14 napon belül a következő szöveggel: <em>„Elállok a [dátumon] megvásárolt Leakd Pro szerződéstől."</em></p>
+    <h3>25.3 EU törvényi jogok hibás digitális tartalom esetén</h3>
+    <p>Ha a Pro nem felel meg a szerződésnek (pl. az alapvető meghirdetett funkciók nem működnek), a 2019/770 (EU) irányelv (digitális tartalom) szerinti jogorvoslatok illetnek meg. Lépj kapcsolatba a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címen a leírással, és jóhiszeműen igyekszünk a szolgáltatást szerződésszerűvé tenni, vagy ahol a jogszabály előírja, visszatérítést adni.</p>
+    <h3>25.4 Manuális visszatérítési kérések</h3>
+    <p>Ha a helyzeted nem esik a fentiek alá (pl. véletlen vásárlás a Google 48 órás ablakán kívül, számlázási hiba), írj a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre a rendelésazonosítóddal. Jóhiszeműen átnézzük és 7 munkanapon belül válaszolunk. A visszatérítéseket lehetőség szerint a Google Play mechanizmusán keresztül adjuk ki.</p>
+    <h3>25.5 Mennyi időt vesz igénybe a visszatérítés</h3>
+    <p>A Google jóváhagyása után a visszatérítés tipikusan 1–7 munkanap alatt jelenik meg a fizetési módodon, a bankodtól vagy a kártyakibocsátódtól függően.</p>
+    <h3>25.6 A hozzáférésre gyakorolt hatás</h3>
+    <p>A visszatérítés kiadása után a Pro jogosultság azonnal vagy az aktuális számlázási időszak végén megszűnik (a Google döntése szerint). Az eszközödön lévő helyi adatokra nincs hatással.</p>
+
+    <h2>26. Kapcsolat</h2>
+    <p>A Feltételekkel kapcsolatos bármilyen kérdés esetén írj a <a href="mailto:hello@leakd.app">hello@leakd.app</a> címre vagy keress minket a közösségi csatornáinkon.</p>
   </section>
 </div>
 

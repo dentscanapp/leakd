@@ -51,7 +51,7 @@
     } catch (e) {}
   })();
 </script>
-<link rel="stylesheet" href="css/app.css?v=86">
+<link rel="stylesheet" href="css/app.css?v=93">
 </head>
 <body>
 
@@ -1567,7 +1567,11 @@
       <div class="onboard-icon">💧</div>
       <h2 data-i18n="onb1.title">Where's your money leaking?</h2>
       <p data-i18n="onb1.body">Add the subscriptions you pay for. We'll show you the damage — and how to stop it.</p>
-      <button class="btn-primary" data-onboard-next data-i18n="btn.next">Next</button>
+      <label class="onboard-legal">
+        <input type="checkbox" id="onboardAcceptTerms">
+        <span data-i18n-html="onb.legalAccept">I have read and accept the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+      </label>
+      <button class="btn-primary" id="onboardStep1Next" data-onboard-next data-i18n="btn.next" disabled>Next</button>
     </div>
     <div class="onboard-step" data-step="2" style="display:none">
       <div class="onboard-icon">🔒</div>
@@ -1588,7 +1592,7 @@
 </div>
 
 <script src="js/locale.js"></script>
-<script src="js/i18n.js?v=86"></script>
+<script src="js/i18n.js?v=93"></script>
 <script src="js/brands.js"></script>
 <script src="js/insights.js"></script>
 <script src="js/pro.js"></script>
@@ -1632,9 +1636,9 @@
 <script src="js/sync.js"></script>
 <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
 <script src="js/emailreminder.js"></script>
-<script src="js/app.js?v=86"></script>
+<script src="js/app.js?v=93"></script>
   <script>
-    window.LeakdVersion = '2026-05-19.86';
+    window.LeakdVersion = '2026-05-19.93';
     console.log('Leakd Initializing v' + window.LeakdVersion);
     if('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js?v=' + window.LeakdVersion).then(reg => {
