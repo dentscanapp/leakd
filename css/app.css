@@ -628,6 +628,24 @@ a:active {
 }
 .sub-share-icon { font-size: 12px; opacity: 0.8; }
 
+/* Business Tax Report — modal summary block */
+.tax-summary {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin: 16px 0 6px;
+}
+.tax-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0;
+}
+.tax-summary-row + .tax-summary-row { border-top: 1px dashed var(--border); }
+.tax-summary-label { font-size: 13px; color: var(--text-2); }
+.tax-summary-val { font-size: 16px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+
 .chart-title {
   font-size: 12px;
   font-weight: 600;

@@ -2265,6 +2265,24 @@
   // ─── Bank statement import ───
   let bankSuggestions = [];
 
+  // ─── Business Tax Report modal (Pro) ───
+  function openTaxReportModal() {
+    if (!window.LeakdTaxReport) return;
+    const sum = window.LeakdTaxReport.preview(activeSubs());
+    const hasItems = sum.count > 0;
+    $('taxEmpty').style.display = hasItems ? 'none' : 'block';
+    $('taxSummary').style.display = hasItems ? 'block' : 'none';
+    $('downloadTaxPdfBtn').disabled = !hasItems;
+    $('downloadTaxCsvBtn').disabled = !hasItems;
+    if (hasItems) {
+      $('taxPreviewCount').textContent = String(sum.count);
+      $('taxPreviewYtd').textContent = formatPrice(sum.ytd);
+      $('taxPreviewYear').textContent = formatPrice(sum.totalYearly);
+    }
+    $('taxReportModal').classList.add('active');
+  }
+  function closeTaxReportModal() { $('taxReportModal').classList.remove('active'); }
+
   function openBankModal() {
     $('bankResult').style.display = 'none';
     $('bankError').style.display = 'none';
@@ -2938,6 +2956,23 @@
       if (insightsFilter === 'business') list = list.filter(s => s.isBusiness);
       if (insightsFilter === 'personal') list = list.filter(s => !s.isBusiness);
       if (window.LeakdPdf) window.LeakdPdf.generate(list, window.LeakdInsights.totals(list));
+    });
+    // ── Business Tax Report (Pro) — opens a modal showing a quick summary
+    //    of every isBusiness sub, with PDF + CSV download buttons ─────────
+    $('menuTaxReport').addEventListener('click', () => {
+      closeMenuModal();
+      if (window.LeakdPro && !window.LeakdPro.isPro()) { openProModal(); return; }
+      openTaxReportModal();
+    });
+    $('closeTaxReportModal').addEventListener('click', closeTaxReportModal);
+    $('cancelTaxReportBtn').addEventListener('click', closeTaxReportModal);
+    $('taxReportModal').addEventListener('click', e => { if (e.target === $('taxReportModal')) closeTaxReportModal(); });
+    $('downloadTaxPdfBtn').addEventListener('click', () => {
+      if (window.LeakdTaxReport) window.LeakdTaxReport.generatePDF(activeSubs());
+    });
+    $('downloadTaxCsvBtn').addEventListener('click', () => {
+      if (window.LeakdTaxReport) window.LeakdTaxReport.generateCSV(activeSubs());
+      toast(t('toast.exported', { n: window.LeakdTaxReport ? window.LeakdTaxReport.preview(activeSubs()).count : 0 }));
     });
     $('menuCalendar').addEventListener('click', () => { closeMenuModal(); exportCalendar(); });
     $('menuBudgets').addEventListener('click', () => { closeMenuModal(); openBudgetsModal(); });

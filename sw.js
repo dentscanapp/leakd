@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v82';
+const CACHE_NAME = 'leakd-v83';
 const ASSETS = [
   './',
   'index.html',
@@ -39,6 +39,7 @@ const ASSETS = [
   'js/compare.js',
   'js/currency.js',
   'js/pdf.js',
+  'js/taxreport.js',
   'js/streak.js',
   'js/leak.js',
   'js/sync.js',
