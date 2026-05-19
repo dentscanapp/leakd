@@ -97,10 +97,14 @@
     },
   ];
 
-  function toMonthly(price, cycle) {
-    if (cycle === 'weekly') return price * 4.33;
-    if (cycle === 'yearly') return price / 12;
-    return price;
+  function toMonthly(price, cycle, currency) {
+    let p = price;
+    if (window.LeakdCurrency && window.LeakdState && currency) {
+      p = window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
+    }
+    if (cycle === 'weekly') return p * 4.33;
+    if (cycle === 'yearly') return p / 12;
+    return p;
   }
 
   // For each known bundle, check if the user's active subs overlap enough
@@ -115,8 +119,8 @@
       );
       if (matched.length < bundle.requireAtLeast) continue;
 
-      const currentTotal = matched.reduce((sum, s) => sum + toMonthly(s.price, s.cycle), 0);
-      const bundleMonthly = toMonthly(bundle.price, bundle.cycle);
+      const currentTotal = matched.reduce((sum, s) => sum + toMonthly(s.price, s.cycle, s.currency), 0);
+      const bundleMonthly = toMonthly(bundle.price, bundle.cycle, 'USD');
       const monthlySavings = currentTotal - bundleMonthly;
       if (monthlySavings <= 0.5) continue; // Don't recommend if savings is trivial
 

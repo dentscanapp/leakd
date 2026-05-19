@@ -58,6 +58,13 @@
     });
 
     // Build the grid
+    const convert = (price, currency) => {
+      if (window.LeakdCurrency && window.LeakdState && currency) {
+        return window.LeakdCurrency.convert(price, currency, window.LeakdState.currencyCode);
+      }
+      return price;
+    };
+
     const weeks = [];
     let week = [];
     // Empty cells before the first day
@@ -66,12 +73,11 @@
       const date = new Date(year, month, day);
       const isToday = date.getTime() === today.getTime();
       const renewals = dayMap[day] || [];
-      const total = renewals.reduce((sum, r) => sum + toMonthly(r.price, r.cycle, r.currency) * (r.cycle === 'monthly' ? 1 : r.cycle === 'weekly' ? 7/30.44 : 1/12), 0);
       week.push({
         day,
         isToday,
         renewals,
-        total: renewals.reduce((sum, r) => sum + r.price, 0),
+        total: renewals.reduce((sum, r) => sum + convert(r.price, r.currency), 0),
         hasRenewals: renewals.length > 0,
       });
       if (week.length === 7) { weeks.push(week); week = []; }
@@ -86,7 +92,7 @@
       month,
       monthName: firstDay.toLocaleDateString((window.LeakdI18n && window.LeakdI18n.lang) || 'en', { month: 'long', year: 'numeric' }),
       weeks,
-      totalThisMonth: Object.values(dayMap).flat().reduce((sum, r) => sum + r.price, 0),
+      totalThisMonth: Object.values(dayMap).flat().reduce((sum, r) => sum + convert(r.price, r.currency), 0),
       countThisMonth: Object.values(dayMap).flat().length,
     };
   }
