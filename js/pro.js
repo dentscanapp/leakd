@@ -88,8 +88,10 @@
         const { purchaseToken } = response.details;
         
         if (purchaseToken) {
-          // Tell the billing service that the purchase was successful and should be acknowledged
-          await service.acknowledge(purchaseToken, 'repeatable');
+          // Tell the billing service that the purchase was successful.
+          // Note: In Digital Goods API 2.0, acknowledge() was removed from the client.
+          // It MUST be done via a backend server, otherwise Google Play refunds the purchase in 3 days.
+          // await service.acknowledge(purchaseToken, 'repeatable');
           
           this.state = {
             active: true,
