@@ -236,7 +236,7 @@
     for (let i = 0; i < 12; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
       result.push({
-        label: d.toLocaleDateString('en-US', { month: 'short' }),
+        label: d.toLocaleDateString((window.LeakdI18n && window.LeakdI18n.lang) || 'en', { month: 'short' }),
         amount: monthly,
       });
     }

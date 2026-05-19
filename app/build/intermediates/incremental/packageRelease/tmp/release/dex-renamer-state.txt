@@ -1,4 +1,0 @@
-#Tue May 19 18:51:44 CEST 2026
-base.0=C\:\\Users\\local_user\\Documents\\leakd\\leakd\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
-renamed.0=classes.dex
-path.0=classes.dex

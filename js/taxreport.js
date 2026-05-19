@@ -65,6 +65,9 @@
       const myPrice = s.price / split;
       const myMonthly = toMonthly(myPrice, s.cycle);
       const myYearly = toYearly(myPrice, s.cycle);
+      // NOTE: row-level amounts stay in the ORIGINAL currency intentionally
+      // so the accountant can see the exact charge. Currency conversion
+      // happens only in summarize() for the totals.
       // Try to find vendor cancel URL via LeakdImport (best-effort)
       let vendorUrl = '';
       if (window.LeakdImport && typeof window.LeakdImport.findCancelUrl === 'function') {
@@ -92,6 +95,7 @@
     const settings = window.LeakdState || {};
     const baseCode = settings.currencyCode || 'USD';
     const convert = (amount, fromCode) => {
+      if (!fromCode || fromCode === baseCode) return amount;
       if (window.LeakdCurrency && typeof window.LeakdCurrency.convert === 'function') {
         return window.LeakdCurrency.convert(amount, fromCode, baseCode);
       }

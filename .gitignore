@@ -1,0 +1,28 @@
+# ── Android build artefacts ──
+*.apk
+*.aab
+*.idsig
+*.keystore
+*.jks
+app/build/
+build/
+.gradle/
+
+# ── JVM crash logs ──
+hs_err_pid*.log
+
+# ── OS / IDE junk ──
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.iml
+
+# ── Node ──
+node_modules/
+
+# ── Scratch / temp ──
+scratch/
