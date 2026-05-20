@@ -56,42 +56,97 @@
     // ── Google Play Billing ──
     
     async getService() {
-      if (!window.getDigitalGoodsService) return null;
+      if (!window.getDigitalGoodsService) return { service: null, code: 'NO_DIGITAL_GOODS_API' };
       try {
-        return await window.getDigitalGoodsService(PLAY_BILLING_METHOD);
+        const svc = await window.getDigitalGoodsService(PLAY_BILLING_METHOD);
+        if (!svc) return { service: null, code: 'SERVICE_NULL' };
+        return { service: svc, code: 'OK' };
       } catch (e) {
-        console.warn('Digital Goods API not available', e);
-        return null;
+        console.warn('Digital Goods API call threw', e);
+        return { service: null, code: 'SERVICE_THREW', detail: String(e && e.message || e) };
       }
     },
 
+    // Returns an object the UI can display verbatim. Each failure mode has
+    // its own `code` so the user (or we, via remote debugging) can tell
+    // exactly which Play Billing step blew up.
+    async diagnose() {
+      const out = {
+        standalone: window.matchMedia('(display-mode: standalone)').matches,
+        uaTwa: window.navigator.userAgent.includes('TWA'),
+        hasGetDigitalGoodsService: typeof window.getDigitalGoodsService === 'function',
+        hasPaymentRequest: typeof window.PaymentRequest === 'function',
+        skus: SKUS,
+      };
+      if (out.hasGetDigitalGoodsService) {
+        const { service, code, detail } = await this.getService();
+        out.serviceCode = code;
+        if (detail) out.serviceDetail = detail;
+        if (service && typeof service.getDetails === 'function') {
+          try {
+            const details = await service.getDetails([SKUS.MONTHLY, SKUS.YEARLY]);
+            out.skuFound = (details || []).map(d => d.itemId);
+            out.skuMissing = [SKUS.MONTHLY, SKUS.YEARLY].filter(s => !out.skuFound.includes(s));
+          } catch (e) {
+            out.skuLookupError = String(e && e.message || e);
+          }
+        }
+      }
+      return out;
+    },
+
     async purchase(skuId = SKUS.MONTHLY) {
-      const service = await this.getService();
+      const { service, code, detail } = await this.getService();
       if (!service) {
-        return { ok: false, error: 'Google Play Billing is not available. Please ensure you are using the app from the Play Store.' };
+        return {
+          ok: false,
+          code,
+          detail,
+          error: code === 'NO_DIGITAL_GOODS_API'
+            ? 'Google Play Billing is not available — this build was not generated with the Digital Goods API enabled, or you are not running it from the Play Store.'
+            : 'Google Play Billing service could not be initialised (' + code + (detail ? ': ' + detail : '') + ').'
+        };
       }
 
       try {
+        // Verify the SKU actually exists in Play Console before opening the
+        // PaymentRequest sheet — otherwise request.show() rejects with a
+        // generic error and the user just sees "nothing happens".
+        if (typeof service.getDetails === 'function') {
+          try {
+            const details = await service.getDetails([skuId]);
+            if (!details || !details.length) {
+              return {
+                ok: false,
+                code: 'SKU_NOT_FOUND',
+                error: 'Subscription product "' + skuId + '" is not configured (or not yet active) in Google Play Console.'
+              };
+            }
+          } catch (e) {
+            console.warn('SKU lookup failed', e);
+          }
+        }
+
         const paymentMethods = [{
           supportedMethods: PLAY_BILLING_METHOD,
           data: { sku: skuId }
         }];
-        
+
         const paymentDetails = {
           total: { label: 'Total', amount: { currency: 'USD', value: '0' } } // Amount is defined in Play Console
         };
 
         const request = new PaymentRequest(paymentMethods, paymentDetails);
         const response = await request.show();
-        
+
         // At this point the user has completed the flow in the Play Store overlay
         const { purchaseToken } = response.details;
-        
+
         if (purchaseToken) {
           // Tell the billing service that the purchase was successful.
           // Note: In Digital Goods API 2.0, acknowledge() was removed from the client.
           // It MUST be done via a backend server, otherwise Google Play refunds the purchase in 3 days.
-          
+
           try {
             const ackRes = await fetch('https://leakd-billing-worker.peterpetor1987.workers.dev', {
               method: 'POST',
@@ -105,7 +160,7 @@
           } catch (err) {
             console.error('Backend ack error:', err);
           }
-          
+
           this.state = {
             active: true,
             verifiedAt: Date.now(),
@@ -117,11 +172,16 @@
           return { ok: true };
         } else {
           await response.complete('fail');
-          return { ok: false, error: 'Purchase failed or was cancelled.' };
+          return { ok: false, code: 'NO_TOKEN', error: 'Purchase failed or was cancelled.' };
         }
       } catch (e) {
         console.error('Purchase error', e);
-        return { ok: false, error: e.message || 'An error occurred during purchase.' };
+        return {
+          ok: false,
+          code: e.name === 'AbortError' ? 'USER_CANCELLED' : 'PAYMENT_REQUEST_FAILED',
+          detail: String(e && e.message || e),
+          error: (e && e.message) || 'An error occurred during purchase.'
+        };
       }
     },
 

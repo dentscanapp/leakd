@@ -413,6 +413,8 @@
   "pro.buy": "Get Pro",
   "pro.buyMonthly": "Upgrade to Pro Monthly",
   "pro.buyYearly": "Upgrade to Pro Yearly",
+  "pro.diagBtn": "Why isn't this working?",
+  "pro.err.generic": "Purchase failed.",
   "pro.f1": "Email reminders before renewal",
   "pro.f2": "Multi-device sync (encrypted)",
   "pro.f3": "Year-end spending report",

@@ -1847,19 +1847,57 @@
       result = await P.purchase(skuId);
     } catch (e) {
       console.error('buyPro failed', e);
-      result = { ok: false };
+      result = { ok: false, code: 'CLIENT_EXCEPTION', error: String(e && e.message || e) };
     } finally {
       btn.disabled = false;
       btn.textContent = oldText;
     }
-    
+
     if (result.ok) {
       refreshProUI();
       openProModal();
       toast(t('pro.activated'));
       if (window.LeakdConfetti) window.LeakdConfetti.burst();
-    } else if (result.error) {
-      toast(result.error);
+      return;
+    }
+
+    if (result.code === 'USER_CANCELLED') {
+      return; // User backed out of the Play sheet on purpose — no nag.
+    }
+
+    // Always surface the error. alert() is more reliable on Android WebView
+    // than the in-page toast (which can be missed if the Play sheet stole focus).
+    const msg = (result.error || t('pro.err.generic') || 'Purchase failed.')
+      + (result.code ? '\n\n[' + result.code + ']' : '');
+    try { alert(msg); } catch { toast(result.error || 'Purchase failed.'); }
+  }
+
+  async function showProDiagnostics() {
+    const P = window.LeakdPro;
+    if (!P || typeof P.diagnose !== 'function') {
+      alert('Diagnostics unavailable.');
+      return;
+    }
+    try {
+      const d = await P.diagnose();
+      const lines = [
+        'Leakd — Google Play Billing diagnostics',
+        '─────────────────────────────',
+        'Standalone (PWA/TWA):        ' + d.standalone,
+        'UA contains "TWA":           ' + d.uaTwa,
+        'getDigitalGoodsService:      ' + d.hasGetDigitalGoodsService,
+        'PaymentRequest available:    ' + d.hasPaymentRequest,
+        'Service status:              ' + (d.serviceCode || 'n/a'),
+      ];
+      if (d.serviceDetail) lines.push('Service detail:              ' + d.serviceDetail);
+      if (d.skuFound) lines.push('SKUs found in Play Console:  ' + (d.skuFound.join(', ') || '(none)'));
+      if (d.skuMissing && d.skuMissing.length) lines.push('SKUs MISSING:                ' + d.skuMissing.join(', '));
+      if (d.skuLookupError) lines.push('SKU lookup error:            ' + d.skuLookupError);
+      lines.push('');
+      lines.push('Expected SKU IDs: ' + d.skus.MONTHLY + ', ' + d.skus.YEARLY);
+      alert(lines.join('\n'));
+    } catch (e) {
+      alert('Diagnostics failed: ' + (e && e.message || e));
     }
   }
   function refreshProUI() {
@@ -3287,6 +3325,8 @@
     $('proModal').addEventListener('click', e => { if (e.target === $('proModal')) closeProModal(); });
     $('proBuyMonthlyBtn').addEventListener('click', () => buyPro('pro_monthly'));
     $('proBuyYearlyBtn').addEventListener('click', () => buyPro('pro_yearly'));
+    const proDiagBtn = $('proDiagBtn');
+    if (proDiagBtn) proDiagBtn.addEventListener('click', showProDiagnostics);
     $('proCloseActiveBtn').addEventListener('click', closeProModal);
 
     const streakBtn = $('streakBtn');

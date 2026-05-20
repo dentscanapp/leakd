@@ -409,6 +409,8 @@
   "pro.buy": "Pro 구매",
   "pro.buyMonthly": "Pro 월간으로 업그레이드",
   "pro.buyYearly": "Pro 연간으로 업그레이드",
+  "pro.diagBtn": "왜 작동하지 않나요?",
+  "pro.err.generic": "구매에 실패했습니다.",
   "pro.f1": "갱신 전 이메일 알림",
   "pro.f2": "다중 기기 동기화 (암호화)",
   "pro.f3": "연간 지출 보고서",
