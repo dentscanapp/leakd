@@ -1587,7 +1587,7 @@
           <div class="tombstone-name" title="${escHtml(s.name)}">${escHtml(s.name)}</div>
           <div class="tombstone-date">${escHtml(date)}</div>
           <div class="tombstone-saved">+${formatPrice(lifetimeForSub)}</div>
-          <div class="tombstone-saved-lbl" data-i18n="cancelled.savedSoFar">saved so far</div>
+          <div class="tombstone-saved-lbl">${escHtml(t('cancelled.savedSoFar'))}</div>
           <div class="tombstone-actions">
             <button data-action="restore" title="${escHtml(t('cancelled.restoreBtn'))}">↺</button>
             <button data-action="purge" title="${escHtml(t('cancelled.purgeBtn'))}">×</button>

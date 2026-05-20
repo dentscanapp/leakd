@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v108';
+const CACHE_NAME = 'leakd-v109';
 
 // Files that must always be fresh — HTML shells and the critical JS that
 // reads them. Network-first with a cache fallback for offline. Without
