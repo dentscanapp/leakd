@@ -2868,7 +2868,7 @@
       refreshSyncUI();
     } catch (e) {
       console.error('sync flow error', e);
-      showSyncError(e.code || 'GENERIC');
+      showSyncError(e.code || ('GENERIC: ' + (e.message || e)));
     } finally {
       btn.disabled = false;
       btn.textContent = oldLabel;
