@@ -31,26 +31,7 @@
   html { background-color: #fafaf9; color: #0f0f0f; }
   html[data-theme="dark"] { background-color: #0f0f0f; color: #fafaf9; }
 </style>
-<script>
-  // FOUC guard — set the theme on <html> SYNCHRONOUSLY before CSS applies so
-  // a refresh in dark mode doesn't flash the default light palette. Also
-  // paints the html background directly in case the stylesheet is still in
-  // flight. Mirrors applyTheme() in js/app.js exactly (light / dark / auto).
-  (function () {
-    try {
-      var raw = localStorage.getItem('leakd_settings');
-      var theme = raw ? (JSON.parse(raw).theme || 'auto') : 'auto';
-      var effective = theme;
-      if (theme === 'auto') {
-        effective = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-      }
-      document.documentElement.setAttribute('data-theme', effective);
-      document.documentElement.style.backgroundColor = effective === 'dark' ? '#0f0f0f' : '#fafaf9';
-      var meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', effective === 'dark' ? '#0f0f0f' : '#fafaf9');
-    } catch (e) {}
-  })();
-</script>
+<script src="js/fouc.js"></script>
 <link rel="stylesheet" href="css/app.css?v=95">
 </head>
 <body>
@@ -1634,31 +1615,11 @@
 <script src="js/taxreport.js" defer></script>
 <script src="js/currency.js" defer></script>
 <!-- Pro-only cloud sync (E2EE via Google Drive). Set window.LeakdSyncConfig.clientId before this loads. -->
-<script>
-  window.LeakdSyncConfig = {
-    clientId: '587744396356-qho928kuorkh8dufjnqa05u7cbdellho.apps.googleusercontent.com'
-  };
-</script>
+<script src="js/config.js"></script>
 <script src="js/sync.js" defer></script>
 <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
 <script src="js/emailreminder.js" defer></script>
 <script src="js/app.js?v=103" defer></script>
-  <script>
-    window.LeakdVersion = '2026-05-20.103';
-    console.log('Leakd Initializing v' + window.LeakdVersion);
-    if('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js?v=' + window.LeakdVersion).then(reg => {
-        reg.onupdatefound = () => {
-          const installer = reg.installing;
-          installer.onstatechange = () => {
-            if (installer.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('New version available, reloading...');
-              location.reload();
-            }
-          };
-        };
-      });
-    }
-  </script>
+
 </body>
 </html>
