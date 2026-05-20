@@ -23,12 +23,12 @@
         const raw = localStorage.getItem(PRO_KEY);
         if (raw) this.state = { ...this.state, ...JSON.parse(raw) };
       } catch {}
-      
+
       // Auto-restore check if we're in a TWA
       if (this.isTwa()) {
         this.restore();
       }
-      
+
       return this.state;
     },
 
