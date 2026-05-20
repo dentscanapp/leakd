@@ -32,7 +32,7 @@
   html[data-theme="dark"] { background-color: #0f0f0f; color: #fafaf9; }
 </style>
 <script src="js/fouc.js"></script>
-<link rel="stylesheet" href="css/app.css?v=95">
+<link rel="stylesheet" href="css/app.css?v=96">
 </head>
 <body>
 
@@ -1502,25 +1502,38 @@
   </div>
 </div>
 
-<!-- Cancelled Subs Modal -->
+<!-- Cancelled Subs / Money Saved Graveyard Modal -->
 <div class="modal-overlay" id="cancelledModal">
-  <div class="modal" style="max-width:440px">
+  <div class="modal" style="max-width:480px">
     <div class="modal-header">
-      <h2 data-i18n="cancelled.title">Cancelled subscriptions</h2>
+      <h2 data-i18n="cancelled.titleGrave">Money saved</h2>
       <button class="btn-icon" id="closeCancelledModal" data-i18n-title="btn.close">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
-    <div id="cancelledHero" class="cancelled-hero" style="display:none">
-      <div class="cancelled-savings" id="cancelledSavings">$0</div>
-      <div class="cancelled-savings-label" data-i18n="cancelled.savingsLabel">Saved every month</div>
-      <div class="cancelled-thisyear" id="cancelledThisYear">— cancelled in 2026</div>
+    <div id="cancelledHero" class="grave-hero" style="display:none">
+      <div class="grave-hero-bg" aria-hidden="true">
+        <span class="grave-hero-emoji">🪦</span>
+      </div>
+      <div class="grave-hero-tag" data-i18n="cancelled.lifetimeSavedLabel">Saved since you cancelled</div>
+      <div class="grave-hero-big" id="cancelledLifetimeBig">$0</div>
+      <div class="grave-hero-stats">
+        <div class="grave-stat">
+          <div class="grave-stat-num" id="cancelledSavings">$0</div>
+          <div class="grave-stat-lbl" data-i18n="cancelled.savingsLabel">Saved every month</div>
+        </div>
+        <div class="grave-stat">
+          <div class="grave-stat-num" id="cancelledKilled">0</div>
+          <div class="grave-stat-lbl" id="cancelledThisYear" data-i18n="cancelled.subsKilled">subscriptions killed</div>
+        </div>
+      </div>
+      <button class="btn-outline grave-share-btn" id="cancelledShareBtn" data-i18n="cancelled.shareBtn" style="display:none">Share my wins</button>
     </div>
 
     <div id="cancelledEmpty" class="empty-state-mini" style="display:none" data-i18n="cancelled.empty">No cancellations yet.</div>
 
-    <div class="cancelled-list" id="cancelledList"></div>
+    <div class="cancelled-list grave-list" id="cancelledList"></div>
 
     <div class="modal-actions">
       <div style="flex:1"></div>
@@ -1620,7 +1633,7 @@
 <script src="js/sync.js?v=2" defer></script>
 <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
 <script src="js/emailreminder.js" defer></script>
-<script src="js/app.js?v=105" defer></script>
+<script src="js/app.js?v=106" defer></script>
 
 </body>
 </html>

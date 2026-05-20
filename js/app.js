@@ -1548,6 +1548,7 @@
     const hero = $('cancelledHero');
     const emptyEl = $('cancelledEmpty');
     const listEl = $('cancelledList');
+    const shareBtn = $('cancelledShareBtn');
 
     if (list.length === 0) {
       hero.style.display = 'none';
@@ -1557,35 +1558,86 @@
     }
     emptyEl.style.display = 'none';
     hero.style.display = 'block';
-    const savings = window.LeakdCancelled.savings();
-    $('cancelledSavings').textContent = formatPrice(savings);
-    const yearCount = window.LeakdCancelled.thisYearCount();
-    $('cancelledThisYear').textContent = yearCount + ' · ' + t('cancelled.thisYear', { year: new Date().getFullYear() });
+
+    const lifetime = window.LeakdCancelled.lifetimeSavings();
+    const monthly = window.LeakdCancelled.savings();
+    const killed = window.LeakdCancelled.count();
+
+    animateCounter($('cancelledLifetimeBig'), lifetime, formatPrice);
+    $('cancelledSavings').textContent = formatPrice(monthly) + '/' + t('cycle.mo').replace('/', '');
+    $('cancelledKilled').textContent = killed;
+    $('cancelledThisYear').textContent = (killed === 1
+      ? t('cancelled.subsKilledOne')
+      : t('cancelled.subsKilled'));
+    if (shareBtn) shareBtn.style.display = lifetime >= 1 ? 'block' : 'none';
+
+    const now = Date.now();
+    const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
 
     listEl.innerHTML = list
       .sort((a, b) => new Date(b.cancelledAt) - new Date(a.cancelledAt))
-      .map(s => {
-        const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.name, s.category, 36) : '';
-        const date = s.cancelledAt ? new Date(s.cancelledAt).toLocaleDateString(window.LeakdI18n ? window.LeakdI18n.lang : 'en', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
-        const monthly = s.monthlyAtCancel || 0;
-        return `<div class="cancelled-row" data-id="${s.id}">
-          ${iconHtml}
-          <div class="cancelled-info">
-            <div class="cancelled-name">${escHtml(s.name)}</div>
-            <div class="cancelled-meta">${date} · −${formatPrice(monthly)}/${t('cycle.mo').replace('/','')}</div>
-          </div>
-          <div class="cancelled-actions">
-            <button class="cancelled-restore" data-action="restore">↺</button>
-            <button class="cancelled-purge" data-action="purge">×</button>
+      .map((s, i) => {
+        const date = s.cancelledAt
+          ? new Date(s.cancelledAt).toLocaleDateString(lang, { year: 'numeric', month: 'short' })
+          : '—';
+        const lifetimeForSub = window.LeakdCancelled.lifetimePerSub(s, now);
+        const stagger = Math.min(i * 40, 600); // cap the cascade so 30+ tombstones don't crawl
+        return `<div class="tombstone" data-id="${s.id}" style="animation-delay:${stagger}ms">
+          <div class="tombstone-rip">R · I · P</div>
+          <div class="tombstone-name" title="${escHtml(s.name)}">${escHtml(s.name)}</div>
+          <div class="tombstone-date">${escHtml(date)}</div>
+          <div class="tombstone-saved">+${formatPrice(lifetimeForSub)}</div>
+          <div class="tombstone-saved-lbl" data-i18n="cancelled.savedSoFar">saved so far</div>
+          <div class="tombstone-actions">
+            <button data-action="restore" title="${escHtml(t('cancelled.restoreBtn'))}">↺</button>
+            <button data-action="purge" title="${escHtml(t('cancelled.purgeBtn'))}">×</button>
           </div>
         </div>`;
       }).join('');
 
-    listEl.querySelectorAll('.cancelled-row').forEach(row => {
+    listEl.querySelectorAll('.tombstone').forEach(row => {
       const id = row.dataset.id;
       row.querySelector('[data-action="restore"]').addEventListener('click', () => restoreCancelled(id));
       row.querySelector('[data-action="purge"]').addEventListener('click', () => purgeCancelled(id));
     });
+  }
+
+  // Counts the big hero number from its current value up to `target` over
+  // ~700ms. Reusing the same element rebinds, so re-opens replay the count.
+  function animateCounter(el, target, formatter) {
+    if (!el) return;
+    const fmt = formatter || (n => String(Math.round(n)));
+    const dur = 700;
+    const start = performance.now();
+    const from = 0;
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = fmt(from + (target - from) * eased);
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  async function shareGraveyard() {
+    if (!window.LeakdCancelled) return;
+    const lifetime = window.LeakdCancelled.lifetimeSavings();
+    const killed = window.LeakdCancelled.count();
+    if (killed === 0) return;
+    const text = t('cancelled.shareMsg', {
+      amount: formatPrice(lifetime),
+      n: killed,
+    });
+    const data = { title: 'Leakd', text, url: 'https://leakd.app' };
+    if (navigator.share) {
+      try { await navigator.share(data); return; } catch {}
+    }
+    try {
+      await navigator.clipboard.writeText(text + ' https://leakd.app');
+      toast(t('toast.linkCopied'));
+    } catch {
+      toast(text);
+    }
   }
 
   function restoreCancelled(id) {
@@ -3192,6 +3244,8 @@
     $('closeCancelledModal').addEventListener('click', closeCancelledModal);
     $('cancelledCloseBtn').addEventListener('click', closeCancelledModal);
     $('cancelledModal').addEventListener('click', e => { if (e.target === $('cancelledModal')) closeCancelledModal(); });
+    const cancelledShareBtn = $('cancelledShareBtn');
+    if (cancelledShareBtn) cancelledShareBtn.addEventListener('click', shareGraveyard);
 
     $('menuTheme').addEventListener('click', () => { closeMenuModal(); openThemeModal(); });
     $('closeThemeModal').addEventListener('click', closeThemeModal);

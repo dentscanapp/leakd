@@ -99,9 +99,28 @@
     return savings((Date.now() - yearStart) / 86400000);
   }
 
+  // Cumulative dollars *not* spent since each sub was cancelled — drives the
+  // big animated counter in the Money Saved Graveyard. Each cancellation
+  // contributes (months elapsed since its cancelledAt) × monthlyAtCancel.
+  // This grows on every render, so users see the number tick up over time.
+  function lifetimeSavings() {
+    const now = Date.now();
+    return load().reduce((total, s) => total + lifetimePerSub(s, now), 0);
+  }
+
+  function lifetimePerSub(s, nowMs) {
+    if (!s.cancelledAt) return 0;
+    const ms = (nowMs || Date.now()) - new Date(s.cancelledAt).getTime();
+    if (ms <= 0) return 0;
+    const months = ms / (1000 * 60 * 60 * 24 * 30.4375); // avg month length
+    const monthly = s.monthlyAtCancel || toMonthly(s.price, s.cycle, s.currency);
+    return months * monthly;
+  }
+
   function clear() { localStorage.removeItem(KEY); }
 
   window.LeakdCancelled = {
-    add, remove, restore, all, count, savings, thisYearCount, thisYearSavings, clear,
+    add, remove, restore, all, count, savings, thisYearCount, thisYearSavings,
+    lifetimeSavings, lifetimePerSub, clear,
   };
 })();
