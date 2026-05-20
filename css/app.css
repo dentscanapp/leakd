@@ -1309,11 +1309,12 @@ input[type="number"] {
   border: none !important;
   border-right: 1px solid var(--border) !important;
   border-radius: 0 !important;
-  padding: 0 8px !important;
+  padding: 0 4px !important;
   margin: 0 !important;
   font-size: 13px !important;
   font-weight: 600 !important;
   width: auto !important;
+  max-width: 45% !important;
   color: var(--text-2) !important;
   cursor: pointer;
 }
@@ -1324,7 +1325,7 @@ input[type="number"] {
   border: none !important;
   border-radius: 0 !important;
   background: transparent !important;
-  padding: 10px 12px !important;
+  padding: 10px 6px !important;
   margin: 0 !important;
 }
 
