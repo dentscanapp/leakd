@@ -1209,6 +1209,16 @@ body:has(.modal-overlay.active) {
   margin-bottom: 6px;
 }
 
+/* Hide native number spin buttons for cleaner UI and to prevent them from taking up space in tight layouts */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group input[type="date"],
@@ -1310,6 +1320,7 @@ body:has(.modal-overlay.active) {
 
 .input-with-currency input {
   flex: 1;
+  min-width: 0 !important;
   border: none !important;
   border-radius: 0 !important;
   background: transparent !important;
