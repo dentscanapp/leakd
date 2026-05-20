@@ -302,6 +302,15 @@
   .gp-badge.sm img{height:46px}
   .plan .gp-badge{align-self:center}
 
+  /* chrome web store badge */
+  .cws-badge{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 20px 0 16px;background:#1a1a1a;border:1px solid var(--line-2);border-radius:10px;font-family:var(--body);font-size:14px;color:var(--fg);transition:transform .15s ease,border-color .15s ease,background .15s ease;text-decoration:none;white-space:nowrap}
+  .cws-badge:hover{transform:translateY(-1px);border-color:rgba(255,255,255,0.24);background:#222}
+  .cws-badge.lg{height:62px;padding:0 24px 0 18px;font-size:15px}
+  .cws-badge .cws-icon{width:28px;height:28px;flex-shrink:0}
+  .cws-badge .cws-text{display:flex;flex-direction:column;line-height:1.2}
+  .cws-badge .cws-text small{font-size:10px;color:var(--fg-mute);letter-spacing:0.03em}
+  .cws-badge .cws-text span{font-weight:600;letter-spacing:-0.01em}
+
 
 
   /* utility */
@@ -360,6 +369,10 @@
         </p>
         <div class="hero-ctas">
           <a class="gp-badge lg" href="https://play.google.com/store/apps/details?id=app.leakd.twa" target="_blank" rel="noopener" aria-label="Get it on Google Play"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
+          <a class="cws-badge lg" href="https://chromewebstore.google.com/detail/leakd/hcgcclkoedchmdidfcbphgcnhclbncbe" target="_blank" rel="noopener" aria-label="Available on Chrome Web Store">
+            <svg class="cws-icon" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#fff"/><circle cx="24" cy="24" r="9" fill="#fff" stroke="#4285F4" stroke-width="3.5"/><path d="M24 2A22 22 0 0 0 5.3 35l10.4-18a9 9 0 0 1 15.6 0" fill="#EA4335"/><path d="M5.3 35A22 22 0 0 0 42.7 35H21.8a9 9 0 0 1-7.8-4.5" fill="#34A853"/><path d="M42.7 35A22 22 0 0 0 24 2v13a9 9 0 0 1 7.8 4.5" fill="#FBBC05"/><circle cx="24" cy="24" r="5" fill="#4285F4"/></svg>
+            <div class="cws-text"><small>Available on the</small><span>Chrome Web Store</span></div>
+          </a>
           <a class="btn btn-ghost btn-lg" href="#how-it-works">See how it works</a>
         </div>
         <div class="hero-meta">
@@ -876,6 +889,10 @@
     <p>Quick setup. We don't ask for bank login. $5/mo if you want, $0 if not.</p>
     <div class="cta-ctas">
       <a class="gp-badge lg" href="https://play.google.com/store/apps/details?id=app.leakd.twa" target="_blank" rel="noopener" aria-label="Get it on Google Play"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
+      <a class="cws-badge lg" href="https://chromewebstore.google.com/detail/leakd/hcgcclkoedchmdidfcbphgcnhclbncbe" target="_blank" rel="noopener" aria-label="Available on Chrome Web Store">
+        <svg class="cws-icon" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#fff"/><circle cx="24" cy="24" r="9" fill="#fff" stroke="#4285F4" stroke-width="3.5"/><path d="M24 2A22 22 0 0 0 5.3 35l10.4-18a9 9 0 0 1 15.6 0" fill="#EA4335"/><path d="M5.3 35A22 22 0 0 0 42.7 35H21.8a9 9 0 0 1-7.8-4.5" fill="#34A853"/><path d="M42.7 35A22 22 0 0 0 24 2v13a9 9 0 0 1 7.8 4.5" fill="#FBBC05"/><circle cx="24" cy="24" r="5" fill="#4285F4"/></svg>
+        <div class="cws-text"><small>Available on the</small><span>Chrome Web Store</span></div>
+      </a>
     </div>
     <div class="cta-note">No credit card to try · Browser-based · Local storage</div>
   </div>
@@ -899,6 +916,7 @@
           <a href="#pricing">Pricing</a>
           <a href="#principles">Principles</a>
           <a href="changelog.html">Changelog</a>
+          <a href="https://chromewebstore.google.com/detail/leakd/hcgcclkoedchmdidfcbphgcnhclbncbe" target="_blank" rel="noopener">Chrome Extension</a>
         </div>
         <div class="foot-col">
           <h4>About</h4>
