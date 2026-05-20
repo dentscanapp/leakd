@@ -2837,17 +2837,16 @@
     try {
       if (!st.enabled) {
         // Enable flow: create password (or unlock if salt exists), sign in, first sync
-        if (st.hasSalt) {
-          // Existing salt → user already had sync, just unlock + verify
-          const pw = $('syncPasswordInput').value;
-          await S.unlockAndVerifyAgainstRemote(pw);
-        } else {
+        if (!st.hasSalt) {
           const pw = $('syncPasswordInput').value;
           const confirm = $('syncPasswordConfirm').value;
           if (pw !== confirm) { showSyncError('WRONG_PASSWORD'); return; }
-          await S.unlock(pw);
         }
+        
         await S.signIn();
+        const pw = $('syncPasswordInput').value;
+        await S.unlockAndVerifyAgainstRemote(pw);
+        
         S.setEnabled(true);
         const r = await S.sync();
         toast(r.action === 'pulled' ? t('sync.pulledOk') : t('sync.pushedOk'));
