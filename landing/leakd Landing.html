@@ -301,23 +301,7 @@
   .gp-badge.sm img{height:46px}
   .plan .gp-badge{align-self:center}
 
-  /* ============ CONSENT BAR ============ */
-  .consent-bar{position:fixed;left:24px;right:24px;bottom:24px;z-index:100;max-width:680px;margin:0 auto;background:var(--panel);border:1px solid var(--line-2);border-radius:16px;padding:20px 22px;display:flex;align-items:center;gap:20px;box-shadow:0 20px 50px -20px rgba(0,0,0,0.6),0 0 0 1px rgba(239,58,58,0.06);transform:translateY(120%);opacity:0;transition:transform .35s cubic-bezier(.22,1,.36,1) .15s,opacity .25s ease}
-  .consent-bar.show{transform:translateY(0);opacity:1}
-  .consent-icon{flex-shrink:0;width:36px;height:36px;border-radius:50%;border:1px solid var(--red-line);background:var(--red-dim);display:flex;align-items:center;justify-content:center;color:var(--red)}
-  .consent-text{flex:1;font-size:13px;color:var(--fg-dim);line-height:1.5;text-wrap:pretty}
-  .consent-text strong{color:var(--fg);font-weight:500;display:block;margin-bottom:2px;font-size:14px}
-  .consent-text a{color:var(--red);border-bottom:1px solid rgba(239,58,58,0.4)}
-  .consent-actions{display:flex;gap:8px;flex-shrink:0}
-  .consent-actions button{font-family:var(--body);font-size:13px;font-weight:500;height:36px;padding:0 14px;border-radius:8px;cursor:pointer;border:1px solid var(--line-2);background:transparent;color:var(--fg-dim);transition:color .15s,border-color .15s,background .15s}
-  .consent-actions button:hover{color:var(--fg);border-color:var(--fg-mute)}
-  .consent-actions button.primary{background:var(--red);border-color:var(--red);color:#fff}
-  .consent-actions button.primary:hover{background:var(--red-2);border-color:var(--red-2)}
-  @media (max-width:680px){
-    .consent-bar{flex-direction:column;align-items:flex-start;left:16px;right:16px;bottom:16px;padding:18px}
-    .consent-actions{width:100%}
-    .consent-actions button{flex:1}
-  }
+
 
   /* utility */
   .mono{font-family:var(--mono)}
@@ -874,45 +858,7 @@
   </div>
 </footer>
 
-<!-- ============ CONSENT BAR ============ -->
-<div class="consent-bar" id="leakd-consent" role="dialog" aria-label="Privacy preferences">
-  <div class="consent-icon" aria-hidden="true">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12c0 5-4 9-9 9s-9-4-9-9 4-9 9-9c0 2 2 4 4 4s2-1 2-1 1 2 3 2c0 2-1 4 0 4z"/>
-      <circle cx="9" cy="11" r="0.8" fill="currentColor"/>
-      <circle cx="13" cy="15" r="0.8" fill="currentColor"/>
-      <circle cx="16" cy="10" r="0.8" fill="currentColor"/>
-    </svg>
-  </div>
-  <div class="consent-text">
-    <strong>We use cookies</strong>
-    Essential cookies are loaded by default. We ask for your consent before using analytics or performance cookies. Details in our <a href="../privacy.html">Privacy Policy</a>.
-  </div>
-  <div class="consent-actions">
-    <button id="consent-essential" type="button">Essential only</button>
-    <button id="consent-all" class="primary" type="button">Accept all</button>
-  </div>
-</div>
 
-<script>
-  (function(){
-    const KEY = 'leakd_consent';
-    const banner = document.getElementById('leakd-consent');
-    if (!banner) return;
-    let stored = null;
-    try { stored = localStorage.getItem(KEY); } catch(e) {}
-    if (!stored) {
-      setTimeout(() => banner.classList.add('show'), 800);
-    }
-    const dismiss = (choice) => {
-      try { localStorage.setItem(KEY, JSON.stringify({choice, ts: Date.now()})); } catch(e) {}
-      banner.classList.remove('show');
-      setTimeout(() => banner.remove(), 400);
-    };
-    document.getElementById('consent-essential').addEventListener('click', () => dismiss('essential'));
-    document.getElementById('consent-all').addEventListener('click', () => dismiss('all'));
-  })();
-</script>
 
 <script>
   // light entrance — sub-items stagger
