@@ -313,6 +313,54 @@
 
 
 
+  /* ============ MONEY LEAK CALCULATOR ============ */
+  .calc{display:grid;grid-template-columns:1.15fr 0.85fr;gap:48px;align-items:start}
+  @media (max-width:980px){.calc{grid-template-columns:1fr;gap:32px}}
+
+  .calc-left h3{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-0.01em;margin:0 0 18px;color:var(--fg)}
+  .calc-chips{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media (max-width:640px){.calc-chips{grid-template-columns:repeat(2,1fr)}}
+  .chip{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);cursor:pointer;user-select:none;transition:border-color .15s,background .15s,transform .12s}
+  .chip:hover{border-color:var(--line-2);background:var(--panel-2)}
+  .chip.on{border-color:var(--red-line);background:var(--red-dim)}
+  .chip-name{font-family:var(--body);font-weight:500;font-size:13px;color:var(--fg);text-align:left}
+  .chip-price{font-family:var(--mono);font-size:11px;color:var(--fg-mute);white-space:nowrap}
+  .chip.on .chip-price{color:#ffb4b4}
+  .chip .check{position:absolute;top:6px;right:6px;width:14px;height:14px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:all .15s}
+  .chip.on .check{background:var(--red);border-color:var(--red);color:#fff}
+
+  .calc-custom{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;padding:14px;border:1px dashed var(--line);border-radius:12px;background:var(--bg-1)}
+  .calc-custom label{font-family:var(--mono);font-size:11px;color:var(--fg-mute);letter-spacing:0.08em;text-transform:uppercase;width:100%;margin-bottom:4px}
+  .calc-custom input{flex:1;min-width:0;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:13px;outline:none;transition:border-color .15s}
+  .calc-custom input:focus{border-color:var(--red-line)}
+  .calc-custom .calc-custom-name{flex:2}
+  .calc-custom .calc-custom-price{flex:1;max-width:110px;font-family:var(--mono)}
+  .calc-custom button{height:36px;padding:0 14px;border:1px solid var(--red-line);background:var(--red-dim);color:#ffb4b4;border-radius:8px;font-family:var(--body);font-weight:500;font-size:13px;cursor:pointer;transition:background .15s}
+  .calc-custom button:hover{background:rgba(239,58,58,0.22)}
+  .calc-custom-list{width:100%;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .calc-custom-list:empty{display:none}
+  .calc-custom-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 8px 4px 10px;border:1px solid var(--red-line);background:var(--red-dim);color:#ffb4b4;border-radius:999px;font-family:var(--mono);font-size:11px}
+  .calc-custom-tag button{all:unset;cursor:pointer;color:#ffb4b4;font-size:14px;line-height:1;padding:0 2px;height:auto;background:none;border:none}
+
+  .calc-right{position:sticky;top:96px;padding:32px;border:1px solid var(--red-line);border-radius:20px;background:linear-gradient(180deg,rgba(239,58,58,0.08),var(--panel));box-shadow:0 30px 80px -30px rgba(239,58,58,0.2)}
+  @media (max-width:980px){.calc-right{position:static}}
+  .calc-right-tag{font-family:var(--mono);font-size:11px;color:var(--red);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:18px}
+  .calc-line{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px dashed var(--line)}
+  .calc-line:last-of-type{border-bottom:none;padding-bottom:0}
+  .calc-line-label{font-family:var(--body);font-size:13px;color:var(--fg-dim)}
+  .calc-line-val{font-family:var(--mono);font-size:15px;color:var(--fg);font-weight:500}
+  .calc-line.big{padding:20px 0;border-bottom:1px solid var(--line);border-top:1px solid var(--line);margin:8px 0}
+  .calc-line.big .calc-line-label{font-family:var(--display);font-size:15px;color:var(--fg);font-weight:500}
+  .calc-line.big .calc-line-val{font-family:var(--display);font-size:36px;color:var(--red);font-weight:600;letter-spacing:-0.02em}
+  .calc-line.invest{padding-top:14px}
+  .calc-line.invest .calc-line-label{font-style:italic;color:var(--fg-mute)}
+  .calc-line.invest .calc-line-val{color:#10b981}
+  .calc-cta{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+  .calc-cta .btn{width:100%}
+  .calc-cta-note{font-family:var(--mono);font-size:11px;color:var(--fg-mute);text-align:center;margin-top:2px}
+  .calc-empty{padding:18px;border:1px dashed var(--line);border-radius:12px;font-family:var(--body);font-size:13px;color:var(--fg-mute);text-align:center;margin-top:12px}
+  .calc-empty:empty{display:none}
+
   /* utility */
   .mono{font-family:var(--mono)}
   .red{color:var(--red)}
@@ -338,9 +386,9 @@
       Leakd
     </a>
     <div class="nav-links">
-      <a href="#how">How it works</a>
+      <a href="#calculator">Calculator</a>
+      <a href="#how-it-works">How it works</a>
       <a href="#features">Features</a>
-      <a href="#principles">Principles</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </div>
@@ -560,6 +608,63 @@
           <b>In our experience,</b> a one-person team can spend this much yearly on software it rarely opens. With your own data, Leakd shows the exact number.
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MONEY LEAK CALCULATOR ============ -->
+<section class="s" id="calculator">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="s-tag">Calculator</div>
+      <h2 class="s-title">What does <span class="r">YOUR leak</span><br>actually look like?</h2>
+      <p class="s-sub">Tick what you pay for. We'll show you the monthly damage, the yearly damage, and what that money would be worth if you'd invested it instead.</p>
+    </div>
+
+    <div class="calc">
+      <div class="calc-left">
+        <h3>Pick what you pay for</h3>
+        <div class="calc-chips" id="calcChips" role="group" aria-label="Subscription services"></div>
+
+        <div class="calc-custom">
+          <label>Got something else?</label>
+          <input type="text" id="calcCustomName" class="calc-custom-name" placeholder="Service name" maxlength="40" aria-label="Service name">
+          <input type="number" id="calcCustomPrice" class="calc-custom-price" placeholder="$/mo" min="0" step="0.01" max="9999" aria-label="Monthly price">
+          <button type="button" id="calcCustomAdd">Add</button>
+          <div class="calc-custom-list" id="calcCustomList" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <aside class="calc-right" aria-live="polite">
+        <div class="calc-right-tag">Your leak</div>
+
+        <div class="calc-line">
+          <span class="calc-line-label">Monthly</span>
+          <span class="calc-line-val" id="calcMonthly">$0</span>
+        </div>
+
+        <div class="calc-line big">
+          <span class="calc-line-label">Per year</span>
+          <span class="calc-line-val" id="calcYearly">$0</span>
+        </div>
+
+        <div class="calc-line">
+          <span class="calc-line-label">In 5 years</span>
+          <span class="calc-line-val" id="calc5yr">$0</span>
+        </div>
+
+        <div class="calc-line invest">
+          <span class="calc-line-label">…invested at 7% instead</span>
+          <span class="calc-line-val" id="calcInvest">$0</span>
+        </div>
+
+        <div class="calc-empty" id="calcEmpty">Tick a chip on the left to start.</div>
+
+        <div class="calc-cta">
+          <a class="btn btn-primary btn-lg" href="app.html">Track these in Leakd — free<span class="btn-arrow">→</span></a>
+          <div class="calc-cta-note">Numbers don't leave this page · no signup needed</div>
+        </div>
+      </aside>
     </div>
   </div>
 </section>
@@ -959,6 +1064,135 @@
     el.style.transition = `opacity .5s ${i*0.04}s ease, transform .5s ${i*0.04}s ease`;
     io.observe(el);
   });
+</script>
+
+<script>
+  // ─── Money Leak Calculator ───
+  // Prices are realistic US 2026 monthly rates. Currency stays USD because the
+  // landing page is dollar-priced; the actual app supports 32 currencies.
+  const CALC_SERVICES = [
+    { id: 'netflix',    name: 'Netflix',           price: 15.49, on: true  },
+    { id: 'spotify',    name: 'Spotify',           price: 11.99, on: true  },
+    { id: 'chatgpt',    name: 'ChatGPT Plus',      price: 20.00, on: false },
+    { id: 'icloud',     name: 'iCloud+ 200GB',     price: 2.99,  on: true  },
+    { id: 'disney',     name: 'Disney+',           price: 13.99, on: false },
+    { id: 'youtube',    name: 'YouTube Premium',   price: 13.99, on: false },
+    { id: 'prime',      name: 'Amazon Prime',      price: 14.99, on: false },
+    { id: 'hbo',        name: 'HBO Max',           price: 16.99, on: false },
+    { id: 'adobe',      name: 'Adobe CC',          price: 59.99, on: false },
+    { id: 'audible',    name: 'Audible',           price: 14.95, on: false },
+    { id: 'ms365',      name: 'Microsoft 365',     price: 9.99,  on: false },
+    { id: 'copilot',    name: 'GitHub Copilot',    price: 10.00, on: false },
+    { id: 'notion',     name: 'Notion Plus',       price: 10.00, on: false },
+    { id: 'canva',      name: 'Canva Pro',         price: 14.99, on: false },
+  ];
+
+  const customs = [];
+  let animFrame = null;
+  const lastShown = { monthly: 0, yearly: 0, fiveYr: 0, invest: 0 };
+
+  const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  // 7%/yr compounded monthly, contributions made at start of month for 5 years.
+  // FV = P * [((1+r)^n - 1) / r] * (1+r), with r=0.07/12, n=60.
+  const investedFV = (monthly) => {
+    const r = 0.07 / 12;
+    const n = 60;
+    return monthly * (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+  };
+
+  function render() {
+    const chipsEl = document.getElementById('calcChips');
+    chipsEl.innerHTML = CALC_SERVICES.map(s => `
+      <button type="button" class="chip ${s.on ? 'on' : ''}" data-id="${s.id}" aria-pressed="${s.on}">
+        <span class="chip-name">${s.name}</span>
+        <span class="chip-price">$${s.price.toFixed(2)}</span>
+        <span class="check" aria-hidden="true">✓</span>
+      </button>
+    `).join('');
+    chipsEl.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const s = CALC_SERVICES.find(x => x.id === id);
+        s.on = !s.on;
+        render();
+      });
+    });
+
+    const listEl = document.getElementById('calcCustomList');
+    listEl.innerHTML = customs.map((c, i) => `
+      <span class="calc-custom-tag">${escapeHtml(c.name)} · $${c.price.toFixed(2)}<button type="button" data-i="${i}" aria-label="Remove">×</button></span>
+    `).join('');
+    listEl.querySelectorAll('button').forEach(b => {
+      b.addEventListener('click', () => {
+        customs.splice(parseInt(b.dataset.i, 10), 1);
+        render();
+      });
+    });
+
+    const monthly = CALC_SERVICES.filter(s => s.on).reduce((sum, s) => sum + s.price, 0)
+                  + customs.reduce((sum, c) => sum + c.price, 0);
+    const yearly  = monthly * 12;
+    const fiveYr  = monthly * 60;
+    const invest  = investedFV(monthly);
+
+    animateTo('calcMonthly', lastShown.monthly, monthly);
+    animateTo('calcYearly',  lastShown.yearly,  yearly);
+    animateTo('calc5yr',     lastShown.fiveYr,  fiveYr);
+    animateTo('calcInvest',  lastShown.invest,  invest);
+    lastShown.monthly = monthly;
+    lastShown.yearly  = yearly;
+    lastShown.fiveYr  = fiveYr;
+    lastShown.invest  = invest;
+
+    const emptyEl = document.getElementById('calcEmpty');
+    emptyEl.textContent = (monthly === 0) ? 'Tick a chip on the left to start.' : '';
+  }
+
+  function animateTo(elId, from, to) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const start = performance.now();
+    const dur = 380;
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      el.textContent = fmt(from + (to - from) * eased);
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  document.getElementById('calcCustomAdd').addEventListener('click', () => {
+    const nameEl = document.getElementById('calcCustomName');
+    const priceEl = document.getElementById('calcCustomPrice');
+    const name = nameEl.value.trim().slice(0, 40);
+    const price = parseFloat(priceEl.value);
+    if (!name || !isFinite(price) || price <= 0 || price > 9999) {
+      priceEl.focus();
+      return;
+    }
+    customs.push({ name, price });
+    nameEl.value = '';
+    priceEl.value = '';
+    nameEl.focus();
+    render();
+  });
+
+  // Enter key in either input adds the custom row.
+  ['calcCustomName', 'calcCustomPrice'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('calcCustomAdd').click();
+      }
+    });
+  });
+
+  render();
 </script>
 
 </body>
