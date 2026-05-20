@@ -412,7 +412,6 @@
   //   { ok: false, code, status }    — Drive API rejected (caller decides UX)
   async function deleteRemoteFile() {
     checkPro();
-    await ensureToken();
     let fileId = (loadMeta().fileId) || null;
     if (!fileId) {
       const f = await findSyncFile();

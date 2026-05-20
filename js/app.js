@@ -441,13 +441,20 @@
       effective = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     document.documentElement.setAttribute('data-theme', effective);
+    document.documentElement.style.backgroundColor = effective === 'dark' ? '#0f0f0f' : '#fafaf9';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', effective === 'dark' ? '#0f0f0f' : '#fafaf9');
 
     // Wire up live system-theme listener only when in auto mode
     if (mode === 'auto' && !mediaListener && window.matchMedia) {
       const mq = window.matchMedia('(prefers-color-scheme: dark)');
       mediaListener = e => {
         if (settings.theme === 'auto') {
-          document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          const newEff = e.matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', newEff);
+          document.documentElement.style.backgroundColor = newEff === 'dark' ? '#0f0f0f' : '#fafaf9';
+          const m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', newEff === 'dark' ? '#0f0f0f' : '#fafaf9');
         }
       };
       if (mq.addEventListener) mq.addEventListener('change', mediaListener);

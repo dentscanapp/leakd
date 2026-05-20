@@ -163,6 +163,26 @@ h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5
   <div class="subtitle">Real-time updates, security logs, and product changes.</div>
 
   <div class="timeline">
+    <!-- RELEASE v1.2.1 -->
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-header">
+        <span class="version">v1.2.1</span>
+        <span class="date">20 May 2026</span>
+        <span class="badge pro">GDPR & Extension Parity</span>
+      </div>
+      <div class="release-body">
+        <ul>
+          <li><span class="feat-tag">Privacy:</span> Disabling Cloud Sync now offers a one-click permanent deletion of the encrypted backup blob from your Google Drive in the same step — closes the GDPR Art. 17 ("right to be forgotten") gap directly in the app via the Drive <code>files.delete</code> API.</li>
+          <li><span class="feat-tag">Localization:</span> Three new sync strings (delete-remote confirmation, success toast, failure toast) added across all 28 supported languages, plus the existing "disable sync" prompt reworded to remove the stale "your Drive data is kept" wording.</li>
+          <li><span class="feat-tag">Extension:</span> Brought the Chrome extension build (<code>leakd-extension/</code>) to feature parity — same <code>deleteRemoteFile()</code> in sync.js, same disable-flow in app.js, all 28 locale bundles updated. Manifest bumped to 1.0.1.</li>
+          <li><span class="feat-tag">Fix:</span> Removed a stray <code>ensureToken()</code> reference in <code>deleteRemoteFile()</code> that would have thrown at runtime (token acquisition is handled by the existing <code>driveFetch()</code> wrapper). Patched in both the PWA and the extension.</li>
+          <li><span class="feat-tag">Compliance:</span> DPIA for Cloud Sync updated — residual risk K7 (consent withdrawal / right to erasure) lowered from 4 → 2 now that the deletion is wired in. Privacy Policy §17.2 rewritten to describe the in-app one-step flow.</li>
+          <li><span class="feat-tag">Caching:</span> Service Worker bumped to v105 so existing PWA installs pull the new sync.js on next launch.</li>
+        </ul>
+      </div>
+    </div>
+
     <!-- RELEASE v1.2.0 -->
     <div class="release">
       <div class="release-dot"></div>
