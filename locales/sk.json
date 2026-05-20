@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync vypnutý",
   "sync.enable": "Zapnúť sync",
   "sync.errGeneric": "Chyba sync: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync uzamknutý — najprv odomkni.",
   "sync.errNotConfigured": "Cloudový sync nie je nakonfigurovaný v tomto builde.",
   "sync.errOauth": "Prihlásenie Google zlyhalo alebo bolo zrušené.",

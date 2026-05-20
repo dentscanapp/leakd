@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync dezactivat",
   "sync.enable": "Activează sync",
   "sync.errGeneric": "Eroare sync: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync blocat — deblochează întâi.",
   "sync.errNotConfigured": "Sync cloud neconfigurat în acest build.",
   "sync.errOauth": "Autentificare Google eșuată sau anulată.",

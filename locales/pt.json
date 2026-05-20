@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync desativada",
   "sync.enable": "Ativar sync",
   "sync.errGeneric": "Erro de sync: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync bloqueada — desbloqueia primeiro.",
   "sync.errNotConfigured": "Sync na nuvem não configurada nesta build.",
   "sync.errOauth": "Login Google falhou ou foi cancelado.",

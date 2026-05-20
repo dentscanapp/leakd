@@ -489,6 +489,7 @@
   "sync.disabledOk": "Đồng bộ đã tắt",
   "sync.enable": "Bật đồng bộ",
   "sync.errGeneric": "Lỗi đồng bộ: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Đồng bộ bị khóa — mở khóa trước.",
   "sync.errNotConfigured": "Đồng bộ đám mây chưa được cấu hình trong bản này.",
   "sync.errOauth": "Đăng nhập Google thất bại hoặc bị hủy.",

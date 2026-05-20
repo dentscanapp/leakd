@@ -489,6 +489,7 @@
   "sync.disabledOk": "同步已禁用",
   "sync.enable": "启用同步",
   "sync.errGeneric": "同步错误：{code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "同步已锁定 — 请先解锁。",
   "sync.errNotConfigured": "此构建未配置云同步。",
   "sync.errOauth": "Google 登录失败或已取消。",

@@ -489,6 +489,7 @@
   "sync.disabledOk": "Pinatay ang sync",
   "sync.enable": "Paganahin ang sync",
   "sync.errGeneric": "Error sa sync: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Naka-lock ang sync — i-unlock muna.",
   "sync.errNotConfigured": "Hindi naka-configure ang cloud sync sa build na ito.",
   "sync.errOauth": "Nabigo o kinansela ang Google sign-in.",

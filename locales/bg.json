@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync изключен",
   "sync.enable": "Включи sync",
   "sync.errGeneric": "Грешка sync: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync заключен — първо отключи.",
   "sync.errNotConfigured": "Облачният sync не е конфигуриран в този билд.",
   "sync.errOauth": "Google входът неуспешен или отменен.",

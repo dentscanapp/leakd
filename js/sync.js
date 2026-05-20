@@ -310,7 +310,11 @@
       s.src = 'https://accounts.google.com/gsi/client';
       s.async = true; s.defer = true;
       s.onload = () => resolve();
-      s.onerror = () => reject(new Error('GIS_LOAD_FAILED'));
+      s.onerror = () => {
+        const e = new Error('GIS_LOAD_FAILED');
+        e.code = 'GIS_LOAD_FAILED';
+        reject(e);
+      };
       document.head.appendChild(s);
     });
     return gisLoadPromise;

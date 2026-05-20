@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync dinonaktifkan",
   "sync.enable": "Aktifkan sync",
   "sync.errGeneric": "Galat sync: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync terkunci — buka kunci dulu.",
   "sync.errNotConfigured": "Sync cloud tidak dikonfigurasi di build ini.",
   "sync.errOauth": "Login Google gagal atau dibatalkan.",

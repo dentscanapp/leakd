@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync kapatıldı",
   "sync.enable": "Sync'i aç",
   "sync.errGeneric": "Sync hatası: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync kilitli — önce kilidi aç.",
   "sync.errNotConfigured": "Bu build'de bulut sync yapılandırılmamış.",
   "sync.errOauth": "Google girişi başarısız ya da iptal edildi.",

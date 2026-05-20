@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync inaktiverad",
   "sync.enable": "Aktivera sync",
   "sync.errGeneric": "Sync-fel: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync låst — lås upp först.",
   "sync.errNotConfigured": "Molnsync inte konfigurerad i den här bygget.",
   "sync.errOauth": "Google-inloggning misslyckades eller avbröts.",

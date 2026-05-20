@@ -489,6 +489,7 @@
   "sync.disabledOk": "ปิดซิงค์แล้ว",
   "sync.enable": "เปิดซิงค์",
   "sync.errGeneric": "ข้อผิดพลาดซิงค์: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "ซิงค์ล็อกอยู่ — ปลดล็อกก่อน",
   "sync.errNotConfigured": "ซิงค์คลาวด์ไม่ได้ตั้งค่าในบิลด์นี้",
   "sync.errOauth": "เข้าสู่ระบบ Google ล้มเหลวหรือถูกยกเลิก",

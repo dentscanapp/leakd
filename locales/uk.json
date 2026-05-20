@@ -489,6 +489,7 @@
   "sync.disabledOk": "Синхр. вимкнена",
   "sync.enable": "Увімкнути синхр.",
   "sync.errGeneric": "Помилка синхр.: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Синхр. заблокована — спершу розблокуй.",
   "sync.errNotConfigured": "Хмарна синхр. не налаштована в цьому білді.",
   "sync.errOauth": "Вхід Google невдалий або скасований.",

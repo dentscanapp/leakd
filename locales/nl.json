@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync uitgeschakeld",
   "sync.enable": "Sync inschakelen",
   "sync.errGeneric": "Sync-fout: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync vergrendeld — ontgrendel eerst.",
   "sync.errNotConfigured": "Cloudsync niet geconfigureerd in deze build.",
   "sync.errOauth": "Google-aanmelding mislukt of geannuleerd.",

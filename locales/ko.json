@@ -489,6 +489,7 @@
   "sync.disabledOk": "동기화 비활성화됨",
   "sync.enable": "동기화 활성화",
   "sync.errGeneric": "동기화 오류: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "동기화 잠김 — 먼저 잠금 해제.",
   "sync.errNotConfigured": "이 빌드에서 클라우드 동기화가 구성되지 않음.",
   "sync.errOauth": "Google 로그인 실패 또는 취소됨.",

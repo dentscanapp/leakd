@@ -2758,6 +2758,7 @@
       OAUTH_FAILED: t('sync.errOauth'),
       LOCKED: t('sync.errLocked'),
       SYNC_REQUIRES_PRO: t('sync.errPro'),
+      GIS_LOAD_FAILED: t('sync.errGisLoad'),
     };
     const el = $('syncError');
     el.textContent = map[code] || t('sync.errGeneric', { code });

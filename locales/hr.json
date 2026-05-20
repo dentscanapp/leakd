@@ -489,6 +489,7 @@
   "sync.disabledOk": "Sync isključen",
   "sync.enable": "Uključi sync",
   "sync.errGeneric": "Greška sync: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Sync zaključan — prvo otključaj.",
   "sync.errNotConfigured": "Sync u oblaku nije konfiguriran u ovom buildu.",
   "sync.errOauth": "Google prijava neuspjela ili otkazana.",

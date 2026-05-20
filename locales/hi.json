@@ -489,6 +489,7 @@
   "sync.disabledOk": "सिंक अक्षम",
   "sync.enable": "सिंक सक्षम करें",
   "sync.errGeneric": "सिंक त्रुटि: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "सिंक लॉक्ड — पहले अनलॉक करें।",
   "sync.errNotConfigured": "इस बिल्ड में क्लाउड सिंक कॉन्फ़िगर नहीं है।",
   "sync.errOauth": "Google साइन-इन विफल या रद्द किया।",

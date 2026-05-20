@@ -493,6 +493,7 @@
   "sync.disabledOk": "Szinkron kikapcsolva",
   "sync.enable": "Szinkron bekapcsolása",
   "sync.errGeneric": "Szinkron hiba: {code}",
+  "sync.errGisLoad": "A Google bejelentkezés betöltése sikertelen. Kérlek, kapcsold ki a reklámblokkolót (pl. uBlock) vagy a szigorú adatvédelmi pajzsot (pl. Brave Shields) az oldalon.",
   "sync.errLocked": "A szinkron zárolva van — előbb oldd fel.",
   "sync.errNotConfigured": "A felhő szinkron nincs beállítva ebben a buildben.",
   "sync.errOauth": "A Google belépés sikertelen vagy megszakadt.",

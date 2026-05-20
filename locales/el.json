@@ -489,6 +489,7 @@
   "sync.disabledOk": "Συγχρ. απενεργοποιήθηκε",
   "sync.enable": "Ενεργοποίηση συγχρ.",
   "sync.errGeneric": "Σφάλμα συγχρ.: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "Συγχρ. κλειδωμένος — ξεκλείδωσε πρώτα.",
   "sync.errNotConfigured": "Συγχρ. cloud μη ρυθμισμένος σε αυτή τη build.",
   "sync.errOauth": "Σύνδεση Google απέτυχε ή ακυρώθηκε.",

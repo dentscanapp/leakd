@@ -489,6 +489,7 @@
   "sync.disabledOk": "同期を無効化しました",
   "sync.enable": "同期を有効化",
   "sync.errGeneric": "同期エラー: {code}",
+  "sync.errGisLoad": "Could not load Google Sign-In. Please disable your ad blocker or privacy shields for this site.",
   "sync.errLocked": "同期がロック中 — 先にロック解除してください。",
   "sync.errNotConfigured": "このビルドではクラウド同期が設定されていません。",
   "sync.errOauth": "Googleログイン失敗またはキャンセル。",
