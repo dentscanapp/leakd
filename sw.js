@@ -1,4 +1,19 @@
-const CACHE_NAME = 'leakd-v106';
+const CACHE_NAME = 'leakd-v107';
+
+// Files that must always be fresh — HTML shells and the critical JS that
+// reads them. Network-first with a cache fallback for offline. Without
+// this, a cached app.html keeps referencing a stale pro.js / app.js and
+// users never see new features (this exact bug happened in v106).
+const NETWORK_FIRST = [
+  '/', '/index.html', '/app.html', '/landing.html',
+  '/privacy.html', '/terms.html', '/about.html', '/blog.html',
+  '/contact.html', '/roadmap.html', '/changelog.html',
+  '/js/app.js', '/js/pro.js', '/js/sync.js', '/js/i18n.js',
+];
+function isNetworkFirst(url) {
+  const p = url.pathname;
+  return NETWORK_FIRST.indexOf(p) !== -1;
+}
 const ASSETS = [
   './',
   'index.html',
@@ -124,6 +139,33 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
+  // Network-first for HTML shells and critical JS: always try the network
+  // so users get new features the moment they reload. Fall back to cache
+  // only when the network actually fails (offline / 5xx).
+  if (isNetworkFirst(url)) {
+    event.respondWith(
+      fetch(event.request).then(response => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      }).catch(async () => {
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+        if (event.request.mode === 'navigate') {
+          const wantsApp = /\/app(\.html)?(\?|$)/.test(url.pathname + url.search);
+          const fallback = await caches.match(wantsApp ? 'app.html' : 'index.html');
+          if (fallback) return fallback;
+        }
+        return new Response('', { status: 504, statusText: 'Offline' });
+      })
+    );
+    return;
+  }
+
+  // Cache-first for everything else (fonts, icons, libraries that
+  // don't change between releases).
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
@@ -135,9 +177,6 @@ self.addEventListener('fetch', event => {
         return response;
       }).catch(async () => {
         if (event.request.mode === 'navigate') {
-          // Pick the right offline fallback: navigation requests to
-          // anything in the app shell get app.html; everything else
-          // (root, marketing routes) gets the landing index.html.
           const wantsApp = /\/app(\.html)?(\?|$)/.test(url.pathname + url.search);
           const fallback = await caches.match(wantsApp ? 'app.html' : 'index.html');
           if (fallback) return fallback;
