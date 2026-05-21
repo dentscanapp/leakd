@@ -90,6 +90,14 @@
     { match: /spotify\s*family/i,   name: 'Spotify Family',   price: 3290.00, cat: 'Music', cancel: 'https://www.spotify.com/account/subscription/' },
     { match: /netflix\s*(premium|family)/i, name: 'Netflix Premium', price: 4490.00, cat: 'Entertainment', cancel: 'https://www.netflix.com/cancelplan' },
     { match: /youtube\s*(premium\s*)?family/i, name: 'YouTube Premium Family', price: 2790.00, cat: 'Entertainment', cancel: 'https://www.youtube.com/paid_memberships' },
+    { match: /wolt\+?\s*(éves|yearly)/i, name: 'Wolt+ éves', price: 14990.00, cat: 'Food', cancel: 'https://wolt.com/me' },
+    { match: /duolingo\s*(family|családi)/i, name: 'Duolingo Családi', price: 3790.00, cat: 'Other', cancel: 'https://www.duolingo.com/settings/subscription' },
+    { match: /telekom\s*(otthoni|internet|tv)/i, name: 'Telekom Otthoni', price: 6000.00, cat: 'Entertainment', cancel: 'https://www.telekom.hu' },
+    { match: /digi\s*(előfizetés|internet|tv)/i, name: 'DIGI Internet & TV', price: 5500.00, cat: 'Entertainment', cancel: 'https://ugyfelkapu.digi.hu' },
+    { match: /canva\s*pro/i,        name: 'Canva Pro',        price: 3990.00, cat: 'Work', cancel: 'https://www.canva.com/settings/billing-and-plans' },
+    { match: /hvg\s*360/i,          name: 'HVG360',           price: 2490.00, cat: 'News', cancel: 'https://hvg.hu/hvg360' },
+    { match: /telex\s*(támogatás|támogató)/i, name: 'Telex támogatás', price: 3000.00, cat: 'News', cancel: 'https://telex.hu/tamogatas' },
+    { match: /simplepay/i,          name: 'SimplePay fizetés', price: 1500.00, cat: 'Other', cancel: 'https://www.simplepay.hu' },
   ];
 
   // Find the cancel URL for an existing sub by name (used by the edit modal)
@@ -382,6 +390,78 @@
         'Open youtube.com/paid_memberships',
         'Click YouTube Premium Family → "Deactivate"',
         'Confirm cancellation',
+      ],
+    },
+    'Wolt+ éves': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Open Wolt app or wolt.com and sign in',
+        'Go to your Profile → Wolt+',
+        'Click "Manage Membership" or "Cancel Subscription" and confirm',
+      ],
+    },
+    'Duolingo Családi': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Open duolingo.com/settings/subscription',
+        'Click "Cancel Subscription"',
+        'Confirm',
+      ],
+    },
+    'Telekom Otthoni': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to the Telekom online portal or app',
+        'Go to "My Subscriptions" → "Home services"',
+        'Check contract loyalty, then submit a disconnect request or contact support via chat',
+      ],
+    },
+    'DIGI Internet & TV': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to DIGI Ügyfélkapu (client portal)',
+        'Go to "Subscriptions" (Előfizetések)',
+        'Request termination online, or contact support by phone or in person',
+      ],
+    },
+    'Canva Pro': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to canva.com',
+        'Click your profile → Settings → "Billing & Plans"',
+        'Under your subscription, click "Cancel subscription" and confirm',
+      ],
+    },
+    'HVG360': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to hvg.hu',
+        'Go to your Profile → hvg360 settings',
+        'Click "Cancel Auto-Renewal" and confirm',
+      ],
+    },
+    'Telex támogatás': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Go to Telex portal and log in',
+        'Go to "My support" (Támogatásaim)',
+        'Click "Cancel recurring support" or manage via SimplePay/Stripe dashboard',
+      ],
+    },
+    'SimplePay fizetés': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Open the recurring payment confirmation email from SimplePay',
+        'Click the unique "Manage subscription" link in the email footer',
+        'Cancel the active token, or block it via your bank card settings if link is missing',
       ],
     },
   };
@@ -684,6 +764,29 @@
       'Log in to wizzair.com': 'Lépj be a wizzair.com oldalon',
       'Go to your Profile → Wizz Discount Club': 'Menj a Profilod → Wizz Discount Club menübe',
       'Turn off Auto-Renewal or let it expire naturally': 'Kapcsold ki az automatikus megújítást, vagy engedd lejárni a periódus végén',
+      // Duolingo
+      'Open duolingo.com/settings/subscription': 'Nyisd meg a duolingo.com/settings/subscription oldalt',
+      'Click "Cancel Subscription"': 'Kattints a "Cancel Subscription" (Előfizetés lemondása) gombra',
+      // Telekom Otthoni
+      'Go to "My Subscriptions" → "Home services"': 'Menj a "Saját előfizetések" → "Otthoni szolgáltatások" menübe',
+      'Check contract loyalty, then submit a disconnect request or contact support via chat': 'Ellenőrizd a hűségidőt, majd küldd el a lemondási igényt vagy lépj kapcsolatba velük chaten',
+      // DIGI
+      'Log in to DIGI Ügyfélkapu (client portal)': 'Lépj be a DIGI Ügyfélkapura',
+      'Go to "Subscriptions" (Előfizetések)': 'Menj az "Előfizetések" menübe',
+      'Request termination online, or contact support by phone or in person': 'Kezdeményezd a felmondást online, vagy vedd fel a kapcsolatot az ügyfélszolgálattal telefonon / személyesen',
+      // Canva
+      'Click your profile → Settings → "Billing & Plans"': 'Kattints a profilodra → Beállítások → "Számlázás és csomagok"',
+      'Under your subscription, click "Cancel subscription" and confirm': 'Az előfizetésed alatt kattints a "Csomag lemondása" gombra és erősítsd meg',
+      // HVG360
+      'Go to your Profile → hvg360 settings': 'Menj a Profilodra → hvg360 beállítások',
+      // Telex
+      'Go to Telex portal and log in': 'Menj a Telex portálra és lépj be',
+      'Go to "My support" (Támogatásaim)': 'Menj a "Támogatásaim" menübe',
+      'Click "Cancel recurring support" or manage via SimplePay/Stripe dashboard': 'Kattints a "Rendszeres támogatás lemondása" gombra, vagy kezeld a SimplePay/Stripe fiókodban',
+      // SimplePay
+      'Open the recurring payment confirmation email from SimplePay': 'Nyisd meg a SimplePay-től kapott rendszeres fizetési értesítő emailt',
+      'Click the unique "Manage subscription" link in the email footer': 'Kattints az email alján található egyedi "Előfizetés kezelése" linkre',
+      'Cancel the active token, or block it via your bank card settings if link is missing': 'Töröld az aktív rendszeres fizetési tokent, vagy tiltsd le a bankkártyádnál ha nincs meg a link',
       // Generic
       'no-central-cancel-repeat': 'Nincs központi lemondás — minden alkotónál külön',
     },

@@ -125,6 +125,10 @@
     { match: /erste\s*bank|erste\s*számla/i, bg: '#005fa9', symbol: 'E' },
     { match: /otp\s*bank|otp\s*számla/i, bg: '#009900', symbol: 'O' },
     { match: /wizz\s*(discount|club)/i, bg: '#e0007b', symbol: 'W' },
+    { match: /hvg\s*360/i,              bg: '#f78e1e', symbol: 'H360' },
+    { match: /telex/i,                  bg: '#00aeef', symbol: 'T' },
+    { match: /digi/i,                   bg: '#0054a6', symbol: 'D' },
+    { match: /simplepay/i,              bg: '#25a75b', symbol: 'S' },
   ];
 
   // Default badge per category (when service is unknown)
