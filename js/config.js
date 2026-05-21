@@ -1,3 +1,8 @@
+// Prevent the browser from automatically offering to install the PWA
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+});
+
 window.LeakdSyncConfig = {
   clientId: '587744396356-qho928kuorkh8dufjnqa05u7cbdellho.apps.googleusercontent.com'
 };
