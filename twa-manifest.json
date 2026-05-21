@@ -20,8 +20,8 @@
     "path": "c:/Users/local_user/Documents/leakd/leakd/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "27",
-  "appVersionCode": 27,
+  "appVersionName": "28",
+  "appVersionCode": 28,
   "shortcuts": [
     {
       "name": "Add subscription",
@@ -57,5 +57,5 @@
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
   "displayOverride": [],
-  "appVersion": "27"
+  "appVersion": "28"
 }

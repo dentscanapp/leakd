@@ -426,6 +426,21 @@
         </label>
       </div>
     </div>
+    <!-- Leakd Split Details (only shown when shared > 1) -->
+    <div id="subSharedDetails" class="shared-details-wrap" style="display:none;">
+      <div class="shared-details-title" data-i18n="field.splitChecklist">Friend Payment Checklist & Reminders</div>
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label for="subSharedNames" data-i18n="field.sharedNames">Friend names</label>
+          <input type="text" id="subSharedNames" data-i18n-placeholder="field.sharedNamesPh" autocomplete="off">
+        </div>
+        <div class="form-group flex-1">
+          <label for="subPaymentInfo" data-i18n="field.paymentInfo">Payment details</label>
+          <input type="text" id="subPaymentInfo" data-i18n-placeholder="field.paymentInfoPh" autocomplete="off">
+        </div>
+      </div>
+      <div id="subSharedChecklist" class="shared-checklist"></div>
+    </div>
     <div class="form-group">
       <label for="subBusiness">
         <input type="checkbox" id="subBusiness"> <span data-i18n="field.business">This is a business expense</span>

@@ -586,6 +586,41 @@
     dueSoonEl.textContent = dueSoonCount;
     monthlyTotalEl.style.color = monthly > 0 ? '' : 'var(--text-3)';
 
+    // Calculate total money owed by friends
+    let totalOwed = 0;
+    activeSubs().forEach(s => {
+      if (s.sharedWith && s.sharedWith > 1 && s.sharedNames) {
+        const friendNames = s.sharedNames.split(',')
+          .map(name => name.trim())
+          .filter(name => name.length > 0);
+        
+        const pricePerPerson = s.price / s.sharedWith;
+        const totalFriendSlots = s.sharedWith - 1;
+        const paidList = Array.isArray(s.sharedPaid) ? s.sharedPaid : [];
+
+        for (let i = 0; i < totalFriendSlots; i++) {
+          const defaultLabel = window.LeakdI18n && window.LeakdI18n.lang === 'hu' ? 'Barát' : 'Friend';
+          const name = friendNames[i] || `${defaultLabel} ${i + 1}`;
+          if (!paidList.includes(name)) {
+            totalOwed += toMonthly(pricePerPerson, s.cycle, s.currency);
+          }
+        }
+      }
+    });
+
+    const existingBadge = document.querySelector('.stat-owed-badge');
+    if (existingBadge) existingBadge.remove();
+
+    if (totalOwed > 0) {
+      const badgeHtml = `
+        <span class="stat-owed-badge" title="${t('field.splitOwedByFriends') || 'owed by friends'}">
+          <span>👥</span>
+          <span>+ ${formatPrice(totalOwed)} ${t('field.splitOwed') || 'owed'}</span>
+        </span>
+      `;
+      monthlyTotalEl.insertAdjacentHTML('afterend', badgeHtml);
+    }
+
     // Update leak effect
     if (window.LeakdEffect) {
       const active = activeSubs();
@@ -1300,6 +1335,108 @@
     return d.innerHTML;
   }
 
+  function renderSharedChecklist(optSub) {
+    const container = $('subSharedChecklist');
+    if (!container) return;
+
+    const priceInput = parseFloat($('subPrice').value) || 0;
+    const currency = $('subCurrency').value;
+    const sharedRaw = parseInt($('subShared').value, 10);
+    const sharedWith = isNaN(sharedRaw) || sharedRaw < 1 ? 1 : Math.min(20, sharedRaw);
+
+    if (sharedWith <= 1) {
+      container.innerHTML = '';
+      return;
+    }
+
+    const friendNamesStr = $('subSharedNames').value || '';
+    const friendNames = friendNamesStr.split(',')
+      .map(name => name.trim())
+      .filter(name => name.length > 0);
+
+    const pricePerPerson = priceInput / sharedWith;
+
+    // Load who has paid already
+    let paidList = [];
+    if (optSub && Array.isArray(optSub.sharedPaid)) {
+      paidList = optSub.sharedPaid;
+    } else {
+      // Collect current checkboxes that are checked
+      paidList = Array.from(container.querySelectorAll('.shared-checklist-item input[type="checkbox"]:checked'))
+        .map(el => el.dataset.name);
+    }
+
+    let html = '';
+    const totalFriendSlots = sharedWith - 1;
+    for (let i = 0; i < totalFriendSlots; i++) {
+      const defaultLabel = window.LeakdI18n && window.LeakdI18n.lang === 'hu' ? 'Barát' : 'Friend';
+      const name = friendNames[i] || `${defaultLabel} ${i + 1}`;
+      const isPaid = paidList.includes(name);
+
+      html += `
+        <div class="shared-checklist-item">
+          <label class="shared-checklist-label">
+            <input type="checkbox" data-name="${escHtml(name)}" ${isPaid ? 'checked' : ''}>
+            <span class="shared-friend-name">${escHtml(name)}</span>
+            <span class="shared-friend-share">(${formatPrice(pricePerPerson, currency)})</span>
+          </label>
+          <button type="button" class="btn-copy-reminder" data-name="${escHtml(name)}" data-amount="${pricePerPerson}" data-currency="${currency}">
+            <span class="copy-icon">💬</span>
+            <span class="copy-text">${t('field.splitCopyReminder')}</span>
+          </button>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+  }
+
+  function copyFriendReminder(friendName, amount, currencyCode) {
+    const serviceName = $('subName').value.trim() || 'Leakd';
+    const paymentInfo = $('subPaymentInfo').value.trim() || '';
+
+    // Handle Revolut link formatting: revolut.me/username/amount
+    let payLink = paymentInfo;
+    if (paymentInfo.toLowerCase().startsWith('revolut.me/')) {
+      const username = paymentInfo.split('/')[1] || '';
+      if (username) {
+        const rawAmount = Math.round(amount);
+        const formattedLinkVal = currencyCode === 'HUF' ? `${rawAmount}HUF` : rawAmount;
+        payLink = `revolut.me/${username.split('?')[0]}/${formattedLinkVal}`;
+      }
+    } else if (paymentInfo.toLowerCase().startsWith('paypal.me/')) {
+      const username = paymentInfo.split('/')[1] || '';
+      if (username) {
+        payLink = `paypal.me/${username.split('?')[0]}/${amount.toFixed(2)}`;
+      }
+    }
+
+    const amountFormatted = formatPrice(amount, currencyCode);
+    const textTemplate = t('share.reminderText', {
+      friend: friendName,
+      service: serviceName,
+      amount: amountFormatted,
+      paymentInfo: payLink || '...'
+    });
+
+    navigator.clipboard.writeText(textTemplate).then(() => {
+      toast(t('share.reminderCopied') || 'Reminder message copied!');
+    }).catch(err => {
+      console.error('Could not copy reminder:', err);
+      // Fallback for non-secure environments
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = textTemplate;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        toast(t('share.reminderCopied') || 'Reminder message copied!');
+      } catch (e) {
+        console.error('Fallback copy failed:', e);
+      }
+    });
+  }
+
   // ─── Modal ───
   function openAdd() {
     editingId = null;
@@ -1317,6 +1454,10 @@
     $('subBusiness').checked = false;
     $('subNotes').value = '';
     $('subShared').value = '';
+    $('subSharedNames').value = '';
+    $('subPaymentInfo').value = '';
+    $('subSharedDetails').style.display = 'none';
+    $('subSharedChecklist').innerHTML = '';
     $('subTags').value = '';
     $('subLastUsed').value = '';
     setRatingUI(0);
@@ -1366,6 +1507,17 @@
     $('subBusiness').checked = s.isBusiness || false;
     $('subNotes').value = s.notes || '';
     $('subShared').value = s.sharedWith && s.sharedWith > 1 ? String(s.sharedWith) : '';
+    if (s.sharedWith && s.sharedWith > 1) {
+      $('subSharedDetails').style.display = 'block';
+      $('subSharedNames').value = s.sharedNames || '';
+      $('subPaymentInfo').value = s.paymentInfo || '';
+      renderSharedChecklist(s);
+    } else {
+      $('subSharedDetails').style.display = 'none';
+      $('subSharedNames').value = '';
+      $('subPaymentInfo').value = '';
+      $('subSharedChecklist').innerHTML = '';
+    }
     $('subTags').value = Array.isArray(s.tags) ? s.tags.join(', ') : (s.tags || '');
     $('subLastUsed').value = s.lastUsed || '';
     setRatingUI(s.rating || 0);
@@ -1444,6 +1596,10 @@
     const rating = parseInt($('subRating').dataset.rating || '0', 10);
     const sharedRaw = parseInt($('subShared').value, 10);
     const sharedWith = isNaN(sharedRaw) || sharedRaw < 1 ? 1 : Math.min(20, sharedRaw);
+    const sharedNames = $('subSharedNames').value.trim();
+    const paymentInfo = $('subPaymentInfo').value.trim();
+    const sharedPaid = Array.from(document.querySelectorAll('.shared-checklist-item input[type="checkbox"]:checked'))
+      .map(el => el.dataset.name);
     const tagsRaw = $('subTags').value.trim();
     const tags = tagsRaw
       ? tagsRaw.split(',').map(t => t.trim()).filter(t => t.length > 0 && t.length <= 24).slice(0, 8)
@@ -1464,7 +1620,7 @@
         const pctChange = priceChanged && prev.price > 0
           ? Math.round((priceDelta / prev.price) * 100)
           : 0;
-        subs[idx] = { ...prev, name, price, currency, cycle, category, nextDate, isTrial, trialEnd, lastUsed, paused, isBusiness, notes, rating, sharedWith, tags, updatedAt: Date.now() };
+        subs[idx] = { ...prev, name, price, currency, cycle, category, nextDate, isTrial, trialEnd, lastUsed, paused, isBusiness, notes, rating, sharedWith, tags, sharedNames, sharedPaid, paymentInfo, updatedAt: Date.now() };
         if (paused && !wasPaused) logActivity('paused', subs[idx]);
         else if (!paused && wasPaused) logActivity('resumed', subs[idx]);
         else logActivity('edited', subs[idx]);
@@ -1487,6 +1643,7 @@
       const newSub = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         name, price, currency, cycle, category, nextDate, isTrial, trialEnd, lastUsed, paused, isBusiness, notes, rating, sharedWith, tags,
+        sharedNames, sharedPaid, paymentInfo,
         createdAt: new Date().toISOString(),
         updatedAt: Date.now()
       };
@@ -3423,6 +3580,44 @@
 
     $('searchInput').addEventListener('input', onSearch);
     $('searchClear').addEventListener('click', clearSearch);
+
+    $('subShared').addEventListener('input', function() {
+      const val = parseInt(this.value, 10);
+      if (!isNaN(val) && val > 1) {
+        $('subSharedDetails').style.display = 'block';
+        renderSharedChecklist();
+      } else {
+        $('subSharedDetails').style.display = 'none';
+        $('subSharedChecklist').innerHTML = '';
+      }
+    });
+
+    $('subSharedNames').addEventListener('input', function() {
+      renderSharedChecklist();
+    });
+
+    $('subPrice').addEventListener('input', () => {
+      if (parseInt($('subShared').value, 10) > 1) {
+        renderSharedChecklist();
+      }
+    });
+
+    $('subCurrency').addEventListener('change', () => {
+      if (parseInt($('subShared').value, 10) > 1) {
+        renderSharedChecklist();
+      }
+    });
+
+    $('subSharedChecklist').addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn-copy-reminder');
+      if (btn) {
+        e.preventDefault();
+        const name = btn.dataset.name;
+        const amount = parseFloat(btn.dataset.amount);
+        const currency = btn.dataset.currency;
+        copyFriendReminder(name, amount, currency);
+      }
+    });
 
     $('subTrial').addEventListener('change', function() {
       $('trialDateWrap').style.display = this.checked ? 'block' : 'none';
