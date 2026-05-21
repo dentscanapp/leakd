@@ -29,6 +29,8 @@ const ASSETS = [
   'landing/assets/favicon.svg',
   'landing/assets/google-play.png',
   'css/app.css',
+  'js/config.js',
+  'js/fouc.js',
   'js/app.js',
   'js/notifications.js',
   'js/insights.js',

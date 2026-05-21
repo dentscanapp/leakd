@@ -109,11 +109,22 @@
     { match: /uber\s*one|uber\s*eats/i, bg: '#000000', symbol: 'U' },
     { match: /deliveroo|too\s*good\s*to\s*go/i, bg: '#00ccbc', symbol: 'D' },
     { match: /spar\s*box|gousto|marley\s*spoon/i, bg: '#0c0c0c', symbol: '🥘' },
+    { match: /wolt\+?/i,                bg: '#00c2e8', symbol: 'W+' },
+    { match: /foodora\s*pro/i,          bg: '#ff007f', symbol: 'Fp' },
     // Creators
     { match: /onlyfans/i,               bg: '#00aff0', symbol: 'OF' },
     { match: /patreon/i,                bg: '#f96854', symbol: 'P' },
     { match: /buymeacoffee/i,           bg: '#ffdd00', fg: '#1a1a1a', symbol: 'B' },
     { match: /ko-?fi/i,                 bg: '#ff5e5b', symbol: 'k' },
+    // Hungarian & European telco / banking / travel
+    { match: /telekom/i,                bg: '#e20074', symbol: 'T' },
+    { match: /yettel/i,                 bg: '#00aeef', symbol: 'Y' },
+    { match: /vodafone/i,               bg: '#e60000', symbol: 'V' },
+    { match: /skyshowtime/i,            bg: '#000000', symbol: 'S' },
+    { match: /rtl\s*\+\s*(hu|magyar)/i, bg: '#0a0a0a', symbol: 'R+' },
+    { match: /erste\s*bank|erste\s*számla/i, bg: '#005fa9', symbol: 'E' },
+    { match: /otp\s*bank|otp\s*számla/i, bg: '#009900', symbol: 'O' },
+    { match: /wizz\s*(discount|club)/i, bg: '#e0007b', symbol: 'W' },
   ];
 
   // Default badge per category (when service is unknown)

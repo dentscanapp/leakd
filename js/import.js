@@ -77,6 +77,19 @@
     { match: /\bgym\b|fitness\s*first|basic\s*fit|sportcity/i, name: 'Gym', price: 29.99, cat: 'Fitness', cancel: null },
     { match: /hellofresh/i,         name: 'HelloFresh',       price: 49.99, cat: 'Food', cancel: 'https://www.hellofresh.com/account' },
     { match: /spar\s*box|gousto|marley\s*spoon/i, name: 'Meal kit', price: 39.99, cat: 'Food', cancel: null },
+    { match: /wolt\+?/i,            name: 'Wolt+',            price: 1490.00, cat: 'Food', cancel: 'https://wolt.com/me' },
+    { match: /foodora\s*pro/i,      name: 'Foodora Pro',      price: 1290.00, cat: 'Food', cancel: 'https://www.foodora.hu' },
+    { match: /telekom\s*(előfizetés|mobil)/i, name: 'Telekom mobil', price: 8000.00, cat: 'Other', cancel: 'https://www.telekom.hu' },
+    { match: /yettel\s*(előfizetés|mobil)/i, name: 'Yettel mobil', price: 6000.00, cat: 'Other', cancel: 'https://www.yettel.hu' },
+    { match: /vodafone\s*(előfizetés|mobil)/i, name: 'Vodafone mobil', price: 7000.00, cat: 'Other', cancel: 'https://www.vodafone.hu' },
+    { match: /skyshowtime/i,        name: 'SkyShowtime',      price: 1990.00, cat: 'Entertainment', cancel: 'https://www.skyshowtime.com/my-account/subscription' },
+    { match: /rtl\s*\+\s*(hu|magyar)?/i, name: 'RTL+ (HU)',   price: 2990.00, cat: 'Entertainment', cancel: 'https://www.rtlplusz.hu/profil' },
+    { match: /erste\s*bank|erste\s*számla/i, name: 'Erste számladíj', price: 1500.00, cat: 'Other', cancel: 'https://www.erstebank.hu' },
+    { match: /otp\s*bank|otp\s*számla/i, name: 'OTP számladíj', price: 1200.00, cat: 'Other', cancel: 'https://www.otpbank.hu' },
+    { match: /wizz\s*(discount|club)/i, name: 'Wizz Discount Club', price: 15900.00, cat: 'Other', cancel: 'https://wizzair.com' },
+    { match: /spotify\s*family/i,   name: 'Spotify Family',   price: 3290.00, cat: 'Music', cancel: 'https://www.spotify.com/account/subscription/' },
+    { match: /netflix\s*(premium|family)/i, name: 'Netflix Premium', price: 4490.00, cat: 'Entertainment', cancel: 'https://www.netflix.com/cancelplan' },
+    { match: /youtube\s*(premium\s*)?family/i, name: 'YouTube Premium Family', price: 2790.00, cat: 'Entertainment', cancel: 'https://www.youtube.com/paid_memberships' },
   ];
 
   // Find the cancel URL for an existing sub by name (used by the edit modal)
@@ -261,6 +274,114 @@
         'patreon.com/settings/memberships',
         'Find each pledge → "Edit" → "Cancel pledge"',
         'No central cancel — must repeat per creator',
+      ],
+    },
+    'Wolt+': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Open Wolt app or wolt.com and sign in',
+        'Go to your Profile → Wolt+',
+        'Click "Manage Membership" or "Cancel Subscription" and confirm',
+      ],
+    },
+    'Foodora Pro': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Open Foodora app or website and log in',
+        'Go to your Account → Foodora Pro',
+        'Tap "Cancel subscription" and confirm',
+      ],
+    },
+    'Telekom mobil': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to the Telekom online portal or app',
+        'Go to "Subscriptions" or "Contracts"',
+        'For fixed term, check expiry. Otherwise, click "Modify/Cancel contract" or contact support via chat',
+      ],
+    },
+    'Yettel mobil': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to the Yettel app or website',
+        'Under subscriptions, check your active tariff',
+        'To cancel, you must request termination online, by phone, or visit a store if under loyalty contract',
+      ],
+    },
+    'Vodafone mobil': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to your My Vodafone account',
+        'Under active services, review your contract loyalty period',
+        'Submit a cancellation request or use the support chat to terminate',
+      ],
+    },
+    'SkyShowtime': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Open skyshowtime.com and sign in',
+        'Go to your Account → Subscriptions',
+        'Click "Cancel Subscription" and confirm',
+      ],
+    },
+    'RTL+ (HU)': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to your RTL+ account',
+        'Open your Profile and go to "Subscription management"',
+        'Click "Cancel Auto-Renewal" and confirm',
+      ],
+    },
+    'Erste számladíj': {
+      difficulty: 'hard',
+      minutes: 15,
+      steps: [
+        'You must close the bank account',
+        'Open George app or web, send a message, or visit a branch in person',
+        'Clear any negative balance, sign account closure forms',
+      ],
+    },
+    'OTP számladíj': {
+      difficulty: 'hard',
+      minutes: 15,
+      steps: [
+        'OTP account fee cannot be cancelled directly; you must close the account',
+        'Visit a local OTP branch in person with your ID',
+        'Return any debit/credit cards and sign the termination protocol',
+      ],
+    },
+    'Wizz Discount Club': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to wizzair.com',
+        'Go to your Profile → Wizz Discount Club',
+        'Turn off Auto-Renewal or let it expire naturally',
+      ],
+    },
+    'Spotify Family': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Go to spotify.com/account',
+        'Click "Manage your plan"',
+        'Choose "Cancel Premium" and confirm',
+      ],
+    },
+    'YouTube Premium Family': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Open youtube.com/paid_memberships',
+        'Click YouTube Premium Family → "Deactivate"',
+        'Confirm cancellation',
       ],
     },
   };
@@ -524,6 +645,45 @@
       // Patreon
       'patreon.com/settings/memberships': 'patreon.com/settings/memberships',
       'Find each pledge → "Edit" → "Cancel pledge"': 'Keresd minden vállalást → "Szerkesztés" → "Vállalás lemondása"',
+      // Wolt+
+      'Open Wolt app or wolt.com and sign in': 'Nyisd meg a Wolt alkalmazást vagy a wolt.com-ot és lépj be',
+      'Go to your Profile → Wolt+': 'Menj a Profilodra → Wolt+',
+      'Click "Manage Membership" or "Cancel Subscription" and confirm': 'Kattints a "Tagság kezelése" vagy "Előfizetés lemondása" gombra és erősítsd meg',
+      // Foodora Pro
+      'Open Foodora app or website and log in': 'Nyisd meg a Foodora alkalmazást vagy weboldalt és lépj be',
+      'Go to your Account → Foodora Pro': 'Menj a Fiókodra → Foodora Pro',
+      'Tap "Cancel subscription" and confirm': 'Koppints az "Előfizetés lemondása" gombra és erősítsd meg',
+      // Telekom
+      'Log in to the Telekom online portal or app': 'Lépj be a Telekom online ügyfélszolgálatra vagy az appba',
+      'Go to "Subscriptions" or "Contracts"': 'Keresd az "Előfizetések" vagy "Szerződések" menüt',
+      'For fixed term, check expiry. Otherwise, click "Modify/Cancel contract" or contact support via chat': 'Határozott idő esetén ellenőrizd a lejárati dátumot. Egyébként kattints a "Szerződés módosítása/felmondása" gombra, vagy vedd fel a kapcsolatot az ügyfélszolgálattal chaten',
+      // Yettel
+      'Log in to the Yettel app or website': 'Lépj be a Yettel alkalmazásba vagy a weboldalra',
+      'Under subscriptions, check your active tariff': 'Az előfizetéseid alatt ellenőrizd az aktív tarifacsomagodat',
+      'To cancel, you must request termination online, by phone, or visit a store if under loyalty contract': 'A lemondáshoz kezdeményezd a felmondást online, telefonon, vagy látogass el egy üzletbe, ha hűségidőd van',
+      // Vodafone
+      'Log in to your My Vodafone account': 'Lépj be a My Vodafone fiókodba',
+      'Under active services, review your contract loyalty period': 'Az aktív szolgáltatások alatt ellenőrizd a hűségidődet',
+      'Submit a cancellation request or use the support chat to terminate': 'Küldd el a lemondási igényt vagy használd a támogatói chatet a felmondáshoz',
+      // SkyShowtime
+      'Open skyshowtime.com and sign in': 'Nyisd meg a skyshowtime.com-ot és jelentkezz be',
+      'Go to your Account → Subscriptions': 'Menj a Fiók → Előfizetések menüpontba',
+      // RTL+ (HU)
+      'Log in to your RTL+ account': 'Lépj be az RTL+ fiókodba',
+      'Open your Profile and go to "Subscription management"': 'Nyisd meg a Profilodat és menj az "Előfizetés-kezelés" menübe',
+      'Click "Cancel Auto-Renewal" and confirm': 'Kattints az "Automatikus megújítás lemondása" gombra és erősítsd meg',
+      // Erste
+      'You must close the bank account': 'Meg kell szüntetned a bankszámládat',
+      'Open George app or web, send a message, or visit a branch in person': 'Nyisd meg a George alkalmazást vagy webet, küldj üzenetet, vagy látogass el személyesen egy bankfiókba',
+      'Clear any negative balance, sign account closure forms': 'Rendezd az esetleges negatív egyenleget, majd írd alá a számlamegszüntetési dokumentumokat',
+      // OTP
+      'OTP account fee cannot be cancelled directly; you must close the account': 'Az OTP számladíj közvetlenül nem mondható le; meg kell szüntetned a bankszámlát',
+      'Visit a local OTP branch in person with your ID': 'Látogass el személyesen egy OTP bankfiókba a személyi igazolványoddal',
+      'Return any debit/credit cards and sign the termination protocol': 'Add le a bankkártyákat és írd alá a megszüntetési jegyzőkönyvet',
+      // Wizz
+      'Log in to wizzair.com': 'Lépj be a wizzair.com oldalon',
+      'Go to your Profile → Wizz Discount Club': 'Menj a Profilod → Wizz Discount Club menübe',
+      'Turn off Auto-Renewal or let it expire naturally': 'Kapcsold ki az automatikus megújítást, vagy engedd lejárni a periódus végén',
       // Generic
       'no-central-cancel-repeat': 'Nincs központi lemondás — minden alkotónál külön',
     },
