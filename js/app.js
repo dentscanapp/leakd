@@ -119,7 +119,6 @@
             if (window.LeakdCurrency) {
               window.LeakdCurrency.sync(subs).then(() => render());
             }
-            toast(t('toast.syncRestored') || 'Data synced in background');
           }
         }).catch(err => {
           console.warn('Auto-sync background check failed:', err);
