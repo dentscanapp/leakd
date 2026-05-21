@@ -1922,6 +1922,12 @@
   }
 
   // ─── Autocomplete in the Name field ───
+  function fromPreset(amount, presetCurrency) {
+    const from = presetCurrency || 'USD';
+    if (!window.LeakdCurrency || !settings.currencyCode || from === settings.currencyCode) return amount;
+    return window.LeakdCurrency.convert(amount, from, settings.currencyCode);
+  }
+
   function onNameInput() {
     const q = $('subName').value.trim();
     if (q.length < 1 || !window.LeakdBrands) { hideSuggestions(); return; }
@@ -1934,7 +1940,7 @@
       return `<button type="button" class="suggest-item" data-i="${i}">
         <span class="suggest-icon" style="background:${b.bg};color:${b.fg};font-size:${fontSize}">${escHtml(b.symbol)}</span>
         <span class="suggest-name">${escHtml(it.name)}</span>
-        <span class="suggest-price">${formatPrice(fromUsd(it.price))}<span>/${t('cycle.mo').replace('/', '')}</span></span>
+        <span class="suggest-price">${formatPrice(fromPreset(it.price, it.currency))}<span>/${t('cycle.mo').replace('/', '')}</span></span>
       </button>`;
     }).join('');
     box.style.display = 'block';
@@ -1950,8 +1956,7 @@
 
   function applySuggestion(item) {
     $('subName').value = item.name;
-    // brands.js prices are USD references — convert to the user's display currency
-    const localPrice = fromUsd(item.price);
+    const localPrice = fromPreset(item.price, item.currency);
     $('subPrice').value = settings.currencyCode === 'HUF' ? Math.round(localPrice) : Number(localPrice.toFixed(2));
     $('subCategory').value = item.category;
     $('subCycle').value = 'monthly';

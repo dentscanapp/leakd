@@ -207,7 +207,7 @@
         seen.add(nameLower);
         const b = badge(name, k.cat);
         out.push({
-          name, price: k.price, category: k.cat,
+          name, price: k.price, currency: k.currency, category: k.cat,
           badge: b,
           score: starts ? 3 : contains ? 2 : 1,
         });
