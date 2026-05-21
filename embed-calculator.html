@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leakd — Subscription Money Leak Calculator</title>
+  <link href="fonts/fonts.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050507;
+      --bg-card: #0c0c10;
+      --bg-input: #121217;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-hover: rgba(255, 255, 255, 0.14);
+      --border-active: rgba(239, 68, 68, 0.35);
+      --accent: #ef4444;
+      --accent-glow: rgba(239, 68, 68, 0.22);
+      --accent-dim: rgba(239, 68, 68, 0.12);
+      --text: #fafaf9;
+      --text-muted: rgba(250, 250, 249, 0.62);
+      --text-dim: rgba(250, 250, 249, 0.38);
+      --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --font-body: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Outer Wrapper fits exactly inside iframe */
+    .widget-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 16px;
+      justify-content: space-between;
+      border-radius: 16px;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    /* Drop Glow Effect */
+    .widget-container::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 60px;
+      background: radial-gradient(closest-side, var(--accent-glow), transparent 70%);
+      filter: blur(10px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    .header-logo {
+      color: var(--accent);
+      animation: dripPulse 3s infinite ease-in-out;
+    }
+
+    .header-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* BODY LAYOUT */
+    .content-area {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    /* Scrollbar Styling */
+    .content-area::-webkit-scrollbar {
+      width: 5px;
+    }
+    .content-area::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .content-area::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 99px;
+    }
+    .content-area::-webkit-scrollbar-thumb:hover {
+      background: var(--border-hover);
+    }
+
+    /* SERVICE CHIPS GRID */
+    .chips-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .chip {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      text-align: left;
+      transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+      position: relative;
+    }
+
+    .chip:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+
+    .chip.on {
+      border-color: var(--border-active);
+      background: var(--accent-dim);
+    }
+
+    .chip-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .chip-price {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .chip.on .chip-price {
+      color: #ffb4b4;
+    }
+
+    .chip-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: transparent;
+      transition: all 0.15s;
+    }
+
+    .chip.on .chip-check {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* CUSTOM FIELDS */
+    .custom-adder {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      padding: 8px;
+      border-radius: 10px;
+    }
+
+    .custom-adder input {
+      height: 30px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 11px;
+      padding: 0 8px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .custom-adder input:focus {
+      border-color: var(--accent);
+    }
+
+    .custom-adder .name-input {
+      flex: 2;
+    }
+
+    .custom-adder .price-input {
+      flex: 1;
+      font-family: var(--font-mono);
+    }
+
+    .custom-adder button {
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid var(--border-active);
+      background: var(--accent-dim);
+      color: #ffb4b4;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .custom-adder button:hover {
+      background: rgba(239, 68, 68, 0.22);
+    }
+    
+    .custom-adder button:active {
+      transform: scale(0.97);
+    }
+
+    .custom-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .custom-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px 4px 10px;
+      border: 1px solid var(--border-active);
+      background: var(--accent-dim);
+      color: #ffb4b4;
+      border-radius: 99px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+
+    .custom-tag button {
+      all: unset;
+      cursor: pointer;
+      color: #ffb4b4;
+      font-size: 13px;
+      padding: 0 2px;
+    }
+
+    /* GLOWING RESULTS PANEL */
+    .results-card {
+      margin-top: 8px;
+      padding: 16px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.05), rgba(13, 13, 18, 0.8));
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      box-shadow: 0 8px 24px -10px var(--accent-glow);
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+    }
+
+    .result-row:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .result-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .result-val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .result-row.big {
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 4px 0;
+    }
+
+    .result-row.big .result-label {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .result-row.big .result-val {
+      font-family: var(--font-display);
+      font-size: 28px;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .result-row.invest .result-label {
+      font-style: italic;
+      color: var(--text-dim);
+    }
+
+    .result-row.invest .result-val {
+      color: #10b981;
+    }
+
+    .results-empty {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    /* FOOTER LINK */
+    .footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      z-index: 1;
+    }
+
+    .footer-link {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s, transform 0.12s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .footer-link:hover {
+      color: var(--accent);
+      transform: translateY(-0.5px);
+    }
+
+    .footer-link strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Animations */
+    @keyframes dripPulse {
+      0%, 100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 1px var(--accent-glow)); }
+      50% { transform: scale(1.05); opacity: 0.9; filter: drop-shadow(0 0 6px var(--accent)); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="widget-container">
+    
+    <!-- HEADER -->
+    <header class="header">
+      <svg class="header-logo" width="16" height="20" viewBox="0 0 24 32" fill="currentColor">
+        <path d="M12 0 C12 0 2 14 2 21 a10 10 0 0 0 20 0 C22 14 12 0 12 0 Z"/>
+      </svg>
+      <h1 class="header-title">Subscription Leak Calculator</h1>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <div class="content-area">
+      <!-- Chips grid -->
+      <div class="chips-grid" id="calcChips"></div>
+
+      <!-- Custom Input -->
+      <div class="custom-adder">
+        <input type="text" id="calcCustomName" class="name-input" placeholder="Custom service..." maxlength="40" aria-label="Service name">
+        <input type="number" id="calcCustomPrice" class="price-input" placeholder="$/mo" min="0" step="0.01" max="9999" aria-label="Monthly price">
+        <button type="button" id="calcCustomAdd">Add</button>
+      </div>
+
+      <!-- Custom Tag List -->
+      <div class="custom-tags" id="calcCustomList"></div>
+
+      <!-- Results Display -->
+      <div class="results-card">
+        <div class="results-empty" id="calcEmpty">Select services to see your leak.</div>
+        
+        <div id="calcResults" style="display:none">
+          <div class="result-row">
+            <span class="result-label">Monthly loss</span>
+            <span class="result-val" id="calcMonthly">$0</span>
+          </div>
+
+          <div class="result-row big">
+            <span class="result-label">Per year</span>
+            <span class="result-val" id="calcYearly">$0</span>
+          </div>
+
+          <div class="result-row">
+            <span class="result-label">In 5 years</span>
+            <span class="result-val" id="calc5yr">$0</span>
+          </div>
+
+          <div class="result-row invest">
+            <span class="result-label">...invested at 7% instead</span>
+            <span class="result-val" id="calcInvest">$0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <a href="https://leakd.app/" target="_blank" rel="noopener" class="footer-link">
+        Powered by <strong>Leakd</strong> — Track yours free →
+      </a>
+    </footer>
+
+  </div>
+
+  <script>
+    // prices are realistic monthly rates
+    const CALC_SERVICES = [
+      { id: 'netflix',    name: 'Netflix',           price: 15.49, on: true  },
+      { id: 'spotify',    name: 'Spotify',           price: 11.99, on: true  },
+      { id: 'chatgpt',    name: 'ChatGPT Plus',      price: 20.00, on: false },
+      { id: 'icloud',     name: 'iCloud+ 200GB',     price: 2.99,  on: false },
+      { id: 'disney',     name: 'Disney+',           price: 13.99, on: false },
+      { id: 'youtube',    name: 'YouTube Premium',   price: 13.99, on: false },
+      { id: 'prime',      name: 'Amazon Prime',      price: 14.99, on: false },
+      { id: 'adobe',      name: 'Adobe CC',          price: 59.99, on: false }
+    ];
+
+    const customs = [];
+    const lastShown = { monthly: 0, yearly: 0, fiveYr: 0, invest: 0 };
+
+    const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+    // 7%/yr compounded monthly, contributions made at start of month for 5 years
+    const investedFV = (monthly) => {
+      const r = 0.07 / 12;
+      const n = 60;
+      return monthly * (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+    };
+
+    function render() {
+      const chipsEl = document.getElementById('calcChips');
+      chipsEl.innerHTML = CALC_SERVICES.map(s => `
+        <button type="button" class="chip ${s.on ? 'on' : ''}" data-id="${s.id}" aria-pressed="${s.on}">
+          <span class="chip-name">${s.name}</span>
+          <span class="chip-price">$${s.price.toFixed(2)}</span>
+          <span class="chip-check">✓</span>
+        </button>
+      `).join('');
+
+      chipsEl.querySelectorAll('.chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const s = CALC_SERVICES.find(x => x.id === id);
+          s.on = !s.on;
+          render();
+        });
+      });
+
+      const listEl = document.getElementById('calcCustomList');
+      listEl.innerHTML = customs.map((c, i) => `
+        <span class="custom-tag">
+          ${escapeHtml(c.name)} · $${c.price.toFixed(2)}
+          <button type="button" data-i="${i}" aria-label="Remove">×</button>
+        </span>
+      `).join('');
+
+      listEl.querySelectorAll('button').forEach(b => {
+        b.addEventListener('click', () => {
+          customs.splice(parseInt(b.dataset.i, 10), 1);
+          render();
+        });
+      });
+
+      const monthly = CALC_SERVICES.filter(s => s.on).reduce((sum, s) => sum + s.price, 0)
+                    + customs.reduce((sum, c) => sum + c.price, 0);
+      const yearly  = monthly * 12;
+      const fiveYr  = monthly * 60;
+      const invest  = investedFV(monthly);
+
+      const resultsEl = document.getElementById('calcResults');
+      const emptyEl = document.getElementById('calcEmpty');
+
+      if (monthly === 0) {
+        resultsEl.style.display = 'none';
+        emptyEl.style.display = 'block';
+      } else {
+        resultsEl.style.display = 'block';
+        emptyEl.style.display = 'none';
+
+        animateTo('calcMonthly', lastShown.monthly, monthly);
+        animateTo('calcYearly',  lastShown.yearly,  yearly);
+        animateTo('calc5yr',     lastShown.fiveYr,  fiveYr);
+        animateTo('calcInvest',  lastShown.invest,  invest);
+      }
+
+      lastShown.monthly = monthly;
+      lastShown.yearly  = yearly;
+      lastShown.fiveYr  = fiveYr;
+      lastShown.invest  = invest;
+    }
+
+    function animateTo(elId, from, to) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      const start = performance.now();
+      const dur = 350;
+      const step = (now) => {
+        const t = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+        el.textContent = fmt(from + (to - from) * eased);
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+
+    document.getElementById('calcCustomAdd').addEventListener('click', () => {
+      const nameEl = document.getElementById('calcCustomName');
+      const priceEl = document.getElementById('calcCustomPrice');
+      const name = nameEl.value.trim().slice(0, 40);
+      const price = parseFloat(priceEl.value);
+      if (!name || !isFinite(price) || price <= 0 || price > 9999) {
+        priceEl.focus();
+        return;
+      }
+      customs.push({ name, price });
+      nameEl.value = '';
+      priceEl.value = '';
+      nameEl.focus();
+      render();
+    });
+
+    ['calcCustomName', 'calcCustomPrice'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('calcCustomAdd').click();
+        }
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>

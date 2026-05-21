@@ -18,6 +18,8 @@
     { "source": "/roadmap", "destination": "/roadmap.html" },
     { "source": "/changelog.html", "destination": "/changelog.html" },
     { "source": "/changelog", "destination": "/changelog.html" },
+    { "source": "/embed-calculator.html", "destination": "/embed-calculator.html" },
+    { "source": "/embed-calculator", "destination": "/embed-calculator.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
