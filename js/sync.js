@@ -333,6 +333,9 @@
   }
 
   async function ensureTokenClient() {
+    if (typeof chrome !== 'undefined' && chrome.identity && chrome.identity.getAuthToken) {
+      return; // No-op in Chrome Extension
+    }
     if (!CLIENT_ID) {
       const e = new Error('NO_CLIENT_ID'); e.code = 'NO_CLIENT_ID'; throw e;
     }
@@ -353,6 +356,27 @@
   function getToken({ interactive = false } = {}) {
     checkPro();
     if (tokenValid()) return Promise.resolve(accessToken);
+
+    // Native Chrome Extension Identity API (MV3 CSP compliant)
+    if (typeof chrome !== 'undefined' && chrome.identity && chrome.identity.getAuthToken) {
+      return new Promise((resolve, reject) => {
+        chrome.identity.getAuthToken({ interactive }, (token) => {
+          if (chrome.runtime.lastError) {
+            const e = new Error('OAUTH_FAILED:' + chrome.runtime.lastError.message);
+            e.code = 'OAUTH_FAILED';
+            reject(e);
+            return;
+          }
+          accessToken = token;
+          // Treat token as valid for 50 minutes locally (chrome.identity manages real expiry under the hood)
+          tokenExpiresAt = Date.now() + 3000 * 1000;
+          notify('signed-in');
+          resolve(token);
+        });
+      });
+    }
+
+    // Standard PWA web environment
     return ensureTokenClient().then(() => new Promise((resolve, reject) => {
       tokenClient.callback = (resp) => {
         if (resp && resp.error) {
@@ -373,7 +397,11 @@
   function signIn() { return getToken({ interactive: true }); }
 
   function signOut() {
-    if (accessToken && typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
+    if (typeof chrome !== 'undefined' && chrome.identity && chrome.identity.getAuthToken) {
+      if (accessToken) {
+        chrome.identity.removeCachedAuthToken({ token: accessToken }, () => {});
+      }
+    } else if (accessToken && typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
       try { google.accounts.oauth2.revoke(accessToken, () => {}); } catch {}
     }
     accessToken = null;
