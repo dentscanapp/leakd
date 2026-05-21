@@ -129,6 +129,23 @@
     { match: /telex/i,                  bg: '#00aeef', symbol: 'T' },
     { match: /digi/i,                   bg: '#0054a6', symbol: 'D' },
     { match: /simplepay/i,              bg: '#25a75b', symbol: 'S' },
+    // German & Austrian regional services
+    { match: /joyn/i,                   bg: '#ffffff', fg: '#ff007b', symbol: 'J' },
+    { match: /zattoo/i,                 bg: '#ff4f00', symbol: 'Z' },
+    { match: /orf\s*(beitrag|obs|gis)/i, bg: '#005fa9', symbol: 'ORF' },
+    { match: /deutschlandticket|^d-ticket/i, bg: '#ff5f00', symbol: 'D' },
+    { match: /öbb|vorteilscard/i,        bg: '#e01a1a', symbol: 'ÖBB' },
+    { match: /bahncard/i,               bg: '#ff0000', symbol: 'DB' },
+    // Swiss, Dutch, and British regional services
+    { match: /serafe/i,                  bg: '#2b2b2b', symbol: 'S' },
+    { match: /sbb|swisspass/i,          bg: '#ff0000', symbol: 'SBB' },
+    { match: /ns\s*flex|nederlandse\s*spoorwegen/i, bg: '#ffc72c', fg: '#001C5C', symbol: 'NS' },
+    { match: /tv\s*licence|tv\s*licensing/i, bg: '#0a0a0a', symbol: 'TV' },
+    { match: /now\s*tv|^now\b/i,         bg: '#1b2327', symbol: 'NOW' },
+    // Italian and French regional services
+    { match: /telepass/i,                bg: '#0054a6', symbol: 'T' },
+    { match: /tim\s*vision|telecom\s*italia/i, bg: '#002f6c', symbol: 'TIM' },
+    { match: /navigo|ile-de-france\s*mobilit/i, bg: '#00a2e8', symbol: 'N' },
   ];
 
   // Default badge per category (when service is unknown)

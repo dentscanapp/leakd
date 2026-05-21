@@ -98,6 +98,27 @@
     { match: /hvg\s*360/i,          name: 'HVG360',           price: 2490.00, cat: 'News', cancel: 'https://hvg.hu/hvg360' },
     { match: /telex\s*(támogatás|támogató)/i, name: 'Telex támogatás', price: 3000.00, cat: 'News', cancel: 'https://telex.hu/tamogatas' },
     { match: /simplepay/i,          name: 'SimplePay fizetés', price: 1500.00, cat: 'Other', cancel: 'https://www.simplepay.hu' },
+    { match: /dazn/i,               name: 'DAZN',             price: 29.99,   cat: 'Entertainment', cancel: 'https://www.dazn.com/en-DE/my-account/subscription' },
+    { match: /joyn/i,               name: 'Joyn PLUS+',       price: 6.99,    cat: 'Entertainment', cancel: 'https://www.joyn.de/profil' },
+    { match: /zattoo/i,             name: 'Zattoo Ultimate',  price: 13.99,   cat: 'Entertainment', cancel: 'https://zattoo.com/account/subscription' },
+    { match: /orf\s*(beitrag|obs|gis)/i, name: 'ORF Beitrag', price: 15.30,   cat: 'Other', cancel: 'https://orf.beitrag.at' },
+    { match: /deutschlandticket|^d-ticket/i, name: 'Deutschlandticket', price: 49.00, cat: 'Other', cancel: 'https://www.deutschlandticket.de' },
+    { match: /öbb|vorteilscard/i,        name: 'ÖBB Vorteilscard', price: 66.00, cat: 'Other', cancel: 'https://www.oebb.at' },
+    { match: /bahncard/i,           name: 'BahnCard 25',      price: 59.90,   cat: 'Other', cancel: 'https://www.bahn.de' },
+    { match: /serafe/i,             name: 'Serafe fee',       price: 335.00,  cat: 'Other', cancel: 'https://www.serafe.ch' },
+    { match: /sbb\s*ga|general\s*abonnement/i, name: 'SBB GA Travelcard', price: 340.00, cat: 'Other', cancel: 'https://www.sbb.ch' },
+    { match: /sbb\s*halbtax|half\s*fare/i, name: 'SBB Halbtax', price: 190.00, cat: 'Other', cancel: 'https://www.sbb.ch' },
+    { match: /ns\s*flex|nederlandse\s*spoorwegen/i, name: 'NS Flex subscription', price: 35.60, cat: 'Other', cancel: 'https://www.ns.nl/mijnns' },
+    { match: /videoland/i,          name: 'Videoland Basis',  price: 4.99,    cat: 'Entertainment', cancel: 'https://www.videoland.com' },
+    { match: /nl\s*ziet|nlziet/i,   name: 'NLZIET',           price: 8.95,    cat: 'Entertainment', cancel: 'https://www.nlziet.nl/en/my-account/' },
+    { match: /tv\s*licence|tv\s*licensing/i, name: 'TV Licence (UK)', price: 169.50, cat: 'Other', cancel: 'https://www.tvlicensing.co.uk/cs/cancel/index.app' },
+    { match: /deliveroo\s*plus/i,   name: 'Deliveroo Plus',   price: 3.49,    cat: 'Food', cancel: 'https://deliveroo.co.uk/menu' },
+    { match: /now\s*tv|^now\b/i,    name: 'NOW TV Pass',      price: 9.99,    cat: 'Entertainment', cancel: 'https://www.nowtv.com/home/myaccount' },
+    { match: /telepass/i,           name: 'Telepass toll',    price: 3.90,    cat: 'Other', cancel: 'https://www.telepass.com/en/privati/supporto' },
+    { match: /tim\s*vision|telecom\s*italia/i, name: 'TIM Vision', price: 6.99, cat: 'Entertainment', cancel: 'https://www.tim.it/assistenza' },
+    { match: /canal\+?/i,           name: 'Canal+ FR',        price: 22.99,   cat: 'Entertainment', cancel: 'https://client.canalplus.com/abonnement/' },
+    { match: /deezer/i,             name: 'Deezer Premium',   price: 11.99,   cat: 'Music', cancel: 'https://www.deezer.com/account/subscription' },
+    { match: /navigo|ile-de-france\s*mobilit/i, name: 'Pass Navigo', price: 86.40, cat: 'Other', cancel: 'https://www.iledefrance-mobilites.fr/en/tickets-fares/media/navigo-travel-card' },
   ];
 
   // Find the cancel URL for an existing sub by name (used by the edit modal)
@@ -464,6 +485,195 @@
         'Cancel the active token, or block it via your bank card settings if link is missing',
       ],
     },
+    'DAZN': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Sign in to dazn.com',
+        'Go to "My Account" → "Subscription"',
+        'Click "Cancel Subscription" and confirm',
+      ],
+    },
+    'Joyn PLUS+': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to joyn.de or joyn.at',
+        'Go to your Profile → Subscription',
+        'Click "Cancel PLUS+ membership" and confirm',
+      ],
+    },
+    'Zattoo Ultimate': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to zattoo.com',
+        'Go to Account → Subscription',
+        'Click "Manage subscription" → "Cancel auto-renewal" and confirm',
+      ],
+    },
+    'ORF Beitrag': {
+      difficulty: 'hard',
+      minutes: 15,
+      steps: [
+        'Go to orf.beitrag.at (formerly GIS)',
+        'Fill in the online deregulation form (Abmeldung) due to moving, exemption, or no devices',
+        'Sign the PDF, upload ID, and submit online',
+      ],
+    },
+    'Deutschlandticket': {
+      difficulty: 'medium',
+      minutes: 3,
+      steps: [
+        'Log in to the portal where you purchased it (DB Navigator or local authority)',
+        'Go to active subscriptions and click "Cancel subscription"',
+        'Must cancel before the 10th of the current month to stop next month\'s billing',
+      ],
+    },
+    'ÖBB Vorteilscard': {
+      difficulty: 'medium',
+      minutes: 3,
+      steps: [
+        'Log in to your ÖBB account',
+        'Under Vorteilscard, click "Disable Auto-Renewal" (Kündigungsschutz)',
+        'Cancel online at least 1 month before expiry to prevent renewal billing',
+      ],
+    },
+    'BahnCard 25': {
+      difficulty: 'medium',
+      minutes: 4,
+      steps: [
+        'Log in to bahn.de or DB Navigator app',
+        'Go to BahnCard Services → "Manage BahnCard"',
+        'Click "Cancel BahnCard subscription" (Kündigen) at least 6 weeks before renewal',
+      ],
+    },
+    'Serafe fee': {
+      difficulty: 'hard',
+      minutes: 15,
+      steps: [
+        'Open serafe.ch or contact Serafe AG directly',
+        'Exemption or cancellation is only allowed if moving abroad, household merging, or meeting deaf/blind criteria',
+        'Submit written deregulation notification with official proof to Serafe or your municipal authority',
+      ],
+    },
+    'SBB GA Travelcard': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to Swisspass.ch or sbb.ch',
+        'Go to "My Swisspass" → "My Subscriptions"',
+        'Disable automatic renewal online at least 1 month before the annual renewal date, or return card to SBB counter',
+      ],
+    },
+    'SBB Halbtax': {
+      difficulty: 'medium',
+      minutes: 4,
+      steps: [
+        'Log in to Swisspass.ch',
+        'Go to active subscriptions and click "Cancel renewal"',
+        'Must cancel at least 1 month before expiry to prevent automatic renewal billing',
+      ],
+    },
+    'NS Flex subscription': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to Mijn NS on ns.nl',
+        'Go to "Products" → "Change subscription"',
+        'Downgrade to "NS Flex Basis" (0 EUR/mo) to stop monthly charges while keeping your card, or cancel at a ticket machine',
+      ],
+    },
+    'Videoland Basis': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to videoland.com',
+        'Go to Account Settings → subscription',
+        'Click "Cancel subscription" and confirm',
+      ],
+    },
+    'NLZIET': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to nlziet.nl',
+        'Go to Account → Subscription',
+        'Click "Cancel subscription" and confirm',
+      ],
+    },
+    'TV Licence (UK)': {
+      difficulty: 'medium',
+      minutes: 10,
+      steps: [
+        'Go to tvlicensing.co.uk',
+        'Declare that you no longer watch live TV or BBC iPlayer on any device',
+        'Submit the online refund or cancellation form, and provide a forwarding address if applicable',
+      ],
+    },
+    'Deliveroo Plus': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Open Deliveroo app or website and log in',
+        'Go to Account → Deliveroo Plus',
+        'Tap "Cancel Subscription" and confirm',
+      ],
+    },
+    'NOW TV Pass': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to nowtv.com',
+        'Go to My Account → Passes & Vouchers',
+        'Next to your active pass, click "Cancel" and confirm',
+      ],
+    },
+    'Telepass toll': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to Telepass website or app',
+        'Go to "Contracts" → "Terminate contract"',
+        'Must return the physical Telepass transponder to a Telepass Store or Telepass Point (Punto Blu) within 20 days',
+      ],
+    },
+    'TIM Vision': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to MyTIM portal or call TIM customer support (187)',
+        'Go to "Active Offers" and request deactivation of TIMVISION',
+        'Return the rented TIM box decoder within 30 days to avoid penalty fees',
+      ],
+    },
+    'Canal+ FR': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to your Canal+ Espace Client portal',
+        'Go to "Abonnement" → "Résilier mon abonnement"',
+        'Follow steps, print confirmation form, and verify commitment expiry (engagement)',
+      ],
+    },
+    'Deezer Premium': {
+      difficulty: 'easy',
+      minutes: 2,
+      steps: [
+        'Log in to deezer.com in a web browser',
+        'Go to Account Settings → "My Subscription"',
+        'Click "Cancel Subscription" and confirm',
+      ],
+    },
+    'Pass Navigo': {
+      difficulty: 'medium',
+      minutes: 5,
+      steps: [
+        'Log in to your Île-de-France Mobilités / Navigo online account',
+        'Go to "Suspend or Terminate my contract" (Suspendre ou Résilier mon contrat)',
+        'Submit the cancellation request before the 20th of the current month to stop next month\'s billing',
+      ],
+    },
   };
 
   // Fuzzy match a sub name against playbooks. Returns the playbook or null.
@@ -787,6 +997,84 @@
       'Open the recurring payment confirmation email from SimplePay': 'Nyisd meg a SimplePay-től kapott rendszeres fizetési értesítő emailt',
       'Click the unique "Manage subscription" link in the email footer': 'Kattints az email alján található egyedi "Előfizetés kezelése" linkre',
       'Cancel the active token, or block it via your bank card settings if link is missing': 'Töröld az aktív rendszeres fizetési tokent, vagy tiltsd le a bankkártyádnál ha nincs meg a link',
+      // DAZN
+      'Sign in to dazn.com': 'Jelentkezz be a dazn.com oldalon',
+      'Go to "My Account" → "Subscription"': 'Menj a "Fiókom" → "Előfizetés" menübe',
+      'Click "Cancel Subscription" and confirm': 'Kattints az "Előfizetés lemondása" gombra és erősítsd meg',
+      // Joyn
+      'Log in to joyn.de or joyn.at': 'Lépj be a joyn.de vagy joyn.at oldalon',
+      'Go to your Profile → Subscription': 'Menj a Profilodra → Előfizetés',
+      'Click "Cancel PLUS+ membership" and confirm': 'Kattints a "PLUS+ tagság lemondása" gombra és erősítsd meg',
+      // Zattoo
+      'Log in to zattoo.com': 'Lépj be a zattoo.com oldalon',
+      'Go to Account → Subscription': 'Menj a Fiók → Előfizetés menüpontba',
+      'Click "Manage subscription" → "Cancel auto-renewal" and confirm': 'Kattints a "Subscription kezelése" → "Automatikus megújítás kikapcsolása" lehetőségre és erősítsd meg',
+      // ORF
+      'Go to orf.beitrag.at (formerly GIS)': 'Keresd fel az orf.beitrag.at oldalt (korábban GIS)',
+      'Fill in the online deregulation form (Abmeldung) due to moving, exemption, or no devices': 'Töltsd ki az online leiratkozási űrlapot (Abmeldung) költözés, mentesség vagy eszközök hiánya miatt',
+      'Sign the PDF, upload ID, and submit online': 'Írd alá a PDF-et, töltsd fel a személyazonosító okmányt, majd küldd be online',
+      // Deutschlandticket
+      'Log in to the portal where you purchased it (DB Navigator or local authority)': 'Lépj be azon a portálon ahol megvásároltad (DB Navigator vagy helyi közlekedési társaság)',
+      'Go to active subscriptions and click "Cancel subscription"': 'Menj az aktív előfizetésekhez és kattints a "Lemondás" gombra',
+      'Must cancel before the 10th of the current month to stop next month\'s billing': 'A tárgyhónap 10-e előtt le kell mondanod, hogy ne terheljék a következő hónapot',
+      // ÖBB
+      'Log in to your ÖBB account': 'Lépj be az ÖBB fiókodba',
+      'Under Vorteilscard, click "Disable Auto-Renewal" (Kündigungsschutz)': 'A Vorteilscard alatt kattints az automatikus megújítás kikapcsolására (Kündigungsschutz)',
+      'Cancel online at least 1 month before expiry to prevent renewal billing': 'Mondd le online legalább 1 hónappal a lejárat előtt, hogy elkerüld az automatikus megújulást',
+      // BahnCard
+      'Log in to bahn.de or DB Navigator app': 'Lépj be a bahn.de oldalon vagy a DB Navigator alkalmazásban',
+      'Go to BahnCard Services → "Manage BahnCard"': 'Menj a BahnCard szolgáltatások → "BahnCard kezelése" menüpontba',
+      'Click "Cancel BahnCard subscription" (Kündigen) at least 6 weeks before renewal': 'Kattints a "BahnCard lemondása" (Kündigen) lehetőségre legalább 6 héttel a megújulás előtt',
+      // Serafe
+      'Open serafe.ch or contact Serafe AG directly': 'Nyisd meg a serafe.ch oldalt vagy lépj kapcsolatba közvetlenül a Serafe AG-val',
+      'Exemption or cancellation is only allowed if moving abroad, household merging, or meeting deaf/blind criteria': 'Mentesség vagy lemondás csak külföldre költözés, háztartások egyesítése, vagy siket/vak kritériumok esetén engedélyezett',
+      'Submit written deregulation notification with official proof to Serafe or your municipal authority': 'Küldj be írásos leiratkozási kérelmet hivatalos igazolással a Serafe-nek vagy a helyi önkormányzatnak',
+      // SBB GA
+      'Log in to Swisspass.ch or sbb.ch': 'Lépj be a Swisspass.ch vagy sbb.ch oldalon',
+      'Go to "My Swisspass" → "My Subscriptions"': 'Menj a "My Swisspass" → "My Subscriptions" menübe',
+      'Disable automatic renewal online at least 1 month before the annual renewal date, or return card to SBB counter': 'Kapcsold ki az automatikus megújítást online legalább 1 hónappal az éves fordulónap előtt, vagy add le a kártyát egy SBB ügyfélszolgálaton',
+      // SBB Halbtax
+      'Log in to Swisspass.ch': 'Lépj be a Swisspass.ch oldalon',
+      'Must cancel at least 1 month before expiry to prevent automatic renewal billing': 'Legalább 1 hónappal a lejárat előtt le kell mondanod, hogy elkerüld az automatikus megújulást',
+      // NS Flex
+      'Log in to Mijn NS on ns.nl': 'Lépj be a Mijn NS fiókodba az ns.nl oldalon',
+      'Go to "Products" → "Change subscription"': 'Menj a "Products" (Termékek) → "Change subscription" (Előfizetés módosítása) menübe',
+      'Downgrade to "NS Flex Basis" (0 EUR/mo) to stop monthly charges while keeping your card, or cancel at a ticket machine': 'Fokozd le "NS Flex Basis" csomagra (0 EUR/hó), hogy leállítsd a havi díjakat a kártya megtartása mellett, vagy mondd le egy NS jegykiadó automatánál',
+      // Videoland
+      'Log in to videoland.com': 'Lépj be a videoland.com oldalon',
+      'Go to Account Settings → subscription': 'Menj a Fiókbeállítások → Előfizetés menübe',
+      // NLZIET
+      'Log in to nlziet.nl': 'Lépj be a nlziet.nl oldalon',
+      // TV Licence
+      'Go to tvlicensing.co.uk': 'Menj a tvlicensing.co.uk oldalra',
+      'Declare that you no longer watch live TV or BBC iPlayer on any device': 'Nyilatkozz arról, hogy már nem nézel élő tévét vagy BBC iPlayer-t semmilyen eszközön',
+      'Submit the online refund or cancellation form, and provide a forwarding address if applicable': 'Küldd be az online visszatérítési vagy lemondási űrlapot, és ha szükséges, adj meg egy új levelezési címet',
+      // Deliveroo Plus
+      'Open Deliveroo app or website and log in': 'Nyisd meg a Deliveroo alkalmazást vagy weboldalt és lépj be',
+      'Go to Account → Deliveroo Plus': 'Menj a Fiók → Deliveroo Plus menübe',
+      // NOW TV
+      'Log in to nowtv.com': 'Lépj be a nowtv.com oldalon',
+      'Go to My Account → Passes & Vouchers': 'Menj a Fiókom → Passes & Vouchers (Bérletek és kuponok) menübe',
+      'Next to your active pass, click "Cancel" and confirm': 'Kattints a "Cancel" (Lemondás) gombra az aktív bérleted mellett és erősítsd meg',
+      // Telepass
+      'Log in to Telepass website or app': 'Lépj be a Telepass weboldalra vagy alkalmazásba',
+      'Go to "Contracts" → "Terminate contract"': 'Menj a "Contracts" (Szerződések) → "Terminate contract" (Szerződés megszüntetése) menübe',
+      'Must return the physical Telepass transponder to a Telepass Store or Telepass Point (Punto Blu) within 20 days': 'Vissza kell szolgáltatnod a fizikai Telepass eszközt egy Telepass Store-ban vagy Telepass Pontban (Punto Blu) 20 napon belül',
+      // TIM
+      'Log in to MyTIM portal or call TIM customer support (187)': 'Lépj be a MyTIM portálra vagy hívd a TIM ügyfélszolgálatát (187)',
+      'Go to "Active Offers" and request deactivation of TIMVISION': 'Menj az "Aktív ajánlatok" (Offerte attive) menübe és kérd a TIMVISION kikapcsolását',
+      'Return the rented TIM box decoder within 30 days to avoid penalty fees': 'Küldd vissza a bérelt TIM box dekódert 30 napon belül a kötbérek elkerülése érdekében',
+      // Canal+
+      'Log in to your Canal+ Espace Client portal': 'Lépj be a Canal+ Espace Client (ügyfélkapu) felületén',
+      'Go to "Abonnement" → "Résilier mon abonnement"': 'Menj az "Abonnement" (Előfizetés) → "Résilier mon abonnement" (Előfizetésem lemondása) menüpontba',
+      'Follow steps, print confirmation form, and verify commitment expiry (engagement)': 'Kövesd a lépéseket, nyomtasd ki a megerősítő űrlapot, és ellenőrizd a hűségidő végét (engagement)',
+      // Deezer
+      'Log in to deezer.com in a web browser': 'Lépj be a deezer.com oldalon egy webböngészőben',
+      'Go to Account Settings → "My Subscription"': 'Menj a Fiókbeállítások → "Előfizetésem" menübe',
+      // Pass Navigo
+      'Log in to your Île-de-France Mobilités / Navigo online account': 'Lépj be az Île-de-France Mobilités / Navigo online fiókodba',
+      'Go to "Suspend or Terminate my contract" (Suspendre ou Résilier mon contrat)': 'Menj a "Suspendre ou Résilier mon contrat" (Szerződés felfüggesztése vagy felmondása) menübe',
+      'Submit the cancellation request before the 20th of the current month to stop next month\'s billing': 'A tárgyhónap 20-a előtt küldd be a lemondási kérelmet, hogy leállítsd a következő havi számlázást',
       // Generic
       'no-central-cancel-repeat': 'Nincs központi lemondás — minden alkotónál külön',
     },
