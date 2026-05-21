@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const html = fs.readFileSync('index.html', 'utf8');
+const html = fs.readFileSync('app.html', 'utf8');
 
 // Check Duplicate IDs
 const idRegex = /\bid="([^"]+)"/g;
@@ -34,13 +34,13 @@ jsFiles.forEach(file => {
 });
 
 // Check I18N for duplicate values in the same language
-// (Sometimes translators copy-paste the same string twice)
-const i18nCode = fs.readFileSync('js/i18n.js', 'utf8');
-global.window = {};
-global.localStorage = { getItem: () => 'en', setItem: () => {} };
-global.document = { documentElement: { lang: '' }, querySelectorAll: () => [] };
-eval(i18nCode);
-const STRINGS = global.window.LeakdI18n.STRINGS;
+const STRINGS = {};
+const localesDir = 'locales';
+const files = fs.readdirSync(localesDir).filter(f => f.endsWith('.json'));
+files.forEach(file => {
+  const lang = path.basename(file, '.json');
+  STRINGS[lang] = JSON.parse(fs.readFileSync(path.join(localesDir, file), 'utf8'));
+});
 
 let duplicateTranslations = [];
 for (const lang of Object.keys(STRINGS)) {
@@ -60,7 +60,7 @@ for (const lang of Object.keys(STRINGS)) {
 
 console.log('--- AUDIT RESULTS ---');
 console.log('1. Duplicate HTML IDs:');
-if (duplicates.size === 0) console.log('✅ No duplicate IDs in index.html');
+if (duplicates.size === 0) console.log('✅ No duplicate IDs in app.html');
 else console.log('❌ Duplicates found:', [...duplicates]);
 
 console.log('\n2. JS Syntax Errors:');

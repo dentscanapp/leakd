@@ -5,7 +5,7 @@ const jsDir = 'js';
 const jsFiles = fs.readdirSync(jsDir).filter(f => f.endsWith('.js')).map(f => path.join(jsDir, f));
 jsFiles.push('sw.js', 'app.js'); // check root if needed, app.js is in js/
 
-const html = fs.readFileSync('index.html', 'utf8');
+const html = fs.readFileSync('app.html', 'utf8');
 // Extract all IDs from index.html
 const idRegex = /\bid="([^"]+)"/g;
 const validIds = new Set();
@@ -68,7 +68,7 @@ jsFiles.forEach(file => {
 console.log('=== LEAKD DEEP AUDIT REPORT ===');
 
 console.log('\n1. DOM Element References (missing IDs):');
-if (audit.missingIds.length === 0) console.log('  ✅ All referenced IDs exist in index.html');
+if (audit.missingIds.length === 0) console.log('  ✅ All referenced IDs exist in app.html');
 else {
   const uniqueIds = new Set(audit.missingIds.map(m => m.id));
   console.log(`  ❌ Found ${audit.missingIds.length} references to non-existent IDs:`, [...uniqueIds].join(', '));

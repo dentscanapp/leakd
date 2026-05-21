@@ -150,7 +150,7 @@ if (typeof window !== 'undefined') {
     loadLang: async function(lang) {
       if (!this.STRINGS[lang]) {
         try {
-          const res = await fetch('locales/' + lang + '.json?v=1');
+          const res = await fetch('locales/' + lang + '.json?v=2');
           if (res.ok) {
             this.STRINGS[lang] = await res.json();
           }

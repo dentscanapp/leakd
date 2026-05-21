@@ -130,7 +130,11 @@
   function render() {
     results = buildResults();
     if (results.length === 0) {
-      list.innerHTML = `<div class="palette-empty">${t('palette.noResults')}</div>`;
+      list.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = 'palette-empty';
+      div.textContent = t('palette.noResults');
+      list.appendChild(div);
       return;
     }
     list.innerHTML = results.map((r, i) => {

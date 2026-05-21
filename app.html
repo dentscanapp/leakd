@@ -1,1654 +1,1881 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0f0f0f">
-<meta name="description" content="Track your subscriptions. See where your money leaks. Free, private, no account needed.">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Leakd">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f0f0f">
+  <meta name="description"
+    content="Track your subscriptions. See where your money leaks. Free, private, no account needed.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Leakd">
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Leakd — Where's your money leaking?">
-<meta property="og:description" content="Track your subscriptions in 30 seconds. Free, private, no account. See exactly how much you're bleeding every month.">
-<meta property="og:url" content="https://leakd.app">
-<meta property="og:site_name" content="Leakd">
-<meta property="og:image" content="https://leakd.app/icons/og-card.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Leakd — Where's your money leaking?">
-<meta name="twitter:description" content="Track your subscriptions. Free, private, no account.">
-<meta name="twitter:image" content="https://leakd.app/icons/og-card.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Leakd — Where's your money leaking?">
+  <meta property="og:description"
+    content="Track your subscriptions in 30 seconds. Free, private, no account. See exactly how much you're bleeding every month.">
+  <meta property="og:url" content="https://leakd.app">
+  <meta property="og:site_name" content="Leakd">
+  <meta property="og:image" content="https://leakd.app/icons/og-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Leakd — Where's your money leaking?">
+  <meta name="twitter:description" content="Track your subscriptions. Free, private, no account.">
+  <meta name="twitter:image" content="https://leakd.app/icons/og-card.png">
 
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>Leakd — Where's your money leaking?</title>
-<link href="fonts/fonts.css" rel="stylesheet">
-<style>
-  /* Critical inline CSS — applied before app.css loads to kill the FOUC.
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <title>Leakd — Where's your money leaking?</title>
+  <link href="fonts/fonts.css" rel="stylesheet">
+  <style>
+    /* Critical inline CSS — applied before app.css loads to kill the FOUC.
      Mirrors the bg/text colours from :root / [data-theme="dark"]. */
-  html { background-color: #fafaf9; color: #0f0f0f; }
-  html[data-theme="dark"] { background-color: #0f0f0f; color: #fafaf9; }
-</style>
-<script src="js/fouc.js"></script>
-<link rel="stylesheet" href="css/app.css?v=96">
+    html {
+      background-color: #fafaf9;
+      color: #0f0f0f;
+    }
+
+    html[data-theme="dark"] {
+      background-color: #0f0f0f;
+      color: #fafaf9;
+    }
+  </style>
+  <script src="js/fouc.js"></script>
+  <link rel="stylesheet" href="css/app.css?v=96">
 </head>
+
 <body>
 
-<div id="app">
-  <header class="header">
-    <div class="header-left">
-      <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <path d="M14 2C14 2 6 10 6 16a8 8 0 1016 0c0-6-8-14-8-14z" fill="#ef4444"/>
+  <div id="app">
+    <header class="header">
+      <div class="header-left">
+        <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2C14 2 6 10 6 16a8 8 0 1016 0c0-6-8-14-8-14z" fill="#ef4444" />
+        </svg>
+        <h1 class="logo-text">Leakd</h1>
+        <span class="pro-pill" id="proPill" style="display:none">PRO</span>
+      </div>
+      <div class="header-right">
+        <button class="btn-icon" id="toggleNotif" data-i18n-title="header.notif">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 01-3.46 0" />
+          </svg>
+          <span class="bell-dot" aria-hidden="true"></span>
+        </button>
+        <button class="btn-icon" id="toggleTheme" data-i18n-title="header.theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+          </svg>
+        </button>
+        <button class="btn-icon" id="openMenu" data-i18n-title="header.menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="5" r="1.5" />
+            <circle cx="12" cy="12" r="1.5" />
+            <circle cx="12" cy="19" r="1.5" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- HOME VIEW -->
+    <section class="view view-home active" id="viewHome">
+      <div class="stats" id="stats">
+        <div class="stat-card stat-main">
+          <span class="stat-label" data-i18n="stats.monthly">Monthly spend</span>
+          <span class="stat-value" id="monthlyTotal">$0.00</span>
+          <svg class="sparkline" id="sparkline" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:none">
+            <path id="sparklineFill" fill="rgba(239,68,68,0.15)" d=""></path>
+            <path id="sparklinePath" stroke="#ef4444" stroke-width="1.5" fill="none" d=""></path>
+          </svg>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label" data-i18n="stats.yearly">Yearly total</span>
+          <span class="stat-value" id="yearlyTotal">$0.00</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label" data-i18n="stats.active">Active subs</span>
+          <span class="stat-value" id="activeCount">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label" data-i18n="stats.dueSoon">Due in 7 days</span>
+          <span class="stat-value" id="dueSoon">0</span>
+        </div>
+      </div>
+
+      <div id="alerts"></div>
+
+      <!-- DAILY STREAK CARD -->
+      <div class="streak-card" id="streakCard" style="display:none">
+        <div class="streak-header">
+          <div class="streak-info">
+            <span class="streak-count" id="streakCount">0</span>
+            <span class="streak-label" data-i18n="streak.days">day streak</span>
+          </div>
+          <div class="streak-icon">🔥</div>
+        </div>
+        <div class="streak-body">
+          <p id="streakMsg" data-i18n="streak.msg">Did you resist a new subscription today?</p>
+          <button class="btn-streak" id="streakBtn" data-i18n="streak.btn">I stayed clean!</button>
+        </div>
+      </div>
+
+      <div class="forecast-card" id="forecastCard" style="display:none">
+        <div class="forecast-head">
+          <span class="forecast-label" id="forecastLabel">Next 30 days</span>
+          <span class="forecast-total" id="forecastTotal">—</span>
+        </div>
+        <div class="forecast-sub" id="forecastSub">—</div>
+      </div>
+
+      <div class="search-bar" id="searchBar" style="display:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input type="text" id="searchInput" data-i18n-placeholder="search.placeholder">
+        <button class="search-clear" id="searchClear" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="categories" id="categories">
+        <button class="cat-btn active" data-cat="all" data-i18n="cat.all">All</button>
+      </div>
+
+      <div class="sub-list" id="subList">
+        <div class="empty-state" id="emptyState">
+          <svg width="48" height="48" viewBox="0 0 28 28" fill="none" opacity="0.3">
+            <path d="M14 2C14 2 6 10 6 16a8 8 0 1016 0c0-6-8-14-8-14z" fill="currentColor" />
+          </svg>
+          <p data-i18n="empty.title">No subscriptions yet</p>
+          <p class="empty-sub" data-i18n="empty.sub">Tap the + button or paste a list to start</p>
+          <div class="empty-actions">
+            <button class="btn-outline" id="emptyImportBtn" data-i18n="empty.paste">Paste subscriptions</button>
+            <button class="btn-primary" id="emptyDemoBtn" data-i18n="empty.tryDemo">Try with example data</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSIGHTS VIEW -->
+    <section class="view view-insights" id="viewInsights">
+      <div class="insight-hero">
+        <div class="insight-hero-label" data-i18n="insights.ytd">YEAR-TO-DATE</div>
+        <div class="insight-hero-value" id="ytdValue">$0</div>
+        <div class="insight-hero-sub"><span data-i18n="insights.paidIn">paid so far in</span> <span id="ytdYear"></span>
+          (<span id="currencySymbol"></span>)</div>
+      </div>
+
+      <!-- Insights Filter -->
+      <div class="insights-filter"
+        style="display:flex; gap:8px; margin-bottom: 24px; background: var(--bg-card); padding: 4px; border-radius: 8px; border: 1px solid var(--border);">
+        <button class="filter-btn active" data-filter="all"
+          style="flex:1; border:none; background:var(--bg); border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text)"
+          data-i18n="filter.all">All</button>
+        <button class="filter-btn" data-filter="business"
+          style="flex:1; border:none; background:transparent; border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text-muted)"
+          data-i18n="filter.business">Business</button>
+        <button class="filter-btn" data-filter="personal"
+          style="flex:1; border:none; background:transparent; border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text-muted)"
+          data-i18n="filter.personal">Personal</button>
+      </div>
+
+
+      <!-- Health Score -->
+      <!-- Spending trends — line chart of the last 6 monthly snapshots -->
+      <div class="chart-card trends-card" id="trendsCard" style="display:none">
+        <div class="chart-title" data-i18n="trends.title">Spending trend</div>
+        <div class="trends-body">
+          <svg class="trends-svg" id="trendsSvg" viewBox="0 0 320 100" preserveAspectRatio="none"
+            aria-hidden="true"></svg>
+          <div class="trends-labels" id="trendsLabels"></div>
+          <div class="trends-summary" id="trendsSummary"></div>
+        </div>
+      </div>
+
+      <div class="chart-card health-card" id="healthCard" style="display:none">
+        <div class="chart-title" data-i18n="health.title">Subscription health</div>
+        <div class="health-body">
+          <div class="health-grade" id="healthGrade">—</div>
+          <div class="health-detail">
+            <div class="health-score" id="healthScore">—</div>
+            <div class="health-advice" id="healthAdvice">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spending personality -->
+      <div class="chart-card personality-card" id="personalityCard" style="display:none">
+        <div class="chart-title" data-i18n="personality.title">Your subscription personality</div>
+        <div class="personality-body">
+          <div class="personality-icon" id="personalityIcon">🌱</div>
+          <div class="personality-detail">
+            <div class="personality-label" id="personalityLabel">—</div>
+            <div class="personality-tag" id="personalityTag">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Public benchmarks -->
+      <div class="chart-card bench-card" id="benchCard" style="display:none">
+        <div class="chart-title" data-i18n="bench.title">How you compare</div>
+        <div class="bench-body">
+          <div class="bench-row">
+            <span class="bench-label" id="benchExpected">—</span>
+            <span class="bench-verdict" id="benchVerdict">—</span>
+          </div>
+          <div class="bench-percentile" id="benchPercentile">—</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title" data-i18n="insights.projection">12-month projection</div>
+        <div class="chart-bars" id="chartBars"></div>
+        <div class="chart-foot">
+          <span data-i18n="insights.now">Now</span>
+          <span id="chartTotal">$0</span>
+        </div>
+      </div>
+
+      <!-- Visual renewal calendar -->
+      <div class="chart-card" id="calendarCard" style="display:none">
+        <div class="calendar-head">
+          <button class="cal-nav-btn" id="calPrev" data-i18n-title="calendar.prev">‹</button>
+          <div class="calendar-title" id="calMonthName">—</div>
+          <button class="cal-nav-btn" id="calNext" data-i18n-title="calendar.next">›</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-sub" id="calendarSub"></div>
+        <div class="calendar-day-detail" id="calDayDetail" style="display:none"></div>
+      </div>
+
+      <!-- Aggregate lifetime cost card -->
+      <div class="chart-card lifetime-aggregate" id="lifetimeAggCard" style="display:none">
+        <div class="chart-title" data-i18n="insights.lifetimeTitle">Lifetime paid (all subs)</div>
+        <div class="lifetime-agg-value" id="lifetimeAggValue">—</div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title" data-i18n="insights.byCategory">By category</div>
+        <div class="donut-wrap" id="donutWrap" style="display:none">
+          <svg class="donut" id="donutChart" viewBox="0 0 120 120"></svg>
+          <div class="donut-center">
+            <div class="donut-center-label" data-i18n="donut.title">Spending share</div>
+            <div class="donut-center-value" id="donutCenterValue"></div>
+          </div>
+        </div>
+        <div class="cat-breakdown" id="catBreakdown">
+          <div class="empty-state-mini" data-i18n="insights.noData">No data yet</div>
+        </div>
+      </div>
+
+      <div class="chart-card" id="incomeRatioCard" style="display:none">
+        <div class="chart-title"><span id="incomeRatioLabel">Income ratio</span></div>
+        <div class="ratio-row">
+          <div class="ratio-bar">
+            <div class="ratio-fill" id="ratioFill" style="width:0%"></div>
+          </div>
+          <div class="ratio-value" id="ratioValue">—</div>
+        </div>
+        <div class="ratio-sentiment" id="ratioSentiment"></div>
+      </div>
+
+      <div class="chart-card" id="bundlesCard" style="display:none">
+        <div class="chart-title" data-i18n="bundles.title">Bundle suggestions</div>
+        <div id="bundlesList"></div>
+      </div>
+
+      <div class="chart-card goal-card" id="goalCard" style="display:none">
+        <div class="goal-header">
+          <div class="goal-icon">🐷</div>
+          <div class="goal-titles">
+            <div class="chart-title" style="margin:0" id="goalTitleDisplay">Savings goal</div>
+            <div class="goal-subtitle" id="goalTargetDisplay">$0</div>
+          </div>
+        </div>
+        <div class="goal-progress-wrap">
+          <div class="goal-progress-bar">
+            <div class="goal-progress-fill" id="goalProgressFill" style="width:0%"></div>
+          </div>
+          <div class="goal-progress-text" id="goalProgressText">—</div>
+        </div>
+        <div class="goal-estimate" id="goalEstimate" style="display:none"></div>
+      </div>
+
+      <div class="suggestions">
+        <div class="chart-title" data-i18n="insights.suggestions">Smart suggestions</div>
+        <div id="suggestionsList">
+          <div class="empty-state-mini" data-i18n="insights.noSubs">Add some subscriptions to see suggestions</div>
+        </div>
+      </div>
+
+      <div class="chart-card" id="lowestRatedCard" style="display:none">
+        <div class="chart-title" data-i18n="insights.lowestRated">Lowest-rated subscriptions</div>
+        <div class="chart-sub" data-i18n="insights.lowestRatedSub">Easy cancellation candidates</div>
+        <div id="lowestRatedList" class="lowest-list"></div>
+      </div>
+
+      <div class="panic-cta" id="panicCta" style="display:none">
+        <button class="btn-panic" id="panicBtn">
+          <span class="panic-icon">🚨</span>
+          <span data-i18n="panic.button">PANIC BUTTON</span>
+        </button>
+        <div class="panic-sub" data-i18n="panic.sub">Spending is high. Time to cut the leaks.</div>
+      </div>
+
+      <div class="share-cta">
+        <div class="share-cta-text">
+          <strong data-i18n="insights.shareTitle">Share your leak</strong>
+          <span data-i18n="insights.shareSub">Generate a shareable image for Twitter, IG, or Reddit</span>
+        </div>
+        <button class="btn-primary" id="shareCardBtn" data-i18n="insights.generate">Generate</button>
+      </div>
+    </section>
+
+
+    <button class="fab" id="addBtn" data-i18n-title="modal.add">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
       </svg>
-      <h1 class="logo-text">Leakd</h1>
-      <span class="pro-pill" id="proPill" style="display:none">PRO</span>
-    </div>
-    <div class="header-right">
-      <button class="btn-icon" id="toggleNotif" data-i18n-title="header.notif">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-        <span class="bell-dot" aria-hidden="true"></span>
-      </button>
-      <button class="btn-icon" id="toggleTheme" data-i18n-title="header.theme">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
-      </button>
-      <button class="btn-icon" id="openMenu" data-i18n-title="header.menu">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-      </button>
-    </div>
-  </header>
-
-  <!-- HOME VIEW -->
-  <section class="view view-home active" id="viewHome">
-    <div class="stats" id="stats">
-      <div class="stat-card stat-main">
-        <span class="stat-label" data-i18n="stats.monthly">Monthly spend</span>
-        <span class="stat-value" id="monthlyTotal">$0.00</span>
-        <svg class="sparkline" id="sparkline" viewBox="0 0 200 40" preserveAspectRatio="none" style="display:none">
-          <path id="sparklineFill" fill="rgba(239,68,68,0.15)" d=""></path>
-          <path id="sparklinePath" stroke="#ef4444" stroke-width="1.5" fill="none" d=""></path>
-        </svg>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label" data-i18n="stats.yearly">Yearly total</span>
-        <span class="stat-value" id="yearlyTotal">$0.00</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label" data-i18n="stats.active">Active subs</span>
-        <span class="stat-value" id="activeCount">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label" data-i18n="stats.dueSoon">Due in 7 days</span>
-        <span class="stat-value" id="dueSoon">0</span>
-      </div>
-    </div>
-
-    <div id="alerts"></div>
-
-    <!-- DAILY STREAK CARD -->
-    <div class="streak-card" id="streakCard" style="display:none">
-      <div class="streak-header">
-        <div class="streak-info">
-          <span class="streak-count" id="streakCount">0</span>
-          <span class="streak-label" data-i18n="streak.days">day streak</span>
-        </div>
-        <div class="streak-icon">🔥</div>
-      </div>
-      <div class="streak-body">
-        <p id="streakMsg" data-i18n="streak.msg">Did you resist a new subscription today?</p>
-        <button class="btn-streak" id="streakBtn" data-i18n="streak.btn">I stayed clean!</button>
-      </div>
-    </div>
-
-    <div class="forecast-card" id="forecastCard" style="display:none">
-      <div class="forecast-head">
-        <span class="forecast-label" id="forecastLabel">Next 30 days</span>
-        <span class="forecast-total" id="forecastTotal">—</span>
-      </div>
-      <div class="forecast-sub" id="forecastSub">—</div>
-    </div>
-
-    <div class="search-bar" id="searchBar" style="display:none">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" data-i18n-placeholder="search.placeholder">
-      <button class="search-clear" id="searchClear" style="display:none">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div class="categories" id="categories">
-      <button class="cat-btn active" data-cat="all" data-i18n="cat.all">All</button>
-    </div>
-
-    <div class="sub-list" id="subList">
-      <div class="empty-state" id="emptyState">
-        <svg width="48" height="48" viewBox="0 0 28 28" fill="none" opacity="0.3">
-          <path d="M14 2C14 2 6 10 6 16a8 8 0 1016 0c0-6-8-14-8-14z" fill="currentColor"/>
-        </svg>
-        <p data-i18n="empty.title">No subscriptions yet</p>
-        <p class="empty-sub" data-i18n="empty.sub">Tap the + button or paste a list to start</p>
-        <div class="empty-actions">
-          <button class="btn-outline" id="emptyImportBtn" data-i18n="empty.paste">Paste subscriptions</button>
-          <button class="btn-primary" id="emptyDemoBtn" data-i18n="empty.tryDemo">Try with example data</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- INSIGHTS VIEW -->
-  <section class="view view-insights" id="viewInsights">
-    <div class="insight-hero">
-      <div class="insight-hero-label" data-i18n="insights.ytd">YEAR-TO-DATE</div>
-      <div class="insight-hero-value" id="ytdValue">$0</div>
-      <div class="insight-hero-sub"><span data-i18n="insights.paidIn">paid so far in</span> <span id="ytdYear"></span> (<span id="currencySymbol"></span>)</div>
-    </div>
-
-    <!-- Insights Filter -->
-    <div class="insights-filter" style="display:flex; gap:8px; margin-bottom: 24px; background: var(--bg-card); padding: 4px; border-radius: 8px; border: 1px solid var(--border);">
-      <button class="filter-btn active" data-filter="all" style="flex:1; border:none; background:var(--bg); border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text)" data-i18n="filter.all">All</button>
-      <button class="filter-btn" data-filter="business" style="flex:1; border:none; background:transparent; border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text-muted)" data-i18n="filter.business">Business</button>
-      <button class="filter-btn" data-filter="personal" style="flex:1; border:none; background:transparent; border-radius:4px; padding:6px; font-weight:500; font-size:12px; cursor:pointer; color:var(--text-muted)" data-i18n="filter.personal">Personal</button>
-    </div>
-
-
-    <!-- Health Score -->
-    <!-- Spending trends — line chart of the last 6 monthly snapshots -->
-    <div class="chart-card trends-card" id="trendsCard" style="display:none">
-      <div class="chart-title" data-i18n="trends.title">Spending trend</div>
-      <div class="trends-body">
-        <svg class="trends-svg" id="trendsSvg" viewBox="0 0 320 100" preserveAspectRatio="none" aria-hidden="true"></svg>
-        <div class="trends-labels" id="trendsLabels"></div>
-        <div class="trends-summary" id="trendsSummary"></div>
-      </div>
-    </div>
-
-    <div class="chart-card health-card" id="healthCard" style="display:none">
-      <div class="chart-title" data-i18n="health.title">Subscription health</div>
-      <div class="health-body">
-        <div class="health-grade" id="healthGrade">—</div>
-        <div class="health-detail">
-          <div class="health-score" id="healthScore">—</div>
-          <div class="health-advice" id="healthAdvice">—</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Spending personality -->
-    <div class="chart-card personality-card" id="personalityCard" style="display:none">
-      <div class="chart-title" data-i18n="personality.title">Your subscription personality</div>
-      <div class="personality-body">
-        <div class="personality-icon" id="personalityIcon">🌱</div>
-        <div class="personality-detail">
-          <div class="personality-label" id="personalityLabel">—</div>
-          <div class="personality-tag" id="personalityTag">—</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Public benchmarks -->
-    <div class="chart-card bench-card" id="benchCard" style="display:none">
-      <div class="chart-title" data-i18n="bench.title">How you compare</div>
-      <div class="bench-body">
-        <div class="bench-row">
-          <span class="bench-label" id="benchExpected">—</span>
-          <span class="bench-verdict" id="benchVerdict">—</span>
-        </div>
-        <div class="bench-percentile" id="benchPercentile">—</div>
-      </div>
-    </div>
-
-    <div class="chart-card">
-      <div class="chart-title" data-i18n="insights.projection">12-month projection</div>
-      <div class="chart-bars" id="chartBars"></div>
-      <div class="chart-foot">
-        <span data-i18n="insights.now">Now</span>
-        <span id="chartTotal">$0</span>
-      </div>
-    </div>
-
-    <!-- Visual renewal calendar -->
-    <div class="chart-card" id="calendarCard" style="display:none">
-      <div class="calendar-head">
-        <button class="cal-nav-btn" id="calPrev" data-i18n-title="calendar.prev">‹</button>
-        <div class="calendar-title" id="calMonthName">—</div>
-        <button class="cal-nav-btn" id="calNext" data-i18n-title="calendar.next">›</button>
-      </div>
-      <div class="calendar-grid" id="calendarGrid"></div>
-      <div class="calendar-sub" id="calendarSub"></div>
-      <div class="calendar-day-detail" id="calDayDetail" style="display:none"></div>
-    </div>
-
-    <!-- Aggregate lifetime cost card -->
-    <div class="chart-card lifetime-aggregate" id="lifetimeAggCard" style="display:none">
-      <div class="chart-title" data-i18n="insights.lifetimeTitle">Lifetime paid (all subs)</div>
-      <div class="lifetime-agg-value" id="lifetimeAggValue">—</div>
-    </div>
-
-    <div class="chart-card">
-      <div class="chart-title" data-i18n="insights.byCategory">By category</div>
-      <div class="donut-wrap" id="donutWrap" style="display:none">
-        <svg class="donut" id="donutChart" viewBox="0 0 120 120"></svg>
-        <div class="donut-center">
-          <div class="donut-center-label" data-i18n="donut.title">Spending share</div>
-          <div class="donut-center-value" id="donutCenterValue"></div>
-        </div>
-      </div>
-      <div class="cat-breakdown" id="catBreakdown">
-        <div class="empty-state-mini" data-i18n="insights.noData">No data yet</div>
-      </div>
-    </div>
-
-    <div class="chart-card" id="incomeRatioCard" style="display:none">
-      <div class="chart-title"><span id="incomeRatioLabel">Income ratio</span></div>
-      <div class="ratio-row">
-        <div class="ratio-bar"><div class="ratio-fill" id="ratioFill" style="width:0%"></div></div>
-        <div class="ratio-value" id="ratioValue">—</div>
-      </div>
-      <div class="ratio-sentiment" id="ratioSentiment"></div>
-    </div>
-
-    <div class="chart-card" id="bundlesCard" style="display:none">
-      <div class="chart-title" data-i18n="bundles.title">Bundle suggestions</div>
-      <div id="bundlesList"></div>
-    </div>
-
-    <div class="chart-card goal-card" id="goalCard" style="display:none">
-      <div class="goal-header">
-        <div class="goal-icon">🐷</div>
-        <div class="goal-titles">
-          <div class="chart-title" style="margin:0" id="goalTitleDisplay">Savings goal</div>
-          <div class="goal-subtitle" id="goalTargetDisplay">$0</div>
-        </div>
-      </div>
-      <div class="goal-progress-wrap">
-        <div class="goal-progress-bar"><div class="goal-progress-fill" id="goalProgressFill" style="width:0%"></div></div>
-        <div class="goal-progress-text" id="goalProgressText">—</div>
-      </div>
-      <div class="goal-estimate" id="goalEstimate" style="display:none"></div>
-    </div>
-
-    <div class="suggestions">
-      <div class="chart-title" data-i18n="insights.suggestions">Smart suggestions</div>
-      <div id="suggestionsList">
-        <div class="empty-state-mini" data-i18n="insights.noSubs">Add some subscriptions to see suggestions</div>
-      </div>
-    </div>
-
-    <div class="chart-card" id="lowestRatedCard" style="display:none">
-      <div class="chart-title" data-i18n="insights.lowestRated">Lowest-rated subscriptions</div>
-      <div class="chart-sub" data-i18n="insights.lowestRatedSub">Easy cancellation candidates</div>
-      <div id="lowestRatedList" class="lowest-list"></div>
-    </div>
-
-    <div class="panic-cta" id="panicCta" style="display:none">
-      <button class="btn-panic" id="panicBtn">
-        <span class="panic-icon">🚨</span>
-        <span data-i18n="panic.button">PANIC BUTTON</span>
-      </button>
-      <div class="panic-sub" data-i18n="panic.sub">Spending is high. Time to cut the leaks.</div>
-    </div>
-
-    <div class="share-cta">
-      <div class="share-cta-text">
-        <strong data-i18n="insights.shareTitle">Share your leak</strong>
-        <span data-i18n="insights.shareSub">Generate a shareable image for Twitter, IG, or Reddit</span>
-      </div>
-      <button class="btn-primary" id="shareCardBtn" data-i18n="insights.generate">Generate</button>
-    </div>
-  </section>
-
-  <button class="fab" id="addBtn" data-i18n-title="modal.add">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-  </button>
-
-  <nav class="bottom-nav" id="bottomNav">
-    <button class="nav-btn active" data-view="home">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span data-i18n="nav.home">Home</span>
     </button>
-    <button class="nav-btn" data-view="insights">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      <span data-i18n="nav.insights">Insights</span>
-    </button>
-  </nav>
-</div>
 
-<!-- Panic Modal -->
-<div class="modal-overlay" id="panicModal">
-  <div class="modal panic-modal">
-    <div class="modal-header">
-      <h2 data-i18n="panic.title">Panic Mode: Active</h2>
-      <button class="btn-icon" id="closePanicModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <nav class="bottom-nav" id="bottomNav">
+      <button class="nav-btn active" data-view="home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span data-i18n="nav.home">Home</span>
       </button>
-    </div>
-    <div class="panic-body">
-      <p class="panic-intro" data-i18n="panic.intro">These subscriptions are costing you the most for the least value. Cut them now to stop the leak.</p>
-      <div id="panicList" class="panic-list"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-primary" id="panicDoneBtn" data-i18n="btn.done">Done</button>
-    </div>
+
+      <button class="nav-btn" data-view="insights">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
+        </svg>
+        <span data-i18n="nav.insights">Insights</span>
+      </button>
+    </nav>
   </div>
-</div>
 
-<!-- Subscription Modal -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="modalTitle" data-i18n="modal.add">Add subscription</h2>
-      <button class="btn-icon" id="closeModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div id="presets" class="presets">
-      <button class="preset" data-name="Netflix" data-price="15.99" data-currency="EUR" data-cat="Entertainment" data-color="#e50914">N</button>
-      <button class="preset" data-name="Spotify" data-price="10.99" data-currency="EUR" data-cat="Music" data-color="#1db954">S</button>
-      <button class="preset" data-name="YouTube Premium" data-price="13.99" data-currency="EUR" data-cat="Entertainment" data-color="#ff0000">Y</button>
-      <button class="preset" data-name="ChatGPT Plus" data-price="20.00" data-currency="USD" data-cat="Work" data-color="#10a37f">G</button>
-      <button class="preset" data-name="Adobe CC" data-price="54.99" data-currency="USD" data-cat="Work" data-color="#ff0000">A</button>
-      <button class="preset" data-name="iCloud" data-price="2.99" data-currency="EUR" data-cat="Cloud" data-color="#3b82f6">i</button>
-      <button class="preset" data-name="Disney+" data-price="13.99" data-currency="EUR" data-cat="Entertainment" data-color="#113ccf">D</button>
-      <button class="preset" data-name="Apple Music" data-price="10.99" data-currency="EUR" data-cat="Music" data-color="#fc3c44">♫</button>
-    </div>
-
-    <div class="form-divider"><span data-i18n="modal.orCustom">or add custom</span></div>
-
-    <div class="form-group" style="position:relative">
-      <label for="subName" data-i18n="field.name">Name</label>
-      <input type="text" id="subName" data-i18n-placeholder="field.namePh" autocomplete="off">
-      <div class="suggest-box" id="suggestBox" style="display:none"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group flex-1">
-        <label for="subPrice" data-i18n="field.price">Price</label>
-        <div class="input-with-currency">
-          <select id="subCurrency" class="currency-select-inline">
-            <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
-            <option value="HUF">HUF (Ft)</option>
-            <option value="GBP">GBP (£)</option>
-            <option value="JPY">JPY (¥)</option>
-          </select>
-          <input type="number" id="subPrice" placeholder="9.99" step="0.01" min="0">
-        </div>
+  <!-- Panic Modal -->
+  <div class="modal-overlay" id="panicModal">
+    <div class="modal panic-modal">
+      <div class="modal-header">
+        <h2 data-i18n="panic.title">Panic Mode: Active</h2>
+        <button class="btn-icon" id="closePanicModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
       </div>
-      <div class="form-group flex-1">
-        <label for="subCycle" data-i18n="field.cycle">Billing cycle</label>
-        <select id="subCycle">
-          <option value="monthly" data-i18n="cycle.monthly">Monthly</option>
-          <option value="yearly" data-i18n="cycle.yearly">Yearly</option>
-          <option value="weekly" data-i18n="cycle.weekly">Weekly</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group flex-1">
-        <label for="subCategory" data-i18n="field.category">Category</label>
-        <select id="subCategory">
-          <option value="Entertainment" data-i18n="cat.Entertainment">Entertainment</option>
-          <option value="Work" data-i18n="cat.Work">Work</option>
-          <option value="Music" data-i18n="cat.Music">Music</option>
-          <option value="Fitness" data-i18n="cat.Fitness">Fitness</option>
-          <option value="Cloud" data-i18n="cat.Cloud">Cloud</option>
-          <option value="Food" data-i18n="cat.Food">Food</option>
-          <option value="News" data-i18n="cat.News">News</option>
-          <option value="Other" data-i18n="cat.Other">Other</option>
-          <option value="_new" data-i18n="cat.new">+New Category</option>
-        </select>
-        <input type="text" id="subCategoryCustom" placeholder="Custom category name" style="display:none; margin-top:8px;">
-      </div>
-      <div class="form-group flex-1">
-        <label for="subDate" data-i18n="field.nextDate">Next payment</label>
-        <input type="date" id="subDate">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="subTrial">
-        <input type="checkbox" id="subTrial"> <span data-i18n="field.trial">This is a free trial</span>
-      </label>
-      <div id="trialDateWrap" style="display:none;margin-top:8px">
-        <label for="subTrialEnd" data-i18n="field.trialEnd">Trial ends on</label>
-        <input type="date" id="subTrialEnd">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group flex-1">
-        <label for="subShared" data-i18n="field.shared">Shared with</label>
-        <input type="number" id="subShared" data-i18n-placeholder="field.sharedPh" min="1" max="20" step="1">
-        <div class="field-note" data-i18n="field.sharedNote">Total cost stays the same — we show your share too</div>
-      </div>
-      <div class="form-group flex-1">
-        <label for="subPaused" style="margin-top: 26px">
-          <input type="checkbox" id="subPaused"> <span data-i18n="field.paused">Paused</span>
-        </label>
-      </div>
-    </div>
-    <!-- Leakd Split Details (only shown when shared > 1) -->
-    <div id="subSharedDetails" class="shared-details-wrap" style="display:none;">
-      <div class="shared-details-title" data-i18n="field.splitChecklist">Friend Payment Checklist & Reminders</div>
-      <div class="form-row">
-        <div class="form-group flex-1">
-          <label for="subSharedNames" data-i18n="field.sharedNames">Friend names</label>
-          <input type="text" id="subSharedNames" data-i18n-placeholder="field.sharedNamesPh" autocomplete="off">
-        </div>
-        <div class="form-group flex-1">
-          <label for="subPaymentInfo" data-i18n="field.paymentInfo">Payment details</label>
-          <input type="text" id="subPaymentInfo" data-i18n-placeholder="field.paymentInfoPh" autocomplete="off">
-        </div>
-      </div>
-      <div id="subSharedChecklist" class="shared-checklist"></div>
-    </div>
-    <div class="form-group">
-      <label for="subBusiness">
-        <input type="checkbox" id="subBusiness"> <span data-i18n="field.business">This is a business expense</span>
-      </label>
-    </div>
-    <div class="form-row">
-      <div class="form-group flex-1">
-        <label for="subLastUsed" data-i18n="field.lastUsed">Last used</label>
-        <input type="date" id="subLastUsed">
-      </div>
-      <div class="form-group flex-1" style="display:flex; align-items:flex-end">
-        <button type="button" class="btn-outline" id="markUsedTodayBtn" style="width:100%; font-size:12px; padding: 10px 8px;" data-i18n="btn.markUsed">Mark as used today</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label data-i18n="field.rating">Worth it?</label>
-      <div class="star-rating" id="subRating" data-rating="0">
-        <button type="button" class="star" data-v="1">★</button>
-        <button type="button" class="star" data-v="2">★</button>
-        <button type="button" class="star" data-v="3">★</button>
-        <button type="button" class="star" data-v="4">★</button>
-        <button type="button" class="star" data-v="5">★</button>
-        <button type="button" class="star-clear" id="subRatingClear" title="Clear">×</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="subTags" data-i18n="field.tags">Tags</label>
-      <input type="text" id="subTags" data-i18n-placeholder="field.tagsPh" autocomplete="off">
-      <div class="field-note" data-i18n="field.tagsNote">Free-form labels. Separate with commas.</div>
-    </div>
-
-    <div class="form-group">
-      <label for="subNotes" data-i18n="field.notes">Notes</label>
-      <textarea id="subNotes" rows="2" data-i18n-placeholder="field.notesPh"></textarea>
-    </div>
-
-    <div id="trackedSince" class="tracked-since" style="display:none"></div>
-
-    <!-- Lifetime cost + investment alternative (only shown when editing existing sub) -->
-    <div id="lifetimeCard" class="lifetime-card" style="display:none">
-      <div class="lifetime-head">
-        <span class="lifetime-label" data-i18n="lifetime.paidSoFar">You've paid</span>
-        <span class="lifetime-value" id="lifetimeValue">—</span>
-      </div>
-      <div class="lifetime-since" id="lifetimeSince">—</div>
-      <div class="lifetime-grid">
-        <div class="lifetime-cell">
-          <span class="lifetime-cell-label" data-i18n="lifetime.next5y">Next 5 years</span>
-          <span class="lifetime-cell-val" id="lifetimeNext5y">—</span>
-        </div>
-        <div class="lifetime-cell">
-          <span class="lifetime-cell-label" data-i18n="lifetime.next10y">Next 10 years</span>
-          <span class="lifetime-cell-val" id="lifetimeNext10y">—</span>
-        </div>
-      </div>
-      <div class="lifetime-invest">
-        <div class="lifetime-invest-title" data-i18n="lifetime.investTitle">If you invested instead</div>
-        <div class="lifetime-invest-note" data-i18n="lifetime.investNote">At 7% annual return (S&P 500 long-term avg)</div>
-        <div class="lifetime-grid">
-          <div class="lifetime-cell green">
-            <span class="lifetime-cell-label" data-i18n="lifetime.invest5y">5 years invested</span>
-            <span class="lifetime-cell-val" id="lifetimeInvest5y">—</span>
-          </div>
-          <div class="lifetime-cell green">
-            <span class="lifetime-cell-label" data-i18n="lifetime.invest10y">10 years invested</span>
-            <span class="lifetime-cell-val" id="lifetimeInvest10y">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="lifetime-inflation">
-        <div class="lifetime-invest-title" data-i18n="lifetime.inflationTitle">If prices keep rising</div>
-        <div class="lifetime-invest-note" data-i18n="lifetime.inflationNote">Most subs raise prices 3-7%/year. We project 5%.</div>
-        <div class="lifetime-grid">
-          <div class="lifetime-cell amber">
-            <span class="lifetime-cell-label" data-i18n="lifetime.inflated10y">10 years at +5%/yr</span>
-            <span class="lifetime-cell-val" id="lifetimeInflated10y">—</span>
-          </div>
-          <div class="lifetime-cell amber">
-            <span class="lifetime-cell-label" data-i18n="lifetime.inflated10yMonthly">/mo in 10y</span>
-            <span class="lifetime-cell-val" id="lifetimeInflated10yMonthly">—</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cheaper alternatives (shown when we know cheaper options) -->
-    <div id="altCard" class="alt-card" style="display:none">
-      <div class="alt-head">
-        <span class="alt-icon">💡</span>
-        <span class="alt-title" data-i18n="alt.title">Cheaper alternatives</span>
-      </div>
-      <div class="alt-list" id="altList"></div>
-    </div>
-
-    <!-- Cancellation playbook (shown when we know how to cancel this service) -->
-    <div id="playbookCard" class="playbook-card" style="display:none">
-      <div class="playbook-head">
-        <span class="playbook-icon">📋</span>
-        <span class="playbook-title-text" data-i18n="playbook.title">How to cancel</span>
-        <span class="playbook-meta">
-          <span class="playbook-diff" id="playbookDiff">—</span>
-          <span class="playbook-time" id="playbookTime">—</span>
-        </span>
-      </div>
-      <ol class="playbook-steps" id="playbookSteps"></ol>
-    </div>
-
-    <div id="cancelUrlWrap" style="display:none;margin-bottom:14px">
-      <a class="btn-cancel-link" id="cancelUrlLink" target="_blank" rel="noopener" data-i18n="btn.cancelSub">Cancel this subscription</a>
-    </div>
-
-    <input type="hidden" id="editId" value="">
-    <div class="modal-actions">
-      <button class="btn-danger" id="deleteBtn" style="display:none" data-i18n="btn.delete">Delete</button>
-      <button class="btn-outline" id="markCancelledBtn" style="display:none" data-i18n="btn.cancelMark">Mark as cancelled</button>
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelBtn" data-i18n="btn.cancel">Cancel</button>
-      <button class="btn-primary" id="saveBtn" data-i18n="btn.save">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Currency Modal -->
-<div class="modal-overlay" id="currencyModal" style="display:none">
-  <div class="modal" style="max-width:340px">
-    <div class="modal-header">
-      <h2 data-i18n="currency.choose">Choose currency</h2>
-    </div>
-    <div class="currency-grid">
-      <button class="currency-btn" data-currency="$" data-code="USD">$ USD</button>
-      <button class="currency-btn" data-currency="€" data-code="EUR">€ EUR</button>
-      <button class="currency-btn" data-currency="£" data-code="GBP">£ GBP</button>
-      <button class="currency-btn" data-currency="Ft" data-code="HUF">Ft HUF</button>
-      <button class="currency-btn" data-currency="¥" data-code="JPY">¥ JPY</button>
-      <button class="currency-btn" data-currency="₹" data-code="INR">₹ INR</button>
-      <button class="currency-btn" data-currency="R$" data-code="BRL">R$ BRL</button>
-      <button class="currency-btn" data-currency="A$" data-code="AUD">A$ AUD</button>
-      <button class="currency-btn" data-currency="C$" data-code="CAD">C$ CAD</button>
-      <button class="currency-btn" data-currency="CHF" data-code="CHF">CHF</button>
-      <button class="currency-btn" data-currency="kr" data-code="SEK">kr SEK</button>
-      <button class="currency-btn" data-currency="kr" data-code="NOK">kr NOK</button>
-      <button class="currency-btn" data-currency="kr" data-code="DKK">kr DKK</button>
-      <button class="currency-btn" data-currency="zł" data-code="PLN">zł PLN</button>
-      <button class="currency-btn" data-currency="Kč" data-code="CZK">Kč CZK</button>
-      <button class="currency-btn" data-currency="¥" data-code="CNY">¥ CNY</button>
-      <button class="currency-btn" data-currency="₩" data-code="KRW">₩ KRW</button>
-      <button class="currency-btn" data-currency="₺" data-code="TRY">₺ TRY</button>
-      <button class="currency-btn" data-currency="Mex$" data-code="MXN">Mex$ MXN</button>
-      <button class="currency-btn" data-currency="HK$" data-code="HKD">HK$ HKD</button>
-      <button class="currency-btn" data-currency="S$" data-code="SGD">S$ SGD</button>
-      <button class="currency-btn" data-currency="R" data-code="ZAR">R ZAR</button>
-      <button class="currency-btn" data-currency="₽" data-code="RUB">₽ RUB</button>
-      <button class="currency-btn" data-currency="lei" data-code="RON">lei RON</button>
-    </div>
-  </div>
-</div>
-
-<!-- Language Modal -->
-<div class="modal-overlay" id="langModal">
-  <div class="modal" style="max-width:340px">
-    <div class="modal-header">
-      <h2 data-i18n="lang.choose">Choose language</h2>
-      <button class="btn-icon" id="closeLangModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="lang-grid" id="langGrid"></div>
-  </div>
-</div>
-
-<!-- Notification Settings Modal -->
-<div class="modal-overlay" id="notifModal">
-  <div class="modal" style="max-width:420px">
-    <div class="modal-header">
-      <h2 data-i18n="notif.title">Notifications</h2>
-      <button class="btn-icon" id="closeNotifModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="notif.blurb">Get a heads-up before subscriptions renew or free trials end. Everything runs on your device — no account, no server.</p>
-
-    <div class="notif-row">
-      <div>
-        <div class="notif-row-label" data-i18n="notif.permission">Browser permission</div>
-        <div class="notif-row-sub" id="notifPermState" data-i18n="notif.notSet">Not set</div>
-      </div>
-    </div>
-
-    <div class="notif-row">
-      <label class="notif-row-label" for="notifEnabled" data-i18n="notif.enable">Enable notifications</label>
-      <label class="switch">
-        <input type="checkbox" id="notifEnabled">
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <div class="form-group">
-      <label for="notifDays" data-i18n="notif.beforeRenewal">Remind me before renewal</label>
-      <select id="notifDays">
-        <option value="0" data-i18n="notif.daysOption.0">On the day</option>
-        <option value="1" data-i18n="notif.daysOption.1">1 day before</option>
-        <option value="2" data-i18n="notif.daysOption.2">2 days before</option>
-        <option value="3" selected data-i18n="notif.daysOption.3">3 days before</option>
-        <option value="5" data-i18n="notif.daysOption.5">5 days before</option>
-        <option value="7" data-i18n="notif.daysOption.7">1 week before</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="notifTrialDays" data-i18n="notif.beforeTrial">Remind me before free trial ends</label>
-      <select id="notifTrialDays">
-        <option value="0" data-i18n="notif.daysOption.0">On the day</option>
-        <option value="1" selected data-i18n="notif.daysOption.1">1 day before</option>
-        <option value="2" data-i18n="notif.daysOption.2">2 days before</option>
-        <option value="3" data-i18n="notif.daysOption.3">3 days before</option>
-      </select>
-    </div>
-
-    <div id="notifDeniedHint" class="notif-hint" style="display:none" data-i18n="notif.deniedHint">Your browser blocked notifications for this site. Open the site settings (lock icon in the address bar) and allow notifications, then come back here.</div>
-
-    <div class="modal-actions">
-      <button class="btn-outline" id="notifTestBtn" type="button" data-i18n="notif.test">Send a test</button>
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelNotifBtn" data-i18n="btn.cancel">Cancel</button>
-      <button class="btn-primary" id="saveNotifBtn" data-i18n="btn.save">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Menu / Settings Modal -->
-<div class="modal-overlay" id="menuModal">
-  <div class="modal" style="max-width:420px">
-    <div class="modal-header">
-      <h2 data-i18n="menu.settings">Settings</h2>
-      <button class="btn-icon" id="closeMenuModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-        <div class="menu-list">
-      <button class="menu-row" id="menuPro">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">⭐</span>
-          <div>
-            <div class="menu-row-label" id="menuProLabel" data-i18n="menu.pro">Upgrade to Pro</div>
-            <div class="menu-row-sub" id="menuProSub" data-i18n="menu.proSub">Email reminders, sync, year-end report</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuCurrency">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">💱</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.currency">Currency</div>
-            <div class="menu-row-sub" id="menuCurrencySub">USD ($)</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuLanguage">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🌍</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.language">Language</div>
-            <div class="menu-row-sub" id="menuLanguageSub">English</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuTheme">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🌓</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.theme">Theme</div>
-            <div class="menu-row-sub" id="menuThemeSub">Light</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuIncome">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">💰</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.income">Income & ratio</div>
-            <div class="menu-row-sub" data-i18n="menu.incomeSub">See what % of your income goes to subs</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuBudgets">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🎯</span>
-          <div>
-            <div class="menu-row-label">
-              <span data-i18n="menu.budgets">Category budgets</span>
-              <span class="pro-badge">PRO</span>
-            </div>
-            <div class="menu-row-sub" data-i18n="menu.budgetsSub">Set monthly limits per category</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuGoal">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🎯</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.goal">Savings goal</div>
-            <div class="menu-row-sub" id="menuGoalSub" data-i18n="menu.goalSub">Set a target — we celebrate every milestone</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuWhatIf">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🔮</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.whatif">What-if calculator</div>
-            <div class="menu-row-sub" data-i18n="menu.whatifSub">Pick subs to cancel — see savings live</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuCompare">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">⚖️</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.compare">Compare side-by-side</div>
-            <div class="menu-row-sub" data-i18n="menu.compareSub">Pick 2 or 3 to compare</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuCancelled">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">✂️</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.cancelled">Cancelled subscriptions</div>
-            <div class="menu-row-sub" id="menuCancelledSub" data-i18n="menu.cancelledSub">See what you killed and how much you saved</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuBank">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🏦</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.bank">Import bank statement</div>
-            <div class="menu-row-sub" data-i18n="menu.bankSub">Auto-detect subs from Revolut, Wise, Chase, etc.</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuImport">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">📥</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.import">Bulk import</div>
-            <div class="menu-row-sub" data-i18n="menu.importSub">Paste a list or upload CSV</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuExport">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">📤</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.export">Export CSV</div>
-            <div class="menu-row-sub" data-i18n="menu.exportSub">Download all your data</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuPdf">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">📄</span>
-          <div>
-            <div class="menu-row-label">
-              <span data-i18n="menu.pdf">PDF report</span>
-              <span class="pro-badge">PRO</span>
-            </div>
-            <div class="menu-row-sub" data-i18n="menu.pdfSub">Printable report for your accountant</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuTaxReport">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🧾</span>
-          <div>
-            <div class="menu-row-label">
-              <span data-i18n="menu.tax">Business tax report</span>
-              <span class="pro-badge">PRO</span>
-            </div>
-            <div class="menu-row-sub" data-i18n="menu.taxSub">PDF + CSV of every business-flagged subscription</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuCalendar">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">📅</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.calendar">Calendar export</div>
-            <div class="menu-row-sub" data-i18n="menu.calendarSub">Renewal dates as an .ics file</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuShare">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🔗</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.share">Share leakd.app</div>
-            <div class="menu-row-sub" data-i18n="menu.shareSub">Help us grow</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuSync">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">☁️</span>
-          <div>
-            <div class="menu-row-label">
-              <span data-i18n="menu.sync">Cloud sync</span>
-              <span class="pro-badge">PRO</span>
-            </div>
-            <div class="menu-row-sub" data-i18n="menu.syncSub">End-to-end encrypted, your Google Drive</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuBackup">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">💾</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.backup">Backup & restore</div>
-            <div class="menu-row-sub" data-i18n="menu.backupSub">Save your data to a file or restore it</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuYearend">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🎁</span>
-          <div>
-            <div class="menu-row-label">
-              <span data-i18n="menu.yearend">Year-end report</span>
-              <span class="pro-badge">PRO</span>
-            </div>
-            <div class="menu-row-sub" data-i18n="menu.yearendSub">See your spending wrap-up</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuEmailRem">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">📧</span>
-          <div>
-            <div class="menu-row-label">
-              <span data-i18n="menu.emailRem">Email reminders</span>
-              <span class="pro-badge">PRO</span>
-            </div>
-            <div class="menu-row-sub" data-i18n="menu.emailRemSub">Get an email before each renewal</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuActivity">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">📜</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.activity">Activity log</div>
-            <div class="menu-row-sub" data-i18n="menu.activitySub">See every change you made</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <button class="menu-row" id="menuTour">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🗺️</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.tour">Show the tour again</div>
-            <div class="menu-row-sub" data-i18n="menu.tourSub">Replay the first-time guided tour</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-
-      <a class="menu-row" href="privacy.html" target="_blank">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🛡️</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.privacy">Privacy policy</div>
-            <div class="menu-row-sub" data-i18n="menu.privacySub">Read what we store</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-      </a>
-
-      <a class="menu-row" href="terms.html" target="_blank">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">📜</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.terms">Terms of service</div>
-            <div class="menu-row-sub" data-i18n="menu.termsSub">The fine print</div>
-          </div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-      </a>
-
-      <button class="menu-row menu-row-danger" id="menuReset">
-        <div class="menu-row-main">
-          <span class="menu-row-icon">🗑️</span>
-          <div>
-            <div class="menu-row-label" data-i18n="menu.reset">Reset all data</div>
-            <div class="menu-row-sub" data-i18n="menu.resetSub">Wipe and start over</div>
-          </div>
-        </div>
-      </button>
-    </div>
-
-
-
-    <div class="menu-footer">
-      <span data-i18n="menu.footer">leakd v1.2 · made for indie wallets</span>
-    </div>
-  </div>
-</div>
-
-<!-- Pro Upgrade Modal -->
-<div class="modal-overlay" id="proModal">
-  <div class="modal" style="max-width:440px">
-    <div class="modal-header">
-      <h2 data-i18n="pro.title">Leakd Pro</h2>
-      <button class="btn-icon" id="closeProModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div id="proStateInactive">
-      <div class="pro-hero">
-        <div class="pro-price">$5<span>/mo</span></div>
-        <div class="pro-price-sub" data-i18n="pro.priceSub">or $40/year (save 33%)</div>
-      </div>
-
-      <ul class="pro-features">
-        <li><span>✓</span> <span data-i18n="pro.f1">Email reminders before renewal</span></li>
-        <li><span>✓</span> <span data-i18n="pro.f2">Multi-device sync (encrypted)</span></li>
-        <li><span>✓</span> <span data-i18n="pro.f3">Year-end spending report</span></li>
-        <li><span>✓</span> <span data-i18n="pro.f4">Category budgets & alerts</span></li>
-        <li><span>✓</span> <span data-i18n="pro.f5">Priority email support</span></li>
-      </ul>
-
-      <div class="pro-note" data-i18n="pro.playNote">Purchases are tied to your Google Account.</div>
-
-      <div class="modal-actions" style="flex-direction: column; gap: 10px;">
-        <button class="btn-primary" id="proBuyMonthlyBtn" style="width:100%" data-i18n="pro.buyMonthly">Upgrade to Pro Monthly</button>
-        <button class="btn-outline" id="proBuyYearlyBtn" style="width:100%" data-i18n="pro.buyYearly">Upgrade to Pro Yearly</button>
-        <button type="button" id="proDiagBtn" style="margin-top:4px;background:none;border:0;color:var(--text-3);font-size:12px;text-decoration:underline;cursor:pointer;padding:6px" data-i18n="pro.diagBtn">Why isn't this working?</button>
-      </div>
-    </div>
-
-    <div id="proStateActive" style="display:none">
-      <div class="pro-active-hero">
-        <div class="pro-active-icon">⭐</div>
-        <h3 data-i18n="pro.welcome">You're on Pro</h3>
-        <p data-i18n="pro.thanks">Thanks for supporting indie software. All premium features are unlocked.</p>
-      </div>
-      <div class="pro-status-display">
-        <div class="pro-key-label" data-i18n="pro.activePlan">Active Plan</div>
-        <div class="pro-key-value" id="proPlanDisplay">—</div>
+      <div class="panic-body">
+        <p class="panic-intro" data-i18n="panic.intro">These subscriptions are costing you the most for the least value.
+          Cut them now to stop the leak.</p>
+        <div id="panicList" class="panic-list"></div>
       </div>
       <div class="modal-actions">
-        <button class="btn-secondary" id="proCloseActiveBtn" style="width:100%" data-i18n="btn.done">Done</button>
+        <button class="btn-primary" id="panicDoneBtn" data-i18n="btn.done">Done</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Bulk Import Modal -->
-<div class="modal-overlay" id="importModal">
-  <div class="modal" style="max-width:520px">
-    <div class="modal-header">
-      <h2 data-i18n="import.title">Bulk import</h2>
-      <button class="btn-icon" id="closeImportModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="import-blurb" data-i18n="import.blurb">Paste one subscription per line. We'll try to detect the service and price automatically.</p>
-
-    <div class="form-group">
-      <textarea id="importText" rows="8" data-i18n-placeholder="import.placeholder"></textarea>
-    </div>
-
-    <div class="form-row" style="gap:8px">
-      <button class="btn-outline" id="importCSVBtn" data-i18n="import.uploadCSV">Upload CSV</button>
-      <input type="file" id="importCSVInput" accept=".csv,text/csv" style="display:none">
-      <button class="btn-outline" id="importExampleBtn" data-i18n="import.example">Try an example</button>
-    </div>
-
-    <div id="importPreview" style="display:none">
-      <div class="import-preview-title" id="importPreviewTitle">Found 0 subscriptions</div>
-      <div class="import-preview-list" id="importPreviewList"></div>
-    </div>
-
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelImportBtn" data-i18n="btn.cancel">Cancel</button>
-      <button class="btn-primary" id="confirmImportBtn" disabled>Import 0</button>
-    </div>
-  </div>
-</div>
-
-<!-- Share Card Modal -->
-<div class="modal-overlay" id="shareModal">
-  <div class="modal" style="max-width:420px">
-    <div class="modal-header">
-      <h2 data-i18n="share.title">Your leak card</h2>
-      <button class="btn-icon" id="closeShareModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div class="share-preview" id="sharePreview">
-      <canvas id="shareCanvas"></canvas>
-    </div>
-
-    <p class="share-note" data-i18n-html="share.note">Posts well on Twitter, Instagram, and Reddit. Tag <strong>@leakdapp</strong> if you share!</p>
-
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-outline" id="downloadShareBtn" data-i18n="share.download">Download</button>
-      <button class="btn-primary" id="shareNowBtn" data-i18n="share.now">Share</button>
-    </div>
-  </div>
-</div>
-
-<!-- Year-end Report Modal -->
-<div class="modal-overlay" id="yearendModal">
-  <div class="modal year-modal">
-    <div class="modal-header">
-      <h2 id="yearendTitle">Wrap-up</h2>
-      <button class="btn-icon" id="closeYearendModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div id="yearendBody">
-      <div class="yearend-slide yearend-total">
-        <div class="yearend-label" data-i18n="yearend.totalPaid">You paid</div>
-        <div class="yearend-value" id="yearendTotal">$0</div>
-        <div class="yearend-sub" data-i18n="yearend.totalPaidSub">across all subscriptions</div>
+  <!-- Subscription Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle" data-i18n="modal.add">Add subscription</h2>
+        <button class="btn-icon" id="closeModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
       </div>
 
-      <div class="yearend-grid">
-        <div class="yearend-card">
-          <div class="yearend-card-label" data-i18n="yearend.topName">Your biggest leak</div>
-          <div class="yearend-card-value" id="yearendTopName">—</div>
-          <div class="yearend-card-sub" id="yearendTopAmount">—</div>
+      <div id="presets" class="presets">
+        <button class="preset" data-name="Netflix" data-price="15.99" data-currency="EUR" data-cat="Entertainment"
+          data-color="#e50914">N</button>
+        <button class="preset" data-name="Spotify" data-price="10.99" data-currency="EUR" data-cat="Music"
+          data-color="#1db954">S</button>
+        <button class="preset" data-name="YouTube Premium" data-price="13.99" data-currency="EUR"
+          data-cat="Entertainment" data-color="#ff0000">Y</button>
+        <button class="preset" data-name="ChatGPT Plus" data-price="20.00" data-currency="USD" data-cat="Work"
+          data-color="#10a37f">G</button>
+        <button class="preset" data-name="Adobe CC" data-price="54.99" data-currency="USD" data-cat="Work"
+          data-color="#ff0000">A</button>
+        <button class="preset" data-name="iCloud" data-price="2.99" data-currency="EUR" data-cat="Cloud"
+          data-color="#3b82f6">i</button>
+        <button class="preset" data-name="Disney+" data-price="13.99" data-currency="EUR" data-cat="Entertainment"
+          data-color="#113ccf">D</button>
+        <button class="preset" data-name="Apple Music" data-price="10.99" data-currency="EUR" data-cat="Music"
+          data-color="#fc3c44">♫</button>
+      </div>
+
+      <div class="form-divider"><span data-i18n="modal.orCustom">or add custom</span></div>
+
+      <div class="form-group" style="position:relative">
+        <label for="subName" data-i18n="field.name">Name</label>
+        <input type="text" id="subName" data-i18n-placeholder="field.namePh" autocomplete="off">
+        <div class="suggest-box" id="suggestBox" style="display:none"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label for="subPrice" data-i18n="field.price">Price</label>
+          <div class="input-with-currency">
+            <select id="subCurrency" class="currency-select-inline">
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="HUF">HUF (Ft)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="JPY">JPY (¥)</option>
+            </select>
+            <input type="number" id="subPrice" placeholder="9.99" step="0.01" min="0">
+          </div>
         </div>
-        <div class="yearend-card">
-          <div class="yearend-card-label" data-i18n="yearend.busiestCat">Most spent on</div>
-          <div class="yearend-card-value" id="yearendTopCat">—</div>
-          <div class="yearend-card-sub" id="yearendTopCatAmount">—</div>
+        <div class="form-group flex-1">
+          <label for="subCycle" data-i18n="field.cycle">Billing cycle</label>
+          <select id="subCycle">
+            <option value="monthly" data-i18n="cycle.monthly">Monthly</option>
+            <option value="yearly" data-i18n="cycle.yearly">Yearly</option>
+            <option value="weekly" data-i18n="cycle.weekly">Weekly</option>
+          </select>
         </div>
       </div>
-
-      <div class="yearend-count" id="yearendSubCount">—</div>
-    </div>
-
-    <div id="yearendEmpty" style="display:none">
-      <div class="yearend-empty-icon">📊</div>
-      <h3 data-i18n="yearend.emptyTitle">Nothing to wrap up yet</h3>
-      <p data-i18n="yearend.emptySub">Add some subscriptions and check back here later in the year.</p>
-    </div>
-
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-outline" id="yearendShareBtn" data-i18n="yearend.share">Share</button>
-      <button class="btn-primary" id="yearendCloseBtn" data-i18n="yearend.close">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- Budgets Modal -->
-<div class="modal-overlay" id="budgetsModal">
-  <div class="modal" style="max-width:440px">
-    <div class="modal-header">
-      <h2 data-i18n="budgets.title">Category budgets</h2>
-      <button class="btn-icon" id="closeBudgetsModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="budgets.blurb">Set a monthly limit for each category.</p>
-
-    <div id="budgetsProLock" class="notif-hint" style="display:none" data-i18n="budgets.proLock">Budgets are a Pro feature. Upgrade to unlock.</div>
-
-    <div id="budgetsList"></div>
-
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-primary" id="budgetsCloseBtn" data-i18n="btn.done">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- Income Modal -->
-<div class="modal-overlay" id="incomeModal">
-  <div class="modal" style="max-width:380px">
-    <div class="modal-header">
-      <h2 data-i18n="income.title">Monthly income</h2>
-      <button class="btn-icon" id="closeIncomeModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="income.blurb">Optional. We use it to show what share of your income goes to subscriptions.</p>
-
-    <div class="form-group">
-      <label for="incomeAmount" data-i18n="income.label">Net monthly income</label>
-      <div class="input-prefix">
-        <span class="prefix" id="incomeCurrencySymbol">$</span>
-        <input type="number" id="incomeAmount" data-i18n-placeholder="income.placeholder" step="1" min="0">
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-danger" id="incomeClearBtn" data-i18n="income.clear">Clear</button>
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelIncomeBtn" data-i18n="btn.cancel">Cancel</button>
-      <button class="btn-primary" id="saveIncomeBtn" data-i18n="btn.save">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Budget Setter Modal (small inline) -->
-<div class="modal-overlay" id="budgetSetterModal">
-  <div class="modal" style="max-width:360px">
-    <div class="modal-header">
-      <h2 id="budgetSetterTitle">Budget</h2>
-      <button class="btn-icon" id="closeBudgetSetterModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div class="form-group">
-      <label for="budgetAmount" data-i18n="budgets.setLimit">Set monthly limit</label>
-      <div class="input-prefix">
-        <span class="prefix" id="budgetCurrencySymbol">$</span>
-        <input type="number" id="budgetAmount" placeholder="50" step="1" min="0">
-      </div>
-    </div>
-
-    <input type="hidden" id="budgetCategory" value="">
-    <div class="modal-actions">
-      <button class="btn-danger" id="budgetClearBtn" data-i18n="btn.delete">Delete</button>
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelBudgetBtn" data-i18n="btn.cancel">Cancel</button>
-      <button class="btn-primary" id="saveBudgetBtn" data-i18n="btn.save">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Backup & Restore Modal -->
-<div class="modal-overlay" id="backupModal">
-  <div class="modal" style="max-width:440px">
-    <div class="modal-header">
-      <h2 data-i18n="backup.title">Backup & restore</h2>
-      <button class="btn-icon" id="closeBackupModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="backup.blurb">Export everything as a single file.</p>
-
-    <div class="backup-card">
-      <div class="backup-card-icon">📤</div>
-      <div class="backup-card-body">
-        <div class="backup-card-title" data-i18n="backup.exportTitle">Download backup</div>
-        <div class="backup-card-sub" data-i18n="backup.exportSub">A small JSON file you can keep anywhere</div>
-      </div>
-      <button class="btn-primary" id="backupExportBtn" data-i18n="backup.exportBtn">Download</button>
-    </div>
-
-    <div class="backup-card">
-      <div class="backup-card-icon">📥</div>
-      <div class="backup-card-body">
-        <div class="backup-card-title" data-i18n="backup.importTitle">Restore from backup</div>
-        <div class="backup-card-sub" data-i18n="backup.importSub">Replace current data with a backup file</div>
-      </div>
-      <button class="btn-outline" id="backupImportBtn" data-i18n="backup.importBtn">Choose file</button>
-      <input type="file" id="backupImportInput" accept=".json,application/json" style="display:none">
-    </div>
-
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelBackupBtn" data-i18n="btn.done">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- Cloud Sync Modal (Pro) -->
-<div class="modal-overlay" id="syncModal">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-header">
-      <h2>
-        <span data-i18n="sync.title">Cloud sync</span>
-        <span class="pro-badge">PRO</span>
-      </h2>
-      <button class="btn-icon" id="closeSyncModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="sync.blurb">End-to-end encrypted backup to your own Google Drive. Your master password never leaves this device.</p>
-
-    <!-- Pro lock — shown when isPro()===false -->
-    <div id="syncProLock" class="budgets-pro-lock" style="display:none">
-      <div class="budgets-pro-lock-title" data-i18n="sync.proLock">Cloud sync is a Pro feature.</div>
-      <button class="btn-primary" id="syncProUpgrade" data-i18n="pro.buy">Get Pro</button>
-    </div>
-
-    <!-- Status row -->
-    <div id="syncStatusCard" class="sync-status">
-      <div class="sync-status-row">
-        <span class="sync-dot" id="syncDot"></span>
-        <span id="syncStatusText" data-i18n="sync.statusDisabled">Sync is off</span>
-      </div>
-      <div class="sync-status-meta" id="syncLastText"></div>
-    </div>
-
-    <!-- Setup step 1: master password -->
-    <div id="syncSetupStep" style="display:none">
-      <div class="sync-section-title" data-i18n="sync.passwordTitle">Master password</div>
-      <p class="sync-section-help" id="syncPasswordHelp" data-i18n="sync.passwordHelp">Pick a strong password — only you know it, and we use it to encrypt your data before it leaves the device.</p>
-      <input type="password" id="syncPasswordInput" class="form-input" data-i18n-placeholder="sync.passwordPh" placeholder="Master password" autocomplete="new-password">
-      <div class="sync-strength-wrapper" id="syncStrengthWrapper" style="display:none; margin-top: 8px; margin-bottom: 4px;">
-        <div class="sync-strength-bar" style="background: rgba(150, 150, 150, 0.2); height: 4px; border-radius: 2px; overflow: hidden; width: 100%;">
-          <div id="syncStrengthFill" style="height: 100%; width: 0%; border-radius: 2px; transition: width 0.3s ease, background-color 0.3s ease;"></div>
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label for="subCategory" data-i18n="field.category">Category</label>
+          <select id="subCategory">
+            <option value="Entertainment" data-i18n="cat.Entertainment">Entertainment</option>
+            <option value="Work" data-i18n="cat.Work">Work</option>
+            <option value="Music" data-i18n="cat.Music">Music</option>
+            <option value="Fitness" data-i18n="cat.Fitness">Fitness</option>
+            <option value="Cloud" data-i18n="cat.Cloud">Cloud</option>
+            <option value="Food" data-i18n="cat.Food">Food</option>
+            <option value="News" data-i18n="cat.News">News</option>
+            <option value="Other" data-i18n="cat.Other">Other</option>
+            <option value="_new" data-i18n="cat.new">+New Category</option>
+          </select>
+          <input type="text" id="subCategoryCustom" placeholder="Custom category name"
+            style="display:none; margin-top:8px;">
         </div>
-        <div id="syncStrengthLabel" style="font-size: 0.75rem; font-weight: 500; margin-top: 4px; text-align: left;"></div>
-      </div>
-      <input type="password" id="syncPasswordConfirm" class="form-input" data-i18n-placeholder="sync.passwordConfirmPh" placeholder="Confirm password" autocomplete="new-password" style="margin-top:8px">
-      <div class="sync-warning" data-i18n="sync.passwordWarn">If you forget this password, your encrypted data cannot be recovered.</div>
-    </div>
-
-    <!-- Unlock step (returning device) -->
-    <div id="syncUnlockStep" style="display:none">
-      <div class="sync-section-title" data-i18n="sync.unlockTitle">Unlock with your master password</div>
-      <input type="password" id="syncUnlockInput" class="form-input" data-i18n-placeholder="sync.passwordPh" placeholder="Master password" autocomplete="current-password">
-    </div>
-
-    <!-- Error display -->
-    <div id="syncError" class="sync-error" style="display:none"></div>
-
-    <div class="modal-actions">
-      <button class="btn-outline" id="syncDisableBtn" style="display:none" data-i18n="sync.disable">Disable sync</button>
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelSyncBtn">Done</button>
-      <button class="btn-primary" id="syncPrimaryBtn" data-i18n="sync.enable">Enable sync</button>
-    </div>
-  </div>
-</div>
-
-<!-- Bank Statement Import Modal -->
-<!-- Business Tax Report (Pro) -->
-<div class="modal-overlay" id="taxReportModal">
-  <div class="modal" style="max-width:520px">
-    <div class="modal-header">
-      <h2 data-i18n="tax.title">Business tax report</h2>
-      <button class="btn-icon" id="closeTaxReportModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="tax.blurb">Generates a PDF + CSV from every subscription you've flagged as a business expense (isBusiness). Hand it to your accountant — it includes vendor links, billing cycles, monthly and annual totals.</p>
-
-    <div class="tax-summary" id="taxSummary">
-      <div class="tax-summary-row">
-        <span class="tax-summary-label" data-i18n="tax.previewItems">Business subs</span>
-        <span class="tax-summary-val" id="taxPreviewCount">—</span>
-      </div>
-      <div class="tax-summary-row">
-        <span class="tax-summary-label" data-i18n="tax.ytd">Year-to-date estimate</span>
-        <span class="tax-summary-val" id="taxPreviewYtd">—</span>
-      </div>
-      <div class="tax-summary-row">
-        <span class="tax-summary-label" data-i18n="tax.projectedYear">Projected for full year</span>
-        <span class="tax-summary-val" id="taxPreviewYear">—</span>
-      </div>
-    </div>
-
-    <div id="taxEmpty" class="notif-hint" style="display:none" data-i18n="tax.empty">No subscriptions are flagged as business expenses yet. Open any subscription and tick the "Business expense" checkbox to include it here.</div>
-
-    <div class="modal-actions" style="gap:10px;margin-top:18px">
-      <button class="btn-secondary" id="cancelTaxReportBtn" data-i18n="btn.cancel">Cancel</button>
-      <div style="flex:1"></div>
-      <button class="btn-outline" id="downloadTaxCsvBtn" data-i18n="tax.csvBtn">Download CSV</button>
-      <button class="btn-primary" id="downloadTaxPdfBtn" data-i18n="tax.pdfBtn">Generate PDF</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="bankModal">
-  <div class="modal" style="max-width:520px">
-    <div class="modal-header">
-      <h2 data-i18n="bank.title">Import bank statement</h2>
-      <button class="btn-icon" id="closeBankModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="bank.blurb">Upload a CSV from your bank.</p>
-
-    <div class="form-row" style="gap:8px;margin-bottom:14px">
-      <button class="btn-outline" id="bankUploadBtn" data-i18n="bank.upload">Choose CSV file</button>
-      <input type="file" id="bankFileInput" accept=".csv,text/csv" style="display:none">
-    </div>
-
-    <div id="bankResult" style="display:none">
-      <div class="bank-format-pill" id="bankFormatPill">—</div>
-      <div class="bank-found" id="bankFound">—</div>
-      <div class="bank-suggestion-list" id="bankSuggestionList"></div>
-    </div>
-
-    <div id="bankError" class="notif-hint" style="display:none"></div>
-
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelBankBtn" data-i18n="btn.cancel">Cancel</button>
-      <button class="btn-primary" id="confirmBankBtn" disabled>Import 0</button>
-    </div>
-  </div>
-</div>
-
-<!-- Savings Goal Modal -->
-<div class="modal-overlay" id="goalModal">
-  <div class="modal" style="max-width:400px">
-    <div class="modal-header">
-      <h2 data-i18n="goal.title">Savings goal</h2>
-      <button class="btn-icon" id="closeGoalModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div class="form-group">
-      <label for="goalName" data-i18n="goal.nameLabel">What are you saving for?</label>
-      <input type="text" id="goalName" placeholder="e.g. New iPhone, Vacation">
-    </div>
-
-    <div class="form-group">
-      <label for="goalAmount" data-i18n="goal.label">Target amount</label>
-      <div class="input-prefix">
-        <span class="prefix" id="goalCurrencySymbol">$</span>
-        <input type="number" id="goalAmount" data-i18n-placeholder="goal.placeholder" step="1" min="0">
-      </div>
-    </div>
-
-    <div id="goalProgressBlock" style="display:none">
-      <div class="goal-progress-bar"><div class="goal-progress-fill" id="goalModalFill" style="width:0%"></div></div>
-      <div class="goal-progress-text" id="goalModalText">—</div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-danger" id="goalClearBtn" data-i18n="goal.clear" style="display:none">Clear goal</button>
-      <div style="flex:1"></div>
-      <button class="btn-secondary" id="cancelGoalBtn" data-i18n="btn.cancel">Cancel</button>
-      <button class="btn-primary" id="saveGoalBtn" data-i18n="btn.save">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Compare Modal -->
-<div class="modal-overlay" id="compareModal">
-  <div class="modal" style="max-width:520px">
-    <div class="modal-header">
-      <h2 data-i18n="compare.title">Compare side-by-side</h2>
-      <button class="btn-icon" id="closeCompareModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="compare.blurb">Pick 2 or 3 subscriptions.</p>
-
-    <div class="compare-picker" id="comparePickerSection">
-      <div class="compare-pick-prompt" id="comparePickPrompt" data-i18n="compare.pickPrompt">Tap to select up to 3 subscriptions</div>
-      <div class="compare-pick-list" id="comparePickList"></div>
-    </div>
-
-    <div class="compare-grid-wrap" id="compareGridWrap" style="display:none"></div>
-
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-primary" id="compareCloseBtn" data-i18n="btn.done">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- What-If Calculator Modal -->
-<div class="modal-overlay" id="whatifModal">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-header">
-      <h2 data-i18n="whatif.title">What-if calculator</h2>
-      <button class="btn-icon" id="closeWhatIfModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <p class="notif-blurb" data-i18n="whatif.blurb">Tap subscriptions to mark them as cancelled in this scenario.</p>
-
-    <div class="whatif-hero" id="whatifHero">
-      <div class="whatif-savings" id="whatifSavings">—</div>
-      <div class="whatif-savings-sub" id="whatifSavingsSub">—</div>
-      <div class="whatif-invest-note" id="whatifInvestNote">—</div>
-    </div>
-
-    <div class="whatif-actions">
-      <button class="btn-outline" id="whatifSuggestBtn" data-i18n="whatif.suggestBtn">Suggest top picks</button>
-      <button class="btn-outline" id="whatifClearBtn" data-i18n="whatif.clearBtn">Clear all</button>
-    </div>
-
-    <div class="whatif-list" id="whatifList"></div>
-
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-primary" id="whatifCloseBtn" data-i18n="btn.done">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- Activity Log Modal -->
-<div class="modal-overlay" id="activityModal">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-header">
-      <h2 data-i18n="activity.title">Activity log</h2>
-      <button class="btn-icon" id="closeActivityModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div id="activityList"></div>
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-primary" id="activityCloseBtn" data-i18n="btn.done">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- Cancelled Subs / Money Saved Graveyard Modal -->
-<div class="modal-overlay" id="cancelledModal">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-header">
-      <h2 data-i18n="cancelled.titleGrave">Money saved</h2>
-      <button class="btn-icon" id="closeCancelledModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div id="cancelledHero" class="grave-hero" style="display:none">
-      <div class="grave-hero-bg" aria-hidden="true">
-        <span class="grave-hero-emoji">🪦</span>
-      </div>
-      <div class="grave-hero-tag" data-i18n="cancelled.lifetimeSavedLabel">Saved since you cancelled</div>
-      <div class="grave-hero-big" id="cancelledLifetimeBig">$0</div>
-      <div class="grave-hero-stats">
-        <div class="grave-stat">
-          <div class="grave-stat-num" id="cancelledSavings">$0</div>
-          <div class="grave-stat-lbl" data-i18n="cancelled.savingsLabel">Saved every month</div>
-        </div>
-        <div class="grave-stat">
-          <div class="grave-stat-num" id="cancelledKilled">0</div>
-          <div class="grave-stat-lbl" id="cancelledThisYear" data-i18n="cancelled.subsKilled">subscriptions killed</div>
+        <div class="form-group flex-1">
+          <label for="subDate" data-i18n="field.nextDate">Next payment</label>
+          <input type="date" id="subDate">
         </div>
       </div>
-      <button class="btn-outline grave-share-btn" id="cancelledShareBtn" data-i18n="cancelled.shareBtn" style="display:none">Share my wins</button>
-    </div>
+      <div class="form-group">
+        <label for="subTrial">
+          <input type="checkbox" id="subTrial"> <span data-i18n="field.trial">This is a free trial</span>
+        </label>
+        <div id="trialDateWrap" style="display:none;margin-top:8px">
+          <label for="subTrialEnd" data-i18n="field.trialEnd">Trial ends on</label>
+          <input type="date" id="subTrialEnd">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label for="subShared" data-i18n="field.shared">Shared with</label>
+          <input type="number" id="subShared" data-i18n-placeholder="field.sharedPh" min="1" max="20" step="1">
+          <div class="field-note" data-i18n="field.sharedNote">Total cost stays the same — we show your share too</div>
+        </div>
+        <div class="form-group flex-1">
+          <label for="subPaused" style="margin-top: 26px">
+            <input type="checkbox" id="subPaused"> <span data-i18n="field.paused">Paused</span>
+          </label>
+        </div>
+      </div>
+      <!-- Leakd Split Details (only shown when shared > 1) -->
+      <div id="subSharedDetails" class="shared-details-wrap" style="display:none;">
+        <div class="shared-details-title" data-i18n="field.splitChecklist">Friend Payment Checklist & Reminders</div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="subSharedNames" data-i18n="field.sharedNames">Friend names</label>
+            <input type="text" id="subSharedNames" data-i18n-placeholder="field.sharedNamesPh" autocomplete="off">
+          </div>
+          <div class="form-group flex-1">
+            <label for="subPaymentInfo" data-i18n="field.paymentInfo">Payment details</label>
+            <input type="text" id="subPaymentInfo" data-i18n-placeholder="field.paymentInfoPh" autocomplete="off">
+          </div>
+        </div>
+        <div id="subSharedChecklist" class="shared-checklist"></div>
+      </div>
+      <div class="form-group">
+        <label for="subBusiness">
+          <input type="checkbox" id="subBusiness"> <span data-i18n="field.business">This is a business expense</span>
+        </label>
+      </div>
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label for="subLastUsed" data-i18n="field.lastUsed">Last used</label>
+          <input type="date" id="subLastUsed">
+        </div>
+        <div class="form-group flex-1" style="display:flex; align-items:flex-end">
+          <button type="button" class="btn-outline" id="markUsedTodayBtn"
+            style="width:100%; font-size:12px; padding: 10px 8px;" data-i18n="btn.markUsed">Mark as used today</button>
+        </div>
+      </div>
 
-    <div id="cancelledEmpty" class="empty-state-mini" style="display:none" data-i18n="cancelled.empty">No cancellations yet.</div>
+      <div class="form-group">
+        <label data-i18n="field.rating">Worth it?</label>
+        <div class="star-rating" id="subRating" data-rating="0">
+          <button type="button" class="star" data-v="1">★</button>
+          <button type="button" class="star" data-v="2">★</button>
+          <button type="button" class="star" data-v="3">★</button>
+          <button type="button" class="star" data-v="4">★</button>
+          <button type="button" class="star" data-v="5">★</button>
+          <button type="button" class="star-clear" id="subRatingClear" title="Clear">×</button>
+        </div>
+      </div>
 
-    <div class="cancelled-list grave-list" id="cancelledList"></div>
+      <div class="form-group">
+        <label for="subTags" data-i18n="field.tags">Tags</label>
+        <input type="text" id="subTags" data-i18n-placeholder="field.tagsPh" autocomplete="off">
+        <div class="field-note" data-i18n="field.tagsNote">Free-form labels. Separate with commas.</div>
+      </div>
 
-    <div class="modal-actions">
-      <div style="flex:1"></div>
-      <button class="btn-primary" id="cancelledCloseBtn" data-i18n="btn.done">Done</button>
-    </div>
-  </div>
-</div>
+      <div class="form-group">
+        <label for="subNotes" data-i18n="field.notes">Notes</label>
+        <textarea id="subNotes" rows="2" data-i18n-placeholder="field.notesPh"></textarea>
+      </div>
 
-<!-- Theme Picker Modal -->
-<div class="modal-overlay" id="themeModal">
-  <div class="modal" style="max-width:340px">
-    <div class="modal-header">
-      <h2 data-i18n="menu.theme">Theme</h2>
-      <button class="btn-icon" id="closeThemeModal" data-i18n-title="btn.close">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="theme-grid">
-      <button class="theme-btn" data-theme="light"><span class="theme-icon">☀️</span><span data-i18n="theme.light">Light</span></button>
-      <button class="theme-btn" data-theme="dark"><span class="theme-icon">🌙</span><span data-i18n="theme.dark">Dark</span></button>
-      <button class="theme-btn" data-theme="auto"><span class="theme-icon">🖥️</span><span data-i18n="theme.auto">Auto</span></button>
-    </div>
-  </div>
-</div>
+      <div id="trackedSince" class="tracked-since" style="display:none"></div>
 
-<div class="toast" id="toast"></div>
+      <!-- Lifetime cost + investment alternative (only shown when editing existing sub) -->
+      <div id="lifetimeCard" class="lifetime-card" style="display:none">
+        <div class="lifetime-head">
+          <span class="lifetime-label" data-i18n="lifetime.paidSoFar">You've paid</span>
+          <span class="lifetime-value" id="lifetimeValue">—</span>
+        </div>
+        <div class="lifetime-since" id="lifetimeSince">—</div>
+        <div class="lifetime-grid">
+          <div class="lifetime-cell">
+            <span class="lifetime-cell-label" data-i18n="lifetime.next5y">Next 5 years</span>
+            <span class="lifetime-cell-val" id="lifetimeNext5y">—</span>
+          </div>
+          <div class="lifetime-cell">
+            <span class="lifetime-cell-label" data-i18n="lifetime.next10y">Next 10 years</span>
+            <span class="lifetime-cell-val" id="lifetimeNext10y">—</span>
+          </div>
+        </div>
+        <div class="lifetime-invest">
+          <div class="lifetime-invest-title" data-i18n="lifetime.investTitle">If you invested instead</div>
+          <div class="lifetime-invest-note" data-i18n="lifetime.investNote">At 7% annual return (S&P 500 long-term avg)
+          </div>
+          <div class="lifetime-grid">
+            <div class="lifetime-cell green">
+              <span class="lifetime-cell-label" data-i18n="lifetime.invest5y">5 years invested</span>
+              <span class="lifetime-cell-val" id="lifetimeInvest5y">—</span>
+            </div>
+            <div class="lifetime-cell green">
+              <span class="lifetime-cell-label" data-i18n="lifetime.invest10y">10 years invested</span>
+              <span class="lifetime-cell-val" id="lifetimeInvest10y">—</span>
+            </div>
+          </div>
+        </div>
 
-<!-- Onboarding -->
-<div class="onboard-overlay" id="onboard" style="display:none">
-  <div class="onboard-card">
-    <div class="onboard-step" data-step="1">
-      <div class="onboard-icon">💧</div>
-      <h2 data-i18n="onb1.title">Where's your money leaking?</h2>
-      <p data-i18n="onb1.body">Add the subscriptions you pay for. We'll show you the damage — and how to stop it.</p>
-      <label class="onboard-legal">
-        <input type="checkbox" id="onboardAcceptTerms">
-        <span data-i18n-html="onb.legalAccept">I have read and accept the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span>
-      </label>
-      <button class="btn-primary" id="onboardStep1Next" data-onboard-next data-i18n="btn.next" disabled>Next</button>
-    </div>
-    <div class="onboard-step" data-step="2" style="display:none">
-      <div class="onboard-icon">🔒</div>
-      <h2 data-i18n="onb2.title">Stays on your device</h2>
-      <p data-i18n="onb2.body">No account, no cloud. Your subscription list never leaves your phone or laptop. Open the menu anytime to export or wipe everything.</p>
-      <button class="btn-primary" data-onboard-next data-i18n="btn.next">Next</button>
-    </div>
-    <div class="onboard-step" data-step="3" style="display:none">
-      <div class="onboard-icon">🔔</div>
-      <h2 data-i18n="onb3.title">Get a heads-up</h2>
-      <p data-i18n="onb3.body">Allow notifications and we'll ping you before a free trial auto-renews. You can change this anytime.</p>
-      <div style="display:flex;gap:8px;margin-top:16px">
-        <button class="btn-outline" data-onboard-skip data-i18n="onb.skip">Maybe later</button>
-        <button class="btn-primary" id="onboardEnableNotif" data-i18n="onb.allow">Allow</button>
+        <div class="lifetime-inflation">
+          <div class="lifetime-invest-title" data-i18n="lifetime.inflationTitle">If prices keep rising</div>
+          <div class="lifetime-invest-note" data-i18n="lifetime.inflationNote">Most subs raise prices 3-7%/year. We
+            project 5%.</div>
+          <div class="lifetime-grid">
+            <div class="lifetime-cell amber">
+              <span class="lifetime-cell-label" data-i18n="lifetime.inflated10y">10 years at +5%/yr</span>
+              <span class="lifetime-cell-val" id="lifetimeInflated10y">—</span>
+            </div>
+            <div class="lifetime-cell amber">
+              <span class="lifetime-cell-label" data-i18n="lifetime.inflated10yMonthly">/mo in 10y</span>
+              <span class="lifetime-cell-val" id="lifetimeInflated10yMonthly">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cheaper alternatives (shown when we know cheaper options) -->
+      <div id="altCard" class="alt-card" style="display:none">
+        <div class="alt-head">
+          <span class="alt-icon">💡</span>
+          <span class="alt-title" data-i18n="alt.title">Cheaper alternatives</span>
+        </div>
+        <div class="alt-list" id="altList"></div>
+      </div>
+
+      <!-- Cancellation playbook (shown when we know how to cancel this service) -->
+      <div id="playbookCard" class="playbook-card" style="display:none">
+        <div class="playbook-head">
+          <span class="playbook-icon">📋</span>
+          <span class="playbook-title-text" data-i18n="playbook.title">How to cancel</span>
+          <span class="playbook-meta">
+            <span class="playbook-diff" id="playbookDiff">—</span>
+            <span class="playbook-time" id="playbookTime">—</span>
+          </span>
+        </div>
+        <ol class="playbook-steps" id="playbookSteps"></ol>
+      </div>
+
+      <div id="cancelUrlWrap" style="display:none;margin-bottom:14px">
+        <a class="btn-cancel-link" id="cancelUrlLink" target="_blank" rel="noopener" data-i18n="btn.cancelSub">Cancel
+          this subscription</a>
+      </div>
+
+      <input type="hidden" id="editId" value="">
+      <div class="modal-actions">
+        <button class="btn-danger" id="deleteBtn" style="display:none" data-i18n="btn.delete">Delete</button>
+        <button class="btn-outline" id="markCancelledBtn" style="display:none" data-i18n="btn.cancelMark">Mark as
+          cancelled</button>
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelBtn" data-i18n="btn.cancel">Cancel</button>
+        <button class="btn-primary" id="saveBtn" data-i18n="btn.save">Save</button>
       </div>
     </div>
   </div>
-</div>
 
-<script src="js/locale.js" defer></script>
-<script src="js/i18n.js?v=95" defer></script>
-<script src="js/brands.js" defer></script>
-<script src="js/insights.js" defer></script>
-<script src="js/pro.js?v=2" defer></script>
-<script src="js/share.js" defer></script>
-<script src="js/import.js?v=71" defer></script>
-<script src="js/calendar.js" defer></script>
-<script src="js/yearend.js" defer></script>
-<script src="js/backup.js" defer></script>
-<script src="js/budgets.js" defer></script>
-<script src="js/history.js" defer></script>
-<script src="js/income.js" defer></script>
-<script src="js/cancelled.js" defer></script>
-<script src="js/lifetime.js" defer></script>
-<script src="js/calview.js" defer></script>
-<script src="js/bankparse.js?v=69" defer></script>
-<script src="js/goals.js" defer></script>
-<script src="js/bundles.js" defer></script>
-<script src="js/health.js" defer></script>
-<script src="js/confetti.js" defer></script>
-<script src="js/tour.js" defer></script>
-<script src="js/palette.js" defer></script>
-<script src="js/alternatives.js" defer></script>
-<script src="js/shortcuts.js" defer></script>
-<script src="js/activity.js" defer></script>
-<script src="js/personality.js" defer></script>
-<script src="js/benchmarks.js" defer></script>
-<script src="js/whatif.js" defer></script>
-<script src="js/compare.js" defer></script>
-<script src="js/notifications.js" defer></script>
-<script src="js/streak.js" defer></script>
-<script src="js/leak.js" defer></script>
-<script src="js/pdf.js" defer></script>
-<script src="js/taxreport.js" defer></script>
-<script src="js/currency.js" defer></script>
-<!-- Pro-only cloud sync (E2EE via Google Drive). Set window.LeakdSyncConfig.clientId before this loads. -->
-<script src="js/config.js"></script>
-<script src="js/sync.js?v=2" defer></script>
-<!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
-<script src="js/emailreminder.js" defer></script>
-<script src="js/app.js?v=107" defer></script>
+  <!-- Currency Modal -->
+  <div class="modal-overlay" id="currencyModal" style="display:none">
+    <div class="modal" style="max-width:340px">
+      <div class="modal-header">
+        <h2 data-i18n="currency.choose">Choose currency</h2>
+      </div>
+      <div class="currency-grid">
+        <button class="currency-btn" data-currency="$" data-code="USD">$ USD</button>
+        <button class="currency-btn" data-currency="€" data-code="EUR">€ EUR</button>
+        <button class="currency-btn" data-currency="£" data-code="GBP">£ GBP</button>
+        <button class="currency-btn" data-currency="Ft" data-code="HUF">Ft HUF</button>
+        <button class="currency-btn" data-currency="¥" data-code="JPY">¥ JPY</button>
+        <button class="currency-btn" data-currency="₹" data-code="INR">₹ INR</button>
+        <button class="currency-btn" data-currency="R$" data-code="BRL">R$ BRL</button>
+        <button class="currency-btn" data-currency="A$" data-code="AUD">A$ AUD</button>
+        <button class="currency-btn" data-currency="C$" data-code="CAD">C$ CAD</button>
+        <button class="currency-btn" data-currency="CHF" data-code="CHF">CHF</button>
+        <button class="currency-btn" data-currency="kr" data-code="SEK">kr SEK</button>
+        <button class="currency-btn" data-currency="kr" data-code="NOK">kr NOK</button>
+        <button class="currency-btn" data-currency="kr" data-code="DKK">kr DKK</button>
+        <button class="currency-btn" data-currency="zł" data-code="PLN">zł PLN</button>
+        <button class="currency-btn" data-currency="Kč" data-code="CZK">Kč CZK</button>
+        <button class="currency-btn" data-currency="¥" data-code="CNY">¥ CNY</button>
+        <button class="currency-btn" data-currency="₩" data-code="KRW">₩ KRW</button>
+        <button class="currency-btn" data-currency="₺" data-code="TRY">₺ TRY</button>
+        <button class="currency-btn" data-currency="Mex$" data-code="MXN">Mex$ MXN</button>
+        <button class="currency-btn" data-currency="HK$" data-code="HKD">HK$ HKD</button>
+        <button class="currency-btn" data-currency="S$" data-code="SGD">S$ SGD</button>
+        <button class="currency-btn" data-currency="R" data-code="ZAR">R ZAR</button>
+        <button class="currency-btn" data-currency="₽" data-code="RUB">₽ RUB</button>
+        <button class="currency-btn" data-currency="lei" data-code="RON">lei RON</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Language Modal -->
+  <div class="modal-overlay" id="langModal">
+    <div class="modal" style="max-width:340px">
+      <div class="modal-header">
+        <h2 data-i18n="lang.choose">Choose language</h2>
+        <button class="btn-icon" id="closeLangModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="lang-grid" id="langGrid"></div>
+    </div>
+  </div>
+
+  <!-- Notification Settings Modal -->
+  <div class="modal-overlay" id="notifModal">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-header">
+        <h2 data-i18n="notif.title">Notifications</h2>
+        <button class="btn-icon" id="closeNotifModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="notif.blurb">Get a heads-up before subscriptions renew or free trials end.
+        Everything runs on your device — no account, no server.</p>
+
+      <div class="notif-row">
+        <div>
+          <div class="notif-row-label" data-i18n="notif.permission">Browser permission</div>
+          <div class="notif-row-sub" id="notifPermState" data-i18n="notif.notSet">Not set</div>
+        </div>
+      </div>
+
+      <div class="notif-row">
+        <label class="notif-row-label" for="notifEnabled" data-i18n="notif.enable">Enable notifications</label>
+        <label class="switch">
+          <input type="checkbox" id="notifEnabled">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="notifDays" data-i18n="notif.beforeRenewal">Remind me before renewal</label>
+        <select id="notifDays">
+          <option value="0" data-i18n="notif.daysOption.0">On the day</option>
+          <option value="1" data-i18n="notif.daysOption.1">1 day before</option>
+          <option value="2" data-i18n="notif.daysOption.2">2 days before</option>
+          <option value="3" selected data-i18n="notif.daysOption.3">3 days before</option>
+          <option value="5" data-i18n="notif.daysOption.5">5 days before</option>
+          <option value="7" data-i18n="notif.daysOption.7">1 week before</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="notifTrialDays" data-i18n="notif.beforeTrial">Remind me before free trial ends</label>
+        <select id="notifTrialDays">
+          <option value="0" data-i18n="notif.daysOption.0">On the day</option>
+          <option value="1" selected data-i18n="notif.daysOption.1">1 day before</option>
+          <option value="2" data-i18n="notif.daysOption.2">2 days before</option>
+          <option value="3" data-i18n="notif.daysOption.3">3 days before</option>
+        </select>
+      </div>
+
+      <div id="notifDeniedHint" class="notif-hint" style="display:none" data-i18n="notif.deniedHint">Your browser
+        blocked notifications for this site. Open the site settings (lock icon in the address bar) and allow
+        notifications, then come back here.</div>
+
+      <div class="modal-actions">
+        <button class="btn-outline" id="notifTestBtn" type="button" data-i18n="notif.test">Send a test</button>
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelNotifBtn" data-i18n="btn.cancel">Cancel</button>
+        <button class="btn-primary" id="saveNotifBtn" data-i18n="btn.save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu / Settings Modal -->
+  <div class="modal-overlay" id="menuModal">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-header">
+        <h2 data-i18n="menu.settings">Settings</h2>
+        <button class="btn-icon" id="closeMenuModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="menu-list">
+        <button class="menu-row" id="menuPro">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">⭐</span>
+            <div>
+              <div class="menu-row-label" id="menuProLabel" data-i18n="menu.pro">Upgrade to Pro</div>
+              <div class="menu-row-sub" id="menuProSub" data-i18n="menu.proSub">Email reminders, sync, year-end report
+              </div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuCurrency">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">💱</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.currency">Currency</div>
+              <div class="menu-row-sub" id="menuCurrencySub">USD ($)</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuLanguage">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🌍</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.language">Language</div>
+              <div class="menu-row-sub" id="menuLanguageSub">English</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuTheme">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🌓</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.theme">Theme</div>
+              <div class="menu-row-sub" id="menuThemeSub">Light</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuIncome">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">💰</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.income">Income & ratio</div>
+              <div class="menu-row-sub" data-i18n="menu.incomeSub">See what % of your income goes to subs</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuBudgets">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🎯</span>
+            <div>
+              <div class="menu-row-label">
+                <span data-i18n="menu.budgets">Category budgets</span>
+                <span class="pro-badge">PRO</span>
+              </div>
+              <div class="menu-row-sub" data-i18n="menu.budgetsSub">Set monthly limits per category</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuGoal">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🎯</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.goal">Savings goal</div>
+              <div class="menu-row-sub" data-i18n="menu.goalSub">Set a target — we celebrate every
+                milestone</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuWhatIf">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🔮</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.whatif">What-if calculator</div>
+              <div class="menu-row-sub" data-i18n="menu.whatifSub">Pick subs to cancel — see savings live</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuCompare">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">⚖️</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.compare">Compare side-by-side</div>
+              <div class="menu-row-sub" data-i18n="menu.compareSub">Pick 2 or 3 to compare</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuCancelled">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">✂️</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.cancelled">Cancelled subscriptions</div>
+              <div class="menu-row-sub" id="menuCancelledSub" data-i18n="menu.cancelledSub">See what you killed and how
+                much you saved</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuBank">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🏦</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.bank">Import bank statement</div>
+              <div class="menu-row-sub" data-i18n="menu.bankSub">Auto-detect subs from Revolut, Wise, Chase, etc.</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuImport">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">📥</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.import">Bulk import</div>
+              <div class="menu-row-sub" data-i18n="menu.importSub">Paste a list or upload CSV</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuExport">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">📤</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.export">Export CSV</div>
+              <div class="menu-row-sub" data-i18n="menu.exportSub">Download all your data</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuPdf">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">📄</span>
+            <div>
+              <div class="menu-row-label">
+                <span data-i18n="menu.pdf">PDF report</span>
+                <span class="pro-badge">PRO</span>
+              </div>
+              <div class="menu-row-sub" data-i18n="menu.pdfSub">Printable report for your accountant</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuTaxReport">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🧾</span>
+            <div>
+              <div class="menu-row-label">
+                <span data-i18n="menu.tax">Business tax report</span>
+                <span class="pro-badge">PRO</span>
+              </div>
+              <div class="menu-row-sub" data-i18n="menu.taxSub">PDF + CSV of every business-flagged subscription</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuCalendar">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">📅</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.calendar">Calendar export</div>
+              <div class="menu-row-sub" data-i18n="menu.calendarSub">Renewal dates as an .ics file</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuShare">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🔗</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.share">Share leakd.app</div>
+              <div class="menu-row-sub" data-i18n="menu.shareSub">Help us grow</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuSync">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">☁️</span>
+            <div>
+              <div class="menu-row-label">
+                <span data-i18n="menu.sync">Cloud sync</span>
+                <span class="pro-badge">PRO</span>
+              </div>
+              <div class="menu-row-sub" data-i18n="menu.syncSub">End-to-end encrypted, your Google Drive</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuBackup">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">💾</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.backup">Backup & restore</div>
+              <div class="menu-row-sub" data-i18n="menu.backupSub">Save your data to a file or restore it</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuYearend">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🎁</span>
+            <div>
+              <div class="menu-row-label">
+                <span data-i18n="menu.yearend">Year-end report</span>
+                <span class="pro-badge">PRO</span>
+              </div>
+              <div class="menu-row-sub" data-i18n="menu.yearendSub">See your spending wrap-up</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuEmailRem">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">📧</span>
+            <div>
+              <div class="menu-row-label">
+                <span data-i18n="menu.emailRem">Email reminders</span>
+                <span class="pro-badge">PRO</span>
+              </div>
+              <div class="menu-row-sub" data-i18n="menu.emailRemSub">Get an email before each renewal</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuActivity">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">📜</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.activity">Activity log</div>
+              <div class="menu-row-sub" data-i18n="menu.activitySub">See every change you made</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <button class="menu-row" id="menuTour">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🗺️</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.tour">Show the tour again</div>
+              <div class="menu-row-sub" data-i18n="menu.tourSub">Replay the first-time guided tour</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <a class="menu-row" href="privacy.html" target="_blank">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🛡️</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.privacy">Privacy policy</div>
+              <div class="menu-row-sub" data-i18n="menu.privacySub">Read what we store</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 17L17 7M17 7H7M17 7V17" />
+          </svg>
+        </a>
+
+        <a class="menu-row" href="terms.html" target="_blank">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">📜</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.terms">Terms of service</div>
+              <div class="menu-row-sub" data-i18n="menu.termsSub">The fine print</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 17L17 7M17 7H7M17 7V17" />
+          </svg>
+        </a>
+
+        <button class="menu-row menu-row-danger" id="menuReset">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🗑️</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.reset">Reset all data</div>
+              <div class="menu-row-sub" data-i18n="menu.resetSub">Wipe and start over</div>
+            </div>
+          </div>
+        </button>
+      </div>
+
+
+
+      <div class="menu-footer">
+        <span data-i18n="menu.footer">leakd v1.2 · made for indie wallets</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pro Upgrade Modal -->
+  <div class="modal-overlay" id="proModal">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-header">
+        <h2 data-i18n="pro.title">Leakd Pro</h2>
+        <button class="btn-icon" id="closeProModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="proStateInactive">
+        <div class="pro-hero">
+          <div class="pro-price">$5<span>/mo</span></div>
+          <div class="pro-price-sub" data-i18n="pro.priceSub">or $40/year (save 33%)</div>
+        </div>
+
+        <ul class="pro-features">
+          <li><span>✓</span> <span data-i18n="pro.f1">Email reminders before renewal</span></li>
+          <li><span>✓</span> <span data-i18n="pro.f2">Multi-device sync (encrypted)</span></li>
+          <li><span>✓</span> <span data-i18n="pro.f3">Year-end spending report</span></li>
+          <li><span>✓</span> <span data-i18n="pro.f4">Category budgets & alerts</span></li>
+          <li><span>✓</span> <span data-i18n="pro.f5">Priority email support</span></li>
+        </ul>
+
+        <div class="pro-note" data-i18n="pro.playNote">Purchases are tied to your Google Account.</div>
+
+        <div class="modal-actions" style="flex-direction: column; gap: 10px;">
+          <button class="btn-primary" id="proBuyMonthlyBtn" style="width:100%" data-i18n="pro.buyMonthly">Upgrade to Pro
+            Monthly</button>
+          <button class="btn-outline" id="proBuyYearlyBtn" style="width:100%" data-i18n="pro.buyYearly">Upgrade to Pro
+            Yearly</button>
+          <button type="button" id="proDiagBtn"
+            style="margin-top:4px;background:none;border:0;color:var(--text-3);font-size:12px;text-decoration:underline;cursor:pointer;padding:6px"
+            data-i18n="pro.diagBtn">Why isn't this working?</button>
+        </div>
+      </div>
+
+      <div id="proStateActive" style="display:none">
+        <div class="pro-active-hero">
+          <div class="pro-active-icon">⭐</div>
+          <h3 data-i18n="pro.welcome">You're on Pro</h3>
+          <p data-i18n="pro.thanks">Thanks for supporting indie software. All premium features are unlocked.</p>
+        </div>
+        <div class="pro-status-display">
+          <div class="pro-key-label" data-i18n="pro.activePlan">Active Plan</div>
+          <div class="pro-key-value" id="proPlanDisplay">—</div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="proCloseActiveBtn" style="width:100%" data-i18n="btn.done">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Import Modal -->
+  <div class="modal-overlay" id="importModal">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-header">
+        <h2 data-i18n="import.title">Bulk import</h2>
+        <button class="btn-icon" id="closeImportModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="import-blurb" data-i18n="import.blurb">Paste one subscription per line. We'll try to detect the service
+        and price automatically.</p>
+
+      <div class="form-group">
+        <textarea id="importText" rows="8" data-i18n-placeholder="import.placeholder"></textarea>
+      </div>
+
+      <div class="form-row" style="gap:8px">
+        <button class="btn-outline" id="importCSVBtn" data-i18n="import.uploadCSV">Upload CSV</button>
+        <input type="file" id="importCSVInput" accept=".csv,text/csv" style="display:none">
+        <button class="btn-outline" id="importExampleBtn" data-i18n="import.example">Try an example</button>
+      </div>
+
+      <div id="importPreview" style="display:none">
+        <div class="import-preview-title" id="importPreviewTitle">Found 0 subscriptions</div>
+        <div class="import-preview-list" id="importPreviewList"></div>
+      </div>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelImportBtn" data-i18n="btn.cancel">Cancel</button>
+        <button class="btn-primary" id="confirmImportBtn" disabled>Import 0</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Card Modal -->
+  <div class="modal-overlay" id="shareModal">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-header">
+        <h2 data-i18n="share.title">Your leak card</h2>
+        <button class="btn-icon" id="closeShareModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="share-preview" id="sharePreview">
+        <canvas id="shareCanvas"></canvas>
+      </div>
+
+      <p class="share-note" data-i18n-html="share.note">Posts well on Twitter, Instagram, and Reddit. Tag
+        <strong>@leakdapp</strong> if you share!</p>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-outline" id="downloadShareBtn" data-i18n="share.download">Download</button>
+        <button class="btn-primary" id="shareNowBtn" data-i18n="share.now">Share</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Year-end Report Modal -->
+  <div class="modal-overlay" id="yearendModal">
+    <div class="modal year-modal">
+      <div class="modal-header">
+        <h2 id="yearendTitle">Wrap-up</h2>
+        <button class="btn-icon" id="closeYearendModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="yearendBody">
+        <div class="yearend-slide yearend-total">
+          <div class="yearend-label" data-i18n="yearend.totalPaid">You paid</div>
+          <div class="yearend-value" id="yearendTotal">$0</div>
+          <div class="yearend-sub" data-i18n="yearend.totalPaidSub">across all subscriptions</div>
+        </div>
+
+        <div class="yearend-grid">
+          <div class="yearend-card">
+            <div class="yearend-card-label" data-i18n="yearend.topName">Your biggest leak</div>
+            <div class="yearend-card-value" id="yearendTopName">—</div>
+            <div class="yearend-card-sub" id="yearendTopAmount">—</div>
+          </div>
+          <div class="yearend-card">
+            <div class="yearend-card-label" data-i18n="yearend.busiestCat">Most spent on</div>
+            <div class="yearend-card-value" id="yearendTopCat">—</div>
+            <div class="yearend-card-sub" id="yearendTopCatAmount">—</div>
+          </div>
+        </div>
+
+        <div class="yearend-count" id="yearendSubCount">—</div>
+      </div>
+
+      <div id="yearendEmpty" style="display:none">
+        <div class="yearend-empty-icon">📊</div>
+        <h3 data-i18n="yearend.emptyTitle">Nothing to wrap up yet</h3>
+        <p data-i18n="yearend.emptySub">Add some subscriptions and check back here later in the year.</p>
+      </div>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-outline" id="yearendShareBtn" data-i18n="yearend.share">Share</button>
+        <button class="btn-primary" id="yearendCloseBtn" data-i18n="yearend.close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budgets Modal -->
+  <div class="modal-overlay" id="budgetsModal">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-header">
+        <h2 data-i18n="budgets.title">Category budgets</h2>
+        <button class="btn-icon" id="closeBudgetsModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="budgets.blurb">Set a monthly limit for each category.</p>
+
+      <div id="budgetsProLock" class="notif-hint" style="display:none" data-i18n="budgets.proLock">Budgets are a Pro
+        feature. Upgrade to unlock.</div>
+
+      <div id="budgetsList"></div>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-primary" id="budgetsCloseBtn" data-i18n="btn.done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Income Modal -->
+  <div class="modal-overlay" id="incomeModal">
+    <div class="modal" style="max-width:380px">
+      <div class="modal-header">
+        <h2 data-i18n="income.title">Monthly income</h2>
+        <button class="btn-icon" id="closeIncomeModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="income.blurb">Optional. We use it to show what share of your income goes to
+        subscriptions.</p>
+
+      <div class="form-group">
+        <label for="incomeAmount" data-i18n="income.label">Net monthly income</label>
+        <div class="input-prefix">
+          <span class="prefix" id="incomeCurrencySymbol">$</span>
+          <input type="number" id="incomeAmount" data-i18n-placeholder="income.placeholder" step="1" min="0">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-danger" id="incomeClearBtn" data-i18n="income.clear">Clear</button>
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelIncomeBtn" data-i18n="btn.cancel">Cancel</button>
+        <button class="btn-primary" id="saveIncomeBtn" data-i18n="btn.save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget Setter Modal (small inline) -->
+  <div class="modal-overlay" id="budgetSetterModal">
+    <div class="modal" style="max-width:360px">
+      <div class="modal-header">
+        <h2 id="budgetSetterTitle">Budget</h2>
+        <button class="btn-icon" id="closeBudgetSetterModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label for="budgetAmount" data-i18n="budgets.setLimit">Set monthly limit</label>
+        <div class="input-prefix">
+          <span class="prefix" id="budgetCurrencySymbol">$</span>
+          <input type="number" id="budgetAmount" placeholder="50" step="1" min="0">
+        </div>
+      </div>
+
+      <input type="hidden" id="budgetCategory" value="">
+      <div class="modal-actions">
+        <button class="btn-danger" id="budgetClearBtn" data-i18n="btn.delete">Delete</button>
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelBudgetBtn" data-i18n="btn.cancel">Cancel</button>
+        <button class="btn-primary" id="saveBudgetBtn" data-i18n="btn.save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup & Restore Modal -->
+  <div class="modal-overlay" id="backupModal">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-header">
+        <h2 data-i18n="backup.title">Backup & restore</h2>
+        <button class="btn-icon" id="closeBackupModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="backup.blurb">Export everything as a single file.</p>
+
+      <div class="backup-card">
+        <div class="backup-card-icon">📤</div>
+        <div class="backup-card-body">
+          <div class="backup-card-title" data-i18n="backup.exportTitle">Download backup</div>
+          <div class="backup-card-sub" data-i18n="backup.exportSub">A small JSON file you can keep anywhere</div>
+        </div>
+        <button class="btn-primary" id="backupExportBtn" data-i18n="backup.exportBtn">Download</button>
+      </div>
+
+      <div class="backup-card">
+        <div class="backup-card-icon">📥</div>
+        <div class="backup-card-body">
+          <div class="backup-card-title" data-i18n="backup.importTitle">Restore from backup</div>
+          <div class="backup-card-sub" data-i18n="backup.importSub">Replace current data with a backup file</div>
+        </div>
+        <button class="btn-outline" id="backupImportBtn" data-i18n="backup.importBtn">Choose file</button>
+        <input type="file" id="backupImportInput" accept=".json,application/json" style="display:none">
+      </div>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelBackupBtn" data-i18n="btn.done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cloud Sync Modal (Pro) -->
+  <div class="modal-overlay" id="syncModal">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-header">
+        <h2>
+          <span data-i18n="sync.title">Cloud sync</span>
+          <span class="pro-badge">PRO</span>
+        </h2>
+        <button class="btn-icon" id="closeSyncModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="sync.blurb">End-to-end encrypted backup to your own Google Drive. Your master
+        password never leaves this device.</p>
+
+      <!-- Pro lock — shown when isPro()===false -->
+      <div id="syncProLock" class="budgets-pro-lock" style="display:none">
+        <div class="budgets-pro-lock-title" data-i18n="sync.proLock">Cloud sync is a Pro feature.</div>
+        <button class="btn-primary" id="syncProUpgrade" data-i18n="pro.buy">Get Pro</button>
+      </div>
+
+      <!-- Status row -->
+      <div id="syncStatusCard" class="sync-status">
+        <div class="sync-status-row">
+          <span class="sync-dot" id="syncDot"></span>
+          <span id="syncStatusText" data-i18n="sync.statusDisabled">Sync is off</span>
+        </div>
+        <div class="sync-status-meta" id="syncLastText"></div>
+      </div>
+
+      <!-- Setup step 1: master password -->
+      <div id="syncSetupStep" style="display:none">
+        <div class="sync-section-title" data-i18n="sync.passwordTitle">Master password</div>
+        <p class="sync-section-help" id="syncPasswordHelp" data-i18n="sync.passwordHelp">Pick a strong password — only
+          you know it, and we use it to encrypt your data before it leaves the device.</p>
+        <input type="password" id="syncPasswordInput" class="form-input" data-i18n-placeholder="sync.passwordPh"
+          placeholder="Master password" autocomplete="new-password">
+        <div class="sync-strength-wrapper" id="syncStrengthWrapper"
+          style="display:none; margin-top: 8px; margin-bottom: 4px;">
+          <div class="sync-strength-bar"
+            style="background: rgba(150, 150, 150, 0.2); height: 4px; border-radius: 2px; overflow: hidden; width: 100%;">
+            <div id="syncStrengthFill"
+              style="height: 100%; width: 0%; border-radius: 2px; transition: width 0.3s ease, background-color 0.3s ease;">
+            </div>
+          </div>
+          <div id="syncStrengthLabel" style="font-size: 0.75rem; font-weight: 500; margin-top: 4px; text-align: left;">
+          </div>
+        </div>
+        <input type="password" id="syncPasswordConfirm" class="form-input"
+          data-i18n-placeholder="sync.passwordConfirmPh" placeholder="Confirm password" autocomplete="new-password"
+          style="margin-top:8px">
+        <div class="sync-warning" data-i18n="sync.passwordWarn">If you forget this password, your encrypted data cannot
+          be recovered.</div>
+      </div>
+
+      <!-- Unlock step (returning device) -->
+      <div id="syncUnlockStep" style="display:none">
+        <div class="sync-section-title" data-i18n="sync.unlockTitle">Unlock with your master password</div>
+        <input type="password" id="syncUnlockInput" class="form-input" data-i18n-placeholder="sync.passwordPh"
+          placeholder="Master password" autocomplete="current-password">
+      </div>
+
+      <!-- Error display -->
+      <div id="syncError" class="sync-error" style="display:none"></div>
+
+      <div class="modal-actions">
+        <button class="btn-outline" id="syncDisableBtn" style="display:none" data-i18n="sync.disable">Disable
+          sync</button>
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelSyncBtn">Done</button>
+        <button class="btn-primary" id="syncPrimaryBtn" data-i18n="sync.enable">Enable sync</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bank Statement Import Modal -->
+  <!-- Business Tax Report (Pro) -->
+  <div class="modal-overlay" id="taxReportModal">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-header">
+        <h2 data-i18n="tax.title">Business tax report</h2>
+        <button class="btn-icon" id="closeTaxReportModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="tax.blurb">Generates a PDF + CSV from every subscription you've flagged as a
+        business expense (isBusiness). Hand it to your accountant — it includes vendor links, billing cycles, monthly
+        and annual totals.</p>
+
+      <div class="tax-summary" id="taxSummary">
+        <div class="tax-summary-row">
+          <span class="tax-summary-label" data-i18n="tax.previewItems">Business subs</span>
+          <span class="tax-summary-val" id="taxPreviewCount">—</span>
+        </div>
+        <div class="tax-summary-row">
+          <span class="tax-summary-label" data-i18n="tax.ytd">Year-to-date estimate</span>
+          <span class="tax-summary-val" id="taxPreviewYtd">—</span>
+        </div>
+        <div class="tax-summary-row">
+          <span class="tax-summary-label" data-i18n="tax.projectedYear">Projected for full year</span>
+          <span class="tax-summary-val" id="taxPreviewYear">—</span>
+        </div>
+      </div>
+
+      <div id="taxEmpty" class="notif-hint" style="display:none" data-i18n="tax.empty">No subscriptions are flagged as
+        business expenses yet. Open any subscription and tick the "Business expense" checkbox to include it here.</div>
+
+      <div class="modal-actions" style="gap:10px;margin-top:18px">
+        <button class="btn-secondary" id="cancelTaxReportBtn" data-i18n="btn.cancel">Cancel</button>
+        <div style="flex:1"></div>
+        <button class="btn-outline" id="downloadTaxCsvBtn" data-i18n="tax.csvBtn">Download CSV</button>
+        <button class="btn-primary" id="downloadTaxPdfBtn" data-i18n="tax.pdfBtn">Generate PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="bankModal">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-header">
+        <h2 data-i18n="bank.title">Import bank statement</h2>
+        <button class="btn-icon" id="closeBankModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="bank.blurb">Upload a CSV from your bank.</p>
+
+      <div class="form-row" style="gap:8px;margin-bottom:14px">
+        <button class="btn-outline" id="bankUploadBtn" data-i18n="bank.upload">Choose CSV file</button>
+        <input type="file" id="bankFileInput" accept=".csv,text/csv" style="display:none">
+      </div>
+
+      <div id="bankResult" style="display:none">
+        <div class="bank-format-pill" id="bankFormatPill">—</div>
+        <div class="bank-found" id="bankFound">—</div>
+        <div class="bank-suggestion-list" id="bankSuggestionList"></div>
+      </div>
+
+      <div id="bankError" class="notif-hint" style="display:none"></div>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelBankBtn" data-i18n="btn.cancel">Cancel</button>
+        <button class="btn-primary" id="confirmBankBtn" disabled>Import 0</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Savings Goal Modal -->
+  <div class="modal-overlay" id="goalModal">
+    <div class="modal" style="max-width:400px">
+      <div class="modal-header">
+        <h2 data-i18n="goal.title">Savings goal</h2>
+        <button class="btn-icon" id="closeGoalModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label for="goalName" data-i18n="goal.nameLabel">What are you saving for?</label>
+        <input type="text" id="goalName" placeholder="e.g. New iPhone, Vacation">
+      </div>
+
+      <div class="form-group">
+        <label for="goalAmount" data-i18n="goal.label">Target amount</label>
+        <div class="input-prefix">
+          <span class="prefix" id="goalCurrencySymbol">$</span>
+          <input type="number" id="goalAmount" data-i18n-placeholder="goal.placeholder" step="1" min="0">
+        </div>
+      </div>
+
+      <div id="goalProgressBlock" style="display:none">
+        <div class="goal-progress-bar">
+          <div class="goal-progress-fill" id="goalModalFill" style="width:0%"></div>
+        </div>
+        <div class="goal-progress-text" id="goalModalText">—</div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-danger" id="goalClearBtn" data-i18n="goal.clear" style="display:none">Clear goal</button>
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelGoalBtn" data-i18n="btn.cancel">Cancel</button>
+        <button class="btn-primary" id="saveGoalBtn" data-i18n="btn.save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare Modal -->
+  <div class="modal-overlay" id="compareModal">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-header">
+        <h2 data-i18n="compare.title">Compare side-by-side</h2>
+        <button class="btn-icon" id="closeCompareModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="compare.blurb">Pick 2 or 3 subscriptions.</p>
+
+      <div class="compare-picker" id="comparePickerSection">
+        <div class="compare-pick-prompt" id="comparePickPrompt" data-i18n="compare.pickPrompt">Tap to select up to 3
+          subscriptions</div>
+        <div class="compare-pick-list" id="comparePickList"></div>
+      </div>
+
+      <div class="compare-grid-wrap" id="compareGridWrap" style="display:none"></div>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-primary" id="compareCloseBtn" data-i18n="btn.done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- What-If Calculator Modal -->
+  <div class="modal-overlay" id="whatifModal">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-header">
+        <h2 data-i18n="whatif.title">What-if calculator</h2>
+        <button class="btn-icon" id="closeWhatIfModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="whatif.blurb">Tap subscriptions to mark them as cancelled in this scenario.</p>
+
+      <div class="whatif-hero" id="whatifHero">
+        <div class="whatif-savings" id="whatifSavings">—</div>
+        <div class="whatif-savings-sub" id="whatifSavingsSub">—</div>
+        <div class="whatif-invest-note" id="whatifInvestNote">—</div>
+      </div>
+
+      <div class="whatif-actions">
+        <button class="btn-outline" id="whatifSuggestBtn" data-i18n="whatif.suggestBtn">Suggest top picks</button>
+        <button class="btn-outline" id="whatifClearBtn" data-i18n="whatif.clearBtn">Clear all</button>
+      </div>
+
+      <div class="whatif-list" id="whatifList"></div>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-primary" id="whatifCloseBtn" data-i18n="btn.done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Log Modal -->
+  <div class="modal-overlay" id="activityModal">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-header">
+        <h2 data-i18n="activity.title">Activity log</h2>
+        <button class="btn-icon" id="closeActivityModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div id="activityList"></div>
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-primary" id="activityCloseBtn" data-i18n="btn.done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancelled Subs / Money Saved Graveyard Modal -->
+  <div class="modal-overlay" id="cancelledModal">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-header">
+        <h2 data-i18n="cancelled.titleGrave">Money saved</h2>
+        <button class="btn-icon" id="closeCancelledModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="cancelledHero" class="grave-hero" style="display:none">
+        <div class="grave-hero-bg" aria-hidden="true">
+          <span class="grave-hero-emoji">🪦</span>
+        </div>
+        <div class="grave-hero-tag" data-i18n="cancelled.lifetimeSavedLabel">Saved since you cancelled</div>
+        <div class="grave-hero-big" id="cancelledLifetimeBig">$0</div>
+        <div class="grave-hero-stats">
+          <div class="grave-stat">
+            <div class="grave-stat-num" id="cancelledSavings">$0</div>
+            <div class="grave-stat-lbl" data-i18n="cancelled.savingsLabel">Saved every month</div>
+          </div>
+          <div class="grave-stat">
+            <div class="grave-stat-num" id="cancelledKilled">0</div>
+            <div class="grave-stat-lbl" id="cancelledThisYear" data-i18n="cancelled.subsKilled">subscriptions killed
+            </div>
+          </div>
+        </div>
+        <button class="btn-outline grave-share-btn" id="cancelledShareBtn" data-i18n="cancelled.shareBtn"
+          style="display:none">Share my wins</button>
+      </div>
+
+      <div id="cancelledEmpty" class="empty-state-mini" style="display:none" data-i18n="cancelled.empty">No
+        cancellations yet.</div>
+
+      <div class="cancelled-list grave-list" id="cancelledList"></div>
+
+      <div class="modal-actions">
+        <div style="flex:1"></div>
+        <button class="btn-primary" id="cancelledCloseBtn" data-i18n="btn.done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme Picker Modal -->
+  <div class="modal-overlay" id="themeModal">
+    <div class="modal" style="max-width:340px">
+      <div class="modal-header">
+        <h2 data-i18n="menu.theme">Theme</h2>
+        <button class="btn-icon" id="closeThemeModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="theme-grid">
+        <button class="theme-btn" data-theme="light"><span class="theme-icon">☀️</span><span
+            data-i18n="theme.light">Light</span></button>
+        <button class="theme-btn" data-theme="dark"><span class="theme-icon">🌙</span><span
+            data-i18n="theme.dark">Dark</span></button>
+        <button class="theme-btn" data-theme="auto"><span class="theme-icon">🖥️</span><span
+            data-i18n="theme.auto">Auto</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Onboarding -->
+  <div class="onboard-overlay" id="onboard" style="display:none">
+    <div class="onboard-card">
+      <div class="onboard-step" data-step="1">
+        <div class="onboard-icon">💧</div>
+        <h2 data-i18n="onb1.title">Where's your money leaking?</h2>
+        <p data-i18n="onb1.body">Add the subscriptions you pay for. We'll show you the damage — and how to stop it.</p>
+        <label class="onboard-legal">
+          <input type="checkbox" id="onboardAcceptTerms">
+          <span data-i18n-html="onb.legalAccept">I have read and accept the <a href="terms.html" target="_blank"
+              rel="noopener">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy
+              Policy</a>.</span>
+        </label>
+        <button class="btn-primary" id="onboardStep1Next" data-onboard-next data-i18n="btn.next" disabled>Next</button>
+      </div>
+      <div class="onboard-step" data-step="2" style="display:none">
+        <div class="onboard-icon">🔒</div>
+        <h2 data-i18n="onb2.title">Stays on your device</h2>
+        <p data-i18n="onb2.body">No account, no cloud. Your subscription list never leaves your phone or laptop. Open
+          the menu anytime to export or wipe everything.</p>
+        <button class="btn-primary" data-onboard-next data-i18n="btn.next">Next</button>
+      </div>
+      <div class="onboard-step" data-step="3" style="display:none">
+        <div class="onboard-icon">🔔</div>
+        <h2 data-i18n="onb3.title">Get a heads-up</h2>
+        <p data-i18n="onb3.body">Allow notifications and we'll ping you before a free trial auto-renews. You can change
+          this anytime.</p>
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button class="btn-outline" data-onboard-skip data-i18n="onb.skip">Maybe later</button>
+          <button class="btn-primary" id="onboardEnableNotif" data-i18n="onb.allow">Allow</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/locale.js" defer></script>
+  <script src="js/i18n.js?v=95" defer></script>
+  <script src="js/brands.js" defer></script>
+  <script src="js/insights.js" defer></script>
+  <script src="js/pro.js?v=2" defer></script>
+  <script src="js/share.js" defer></script>
+  <script src="js/import.js?v=71" defer></script>
+  <script src="js/calendar.js" defer></script>
+  <script src="js/yearend.js" defer></script>
+  <script src="js/backup.js" defer></script>
+  <script src="js/budgets.js" defer></script>
+  <script src="js/history.js" defer></script>
+  <script src="js/income.js" defer></script>
+  <script src="js/cancelled.js" defer></script>
+  <script src="js/lifetime.js" defer></script>
+  <script src="js/calview.js" defer></script>
+  <script src="js/bankparse.js?v=69" defer></script>
+  <script src="js/goals.js" defer></script>
+  <script src="js/bundles.js" defer></script>
+  <script src="js/health.js" defer></script>
+  <script src="js/confetti.js" defer></script>
+  <script src="js/tour.js" defer></script>
+  <script src="js/palette.js" defer></script>
+  <script src="js/alternatives.js" defer></script>
+  <script src="js/shortcuts.js" defer></script>
+  <script src="js/activity.js" defer></script>
+  <script src="js/personality.js" defer></script>
+  <script src="js/benchmarks.js" defer></script>
+  <script src="js/whatif.js" defer></script>
+  <script src="js/compare.js" defer></script>
+  <script src="js/notifications.js" defer></script>
+  <script src="js/streak.js" defer></script>
+  <script src="js/leak.js" defer></script>
+  <script src="js/pdf.js" defer></script>
+  <script src="js/taxreport.js" defer></script>
+  <script src="js/currency.js" defer></script>
+  <!-- Pro-only cloud sync (E2EE via Google Drive). Set window.LeakdSyncConfig.clientId before this loads. -->
+  <script src="js/config.js"></script>
+  <script src="js/sync.js?v=2" defer></script>
+  <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
+  <script src="js/emailreminder.js" defer></script>
+
+  <script src="js/app.js?v=107" defer></script>
 
 </body>
+
 </html>

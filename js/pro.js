@@ -1,4 +1,4 @@
-// Leakd — Pro license gate
+﻿// Leakd — Pro license gate
 // Uses the Digital Goods API (Google Play Billing) for TWA.
 //
 // Verification strategy:
@@ -22,7 +22,7 @@
       try {
         const raw = localStorage.getItem(PRO_KEY);
         if (raw) this.state = { ...this.state, ...JSON.parse(raw) };
-      } catch {}
+      } catch { }
 
       // Auto-restore check if we're in a TWA
       if (this.isTwa()) {
@@ -49,12 +49,12 @@
     },
 
     isTwa() {
-      return window.matchMedia('(display-mode: standalone)').matches || 
-             (window.navigator.userAgent.includes('TWA') || !!window.DigitalGoodsService);
+      return window.matchMedia('(display-mode: standalone)').matches ||
+        (window.navigator.userAgent.includes('TWA') || !!window.DigitalGoodsService);
     },
 
     // ── Google Play Billing ──
-    
+
     async getService() {
       if (!window.getDigitalGoodsService) return { service: null, code: 'NO_DIGITAL_GOODS_API' };
       try {
@@ -68,7 +68,7 @@
     },
 
     // Returns an object the UI can display verbatim. Each failure mode has
-    // its own `code` so the user (or we, via remote debugging) can tell
+    // its own code so the user (or we, via remote debugging) can tell
     // exactly which Play Billing step blew up.
     async diagnose() {
       const out = {
@@ -192,7 +192,7 @@
       try {
         const purchases = await service.listPurchases();
         const activePro = purchases.find(p => p.itemId === SKUS.MONTHLY || p.itemId === SKUS.YEARLY);
-        
+
         if (activePro) {
           this.state = {
             active: true,
@@ -222,20 +222,19 @@
 
     // ── Premium feature catalogue ──
     features: {
-      'csv-export':    { name: 'CSV export', free: true },
-      'unlimited':     { name: 'Unlimited subscriptions', free: true },
+      'csv-export': { name: 'CSV export', free: true },
+      'unlimited': { name: 'Unlimited subscriptions', free: true },
       'notifications': { name: 'Renewal & trial reminders', free: true },
-      'insights':      { name: 'Smart insights & duplicate detection', free: true },
-      'share-card':    { name: 'Shareable leak card', free: true },
+      'insights': { name: 'Smart insights & duplicate detection', free: true },
+      'share-card': { name: 'Shareable leak card', free: true },
 
       'email-reminders': { name: 'Email reminders (in addition to push)', free: false },
-      'sync':            { name: 'Multi-device sync', free: false },
-      'yearly-report':   { name: 'Year-end spending report', free: false },
-      'budgets':         { name: 'Category budgets & alerts', free: false },
-      'priority':        { name: 'Priority support', free: false },
+      'sync': { name: 'Multi-device sync', free: false },
+      'yearly-report': { name: 'Year-end spending report', free: false },
+      'budgets': { name: 'Category budgets & alerts', free: false },
+      'priority': { name: 'Priority support', free: false },
     },
   };
 
   window.LeakdPro = Pro;
 })();
-

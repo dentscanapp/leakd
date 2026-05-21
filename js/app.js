@@ -1,12 +1,12 @@
 // Leakd — Subscription Tracker
 // All data stored locally in localStorage. Zero server calls.
 
-(function() {
+(function () {
   'use strict';
 
-  const STORAGE_KEY  = 'leakd_subs';
+  const STORAGE_KEY = 'leakd_subs';
   const SETTINGS_KEY = 'leakd_settings';
-  const ONBOARD_KEY  = 'leakd_onboarded';
+  const ONBOARD_KEY = 'leakd_onboarded';
   let subs = [];
   let settings = { currency: '$', currencyCode: 'USD', theme: 'light' };
   let activeCategory = 'all';
@@ -22,15 +22,24 @@
   // Translation helper (works even if i18n hasn't loaded yet)
   const t = (k, vars) => window.LeakdI18n ? window.LeakdI18n.t(k, vars) : k;
 
+  const setEmptyState = (el, className, text) => {
+    if (!el) return;
+    el.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = className;
+    div.textContent = text;
+    el.appendChild(div);
+  };
+
   const catColors = {
     Entertainment: { bg: '#fef2f2', text: '#991b1b', icon: '🎬' },
-    Work:          { bg: '#eff6ff', text: '#1e40af', icon: '💼' },
-    Music:         { bg: '#f0fdf4', text: '#166534', icon: '🎵' },
-    Fitness:       { bg: '#fefce8', text: '#854d0e', icon: '💪' },
-    Cloud:         { bg: '#f0f9ff', text: '#075985', icon: '☁️' },
-    Food:          { bg: '#fff7ed', text: '#9a3412', icon: '🍕' },
-    News:          { bg: '#faf5ff', text: '#6b21a8', icon: '📰' },
-    Other:         { bg: '#f5f5f4', text: '#44403c', icon: '📦' },
+    Work: { bg: '#eff6ff', text: '#1e40af', icon: '💼' },
+    Music: { bg: '#f0fdf4', text: '#166534', icon: '🎵' },
+    Fitness: { bg: '#fefce8', text: '#854d0e', icon: '💪' },
+    Cloud: { bg: '#f0f9ff', text: '#075985', icon: '☁️' },
+    Food: { bg: '#fff7ed', text: '#9a3412', icon: '🍕' },
+    News: { bg: '#faf5ff', text: '#6b21a8', icon: '📰' },
+    Other: { bg: '#f5f5f4', text: '#44403c', icon: '📦' },
   };
   const catPaletteDark = {
     Entertainment: '#ef4444', Work: '#3b82f6', Music: '#22c55e', Fitness: '#eab308',
@@ -39,15 +48,15 @@
 
   const $ = id => document.getElementById(id);
   const monthlyTotalEl = $('monthlyTotal');
-  const yearlyTotalEl  = $('yearlyTotal');
-  const activeCountEl  = $('activeCount');
-  const dueSoonEl      = $('dueSoon');
-  const alertsEl       = $('alerts');
-  const categoriesEl   = $('categories');
-  const subListEl      = $('subList');
-  const emptyStateEl   = $('emptyState');
-  const modal          = $('modal');
-  const currencyModal  = $('currencyModal');
+  const yearlyTotalEl = $('yearlyTotal');
+  const activeCountEl = $('activeCount');
+  const dueSoonEl = $('dueSoon');
+  const alertsEl = $('alerts');
+  const categoriesEl = $('categories');
+  const subListEl = $('subList');
+  const emptyStateEl = $('emptyState');
+  const modal = $('modal');
+  const currencyModal = $('currencyModal');
 
   async function init() {
     loadData();
@@ -107,7 +116,7 @@
   // Auto-sync in the background
   function initAutoSync() {
     if (!window.LeakdSync) return;
-    
+
     // Auto-unlock sync if there is a cached password in sessionStorage
     const sessionPw = (() => {
       try { return sessionStorage.getItem('leakd_sync_session_pw'); } catch (e) { return null; }
@@ -181,30 +190,30 @@
     if (!window.LeakdPalette) return;
     window.LeakdPalette.clearActions();
     const a = window.LeakdPalette.register;
-    a({ id: 'home',      label: t('nav.home'),         run: () => setView('home'),         keywords: ['home','start'] });
-    a({ id: 'insights',  label: t('nav.insights'),     run: () => setView('insights'),     keywords: ['analysis','chart','stats'] });
-    a({ id: 'add',       label: t('modal.add'),        run: openAdd,                       keywords: ['new','plus','create'] });
-    a({ id: 'theme',     label: t('menu.theme'),       run: openThemeModal,                keywords: ['dark','light','color'] });
-    a({ id: 'lang',      label: t('menu.language'),    run: openLangModal,                 keywords: ['translate','locale'] });
-    a({ id: 'currency',  label: t('menu.currency'),    run: () => { currencyModal.style.display = 'flex'; }, keywords: ['money','symbol'] });
-    a({ id: 'budgets',   label: t('menu.budgets'),     run: openBudgetsModal,              keywords: ['limit','spending'] });
-    a({ id: 'income',    label: t('menu.income'),      run: openIncomeModal,               keywords: ['salary','ratio'] });
-    a({ id: 'goal',      label: t('menu.goal'),        run: openGoalModal,                 keywords: ['save','target'] });
-    a({ id: 'whatif',    label: t('menu.whatif'),      run: openWhatIfModal,               keywords: ['scenario','simulate','cancel','preview'] });
-    a({ id: 'compare',   label: t('menu.compare'),     run: openCompareModal,              keywords: ['side','versus','vs'] });
-    a({ id: 'bank',      label: t('menu.bank'),        run: openBankModal,                 keywords: ['csv','revolut','wise','statement'] });
-    a({ id: 'import',    label: t('menu.import'),      run: openImportModal,               keywords: ['paste','bulk'] });
-    a({ id: 'export',    label: t('menu.export'),      run: exportCSV,                     keywords: ['download','csv'] });
-    a({ id: 'calendar',  label: t('menu.calendar'),    run: exportCalendar,                keywords: ['ics','renewal'] });
-    a({ id: 'backup',    label: t('menu.backup'),      run: openBackupModal,               keywords: ['restore','sync'] });
-    a({ id: 'cancelled', label: t('menu.cancelled'),   run: openCancelledModal,            keywords: ['killed','savings'] });
-    a({ id: 'yearend',   label: t('menu.yearend'),     run: openYearendModal,              keywords: ['wrap','report'] });
-    a({ id: 'pro',       label: t('menu.pro'),         run: openProModal,                  keywords: ['upgrade','premium'] });
-    a({ id: 'notif',     label: t('header.notif'),     run: openNotifModal,                keywords: ['reminder','alert'] });
-    a({ id: 'tour',      label: t('menu.tour'),        run: () => window.LeakdTour && window.LeakdTour.restart(), keywords: ['help','guide'] });
-    a({ id: 'help',      label: t('shortcut.title'),   run: () => window.LeakdShortcuts && window.LeakdShortcuts.toggleHelp(), keywords: ['keyboard','keys','shortcuts'] });
-    a({ id: 'privacy',   label: t('menu.privacy'),     run: () => window.open('privacy.html', '_blank'),  keywords: ['gdpr','policy'] });
-    a({ id: 'terms',     label: t('menu.terms'),       run: () => window.open('terms.html', '_blank'),    keywords: ['legal','tos'] });
+    a({ id: 'home', label: t('nav.home'), run: () => setView('home'), keywords: ['home', 'start'] });
+    a({ id: 'insights', label: t('nav.insights'), run: () => setView('insights'), keywords: ['analysis', 'chart', 'stats'] });
+    a({ id: 'add', label: t('modal.add'), run: openAdd, keywords: ['new', 'plus', 'create'] });
+    a({ id: 'theme', label: t('menu.theme'), run: openThemeModal, keywords: ['dark', 'light', 'color'] });
+    a({ id: 'lang', label: t('menu.language'), run: openLangModal, keywords: ['translate', 'locale'] });
+    a({ id: 'currency', label: t('menu.currency'), run: () => { currencyModal.style.display = 'flex'; }, keywords: ['money', 'symbol'] });
+    a({ id: 'budgets', label: t('menu.budgets'), run: openBudgetsModal, keywords: ['limit', 'spending'] });
+    a({ id: 'income', label: t('menu.income'), run: openIncomeModal, keywords: ['salary', 'ratio'] });
+    a({ id: 'goal', label: t('menu.goal'), run: openGoalModal, keywords: ['save', 'target'] });
+    a({ id: 'whatif', label: t('menu.whatif'), run: openWhatIfModal, keywords: ['scenario', 'simulate', 'cancel', 'preview'] });
+    a({ id: 'compare', label: t('menu.compare'), run: openCompareModal, keywords: ['side', 'versus', 'vs'] });
+    a({ id: 'bank', label: t('menu.bank'), run: openBankModal, keywords: ['csv', 'revolut', 'wise', 'statement'] });
+    a({ id: 'import', label: t('menu.import'), run: openImportModal, keywords: ['paste', 'bulk'] });
+    a({ id: 'export', label: t('menu.export'), run: exportCSV, keywords: ['download', 'csv'] });
+    a({ id: 'calendar', label: t('menu.calendar'), run: exportCalendar, keywords: ['ics', 'renewal'] });
+    a({ id: 'backup', label: t('menu.backup'), run: openBackupModal, keywords: ['restore', 'sync'] });
+    a({ id: 'cancelled', label: t('menu.cancelled'), run: openCancelledModal, keywords: ['killed', 'savings'] });
+    a({ id: 'yearend', label: t('menu.yearend'), run: openYearendModal, keywords: ['wrap', 'report'] });
+    a({ id: 'pro', label: t('menu.pro'), run: openProModal, keywords: ['upgrade', 'premium'] });
+    a({ id: 'notif', label: t('header.notif'), run: openNotifModal, keywords: ['reminder', 'alert'] });
+    a({ id: 'tour', label: t('menu.tour'), run: () => window.LeakdTour && window.LeakdTour.restart(), keywords: ['help', 'guide'] });
+    a({ id: 'help', label: t('shortcut.title'), run: () => window.LeakdShortcuts && window.LeakdShortcuts.toggleHelp(), keywords: ['keyboard', 'keys', 'shortcuts'] });
+    a({ id: 'privacy', label: t('menu.privacy'), run: () => window.open('privacy.html', '_blank'), keywords: ['gdpr', 'policy'] });
+    a({ id: 'terms', label: t('menu.terms'), run: () => window.open('terms.html', '_blank'), keywords: ['legal', 'tos'] });
   }
 
   function buildCurrencyDropdown() {
@@ -272,7 +281,7 @@
       if (langName) parts.push(langName);
       parts.push(detected.code);
       toast('🌍 ' + parts.join(' · '));
-    } catch {}
+    } catch { }
     return true;
   }
 
@@ -294,7 +303,7 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then(reg => {
         reg.active && reg.active.postMessage({ type: 'check-now' });
-      }).catch(() => {});
+      }).catch(() => { });
     }
   }
 
@@ -344,7 +353,7 @@
 
   function loadData() {
     try { const raw = localStorage.getItem(STORAGE_KEY); subs = raw ? JSON.parse(raw) : []; } catch { subs = []; }
-    try { const raw = localStorage.getItem(SETTINGS_KEY); if (raw) settings = { ...settings, ...JSON.parse(raw) }; } catch {}
+    try { const raw = localStorage.getItem(SETTINGS_KEY); if (raw) settings = { ...settings, ...JSON.parse(raw) }; } catch { }
 
     // If localStorage was empty, check IndexedDB for a fallback copy
     if (subs.length === 0) {
@@ -358,14 +367,14 @@
               render();
               toast('♻️ ' + t('error.restoredFromFallback'));
             }
-          } catch {}
+          } catch { }
         }
       });
     }
     if (!settings.currencyCode) {
       idbGet(SETTINGS_KEY).then(raw => {
         if (raw) {
-          try { const s = JSON.parse(raw); if (s) { settings = { ...settings, ...s }; window.LeakdState = settings; } } catch {}
+          try { const s = JSON.parse(raw); if (s) { settings = { ...settings, ...s }; window.LeakdState = settings; } } catch { }
         }
       });
     }
@@ -420,22 +429,22 @@
       const tt = (k) => (window.LeakdI18n ? window.LeakdI18n.t(k) : k);
       const i18n = {
         trialTitle: tt('notif.trial.title'),
-        trialBody:  tt('notif.trial.body'),
+        trialBody: tt('notif.trial.body'),
         renewTitle: tt('notif.renew.title'),
-        renewBody:  tt('notif.renew.body'),
-        today:      tt('time.today'),
-        tomorrow:   tt('time.tomorrow'),
-        inDays:     tt('time.inDays'),
-        mo:         tt('cycle.mo'),
-        yr:         tt('cycle.yr'),
-        wk:         tt('cycle.wk'),
+        renewBody: tt('notif.renew.body'),
+        today: tt('time.today'),
+        tomorrow: tt('time.tomorrow'),
+        inDays: tt('time.inDays'),
+        mo: tt('cycle.mo'),
+        yr: tt('cycle.yr'),
+        wk: tt('cycle.wk'),
       };
       const payload = { subs: snapshot, prefs, log, lang, i18n, updatedAt: Date.now() };
       const cache = await caches.open('leakd-state');
       await cache.put('state.json', new Response(JSON.stringify(payload), {
         headers: { 'Content-Type': 'application/json' },
       }));
-    } catch {}
+    } catch { }
   }
 
   function rescheduleNotifications() {
@@ -581,7 +590,7 @@
       const n = window.LeakdCancelled.count();
       if (n > 0) {
         const saved = window.LeakdCancelled.savings();
-        canSub.textContent = n + ' · ' + formatPrice(saved) + '/' + t('cycle.mo').replace('/','');
+        canSub.textContent = n + ' · ' + formatPrice(saved) + '/' + t('cycle.mo').replace('/', '');
       } else {
         canSub.textContent = t('menu.cancelledSub');
       }
@@ -607,7 +616,7 @@
         const friendNames = s.sharedNames.split(',')
           .map(name => name.trim())
           .filter(name => name.length > 0);
-        
+
         const pricePerPerson = s.price / s.sharedWith;
         const totalFriendSlots = s.sharedWith - 1;
         const paidList = Array.isArray(s.sharedPaid) ? s.sharedPaid : [];
@@ -692,17 +701,17 @@
   function renderStreak() {
     const card = $('streakCard');
     if (!card || !window.LeakdStreak) return;
-    
+
     // Only show if the user has some subscriptions (don't overwhelm on empty app)
     if (subs.length === 0) { card.style.display = 'none'; return; }
-    
+
     card.style.display = 'flex';
     const count = window.LeakdStreak.getCount();
     const checked = window.LeakdStreak.hasCheckedInToday();
-    
+
     $('streakCount').textContent = count;
     card.classList.toggle('is-checked', checked);
-    
+
     const btn = $('streakBtn');
     if (checked) {
       btn.textContent = t('streak.done') || 'Stayed clean today! ✨';
@@ -852,7 +861,7 @@
       const cycleLabel = t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk'));
       const iconHtml = window.LeakdBrands
         ? window.LeakdBrands.badgeHtml(s.name, s.category, 42)
-        : `<div class="sub-icon" style="background:${(catColors[s.category]||catColors.Other).bg};color:${(catColors[s.category]||catColors.Other).text}">${(catColors[s.category]||catColors.Other).icon}</div>`;
+        : `<div class="sub-icon" style="background:${(catColors[s.category] || catColors.Other).bg};color:${(catColors[s.category] || catColors.Other).text}">${(catColors[s.category] || catColors.Other).icon}</div>`;
       const notesLine = s.notes && s.notes.trim()
         ? `<div class="sub-notes">${escHtml(s.notes.trim())}</div>`
         : '';
@@ -1005,7 +1014,7 @@
 
     const breakdown = $('catBreakdown');
     if (cats.length === 0) {
-      breakdown.innerHTML = `<div class="empty-state-mini">${t('insights.noData')}</div>`;
+      setEmptyState(breakdown, 'empty-state-mini', t('insights.noData'));
     } else {
       const max = cats[0].monthly;
       breakdown.innerHTML = cats.map(c => {
@@ -1023,9 +1032,7 @@
 
     const sList = $('suggestionsList');
     if (sugs.length === 0) {
-      sList.innerHTML = list.length
-        ? `<div class="empty-state-mini">${t('insights.clean')}</div>`
-        : `<div class="empty-state-mini">${t('insights.noSubs')}</div>`;
+      setEmptyState(sList, 'empty-state-mini', list.length ? t('insights.clean') : t('insights.noSubs'));
     } else {
       sList.innerHTML = sugs.slice(0, 6).map(s => `
         <div class="suggestion-card sev-${s.severity}">
@@ -1070,7 +1077,7 @@
               <div class="lowest-name">${escHtml(s.name)}</div>
               <div class="lowest-stars">${stars}</div>
             </div>
-            <div class="lowest-price">${formatPrice(s.monthly)}<span>/${t('cycle.mo').replace('/','')}</span></div>
+            <div class="lowest-price">${formatPrice(s.monthly)}<span>/${t('cycle.mo').replace('/', '')}</span></div>
           </div>`;
         }).join('');
       }
@@ -1082,7 +1089,7 @@
   function renderPanicButton(list, monthlySpend) {
     const cta = $('panicCta');
     if (!cta) return;
-    
+
     // Threshold per currency (roughly equivalent to $100)
     const thresholds = {
       '$': 100,
@@ -1094,7 +1101,7 @@
       'R$': 500,
       'A$': 150
     };
-    
+
     const threshold = thresholds[settings.currency] || 100;
     if (monthlySpend >= threshold && list.length > 0) {
       cta.style.display = 'block';
@@ -1107,16 +1114,16 @@
     const modal = $('panicModal');
     const list = activeSubs();
     const lowest = window.LeakdInsights.lowestRated(list, 10); // Show up to 10
-    
+
     const container = $('panicList');
     if (lowest.length === 0) {
-      container.innerHTML = `<div class="empty-state-mini">${t('insights.noData')}</div>`;
+      setEmptyState(container, 'empty-state-mini', t('insights.noData'));
     } else {
       container.innerHTML = lowest.map(s => {
         const cancelUrl = window.LeakdImport ? window.LeakdImport.findCancelUrl(s.name) : null;
         const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.name, s.category, 36) : '';
         const cycleLabel = t('cycle.mo').replace('/', '');
-        
+
         return `
           <div class="panic-row">
             ${iconHtml}
@@ -1129,9 +1136,9 @@
         `;
       }).join('');
     }
-    
+
     modal.classList.add('active');
-    if (window.LeakdActivity) logActivity('panic_triggered', null, { spend: activeSubs().reduce((a,b)=>a+toMonthly(b.price,b.cycle,b.currency),0) });
+    if (window.LeakdActivity) logActivity('panic_triggered', null, { spend: activeSubs().reduce((a, b) => a + toMonthly(b.price, b.cycle, b.currency), 0) });
   }
 
   function closePanicModal() {
@@ -1328,8 +1335,8 @@
     $('ratioValue').textContent = (ratio * 100).toFixed(1) + '%';
     $('incomeRatioLabel').textContent = t('income.ratio.label');
     const sub = sentiment === 'crisis' ? t('income.ratio.crisis')
-              : sentiment === 'high' ? t('income.ratio.high')
-              : t('income.ratio.fine');
+      : sentiment === 'high' ? t('income.ratio.high')
+        : t('income.ratio.fine');
     $('ratioSentiment').textContent = sub;
     $('ratioSentiment').className = 'ratio-sentiment sentiment-' + sentiment;
   }
@@ -1501,7 +1508,7 @@
     $('subPrice').value = s.price;
     $('subCurrency').value = s.currency || settings.currencyCode || 'EUR';
     $('subCycle').value = s.cycle;
-    
+
     // Handle custom categories in edit
     const catSelect = $('subCategory');
     const isCustom = !Array.from(catSelect.options).some(opt => opt.value === s.category);
@@ -1801,7 +1808,7 @@
     });
     const data = { title: 'Leakd', text, url: 'https://leakd.app' };
     if (navigator.share) {
-      try { await navigator.share(data); return; } catch {}
+      try { await navigator.share(data); return; } catch { }
     }
     try {
       await navigator.clipboard.writeText(text + ' https://leakd.app');
@@ -1897,7 +1904,7 @@
           <div class="alt-row-name">${escHtml(trAlt(alt.name))} ${badgeText ? '<span class="alt-badge ' + badgeCls + '">' + badgeText + '</span>' : ''}</div>
           <div class="alt-row-why">${escHtml(trAlt(alt.why))}</div>
         </div>
-        <div class="alt-row-price">${formatPrice(altPriceLocal)}<span>/${t('cycle.mo').replace('/','')}</span></div>
+        <div class="alt-row-price">${formatPrice(altPriceLocal)}<span>/${t('cycle.mo').replace('/', '')}</span></div>
       </div>`;
     }).join('');
   }
@@ -2006,8 +2013,8 @@
     const perm = N.permission();
     $('notifPermState').textContent =
       perm === 'granted' ? t('notif.allowed') :
-      perm === 'denied'  ? t('notif.blocked') :
-      perm === 'unsupported' ? t('notif.unsupported') : t('notif.notSet');
+        perm === 'denied' ? t('notif.blocked') :
+          perm === 'unsupported' ? t('notif.unsupported') : t('notif.notSet');
     $('notifEnabled').checked = !!N.prefs.enabled;
     $('notifDays').value = String(N.prefs.daysBefore);
     $('notifTrialDays').value = String(N.prefs.trialDaysBefore);
@@ -2185,7 +2192,7 @@
     if (parsed.length === 0) {
       $('importPreview').style.display = 'block';
       $('importPreviewTitle').textContent = t('import.found', { count: 0 });
-      list.innerHTML = `<div class="empty-state-mini">${t('import.nothingFound')}</div>`;
+      setEmptyState(list, 'empty-state-mini', t('import.nothingFound'));
       $('confirmImportBtn').disabled = true;
       $('confirmImportBtn').textContent = t('bank.selectToImport');
       return;
@@ -2193,7 +2200,7 @@
     list.innerHTML = parsed.map(p => {
       const iconHtml = window.LeakdBrands
         ? window.LeakdBrands.badgeHtml(p.name, p.category, 34)
-        : `<div class="sub-icon" style="background:${(catColors[p.category]||catColors.Other).bg};color:${(catColors[p.category]||catColors.Other).text}">${(catColors[p.category]||catColors.Other).icon}</div>`;
+        : `<div class="sub-icon" style="background:${(catColors[p.category] || catColors.Other).bg};color:${(catColors[p.category] || catColors.Other).text}">${(catColors[p.category] || catColors.Other).icon}</div>`;
       return `<div class="import-row">
         ${iconHtml}
         <div class="import-row-info">
@@ -2317,21 +2324,21 @@
       return d.toISOString();
     };
     const demoSubs = [
-      { name: 'Netflix',         price: 15.99, cycle: 'monthly', category: 'Entertainment', nextDate: dateOffset(12), rating: 4, monthsBack: 18 },
-      { name: 'Spotify',         price: 10.99, cycle: 'monthly', category: 'Music',         nextDate: dateOffset(5),  rating: 5, monthsBack: 24 },
-      { name: 'ChatGPT Plus',    price: 20.00, cycle: 'monthly', category: 'Work',          nextDate: dateOffset(18), rating: 5, monthsBack: 8 },
-      { name: 'Adobe CC',        price: 54.99, cycle: 'monthly', category: 'Work',          nextDate: dateOffset(2),  rating: 2, monthsBack: 14 },
-      { name: 'iCloud+',         price: 2.99,  cycle: 'monthly', category: 'Cloud',         nextDate: dateOffset(7),  rating: 4, monthsBack: 36 },
+      { name: 'Netflix', price: 15.99, cycle: 'monthly', category: 'Entertainment', nextDate: dateOffset(12), rating: 4, monthsBack: 18 },
+      { name: 'Spotify', price: 10.99, cycle: 'monthly', category: 'Music', nextDate: dateOffset(5), rating: 5, monthsBack: 24 },
+      { name: 'ChatGPT Plus', price: 20.00, cycle: 'monthly', category: 'Work', nextDate: dateOffset(18), rating: 5, monthsBack: 8 },
+      { name: 'Adobe CC', price: 54.99, cycle: 'monthly', category: 'Work', nextDate: dateOffset(2), rating: 2, monthsBack: 14 },
+      { name: 'iCloud+', price: 2.99, cycle: 'monthly', category: 'Cloud', nextDate: dateOffset(7), rating: 4, monthsBack: 36 },
       { name: 'YouTube Premium', price: 13.99, cycle: 'monthly', category: 'Entertainment', nextDate: dateOffset(22), rating: 3, monthsBack: 6 },
-      { name: 'GitHub Copilot',  price: 10.00, cycle: 'monthly', category: 'Work',          nextDate: dateOffset(9),  rating: 5, monthsBack: 4 },
-      { name: 'Notion',          price: 10.00, cycle: 'monthly', category: 'Work',          nextDate: dateOffset(15), rating: 4, monthsBack: 12 },
+      { name: 'GitHub Copilot', price: 10.00, cycle: 'monthly', category: 'Work', nextDate: dateOffset(9), rating: 5, monthsBack: 4 },
+      { name: 'Notion', price: 10.00, cycle: 'monthly', category: 'Work', nextDate: dateOffset(15), rating: 4, monthsBack: 12 },
     ];
     demoSubs.forEach(d => {
       subs.push({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        name: d.name, 
-        price: settings.currencyCode === 'HUF' ? Math.round(fromUsd(d.price)) : Number(fromUsd(d.price).toFixed(2)), 
-        cycle: d.cycle, 
+        name: d.name,
+        price: settings.currencyCode === 'HUF' ? Math.round(fromUsd(d.price)) : Number(fromUsd(d.price).toFixed(2)),
+        cycle: d.cycle,
         category: d.category,
         currency: settings.currencyCode,
         nextDate: d.nextDate, isTrial: false, trialEnd: '', paused: false,
@@ -2385,8 +2392,8 @@
     });
     const verdictKey = cmp.verdict === 'lower' ? 'bench.lower'
       : cmp.verdict === 'average' ? 'bench.average'
-      : cmp.verdict === 'higher' ? 'bench.higher'
-      : 'bench.muchHigher';
+        : cmp.verdict === 'higher' ? 'bench.higher'
+          : 'bench.muchHigher';
     const verdictEl = $('benchVerdict');
     verdictEl.textContent = t(verdictKey);
     verdictEl.className = 'bench-verdict verdict-' + cmp.verdict;
@@ -2406,7 +2413,7 @@
     if (!window.LeakdActivity) return;
     const days = window.LeakdActivity.byDay();
     if (days.length === 0) {
-      list.innerHTML = `<div class="empty-state-mini">${t('activity.empty')}</div>`;
+      setEmptyState(list, 'empty-state-mini', t('activity.empty'));
       return;
     }
     const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
@@ -2458,7 +2465,7 @@
     const gridWrap = $('compareGridWrap');
 
     if (active.length < 2) {
-      pickList.innerHTML = `<div class="empty-state-mini">${t('compare.minPrompt')}</div>`;
+      setEmptyState(pickList, 'empty-state-mini', t('compare.minPrompt'));
       promptEl.style.display = 'none';
       gridWrap.style.display = 'none';
       return;
@@ -2503,7 +2510,7 @@
       };
 
       const diffLabel = (d) => t('compare.diff.' + d);
-      const ratingStars = (n) => n == null ? `<span class="compare-na">${t('compare.notRated')}</span>` : '★'.repeat(n) + '<span class="compare-na">' + '☆'.repeat(5-n) + '</span>';
+      const ratingStars = (n) => n == null ? `<span class="compare-na">${t('compare.notRated')}</span>` : '★'.repeat(n) + '<span class="compare-na">' + '☆'.repeat(5 - n) + '</span>';
 
       const headerCells = rows.map(r => {
         const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(r.name, r.category, 28) : '';
@@ -2513,12 +2520,12 @@
       gridWrap.innerHTML = `<div class="compare-grid"><table>
         <thead><tr><th></th>${headerCells}</tr></thead>
         <tbody>
-          ${metricRow('compare.monthly',     r => formatPrice(r.monthly),                'monthly')}
-          ${metricRow('compare.yearly',      r => formatPrice(r.yearly),                 'yearly')}
-          ${metricRow('compare.lifetime',    r => formatPrice(r.lifetimePaid),           'lifetimePaid')}
-          ${metricRow('compare.rating',      r => ratingStars(r.rating),                 'rating')}
-          ${metricRow('compare.cancelDiff',  r => diffLabel(r.cancelDifficulty) + (r.cancelMinutes ? ' · ' + t('compare.minutesAbbr', { n: r.cancelMinutes }) : ''), 'cancelDifficulty')}
-          ${metricRow('compare.alternatives',r => t('compare.altCountN', { n: r.altCount }), null)}
+          ${metricRow('compare.monthly', r => formatPrice(r.monthly), 'monthly')}
+          ${metricRow('compare.yearly', r => formatPrice(r.yearly), 'yearly')}
+          ${metricRow('compare.lifetime', r => formatPrice(r.lifetimePaid), 'lifetimePaid')}
+          ${metricRow('compare.rating', r => ratingStars(r.rating), 'rating')}
+          ${metricRow('compare.cancelDiff', r => diffLabel(r.cancelDifficulty) + (r.cancelMinutes ? ' · ' + t('compare.minutesAbbr', { n: r.cancelMinutes }) : ''), 'cancelDifficulty')}
+          ${metricRow('compare.alternatives', r => t('compare.altCountN', { n: r.altCount }), null)}
         </tbody>
       </table></div>`;
       gridWrap.style.display = 'block';
@@ -2552,7 +2559,7 @@
     const heroEl = $('whatifHero');
 
     if (active.length === 0) {
-      listEl.innerHTML = `<div class="empty-state-mini">${t('whatif.empty')}</div>`;
+      setEmptyState(listEl, 'empty-state-mini', t('whatif.empty'));
       heroEl.style.display = 'none';
       return;
     }
@@ -2590,7 +2597,7 @@
         ${iconHtml}
         <div class="whatif-info">
           <div class="whatif-name">${escHtml(s.name)}</div>
-          <div class="whatif-meta">${formatPrice(s.price, s.currency)}/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/','')}</div>
+          <div class="whatif-meta">${formatPrice(s.price, s.currency)}/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/', '')}</div>
         </div>
         <div class="whatif-check">${sel ? '✓' : '○'}</div>
       </button>`;
@@ -2685,53 +2692,53 @@
   }
 
   function processBankCsvText(csvText) {
-      if (!window.LeakdBankParse) return;
-      const result = window.LeakdBankParse.parseStatement(csvText);
-      if (result.error === 'missing-columns') {
-        $('bankError').textContent = t('bank.errorColumns');
-        $('bankError').style.display = 'block';
-        $('bankResult').style.display = 'none';
-        return;
-      }
-      $('bankError').style.display = 'none';
-      $('bankResult').style.display = 'block';
-      $('bankFormatPill').textContent = t('bank.formatDetected', { name: result.format.name });
+    if (!window.LeakdBankParse) return;
+    const result = window.LeakdBankParse.parseStatement(csvText);
+    if (result.error === 'missing-columns') {
+      $('bankError').textContent = t('bank.errorColumns');
+      $('bankError').style.display = 'block';
+      $('bankResult').style.display = 'none';
+      return;
+    }
+    $('bankError').style.display = 'none';
+    $('bankResult').style.display = 'block';
+    $('bankFormatPill').textContent = t('bank.formatDetected', { name: result.format.name });
 
-      const subList = result.suggestions;
-      bankSuggestions = subList.map(s => ({ ...s, selected: true }));
+    const subList = result.suggestions;
+    bankSuggestions = subList.map(s => ({ ...s, selected: true }));
 
-      if (subList.length === 0) {
-        $('bankFound').textContent = t('bank.noRecurring');
-        $('bankSuggestionList').innerHTML = '';
-        $('confirmBankBtn').disabled = true;
-        $('confirmBankBtn').textContent = t('bank.selectToImport');
-        return;
-      }
+    if (subList.length === 0) {
+      $('bankFound').textContent = t('bank.noRecurring');
+      $('bankSuggestionList').innerHTML = '';
+      $('confirmBankBtn').disabled = true;
+      $('confirmBankBtn').textContent = t('bank.selectToImport');
+      return;
+    }
 
-      $('bankFound').textContent = t('bank.foundRecurring', { count: subList.length });
-      const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
-      $('bankSuggestionList').innerHTML = bankSuggestions.map((s, i) => {
-        const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.displayName, s.category, 32) : '';
-        const lastDate = s.lastSeen.toLocaleDateString(lang, { month: 'short', day: 'numeric' });
-        const conf = Math.round(s.confidence * 100);
-        return `<label class="bank-row">
+    $('bankFound').textContent = t('bank.foundRecurring', { count: subList.length });
+    const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+    $('bankSuggestionList').innerHTML = bankSuggestions.map((s, i) => {
+      const iconHtml = window.LeakdBrands ? window.LeakdBrands.badgeHtml(s.displayName, s.category, 32) : '';
+      const lastDate = s.lastSeen.toLocaleDateString(lang, { month: 'short', day: 'numeric' });
+      const conf = Math.round(s.confidence * 100);
+      return `<label class="bank-row">
           <input type="checkbox" data-i="${i}" checked>
           ${iconHtml}
           <div class="bank-row-info">
             <div class="bank-row-name">${escHtml(s.displayName)}</div>
             <div class="bank-row-meta">${t('bank.confidence', { n: s.occurrences, confidence: conf })} · ${t('bank.lastSeen', { when: lastDate })}</div>
           </div>
-          <div class="bank-row-price">${formatPrice(s.price, s.currency)}<span>/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/','')}</span></div>
+          <div class="bank-row-price">${formatPrice(s.price, s.currency)}<span>/${t('cycle.' + (s.cycle === 'monthly' ? 'mo' : s.cycle === 'yearly' ? 'yr' : 'wk')).replace('/', '')}</span></div>
         </label>`;
-      }).join('');
+    }).join('');
 
-      $('bankSuggestionList').querySelectorAll('input[type="checkbox"]').forEach(cb => {
-        cb.addEventListener('change', () => {
-          bankSuggestions[parseInt(cb.dataset.i, 10)].selected = cb.checked;
-          updateBankConfirm();
-        });
+    $('bankSuggestionList').querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        bankSuggestions[parseInt(cb.dataset.i, 10)].selected = cb.checked;
+        updateBankConfirm();
       });
-      updateBankConfirm();
+    });
+    updateBankConfirm();
   }
 
   function updateBankConfirm() {
@@ -3019,8 +3026,8 @@
 
     const isRepeated = /^(.)\1+$/.test(pw);
     const isSequential = "abcdefghijklmnopqrstuvwxyz01234567890".indexOf(pw.toLowerCase()) !== -1 ||
-                         "9876543210zyxwvutsrqponmlkjihgfedcba".indexOf(pw.toLowerCase()) !== -1;
-    
+      "9876543210zyxwvutsrqponmlkjihgfedcba".indexOf(pw.toLowerCase()) !== -1;
+
     if (isRepeated || isSequential) {
       score = Math.max(0, score - 2);
     }
@@ -3070,11 +3077,11 @@
           const confirm = $('syncPasswordConfirm').value;
           if (pw !== confirm) { showSyncError('WRONG_PASSWORD'); return; }
         }
-        
+
         await S.signIn();
         const pw = $('syncPasswordInput').value;
         await S.unlockAndVerifyAgainstRemote(pw);
-        
+
         S.setEnabled(true);
         const r = await S.sync();
         toast(r.action === 'pulled' ? t('sync.pulledOk') : t('sync.pushedOk'));
@@ -3306,7 +3313,7 @@
 
   async function shareLeakdLink() {
     const data = { title: 'Leakd', text: t('app.tagline'), url: 'https://leakd.app' };
-    if (navigator.share) { try { await navigator.share(data); return; } catch {} }
+    if (navigator.share) { try { await navigator.share(data); return; } catch { } }
     try { await navigator.clipboard.writeText('https://leakd.app'); toast(t('toast.linkCopied')); }
     catch { toast('https://leakd.app'); }
   }
@@ -3314,9 +3321,9 @@
   function resetAll() {
     if (!confirm(t('reset.confirm1'))) return;
     if (!confirm(t('reset.confirm2'))) return;
-    ['leakd_subs','leakd_settings','leakd_notif_prefs','leakd_notif_log','leakd_pro','leakd_onboarded','leakd_lang','leakd_budgets','leakd_history','leakd_income','leakd_cancelled','leakd_goal','leakd_tour_done','leakd_activity','leakd_rates','leakd_streak','leakd_sync_meta','leakd_sync_salt','leakd_sync_enabled','leakd_terms_accepted','leakd_sync_session_pw']
+    ['leakd_subs', 'leakd_settings', 'leakd_notif_prefs', 'leakd_notif_log', 'leakd_pro', 'leakd_onboarded', 'leakd_lang', 'leakd_budgets', 'leakd_history', 'leakd_income', 'leakd_cancelled', 'leakd_goal', 'leakd_tour_done', 'leakd_activity', 'leakd_rates', 'leakd_streak', 'leakd_sync_meta', 'leakd_sync_salt', 'leakd_sync_enabled', 'leakd_terms_accepted', 'leakd_sync_session_pw']
       .forEach(k => localStorage.removeItem(k));
-    try { sessionStorage.clear(); } catch (e) {}
+    try { sessionStorage.clear(); } catch (e) { }
     location.reload();
   }
 
@@ -3592,7 +3599,7 @@
     $('yearendCloseBtn').addEventListener('click', closeYearendModal);
     $('yearendShareBtn').addEventListener('click', shareYearend);
     $('yearendModal').addEventListener('click', e => { if (e.target === $('yearendModal')) closeYearendModal(); });
-    
+
     $('panicBtn').addEventListener('click', openPanicModal);
     $('closePanicModal').addEventListener('click', closePanicModal);
     $('panicDoneBtn').addEventListener('click', closePanicModal);
@@ -3601,7 +3608,7 @@
     $('searchInput').addEventListener('input', onSearch);
     $('searchClear').addEventListener('click', clearSearch);
 
-    $('subShared').addEventListener('input', function() {
+    $('subShared').addEventListener('input', function () {
       const val = parseInt(this.value, 10);
       if (!isNaN(val) && val > 1) {
         $('subSharedDetails').style.display = 'block';
@@ -3612,7 +3619,7 @@
       }
     });
 
-    $('subSharedNames').addEventListener('input', function() {
+    $('subSharedNames').addEventListener('input', function () {
       renderSharedChecklist();
     });
 
@@ -3628,7 +3635,7 @@
       }
     });
 
-    $('subSharedChecklist').addEventListener('click', function(e) {
+    $('subSharedChecklist').addEventListener('click', function (e) {
       const btn = e.target.closest('.btn-copy-reminder');
       if (btn) {
         e.preventDefault();
@@ -3639,11 +3646,11 @@
       }
     });
 
-    $('subTrial').addEventListener('change', function() {
+    $('subTrial').addEventListener('change', function () {
       $('trialDateWrap').style.display = this.checked ? 'block' : 'none';
     });
 
-    $('subCategory').addEventListener('change', function() {
+    $('subCategory').addEventListener('change', function () {
       if (this.value === '_new') {
         if (window.LeakdPro && !window.LeakdPro.isPro()) {
           this.value = 'Other';
@@ -3773,7 +3780,7 @@
           el.removeEventListener('keydown', handlers.get(el));
           handlers.delete(el);
           if (lastFocused && typeof lastFocused.focus === 'function') {
-            try { lastFocused.focus({ preventScroll: true }); } catch {}
+            try { lastFocused.focus({ preventScroll: true }); } catch { }
           }
         }
       }

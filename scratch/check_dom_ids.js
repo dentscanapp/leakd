@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // Extract all IDs from index.html
-const htmlContent = fs.readFileSync('index.html', 'utf8');
+const htmlContent = fs.readFileSync('app.html', 'utf8');
 const idRegex = /id="([^"]+)"/g;
 const htmlIds = new Set();
 let m;

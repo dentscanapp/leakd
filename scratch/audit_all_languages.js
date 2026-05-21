@@ -1,13 +1,14 @@
 const fs = require('fs');
+const path = require('path');
 
 try {
-  const code = fs.readFileSync('js/i18n.js', 'utf8');
-  
-  global.window = {};
-  global.localStorage = { getItem: () => 'hu', setItem: () => {} };
-  global.document = { documentElement: { lang: '' }, querySelectorAll: () => [] };
-  eval(code);
-  const STRINGS = global.window.LeakdI18n.STRINGS;
+  const STRINGS = {};
+  const localesDir = 'locales';
+  const files = fs.readdirSync(localesDir).filter(f => f.endsWith('.json'));
+  files.forEach(file => {
+    const lang = path.basename(file, '.json');
+    STRINGS[lang] = JSON.parse(fs.readFileSync(path.join(localesDir, file), 'utf8'));
+  });
 
   const languages = Object.keys(STRINGS);
   const baseKeys = Object.keys(STRINGS['en']).sort();
