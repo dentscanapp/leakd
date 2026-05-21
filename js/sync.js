@@ -157,6 +157,9 @@
     cachedPassword = String(password);
     cryptoKey = await deriveKey(cachedPassword, salt, PBKDF2_ITERATIONS);
     cryptoKeyLegacy = null;
+    try {
+      sessionStorage.setItem('leakd_sync_session_pw', cachedPassword);
+    } catch (e) {}
     notify('unlocked');
     return true;
   }
@@ -172,6 +175,9 @@
       cachedPassword = String(password);
       cryptoKey = candidate;
       cryptoKeyLegacy = null;
+      try {
+        sessionStorage.setItem('leakd_sync_session_pw', cachedPassword);
+      } catch (e) {}
       notify('unlocked');
       return { ok: true, hadRemote: false };
     }
@@ -198,6 +204,9 @@
       cachedPassword = String(password);
       cryptoKey = candidate;            // current standard
       cryptoKeyLegacy = (env && env.v === 1) ? verifyKey : null;
+      try {
+        sessionStorage.setItem('leakd_sync_session_pw', cachedPassword);
+      } catch (e) {}
       notify('unlocked');
       return { ok: true, hadRemote: true, snapshot: snap };
     } catch (e) {
@@ -209,6 +218,9 @@
     cryptoKey = null;
     cryptoKeyLegacy = null;
     cachedPassword = null;
+    try {
+      sessionStorage.removeItem('leakd_sync_session_pw');
+    } catch (e) {}
     notify('locked');
   }
   function isUnlocked() { return cryptoKey !== null; }
@@ -642,8 +654,6 @@
     };
   }
 
-  // Wipe ALL sync state — local key, token, salt, meta, enabled flag.
-  // Used when the user disables sync or hits reset-all-data.
   function clearLocalState() {
     cryptoKey = null;
     accessToken = null;
@@ -651,6 +661,9 @@
     localStorage.removeItem(META_KEY);
     localStorage.removeItem(SALT_KEY);
     localStorage.removeItem(ENABLED_KEY);
+    try {
+      sessionStorage.removeItem('leakd_sync_session_pw');
+    } catch (e) {}
     notify('reset');
   }
 
