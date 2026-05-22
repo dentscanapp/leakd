@@ -23,17 +23,27 @@
     <ellipse cx="950" cy="380" rx="80" ry="100" fill="#ef4444" filter="url(#glow)"/>
   </g>
 
-  <!-- Logo: water drop -->
-  <g transform="translate(80, 130)">
-    <path d="M0 80 C0 80 -40 40 -40 0 C-40 -40 0 -80 0 -80 C0 -80 40 -40 40 0 C40 40 0 80 0 80 Z"
-          fill="url(#accent)" opacity="0.95"/>
-    <path d="M0 50 C0 50 -22 20 -22 0 C-22 -20 0 -50 0 -50"
-          fill="#fca5a5" opacity="0.7"/>
+  <!-- Logo: red water drop (matches the brand mark) -->
+  <g transform="translate(80, 60)">
+    <!-- Teardrop: pointed top, rounded bottom -->
+    <path d="M70,0
+             C50,28 18,72 18,114
+             C18,150 41,176 70,176
+             C99,176 122,150 122,114
+             C122,72 90,28 70,0 Z"
+          fill="url(#accent)"/>
+    <!-- Inner highlight — subtle lighter crescent on the right -->
+    <path d="M70,18
+             C58,40 36,76 36,112
+             C36,134 48,150 64,154
+             C58,142 54,128 54,114
+             C54,82 66,44 78,22 Z"
+          fill="#fca5a5" opacity="0.55"/>
   </g>
 
-  <!-- Wordmark "leakd" -->
+  <!-- Wordmark "Leakd" -->
   <text x="80" y="290" font-family="DM Sans, system-ui, sans-serif" font-weight="700"
-        font-size="84" fill="#fafaf9" letter-spacing="-2">leakd</text>
+        font-size="84" fill="#fafaf9" letter-spacing="-2">Leakd</text>
 
   <!-- Tagline -->
   <text x="80" y="345" font-family="DM Sans, system-ui, sans-serif" font-weight="500"
@@ -43,7 +53,7 @@
   <g transform="translate(80, 400)" font-family="DM Sans, system-ui, sans-serif" font-weight="600" font-size="15">
     <g>
       <rect x="0" y="0" width="195" height="44" rx="22" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="1"/>
-      <text x="98" y="29" fill="#fca5a5" text-anchor="middle">16 languages</text>
+      <text x="98" y="29" fill="#fca5a5" text-anchor="middle">28 languages</text>
     </g>
     <g transform="translate(210, 0)">
       <rect x="0" y="0" width="205" height="44" rx="22" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="1"/>
