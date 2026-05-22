@@ -610,6 +610,7 @@
   "pro.welcome": "Pro felhasználó vagy",
   "reset.confirm1": "Ez minden előfizetést és beállítást töröl erről az eszközről. Folytatod?",
   "reset.confirm2": "Biztosan? Ezt nem lehet visszavonni.",
+  "search.clear": "Keresés törlése",
   "search.noResults": "Nincs találat",
   "search.placeholder": "Előfizetés keresése…",
   "share.addFirst": "Előbb adj hozzá néhány előfizetést",

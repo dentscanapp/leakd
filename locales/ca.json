@@ -610,6 +610,7 @@
   "pro.welcome": "Tens Pro",
   "reset.confirm1": "Això esborra cada subscripció i configuració del dispositiu. Continuar?",
   "reset.confirm2": "De debò? Això no es pot desfer.",
+  "search.clear": "Esborra la cerca",
   "search.noResults": "Sense resultats",
   "search.placeholder": "Cerca subscripcions…",
   "share.addFirst": "Primer afegeix algunes subscripcions",

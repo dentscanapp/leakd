@@ -610,6 +610,7 @@
   "pro.welcome": "Pro利用中",
   "reset.confirm1": "このデバイスのすべてのサブスクと設定を消去します。続行？",
   "reset.confirm2": "本当に？元に戻せません。",
+  "search.clear": "検索をクリア",
   "search.noResults": "結果なし",
   "search.placeholder": "サブスクを検索…",
   "share.addFirst": "まずサブスクを追加",

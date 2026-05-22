@@ -610,6 +610,7 @@
   "pro.welcome": "У вас Pro",
   "reset.confirm1": "Это удалит все подписки и настройки с устройства. Продолжить?",
   "reset.confirm2": "Точно? Это нельзя отменить.",
+  "search.clear": "Очистить поиск",
   "search.noResults": "Нет результатов",
   "search.placeholder": "Поиск подписок…",
   "share.addFirst": "Сначала добавьте подписки",

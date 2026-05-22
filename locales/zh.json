@@ -610,6 +610,7 @@
   "pro.welcome": "Pro 用户",
   "reset.confirm1": "这将清除此设备上的所有订阅和设置。继续？",
   "reset.confirm2": "真的吗？此操作无法撤销。",
+  "search.clear": "清除搜索",
   "search.noResults": "无结果",
   "search.placeholder": "搜索订阅…",
   "share.addFirst": "请先添加订阅",

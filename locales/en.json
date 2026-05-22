@@ -610,6 +610,7 @@
   "pro.welcome": "You're on Pro",
   "reset.confirm1": "This wipes every subscription and setting on this device. Continue?",
   "reset.confirm2": "Really? This cannot be undone.",
+  "search.clear": "Clear search",
   "search.noResults": "No matches",
   "search.placeholder": "Search subscriptions…",
   "share.addFirst": "Add some subscriptions first",

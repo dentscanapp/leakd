@@ -610,6 +610,7 @@
   "pro.welcome": "Tu es Pro",
   "reset.confirm1": "Cela efface chaque abo et paramètre sur cet appareil. Continuer ?",
   "reset.confirm2": "Vraiment ? C'est irréversible.",
+  "search.clear": "Effacer la recherche",
   "search.noResults": "Aucun résultat",
   "search.placeholder": "Rechercher des abos…",
   "share.addFirst": "Ajoute d'abord des abos",

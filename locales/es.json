@@ -610,6 +610,7 @@
   "pro.welcome": "Eres Pro",
   "reset.confirm1": "Esto borra cada suscripción y ajuste de este dispositivo. ¿Continuar?",
   "reset.confirm2": "¿Seguro? No se puede deshacer.",
+  "search.clear": "Borrar búsqueda",
   "search.noResults": "Sin resultados",
   "search.placeholder": "Buscar suscripciones…",
   "share.addFirst": "Añade suscripciones primero",
