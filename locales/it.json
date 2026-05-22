@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} rinnovo",
   "calendar.dayDetailPlural": "{date} · {count} rinnovi",
   "calendar.empty": "Nessun rinnovo questo mese",
+  "calendar.leaks": "{count} perdite",
   "calendar.next": "Mese successivo",
   "calendar.prev": "Mese precedente",
   "calendar.thisMonth": "{count} rinnovi · {total} questo mese",

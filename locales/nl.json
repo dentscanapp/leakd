@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} verlenging",
   "calendar.dayDetailPlural": "{date} · {count} verlengingen",
   "calendar.empty": "Geen verlengingen deze maand",
+  "calendar.leaks": "{count} lekken",
   "calendar.next": "Volgende maand",
   "calendar.prev": "Vorige maand",
   "calendar.thisMonth": "{count} verlengingen · {total} deze maand",

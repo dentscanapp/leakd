@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} lần gia hạn",
   "calendar.dayDetailPlural": "{date} · {count} lần gia hạn",
   "calendar.empty": "Không có lần gia hạn nào trong tháng này",
+  "calendar.leaks": "{count} khoản rò rỉ",
   "calendar.next": "Tháng sau",
   "calendar.prev": "Tháng trước",
   "calendar.thisMonth": "{count} lần gia hạn · tổng {total} tháng này",

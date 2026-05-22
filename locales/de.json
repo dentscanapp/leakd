@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} Verlängerung",
   "calendar.dayDetailPlural": "{date} · {count} Verlängerungen",
   "calendar.empty": "Keine Verlängerungen diesen Monat",
+  "calendar.leaks": "{count} Lecks",
   "calendar.next": "Nächster Monat",
   "calendar.prev": "Vorheriger Monat",
   "calendar.thisMonth": "{count} Verlängerungen · {total} diesen Monat",

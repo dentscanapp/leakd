@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} поновлення",
   "calendar.dayDetailPlural": "{date} · {count} поновлень",
   "calendar.empty": "Цього місяця поновлень немає",
+  "calendar.leaks": "{count} витоків",
   "calendar.next": "Наступний місяць",
   "calendar.prev": "Попередній місяць",
   "calendar.thisMonth": "{count} поновлень · {total} цього місяця",

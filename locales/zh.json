@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} 次",
   "calendar.dayDetailPlural": "{date} · {count} 次",
   "calendar.empty": "本月没有续订",
+  "calendar.leaks": "{count} 项泄漏",
   "calendar.next": "下个月",
   "calendar.prev": "上个月",
   "calendar.thisMonth": "{count} 次续订 · 本月 {total}",

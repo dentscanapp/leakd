@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} megújulás",
   "calendar.dayDetailPlural": "{date} · {count} megújulás",
   "calendar.empty": "Nincs megújulás ebben a hónapban",
+  "calendar.leaks": "{count} szivárgás",
   "calendar.next": "Következő hónap",
   "calendar.prev": "Előző hónap",
   "calendar.thisMonth": "{count} megújulás · {total} ebben a hónapban",

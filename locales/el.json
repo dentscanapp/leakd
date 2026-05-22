@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} ανανέωση",
   "calendar.dayDetailPlural": "{date} · {count} ανανεώσεις",
   "calendar.empty": "Καμία ανανέωση αυτόν τον μήνα",
+  "calendar.leaks": "{count} διαρροές",
   "calendar.next": "Επόμενος μήνας",
   "calendar.prev": "Προηγούμενος μήνας",
   "calendar.thisMonth": "{count} ανανεώσεις · {total} αυτόν τον μήνα",

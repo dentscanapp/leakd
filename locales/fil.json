@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} renewal",
   "calendar.dayDetailPlural": "{date} · {count} na renewal",
   "calendar.empty": "Walang renewals ngayong buwan",
+  "calendar.leaks": "{count} leaks",
   "calendar.next": "Susunod na buwan",
   "calendar.prev": "Nakaraang buwan",
   "calendar.thisMonth": "{count} renewals · {total} ngayong buwan",

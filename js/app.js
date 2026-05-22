@@ -1159,17 +1159,56 @@
     let html = '<div class="cal-weekdays">';
     weekdays.forEach(w => { html += `<div class="cal-weekday">${escHtml(w)}</div>`; });
     html += '</div>';
-    grid.weeks.forEach(week => {
-      html += '<div class="cal-week">';
+    const weekTotals = grid.weeks.map(week => {
+      return week.reduce((sum, cell) => sum + (cell ? cell.total : 0), 0);
+    });
+    const maxWeekTotal = Math.max(...weekTotals);
+
+    grid.weeks.forEach((week, weekIndex) => {
+      const weekTotal = weekTotals[weekIndex];
+      let weekClass = 'cal-week';
+      if (maxWeekTotal > 0) {
+        if (weekTotal === 0) weekClass += ' cal-week-calm';
+        else if (weekTotal >= 0.55 * maxWeekTotal) weekClass += ' cal-week-dense';
+      }
+      html += `<div class="${weekClass}">`;
       week.forEach(cell => {
         if (!cell) {
           html += '<div class="cal-cell cal-cell-empty"></div>';
         } else {
           const cls = 'cal-cell' + (cell.isToday ? ' is-today' : '') + (cell.hasRenewals ? ' has-renewals' : '');
-          html += `<button class="${cls}" data-day="${cell.day}">
-            <span class="cal-day-num">${cell.day}</span>
-            ${cell.hasRenewals ? '<span class="cal-dot"></span>' : ''}
-          </button>`;
+          let cellContentHtml = `<span class="cal-day-num">${cell.day}</span>`;
+          if (cell.hasRenewals) {
+            const renewals = cell.renewals;
+            if (renewals.length === 1) {
+              const r = renewals[0];
+              const brand = window.LeakdBrands ? window.LeakdBrands.badge(r.name, r.category) : { bg: '#ef4444' };
+              const priceText = formatPrice(r.price, r.currency).split('.')[0];
+              const shortName = r.name.length > 7 ? r.name.slice(0, 6) + '…' : r.name;
+              cellContentHtml += `
+                <div class="cal-cell-inner-brand">
+                  <span class="cal-brand-dot" style="background: ${brand.bg}"></span>
+                  <span class="cal-brand-name">${escHtml(shortName)}</span>
+                  <span class="cal-brand-price">${escHtml(priceText)}</span>
+                </div>
+              `;
+            } else {
+              const totalText = formatPrice(cell.total).split('.')[0];
+              cellContentHtml += `
+                <div class="cal-cell-inner-brand">
+                  <div class="cal-brand-dots-row">
+                    ${renewals.slice(0, 3).map(r => {
+                      const brand = window.LeakdBrands ? window.LeakdBrands.badge(r.name, r.category) : { bg: '#ef4444' };
+                      return `<span class="cal-brand-dot" style="background: ${brand.bg}"></span>`;
+                    }).join('')}
+                  </div>
+                  <span class="cal-brand-name">${t('calendar.leaks', { count: renewals.length })}</span>
+                  <span class="cal-brand-price">${escHtml(totalText)}</span>
+                </div>
+              `;
+            }
+          }
+          html += `<button class="${cls}" data-day="${cell.day}">${cellContentHtml}</button>`;
         }
       });
       html += '</div>';

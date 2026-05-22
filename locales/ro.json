@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} reînnoire",
   "calendar.dayDetailPlural": "{date} · {count} reînnoiri",
   "calendar.empty": "Nicio reînnoire luna aceasta",
+  "calendar.leaks": "{count} scurgeri",
   "calendar.next": "Luna următoare",
   "calendar.prev": "Luna precedentă",
   "calendar.thisMonth": "{count} reînnoiri · {total} luna aceasta",

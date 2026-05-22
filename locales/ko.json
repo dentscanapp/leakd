@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count}건",
   "calendar.dayDetailPlural": "{date} · {count}건",
   "calendar.empty": "이번 달 갱신 없음",
+  "calendar.leaks": "{count}개 누출",
   "calendar.next": "다음 달",
   "calendar.prev": "이전 달",
   "calendar.thisMonth": "{count}건 갱신 · 이번 달 {total}",

@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count}件",
   "calendar.dayDetailPlural": "{date} · {count}件",
   "calendar.empty": "今月の更新なし",
+  "calendar.leaks": "{count}件のリーク",
   "calendar.next": "翌月",
   "calendar.prev": "前月",
   "calendar.thisMonth": "{count}件の更新 · 今月{total}",

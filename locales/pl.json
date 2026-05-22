@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} odnowienie",
   "calendar.dayDetailPlural": "{date} · {count} odnowień",
   "calendar.empty": "Brak odnowień w tym miesiącu",
+  "calendar.leaks": "{count} wycieków",
   "calendar.next": "Następny miesiąc",
   "calendar.prev": "Poprzedni miesiąc",
   "calendar.thisMonth": "{count} odnowień · {total} w tym miesiącu",

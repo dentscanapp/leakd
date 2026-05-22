@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} pembaruan",
   "calendar.dayDetailPlural": "{date} · {count} pembaruan",
   "calendar.empty": "Tidak ada pembaruan bulan ini",
+  "calendar.leaks": "{count} kebocoran",
   "calendar.next": "Bulan berikutnya",
   "calendar.prev": "Bulan sebelumnya",
   "calendar.thisMonth": "{count} pembaruan · total {total} bulan ini",

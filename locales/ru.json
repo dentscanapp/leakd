@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} продление",
   "calendar.dayDetailPlural": "{date} · {count} продлений",
   "calendar.empty": "Нет продлений в этом месяце",
+  "calendar.leaks": "{count} утечек",
   "calendar.next": "Следующий месяц",
   "calendar.prev": "Предыдущий месяц",
   "calendar.thisMonth": "{count} продлений · {total} в этом месяце",

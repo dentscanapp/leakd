@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} renewal",
   "calendar.dayDetailPlural": "{date} · {count} renewals",
   "calendar.empty": "No renewals this month",
+  "calendar.leaks": "{count} leaks",
   "calendar.next": "Next month",
   "calendar.prev": "Previous month",
   "calendar.thisMonth": "{count} renewals · {total} this month",

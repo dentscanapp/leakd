@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} obnova",
   "calendar.dayDetailPlural": "{date} · {count} obnov",
   "calendar.empty": "Žádné obnovy tento měsíc",
+  "calendar.leaks": "{count} úniků",
   "calendar.next": "Další měsíc",
   "calendar.prev": "Předchozí měsíc",
   "calendar.thisMonth": "{count} obnov · {total} tento měsíc",

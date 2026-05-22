@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} obnova",
   "calendar.dayDetailPlural": "{date} · {count} obnova",
   "calendar.empty": "Nema obnova ovaj mjesec",
+  "calendar.leaks": "{count} curenja",
   "calendar.next": "Sljedeći mjesec",
   "calendar.prev": "Prethodni mjesec",
   "calendar.thisMonth": "{count} obnova · {total} ovaj mjesec",

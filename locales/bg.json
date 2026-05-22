@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} подновяване",
   "calendar.dayDetailPlural": "{date} · {count} подновявания",
   "calendar.empty": "Няма подновявания този месец",
+  "calendar.leaks": "{count} изтичания",
   "calendar.next": "Следващ месец",
   "calendar.prev": "Предишен месец",
   "calendar.thisMonth": "{count} подновявания · {total} този месец",

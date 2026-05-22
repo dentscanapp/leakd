@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} förnyelse",
   "calendar.dayDetailPlural": "{date} · {count} förnyelser",
   "calendar.empty": "Inga förnyelser denna månad",
+  "calendar.leaks": "{count} läckor",
   "calendar.next": "Nästa månad",
   "calendar.prev": "Föregående månad",
   "calendar.thisMonth": "{count} förnyelser · {total} denna månad",

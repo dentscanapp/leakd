@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} नवीनीकरण",
   "calendar.dayDetailPlural": "{date} · {count} नवीनीकरण",
   "calendar.empty": "इस महीने कोई नवीनीकरण नहीं",
+  "calendar.leaks": "{count} रिसाव",
   "calendar.next": "अगला महीना",
   "calendar.prev": "पिछला महीना",
   "calendar.thisMonth": "{count} नवीनीकरण · {total} इस महीने",

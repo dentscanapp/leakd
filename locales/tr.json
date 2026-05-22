@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} yenileme",
   "calendar.dayDetailPlural": "{date} · {count} yenileme",
   "calendar.empty": "Bu ay yenileme yok",
+  "calendar.leaks": "{count} sızıntı",
   "calendar.next": "Sonraki ay",
   "calendar.prev": "Önceki ay",
   "calendar.thisMonth": "{count} yenileme · bu ay toplam {total}",

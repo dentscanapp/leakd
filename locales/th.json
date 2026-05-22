@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} ต่ออายุ",
   "calendar.dayDetailPlural": "{date} · {count} ต่ออายุ",
   "calendar.empty": "ไม่มีการต่ออายุเดือนนี้",
+  "calendar.leaks": "{count} รายการรั่ว",
   "calendar.next": "เดือนถัดไป",
   "calendar.prev": "เดือนก่อนหน้า",
   "calendar.thisMonth": "{count} ต่ออายุ · {total} เดือนนี้",

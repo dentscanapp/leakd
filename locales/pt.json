@@ -78,6 +78,7 @@
   "calendar.dayDetail": "{date} · {count} renovação",
   "calendar.dayDetailPlural": "{date} · {count} renovações",
   "calendar.empty": "Sem renovações este mês",
+  "calendar.leaks": "{count} fugas",
   "calendar.next": "Mês seguinte",
   "calendar.prev": "Mês anterior",
   "calendar.thisMonth": "{count} renovações · {total} este mês",
