@@ -22,6 +22,8 @@
     'leakd_goal',
     'leakd_activity',
     'leakd_tour_done',
+    'leakd_streak',
+    'leakd_terms_accepted',
   ];
 
   const FORMAT = 'leakd-backup-v1';

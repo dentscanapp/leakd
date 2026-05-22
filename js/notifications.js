@@ -237,8 +237,8 @@
     }
     const c = currency || '$';
     // ISO code → look up symbol via LeakdCurrency if available
-    if (/^[A-Z]{3}$/.test(c) && window.LeakdCurrency && window.LeakdCurrency.symbolFor) {
-      const sym = window.LeakdCurrency.symbolFor(c) || c + ' ';
+    if (/^[A-Z]{3}$/.test(c) && window.LeakdCurrency && window.LeakdCurrency.getSymbol) {
+      const sym = window.LeakdCurrency.getSymbol(c) || c + ' ';
       if (c === 'HUF') return Math.round(a).toLocaleString() + ' Ft';
       if (c === 'JPY' || c === 'KRW') return sym + Math.round(a).toLocaleString();
       return sym + a.toFixed(2);

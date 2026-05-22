@@ -186,7 +186,7 @@
     },
 
     async restore() {
-      const service = await this.getService();
+      const { service } = await this.getService();
       if (!service) return { ok: false };
 
       try {

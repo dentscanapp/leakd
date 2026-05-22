@@ -2178,9 +2178,12 @@
     const P = window.LeakdPro;
     if (!P) return;
     const active = P.isPro();
-    // $('proPill').style.display = active ? 'inline-flex' : 'none';
-    // $('menuProLabel').textContent = active ? t('menu.proOn') : t('menu.pro');
-    // $('menuProSub').textContent = active ? t('menu.proOnSub') : t('menu.proSub');
+    const pill = $('proPill');
+    if (pill) pill.style.display = active ? 'inline-flex' : 'none';
+    const label = $('menuProLabel');
+    if (label) label.textContent = active ? t('menu.proOn') : t('menu.pro');
+    const sub = $('menuProSub');
+    if (sub) sub.textContent = active ? t('menu.proOnSub') : t('menu.proSub');
   }
 
   // ─── Menu ───
@@ -3432,7 +3435,7 @@
     $('openMenu').addEventListener('click', openMenuModal);
     $('closeMenuModal').addEventListener('click', closeMenuModal);
     $('menuModal').addEventListener('click', e => { if (e.target === $('menuModal')) closeMenuModal(); });
-    // $('menuPro').addEventListener('click', () => { closeMenuModal(); openProModal(); });
+    $('menuPro').addEventListener('click', () => { closeMenuModal(); openProModal(); });
     $('menuYearend').addEventListener('click', () => { closeMenuModal(); openYearendModal(); });
     $('menuImport').addEventListener('click', () => { closeMenuModal(); openImportModal(); });
     $('menuExport').addEventListener('click', () => { closeMenuModal(); exportCSV(); });
