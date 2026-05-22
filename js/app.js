@@ -2130,7 +2130,7 @@
     $('emailRemInput').value = state.email || '';
     const status = $('emailRemStatus');
     const disableBtn = $('emailRemDisableBtn');
-    const saveBtn = $('emailRemSaveBtn') || $('saveEmailRemBtn');
+    const saveBtn = $('saveEmailRemBtn');
     if (state.enabled && state.email) {
       status.textContent = t('emailrem.enabledStatus', { email: state.email });
       disableBtn.style.display = '';
