@@ -119,6 +119,138 @@
     { match: /canal\+?/i,           name: 'Canal+ FR',        price: 22.99,   currency: 'EUR', cat: 'Entertainment', cancel: 'https://client.canalplus.com/abonnement/' },
     { match: /deezer/i,             name: 'Deezer Premium',   price: 11.99,   currency: 'EUR', cat: 'Music', cancel: 'https://www.deezer.com/account/subscription' },
     { match: /navigo|ile-de-france\s*mobilit/i, name: 'Pass Navigo', price: 86.40, currency: 'EUR', cat: 'Other', cancel: 'https://www.iledefrance-mobilites.fr/en/tickets-fares/media/navigo-travel-card' },
+    // ── Expansion: 100+ additional services with cancel URLs ──
+    // Productivity & Work
+    { match: /trello/i,               name: 'Trello Premium',    price: 10.00, cat: 'Work', cancel: 'https://trello.com/your/account' },
+    { match: /asana/i,                name: 'Asana Premium',     price: 10.99, cat: 'Work', cancel: 'https://app.asana.com/0/billing' },
+    { match: /monday\.com|monday/i,   name: 'Monday.com',        price: 9.00,  cat: 'Work', cancel: 'https://auth.monday.com/account/billing' },
+    { match: /clickup/i,              name: 'ClickUp',           price: 7.00,  cat: 'Work', cancel: 'https://app.clickup.com/settings/billing' },
+    { match: /todoist/i,              name: 'Todoist Pro',       price: 4.00,  cat: 'Work', cancel: 'https://todoist.com/app/settings/subscription' },
+    { match: /evernote/i,             name: 'Evernote',          price: 14.99, cat: 'Work', cancel: 'https://www.evernote.com/Settings.action' },
+    { match: /miro/i,                 name: 'Miro',              price: 8.00,  cat: 'Work', cancel: 'https://miro.com/app/settings/company/billing/' },
+    { match: /airtable/i,             name: 'Airtable',          price: 20.00, cat: 'Work', cancel: 'https://airtable.com/account/billing' },
+    { match: /coda\.io|coda/i,        name: 'Coda',              price: 10.00, cat: 'Work', cancel: 'https://coda.io/account' },
+    { match: /basecamp/i,             name: 'Basecamp',          price: 15.00, cat: 'Work', cancel: 'https://launchpad.37signals.com/account' },
+    { match: /loom/i,                 name: 'Loom',              price: 12.50, cat: 'Work', cancel: 'https://www.loom.com/account/billing' },
+    { match: /calendly/i,             name: 'Calendly',          price: 10.00, cat: 'Work', cancel: 'https://calendly.com/app/admin/billing' },
+    { match: /hubspot/i,              name: 'HubSpot',           price: 20.00, cat: 'Work', cancel: 'https://app.hubspot.com/account-and-billing' },
+    { match: /salesforce/i,           name: 'Salesforce',        price: 25.00, cat: 'Work', cancel: 'https://login.salesforce.com/' },
+    { match: /freshdesk|freshworks/i, name: 'Freshworks',        price: 15.00, cat: 'Work', cancel: 'https://billing.freshworks.com/' },
+    // Design & Creative
+    { match: /sketch/i,               name: 'Sketch',            price: 10.00, cat: 'Work', cancel: 'https://www.sketch.com/settings/billing/' },
+    { match: /invision/i,             name: 'InVision',          price: 7.95,  cat: 'Work', cancel: 'https://projects.invisionapp.com/account/billing' },
+    { match: /procreate\s*dreams/i,   name: 'Procreate Dreams',  price: 2.99,  cat: 'Work', cancel: 'https://support.apple.com/en-us/118428' },
+    { match: /shutterstock/i,         name: 'Shutterstock',      price: 29.00, cat: 'Work', cancel: 'https://www.shutterstock.com/account/plans' },
+    { match: /envato\s*elements/i,    name: 'Envato Elements',   price: 16.50, cat: 'Work', cancel: 'https://account.envato.com/subscriptions' },
+    // Developer & DevOps
+    { match: /jetbrains/i,            name: 'JetBrains',         price: 24.90, cat: 'Work', cancel: 'https://account.jetbrains.com/licenses' },
+    { match: /vercel/i,               name: 'Vercel Pro',        price: 20.00, cat: 'Work', cancel: 'https://vercel.com/account/billing' },
+    { match: /netlify/i,              name: 'Netlify Pro',       price: 19.00, cat: 'Work', cancel: 'https://app.netlify.com/account/billing' },
+    { match: /heroku/i,               name: 'Heroku',            price: 5.00,  cat: 'Work', cancel: 'https://dashboard.heroku.com/account/billing' },
+    { match: /digitalocean/i,         name: 'DigitalOcean',      price: 5.00,  cat: 'Cloud', cancel: 'https://cloud.digitalocean.com/account/billing' },
+    { match: /linode|akamai\s*cloud/i, name: 'Linode',           price: 5.00,  cat: 'Cloud', cancel: 'https://cloud.linode.com/account/billing' },
+    { match: /aws/i,                  name: 'AWS',               price: 10.00, cat: 'Cloud', cancel: 'https://console.aws.amazon.com/billing/home' },
+    { match: /cloudflare/i,           name: 'Cloudflare',        price: 20.00, cat: 'Work', cancel: 'https://dash.cloudflare.com/?to=/:account/billing' },
+    { match: /docker/i,               name: 'Docker Pro',        price: 5.00,  cat: 'Work', cancel: 'https://hub.docker.com/billing' },
+    { match: /npm\s*pro/i,            name: 'npm Pro',           price: 7.00,  cat: 'Work', cancel: 'https://www.npmjs.com/settings/billing' },
+    { match: /sentry/i,               name: 'Sentry',            price: 26.00, cat: 'Work', cancel: 'https://sentry.io/settings/billing/' },
+    { match: /datadog/i,              name: 'Datadog',           price: 15.00, cat: 'Work', cancel: 'https://app.datadoghq.com/billing/plan' },
+    // Communication & Meetings
+    { match: /teams/i,                name: 'Microsoft Teams',   price: 4.00,  cat: 'Work', cancel: 'https://admin.microsoft.com/adminportal/home#/subscriptions' },
+    { match: /webex/i,                name: 'Webex',             price: 13.50, cat: 'Work', cancel: 'https://settings.webex.com/billing' },
+    { match: /discord\s*nitro/i,      name: 'Discord Nitro',     price: 9.99,  cat: 'Entertainment', cancel: 'https://discord.com/settings/subscriptions' },
+    { match: /telegram\s*premium/i,   name: 'Telegram Premium',  price: 4.99,  cat: 'Other', cancel: 'https://my.telegram.org/' },
+    { match: /whatsapp\s*business/i,  name: 'WhatsApp Business', price: 0.00,  cat: 'Work', cancel: null },
+    // VPN & Security (additional)
+    { match: /cyberghost/i,           name: 'CyberGhost',        price: 12.99, cat: 'Work', cancel: 'https://my.cyberghostvpn.com/account/subscription' },
+    { match: /pia|private\s*internet/i, name: 'PIA VPN',         price: 11.95, cat: 'Work', cancel: 'https://www.privateinternetaccess.com/account' },
+    { match: /tunnelbear/i,           name: 'TunnelBear',        price: 3.33,  cat: 'Work', cancel: 'https://www.tunnelbear.com/account' },
+    { match: /dashlane/i,             name: 'Dashlane',          price: 4.99,  cat: 'Work', cancel: 'https://app.dashlane.com/my-account' },
+    { match: /keeper/i,               name: 'Keeper',            price: 2.92,  cat: 'Work', cancel: 'https://keepersecurity.com/account/' },
+    { match: /norton/i,               name: 'Norton 360',        price: 9.99,  cat: 'Work', cancel: 'https://my.norton.com/extspa/subscriptions' },
+    { match: /mcafee/i,               name: 'McAfee',            price: 9.99,  cat: 'Work', cancel: 'https://home.mcafee.com/root/myaccount.aspx' },
+    { match: /kaspersky/i,            name: 'Kaspersky',         price: 4.99,  cat: 'Work', cancel: 'https://my.kaspersky.com/subscriptions' },
+    { match: /malwarebytes/i,         name: 'Malwarebytes',      price: 3.75,  cat: 'Work', cancel: 'https://my.malwarebytes.com/account/subscriptions' },
+    // Email & Domains
+    { match: /namecheap/i,            name: 'Namecheap',         price: 12.98, cat: 'Work', cancel: 'https://ap.www.namecheap.com/dashboard' },
+    { match: /godaddy/i,              name: 'GoDaddy',           price: 11.99, cat: 'Work', cancel: 'https://account.godaddy.com/products' },
+    { match: /squarespace/i,          name: 'Squarespace',       price: 16.00, cat: 'Work', cancel: 'https://account.squarespace.com/billing' },
+    { match: /wix/i,                  name: 'Wix Premium',       price: 16.00, cat: 'Work', cancel: 'https://www.wix.com/account/billing' },
+    { match: /wordpress\.com|wpcom/i, name: 'WordPress.com',     price: 7.00,  cat: 'Work', cancel: 'https://wordpress.com/me/purchases' },
+    { match: /mailchimp/i,            name: 'Mailchimp',         price: 13.00, cat: 'Work', cancel: 'https://admin.mailchimp.com/account/billing-history/' },
+    { match: /convertkit/i,           name: 'ConvertKit',        price: 9.00,  cat: 'Work', cancel: 'https://app.convertkit.com/account/billing' },
+    // Education & Learning
+    { match: /skillshare/i,           name: 'Skillshare',        price: 13.99, cat: 'Other', cancel: 'https://www.skillshare.com/settings/payments' },
+    { match: /masterclass/i,          name: 'MasterClass',       price: 10.00, cat: 'Other', cancel: 'https://www.masterclass.com/settings/subscriptions' },
+    { match: /coursera/i,             name: 'Coursera Plus',     price: 49.00, cat: 'Other', cancel: 'https://www.coursera.org/my-purchases' },
+    { match: /udemy/i,                name: 'Udemy Pro',         price: 19.99, cat: 'Other', cancel: 'https://www.udemy.com/user/edit-account/' },
+    { match: /brilliant/i,            name: 'Brilliant',         price: 13.49, cat: 'Other', cancel: 'https://brilliant.org/account/' },
+    { match: /babbel/i,               name: 'Babbel',            price: 13.95, cat: 'Other', cancel: 'https://my.babbel.com/subscription' },
+    { match: /rosetta\s*stone/i,      name: 'Rosetta Stone',     price: 11.99, cat: 'Other', cancel: 'https://support.rosettastone.com/articles/en_US/Manage-Your-Subscription' },
+    { match: /blinkist/i,             name: 'Blinkist',          price: 7.49,  cat: 'Other', cancel: 'https://www.blinkist.com/nc/settings/account' },
+    // Dating & Social
+    { match: /tinder/i,               name: 'Tinder',            price: 14.99, cat: 'Other', cancel: 'https://account.gotinder.com/subscription' },
+    { match: /bumble/i,               name: 'Bumble Premium',    price: 29.99, cat: 'Other', cancel: 'https://bumble.com/get-started' },
+    { match: /hinge/i,                name: 'Hinge+',            price: 29.99, cat: 'Other', cancel: null },
+    { match: /match\.com|match/i,     name: 'Match.com',         price: 21.99, cat: 'Other', cancel: 'https://www.match.com/dnsr/cpx/subscription' },
+    { match: /okcupid/i,              name: 'OkCupid Premium',   price: 19.99, cat: 'Other', cancel: 'https://www.okcupid.com/settings/subscription' },
+    // Fitness (additional)
+    { match: /nike\s*training|ntc/i,  name: 'Nike Training Club', price: 14.99, cat: 'Fitness', cancel: 'https://www.nike.com/member/settings' },
+    { match: /\bwhoop\b/i,            name: 'WHOOP',             price: 30.00, cat: 'Fitness', cancel: 'https://app.whoop.com/account/membership' },
+    { match: /noom/i,                 name: 'Noom',              price: 59.00, cat: 'Fitness', cancel: 'https://web.noom.com/account/' },
+    { match: /apple\s*fitness\+?/i,   name: 'Apple Fitness+',    price: 9.99,  cat: 'Fitness', cancel: 'https://support.apple.com/en-us/118428' },
+    { match: /classpass/i,            name: 'ClassPass',         price: 49.00, cat: 'Fitness', cancel: 'https://classpass.com/account/membership' },
+    // Food Delivery & Meal Kits (additional)
+    { match: /uber\s*one/i,           name: 'Uber One',          price: 9.99,  cat: 'Food', cancel: 'https://account.uber.com/spending' },
+    { match: /doordash/i,             name: 'DashPass',          price: 9.99,  cat: 'Food', cancel: 'https://www.doordash.com/consumer/membership/' },
+    { match: /grubhub/i,              name: 'Grubhub+',          price: 9.99,  cat: 'Food', cancel: 'https://www.grubhub.com/account/membership' },
+    { match: /instacart/i,            name: 'Instacart+',        price: 9.99,  cat: 'Food', cancel: 'https://www.instacart.com/store/account/manage_membership' },
+    { match: /blue\s*apron/i,         name: 'Blue Apron',        price: 47.95, cat: 'Food', cancel: 'https://www.blueapron.com/account' },
+    { match: /factor|factor_/i,       name: 'Factor Meals',      price: 43.99, cat: 'Food', cancel: 'https://www.factor75.com/my-account' },
+    // Cloud Storage (additional)
+    { match: /backblaze/i,            name: 'Backblaze',         price: 7.00,  cat: 'Cloud', cancel: 'https://secure.backblaze.com/user_overview.htm' },
+    { match: /idrive/i,               name: 'IDrive',            price: 5.95,  cat: 'Cloud', cancel: 'https://www.idrive.com/idrive/login/loginForm' },
+    { match: /mega/i,                 name: 'MEGA Pro',          price: 4.99,  cat: 'Cloud', cancel: 'https://mega.nz/account' },
+    { match: /sync\.com/i,            name: 'Sync.com',          price: 8.00,  cat: 'Cloud', cancel: 'https://cp.sync.com/account' },
+    // Books & Audio (additional)
+    { match: /bookmate/i,             name: 'Bookmate',          price: 8.99,  cat: 'Entertainment', cancel: 'https://bookmate.com/settings' },
+    { match: /kobo\s*plus/i,          name: 'Kobo Plus',         price: 7.99,  cat: 'Entertainment', cancel: 'https://www.kobo.com/account' },
+    // Gaming (additional)
+    { match: /ea\s*play/i,            name: 'EA Play',           price: 4.99,  cat: 'Entertainment', cancel: 'https://myaccount.ea.com/cp-ui/subscriptions' },
+    { match: /ubisoft\+?/i,           name: 'Ubisoft+',          price: 14.99, cat: 'Entertainment', cancel: 'https://store.ubi.com/account' },
+    { match: /geforce\s*now/i,        name: 'GeForce NOW',       price: 9.99,  cat: 'Entertainment', cancel: 'https://www.nvidia.com/en-us/account/gfn/' },
+    { match: /humble\s*(choice|bundle)/i, name: 'Humble Choice', price: 11.99, cat: 'Entertainment', cancel: 'https://www.humblebundle.com/subscription' },
+    { match: /crunchyroll/i,          name: 'Crunchyroll',       price: 7.99,  cat: 'Entertainment', cancel: 'https://www.crunchyroll.com/account/subscription' },
+    { match: /funimation/i,           name: 'Funimation',        price: 7.99,  cat: 'Entertainment', cancel: 'https://www.funimation.com/account/' },
+    // News & Media (additional)
+    { match: /washington\s*post|wapo/i, name: 'Washington Post', price: 10.00, cat: 'News', cancel: 'https://www.washingtonpost.com/my-account/subscriptions/' },
+    { match: /guardian/i,             name: 'The Guardian',       price: 5.00,  cat: 'News', cancel: 'https://manage.theguardian.com/' },
+    { match: /wired/i,                name: 'WIRED',              price: 4.99,  cat: 'News', cancel: 'https://www.wired.com/account/subscriptions' },
+    { match: /atlantic/i,             name: 'The Atlantic',       price: 7.99,  cat: 'News', cancel: 'https://accounts.theatlantic.com/accounts/subscription/' },
+    { match: /new\s*yorker/i,         name: 'The New Yorker',     price: 6.99,  cat: 'News', cancel: 'https://w1.buysub.com/loc/NYR/ATGFail498' },
+    { match: /bloomberg/i,            name: 'Bloomberg',          price: 34.99, cat: 'News', cancel: 'https://login.bloomberg.com/account' },
+    { match: /reuters/i,              name: 'Reuters',            price: 34.99, cat: 'News', cancel: 'https://www.reuters.com/account/' },
+    { match: /bild\+?/i,              name: 'BILDplus',           price: 7.99,  currency: 'EUR', cat: 'News', cancel: 'https://mein.bild.de/aboverwaltung/' },
+    { match: /sueddeutsche|sz\+/i,    name: 'SZ Plus',            price: 14.99, currency: 'EUR', cat: 'News', cancel: 'https://service.sueddeutsche.de/' },
+    { match: /corriere/i,             name: 'Corriere della Sera', price: 9.99, currency: 'EUR', cat: 'News', cancel: 'https://abbonamenti.corriere.it/profilo' },
+    { match: /la\s*repubblica/i,      name: 'La Repubblica',      price: 9.99,  currency: 'EUR', cat: 'News', cancel: 'https://abbonamenti.repubblica.it/profilo' },
+    // Streaming — additional international
+    { match: /peacock/i,              name: 'Peacock',            price: 5.99,  cat: 'Entertainment', cancel: 'https://www.peacocktv.com/account/subscription' },
+    { match: /discovery\+?/i,         name: 'Discovery+',         price: 4.99,  cat: 'Entertainment', cancel: 'https://www.discoveryplus.com/account' },
+    { match: /mubi/i,                 name: 'MUBI',               price: 11.99, cat: 'Entertainment', cancel: 'https://mubi.com/account' },
+    { match: /criterion\s*channel/i,  name: 'Criterion Channel',  price: 10.99, cat: 'Entertainment', cancel: 'https://www.criterionchannel.com/account' },
+    { match: /britbox/i,              name: 'BritBox',            price: 7.99,  cat: 'Entertainment', cancel: 'https://www.britbox.com/account/subscription' },
+    { match: /curiosity\s*stream/i,   name: 'CuriosityStream',    price: 2.99,  cat: 'Entertainment', cancel: 'https://app.curiositystream.com/settings/account' },
+    { match: /shudder/i,              name: 'Shudder',            price: 5.99,  cat: 'Entertainment', cancel: 'https://www.shudder.com/account' },
+    // European regional (additional)
+    { match: /yle\s*areena/i,         name: 'Yle Areena',         price: 0.00,  currency: 'EUR', cat: 'Entertainment', cancel: null },
+    { match: /nrk/i,                  name: 'NRK',                price: 0.00,  currency: 'NOK', cat: 'Entertainment', cancel: null },
+    { match: /svt\s*play/i,           name: 'SVT Play',           price: 0.00,  currency: 'SEK', cat: 'Entertainment', cancel: null },
+    { match: /tv2\s*play/i,           name: 'TV2 Play',           price: 89.00, currency: 'DKK', cat: 'Entertainment', cancel: 'https://play.tv2.dk/min-side' },
+    { match: /hbo\s*max/i,            name: 'HBO Max',            price: 12.99, currency: 'EUR', cat: 'Entertainment', cancel: 'https://www.max.com/account' },
+    { match: /movistar\+?/i,          name: 'Movistar+',          price: 10.00, currency: 'EUR', cat: 'Entertainment', cancel: 'https://www.movistar.es/particulares/Soporte/mimovistar/' },
+    { match: /filmin/i,               name: 'Filmin',             price: 7.99,  currency: 'EUR', cat: 'Entertainment', cancel: 'https://www.filmin.es/cuenta' },
+    { match: /bol\.com\s*select/i,    name: 'bol.com Select',     price: 12.99, currency: 'EUR', cat: 'Other', cancel: 'https://www.bol.com/nl/rnwy/account/select/' },
   ];
 
   // Find the cancel URL for an existing sub by name (used by the edit modal)
@@ -856,237 +988,15 @@
   }
 
   // ── Playbook step localization ──
-  // Same pattern as alternatives.js: canonical English steps, lookup table
-  // per language. Renderer calls trStep() to get the localized string.
-  const STEP_I18N = {
-    hu: {
-      // Netflix
-      'Open netflix.com and sign in': 'Nyisd meg a netflix.com-ot és jelentkezz be',
-      'Click your profile → Account': 'Kattints a profilra → Fiók',
-      'Click "Cancel Membership"': 'Kattints a "Tagság lemondása" gombra',
-      'Confirm cancellation': 'Erősítsd meg a lemondást',
-      // Spotify
-      'Go to spotify.com/account': 'Menj a spotify.com/account-ra',
-      'Click "Manage your plan"': 'Kattints a "Csomag kezelése" gombra',
-      'Click "Change plan" → "Cancel Premium"': '"Csomag módosítása" → "Premium lemondása"',
-      'Confirm — access continues until period ends': 'Erősítsd meg — a hozzáférés a periódus végéig megmarad',
-      // YouTube Premium
-      'Open youtube.com/paid_memberships': 'Nyisd meg a youtube.com/paid_memberships-et',
-      'Find YouTube Premium → "Deactivate"': 'Keresd a YouTube Premium-ot → "Deaktiválás"',
-      'Choose reason and confirm': 'Válassz okot és erősítsd meg',
-      // Apple Music
-      'iPhone: Settings → tap your name → Subscriptions': 'iPhone: Beállítások → koppints a nevedre → Előfizetések',
-      'Tap Apple Music → "Cancel Subscription"': 'Koppints Apple Music → "Előfizetés lemondása"',
-      'Confirm': 'Erősítsd meg',
-      // Disney+
-      'Sign in at disneyplus.com': 'Jelentkezz be a disneyplus.com-on',
-      'Click profile → Account → Subscription': 'Kattints profil → Fiók → Előfizetés',
-      '"Cancel Subscription" → confirm': '"Előfizetés lemondása" → erősítsd meg',
-      // HBO Max
-      'Open max.com → Settings → Subscription': 'Nyisd meg max.com → Beállítások → Előfizetés',
-      'Click "Manage subscription" → "Cancel"': 'Kattints "Előfizetés kezelése" → "Lemondás"',
-      // Amazon Prime
-      'Go to amazon.com/mc': 'Menj az amazon.com/mc-re',
-      'Find "Prime" → "End Membership"': 'Keresd "Prime" → "Tagság befejezése"',
-      'Click through 3 confirmation screens (Amazon tries to talk you out of it)': 'Kattints át 3 megerősítő képernyőn (az Amazon megpróbál lebeszélni)',
-      // ChatGPT Plus
-      'chatgpt.com → bottom-left avatar → Settings': 'chatgpt.com → bal-alsó avatar → Beállítások',
-      '"Subscription" → "Cancel plan"': '"Előfizetés" → "Csomag lemondása"',
-      // Claude Pro
-      'claude.ai → Settings → Billing': 'claude.ai → Beállítások → Számlázás',
-      'Click "Cancel subscription"': 'Kattints "Előfizetés lemondása"',
-      // Adobe CC
-      'WARNING: Adobe charges 50% of remaining contract if you cancel early': 'FIGYELEM: az Adobe a maradék szerződés 50%-át felszámolja korai lemondásnál',
-      'Go to account.adobe.com/plans': 'Menj az account.adobe.com/plans-re',
-      '"Cancel your plan" — they hide this behind multiple clicks': '"Csomag lemondása" — több kattintás mögé rejtik',
-      'Try the chat for a no-fee cancellation excuse': 'Próbáld a chatet díjmentes lemondási indokért',
-      'Document everything — Adobe is known to keep charging': 'Dokumentálj mindent — az Adobe ismert arról hogy tovább számláz',
-      // iCloud+
-      'iPhone: Settings → tap your name → iCloud → Manage Storage → Change Storage Plan': 'iPhone: Beállítások → név → iCloud → Tárhely kezelése → Csomag módosítása',
-      'Select "Downgrade options" → 5GB Free': 'Válaszd "Visszaminősítés" → 5GB Ingyenes',
-      // Microsoft 365
-      'account.microsoft.com/services': 'account.microsoft.com/services',
-      'Find Microsoft 365 → "Manage" → "Cancel subscription"': 'Keresd Microsoft 365 → "Kezelés" → "Előfizetés lemondása"',
-      'May need to wait until end of period for refund': 'A periódus végéig várni kell a visszatérítésért',
-      // NYT
-      'NYT requires a phone call or chat — no self-service cancel': 'A NYT telefont vagy chatet igényel — nincs önkiszolgáló lemondás',
-      'Go to myaccount.nytimes.com → Subscription → "Cancel"': 'myaccount.nytimes.com → Előfizetés → "Lemondás"',
-      'You will be redirected to chat': 'Át fognak irányítani chatre',
-      'Be firm, say "I want to cancel" and refuse the discount offers': 'Légy határozott, mondd "le akarom mondani" és utasíts el minden kedvezmény-ajánlatot',
-      // Audible
-      'audible.com/account/mship-cancel (only works on desktop)': 'audible.com/account/mship-cancel (csak desktopon)',
-      'Click through 4-5 "are you sure" screens': 'Kattints át 4-5 "biztos vagy benne" képernyőn',
-      'Use your remaining credits before cancelling': 'Használd fel a maradék krediteket lemondás előtt',
-      // LinkedIn Premium
-      'linkedin.com/premium/manage': 'linkedin.com/premium/manage',
-      '"Cancel subscription" — LinkedIn will offer 50% off, decline if you truly want out': '"Előfizetés lemondása" — a LinkedIn 50% kedvezményt fog kínálni, utasítsd el ha tényleg ki akarsz lépni',
-      // Peloton
-      'Sign in to members.onepeloton.com → Preferences → Subscriptions': 'Jelentkezz be members.onepeloton.com → Beállítások → Előfizetések',
-      'Membership → "Cancel membership"': 'Tagság → "Tagság lemondása"',
-      'If you bought hardware, the warranty stays — only membership is cancelled': 'Ha hardvert vettél, a garancia marad — csak a tagság szűnik',
-      // NordVPN
-      'my.nordaccount.com → Subscription': 'my.nordaccount.com → Előfizetés',
-      '"Cancel auto-renewal" (does NOT cancel immediately — they remember this)': '"Automatikus megújítás lemondása" (NEM mond le azonnal — erre figyelj)',
-      'Service continues until period ends': 'A szolgáltatás a periódus végéig folytatódik',
-      // OnlyFans
-      'Go to each subscribed creator': 'Menj minden alkotóhoz akire előfizettél',
-      'Toggle off "Renew automatically"': 'Kapcsold ki a "Automatikus megújítás"-t',
-      'No central cancel — must repeat per creator': 'Nincs központi lemondás — minden alkotónál külön',
-      // Patreon
-      'patreon.com/settings/memberships': 'patreon.com/settings/memberships',
-      'Find each pledge → "Edit" → "Cancel pledge"': 'Keresd minden vállalást → "Szerkesztés" → "Vállalás lemondása"',
-      // Wolt+
-      'Open Wolt app or wolt.com and sign in': 'Nyisd meg a Wolt alkalmazást vagy a wolt.com-ot és lépj be',
-      'Go to your Profile → Wolt+': 'Menj a Profilodra → Wolt+',
-      'Click "Manage Membership" or "Cancel Subscription" and confirm': 'Kattints a "Tagság kezelése" vagy "Előfizetés lemondása" gombra és erősítsd meg',
-      // Foodora Pro
-      'Open Foodora app or website and log in': 'Nyisd meg a Foodora alkalmazást vagy weboldalt és lépj be',
-      'Go to your Account → Foodora Pro': 'Menj a Fiókodra → Foodora Pro',
-      'Tap "Cancel subscription" and confirm': 'Koppints az "Előfizetés lemondása" gombra és erősítsd meg',
-      // Telekom
-      'Log in to the Telekom online portal or app': 'Lépj be a Telekom online ügyfélszolgálatra vagy az appba',
-      'Go to "Subscriptions" or "Contracts"': 'Keresd az "Előfizetések" vagy "Szerződések" menüt',
-      'For fixed term, check expiry. Otherwise, click "Modify/Cancel contract" or contact support via chat': 'Határozott idő esetén ellenőrizd a lejárati dátumot. Egyébként kattints a "Szerződés módosítása/felmondása" gombra, vagy vedd fel a kapcsolatot az ügyfélszolgálattal chaten',
-      // Yettel
-      'Log in to the Yettel app or website': 'Lépj be a Yettel alkalmazásba vagy a weboldalra',
-      'Under subscriptions, check your active tariff': 'Az előfizetéseid alatt ellenőrizd az aktív tarifacsomagodat',
-      'To cancel, you must request termination online, by phone, or visit a store if under loyalty contract': 'A lemondáshoz kezdeményezd a felmondást online, telefonon, vagy látogass el egy üzletbe, ha hűségidőd van',
-      // Vodafone
-      'Log in to your My Vodafone account': 'Lépj be a My Vodafone fiókodba',
-      'Under active services, review your contract loyalty period': 'Az aktív szolgáltatások alatt ellenőrizd a hűségidődet',
-      'Submit a cancellation request or use the support chat to terminate': 'Küldd el a lemondási igényt vagy használd a támogatói chatet a felmondáshoz',
-      // SkyShowtime
-      'Open skyshowtime.com and sign in': 'Nyisd meg a skyshowtime.com-ot és jelentkezz be',
-      'Go to your Account → Subscriptions': 'Menj a Fiók → Előfizetések menüpontba',
-      // RTL+ (HU)
-      'Log in to your RTL+ account': 'Lépj be az RTL+ fiókodba',
-      'Open your Profile and go to "Subscription management"': 'Nyisd meg a Profilodat és menj az "Előfizetés-kezelés" menübe',
-      'Click "Cancel Auto-Renewal" and confirm': 'Kattints az "Automatikus megújítás lemondása" gombra és erősítsd meg',
-      // Erste
-      'You must close the bank account': 'Meg kell szüntetned a bankszámládat',
-      'Open George app or web, send a message, or visit a branch in person': 'Nyisd meg a George alkalmazást vagy webet, küldj üzenetet, vagy látogass el személyesen egy bankfiókba',
-      'Clear any negative balance, sign account closure forms': 'Rendezd az esetleges negatív egyenleget, majd írd alá a számlamegszüntetési dokumentumokat',
-      // OTP
-      'OTP account fee cannot be cancelled directly; you must close the account': 'Az OTP számladíj közvetlenül nem mondható le; meg kell szüntetned a bankszámlát',
-      'Visit a local OTP branch in person with your ID': 'Látogass el személyesen egy OTP bankfiókba a személyi igazolványoddal',
-      'Return any debit/credit cards and sign the termination protocol': 'Add le a bankkártyákat és írd alá a megszüntetési jegyzőkönyvet',
-      // Wizz
-      'Log in to wizzair.com': 'Lépj be a wizzair.com oldalon',
-      'Go to your Profile → Wizz Discount Club': 'Menj a Profilod → Wizz Discount Club menübe',
-      'Turn off Auto-Renewal or let it expire naturally': 'Kapcsold ki az automatikus megújítást, vagy engedd lejárni a periódus végén',
-      // Duolingo
-      'Open duolingo.com/settings/subscription': 'Nyisd meg a duolingo.com/settings/subscription oldalt',
-      'Click "Cancel Subscription"': 'Kattints a "Cancel Subscription" (Előfizetés lemondása) gombra',
-      // Telekom Otthoni
-      'Go to "My Subscriptions" → "Home services"': 'Menj a "Saját előfizetések" → "Otthoni szolgáltatások" menübe',
-      'Check contract loyalty, then submit a disconnect request or contact support via chat': 'Ellenőrizd a hűségidőt, majd küldd el a lemondási igényt vagy lépj kapcsolatba velük chaten',
-      // DIGI
-      'Log in to DIGI Ügyfélkapu (client portal)': 'Lépj be a DIGI Ügyfélkapura',
-      'Go to "Subscriptions" (Előfizetések)': 'Menj az "Előfizetések" menübe',
-      'Request termination online, or contact support by phone or in person': 'Kezdeményezd a felmondást online, vagy vedd fel a kapcsolatot az ügyfélszolgálattal telefonon / személyesen',
-      // Canva
-      'Click your profile → Settings → "Billing & Plans"': 'Kattints a profilodra → Beállítások → "Számlázás és csomagok"',
-      'Under your subscription, click "Cancel subscription" and confirm': 'Az előfizetésed alatt kattints a "Csomag lemondása" gombra és erősítsd meg',
-      // HVG360
-      'Go to your Profile → hvg360 settings': 'Menj a Profilodra → hvg360 beállítások',
-      // Telex
-      'Go to Telex portal and log in': 'Menj a Telex portálra és lépj be',
-      'Go to "My support" (Támogatásaim)': 'Menj a "Támogatásaim" menübe',
-      'Click "Cancel recurring support" or manage via SimplePay/Stripe dashboard': 'Kattints a "Rendszeres támogatás lemondása" gombra, vagy kezeld a SimplePay/Stripe fiókodban',
-      // SimplePay
-      'Open the recurring payment confirmation email from SimplePay': 'Nyisd meg a SimplePay-től kapott rendszeres fizetési értesítő emailt',
-      'Click the unique "Manage subscription" link in the email footer': 'Kattints az email alján található egyedi "Előfizetés kezelése" linkre',
-      'Cancel the active token, or block it via your bank card settings if link is missing': 'Töröld az aktív rendszeres fizetési tokent, vagy tiltsd le a bankkártyádnál ha nincs meg a link',
-      // DAZN
-      'Sign in to dazn.com': 'Jelentkezz be a dazn.com oldalon',
-      'Go to "My Account" → "Subscription"': 'Menj a "Fiókom" → "Előfizetés" menübe',
-      'Click "Cancel Subscription" and confirm': 'Kattints az "Előfizetés lemondása" gombra és erősítsd meg',
-      // Joyn
-      'Log in to joyn.de or joyn.at': 'Lépj be a joyn.de vagy joyn.at oldalon',
-      'Go to your Profile → Subscription': 'Menj a Profilodra → Előfizetés',
-      'Click "Cancel PLUS+ membership" and confirm': 'Kattints a "PLUS+ tagság lemondása" gombra és erősítsd meg',
-      // Zattoo
-      'Log in to zattoo.com': 'Lépj be a zattoo.com oldalon',
-      'Go to Account → Subscription': 'Menj a Fiók → Előfizetés menüpontba',
-      'Click "Manage subscription" → "Cancel auto-renewal" and confirm': 'Kattints a "Subscription kezelése" → "Automatikus megújítás kikapcsolása" lehetőségre és erősítsd meg',
-      // ORF
-      'Go to orf.beitrag.at (formerly GIS)': 'Keresd fel az orf.beitrag.at oldalt (korábban GIS)',
-      'Fill in the online deregulation form (Abmeldung) due to moving, exemption, or no devices': 'Töltsd ki az online leiratkozási űrlapot (Abmeldung) költözés, mentesség vagy eszközök hiánya miatt',
-      'Sign the PDF, upload ID, and submit online': 'Írd alá a PDF-et, töltsd fel a személyazonosító okmányt, majd küldd be online',
-      // Deutschlandticket
-      'Log in to the portal where you purchased it (DB Navigator or local authority)': 'Lépj be azon a portálon ahol megvásároltad (DB Navigator vagy helyi közlekedési társaság)',
-      'Go to active subscriptions and click "Cancel subscription"': 'Menj az aktív előfizetésekhez és kattints a "Lemondás" gombra',
-      'Must cancel before the 10th of the current month to stop next month\'s billing': 'A tárgyhónap 10-e előtt le kell mondanod, hogy ne terheljék a következő hónapot',
-      // ÖBB
-      'Log in to your ÖBB account': 'Lépj be az ÖBB fiókodba',
-      'Under Vorteilscard, click "Disable Auto-Renewal" (Kündigungsschutz)': 'A Vorteilscard alatt kattints az automatikus megújítás kikapcsolására (Kündigungsschutz)',
-      'Cancel online at least 1 month before expiry to prevent renewal billing': 'Mondd le online legalább 1 hónappal a lejárat előtt, hogy elkerüld az automatikus megújulást',
-      // BahnCard
-      'Log in to bahn.de or DB Navigator app': 'Lépj be a bahn.de oldalon vagy a DB Navigator alkalmazásban',
-      'Go to BahnCard Services → "Manage BahnCard"': 'Menj a BahnCard szolgáltatások → "BahnCard kezelése" menüpontba',
-      'Click "Cancel BahnCard subscription" (Kündigen) at least 6 weeks before renewal': 'Kattints a "BahnCard lemondása" (Kündigen) lehetőségre legalább 6 héttel a megújulás előtt',
-      // Serafe
-      'Open serafe.ch or contact Serafe AG directly': 'Nyisd meg a serafe.ch oldalt vagy lépj kapcsolatba közvetlenül a Serafe AG-val',
-      'Exemption or cancellation is only allowed if moving abroad, household merging, or meeting deaf/blind criteria': 'Mentesség vagy lemondás csak külföldre költözés, háztartások egyesítése, vagy siket/vak kritériumok esetén engedélyezett',
-      'Submit written deregulation notification with official proof to Serafe or your municipal authority': 'Küldj be írásos leiratkozási kérelmet hivatalos igazolással a Serafe-nek vagy a helyi önkormányzatnak',
-      // SBB GA
-      'Log in to Swisspass.ch or sbb.ch': 'Lépj be a Swisspass.ch vagy sbb.ch oldalon',
-      'Go to "My Swisspass" → "My Subscriptions"': 'Menj a "My Swisspass" → "My Subscriptions" menübe',
-      'Disable automatic renewal online at least 1 month before the annual renewal date, or return card to SBB counter': 'Kapcsold ki az automatikus megújítást online legalább 1 hónappal az éves fordulónap előtt, vagy add le a kártyát egy SBB ügyfélszolgálaton',
-      // SBB Halbtax
-      'Log in to Swisspass.ch': 'Lépj be a Swisspass.ch oldalon',
-      'Must cancel at least 1 month before expiry to prevent automatic renewal billing': 'Legalább 1 hónappal a lejárat előtt le kell mondanod, hogy elkerüld az automatikus megújulást',
-      // NS Flex
-      'Log in to Mijn NS on ns.nl': 'Lépj be a Mijn NS fiókodba az ns.nl oldalon',
-      'Go to "Products" → "Change subscription"': 'Menj a "Products" (Termékek) → "Change subscription" (Előfizetés módosítása) menübe',
-      'Downgrade to "NS Flex Basis" (0 EUR/mo) to stop monthly charges while keeping your card, or cancel at a ticket machine': 'Fokozd le "NS Flex Basis" csomagra (0 EUR/hó), hogy leállítsd a havi díjakat a kártya megtartása mellett, vagy mondd le egy NS jegykiadó automatánál',
-      // Videoland
-      'Log in to videoland.com': 'Lépj be a videoland.com oldalon',
-      'Go to Account Settings → subscription': 'Menj a Fiókbeállítások → Előfizetés menübe',
-      // NLZIET
-      'Log in to nlziet.nl': 'Lépj be a nlziet.nl oldalon',
-      // TV Licence
-      'Go to tvlicensing.co.uk': 'Menj a tvlicensing.co.uk oldalra',
-      'Declare that you no longer watch live TV or BBC iPlayer on any device': 'Nyilatkozz arról, hogy már nem nézel élő tévét vagy BBC iPlayer-t semmilyen eszközön',
-      'Submit the online refund or cancellation form, and provide a forwarding address if applicable': 'Küldd be az online visszatérítési vagy lemondási űrlapot, és ha szükséges, adj meg egy új levelezési címet',
-      // Deliveroo Plus
-      'Open Deliveroo app or website and log in': 'Nyisd meg a Deliveroo alkalmazást vagy weboldalt és lépj be',
-      'Go to Account → Deliveroo Plus': 'Menj a Fiók → Deliveroo Plus menübe',
-      // NOW TV
-      'Log in to nowtv.com': 'Lépj be a nowtv.com oldalon',
-      'Go to My Account → Passes & Vouchers': 'Menj a Fiókom → Passes & Vouchers (Bérletek és kuponok) menübe',
-      'Next to your active pass, click "Cancel" and confirm': 'Kattints a "Cancel" (Lemondás) gombra az aktív bérleted mellett és erősítsd meg',
-      // Telepass
-      'Log in to Telepass website or app': 'Lépj be a Telepass weboldalra vagy alkalmazásba',
-      'Go to "Contracts" → "Terminate contract"': 'Menj a "Contracts" (Szerződések) → "Terminate contract" (Szerződés megszüntetése) menübe',
-      'Must return the physical Telepass transponder to a Telepass Store or Telepass Point (Punto Blu) within 20 days': 'Vissza kell szolgáltatnod a fizikai Telepass eszközt egy Telepass Store-ban vagy Telepass Pontban (Punto Blu) 20 napon belül',
-      // TIM
-      'Log in to MyTIM portal or call TIM customer support (187)': 'Lépj be a MyTIM portálra vagy hívd a TIM ügyfélszolgálatát (187)',
-      'Go to "Active Offers" and request deactivation of TIMVISION': 'Menj az "Aktív ajánlatok" (Offerte attive) menübe és kérd a TIMVISION kikapcsolását',
-      'Return the rented TIM box decoder within 30 days to avoid penalty fees': 'Küldd vissza a bérelt TIM box dekódert 30 napon belül a kötbérek elkerülése érdekében',
-      // Canal+
-      'Log in to your Canal+ Espace Client portal': 'Lépj be a Canal+ Espace Client (ügyfélkapu) felületén',
-      'Go to "Abonnement" → "Résilier mon abonnement"': 'Menj az "Abonnement" (Előfizetés) → "Résilier mon abonnement" (Előfizetésem lemondása) menüpontba',
-      'Follow steps, print confirmation form, and verify commitment expiry (engagement)': 'Kövesd a lépéseket, nyomtasd ki a megerősítő űrlapot, és ellenőrizd a hűségidő végét (engagement)',
-      // Deezer
-      'Log in to deezer.com in a web browser': 'Lépj be a deezer.com oldalon egy webböngészőben',
-      'Go to Account Settings → "My Subscription"': 'Menj a Fiókbeállítások → "Előfizetésem" menübe',
-      // Pass Navigo
-      'Log in to your Île-de-France Mobilités / Navigo online account': 'Lépj be az Île-de-France Mobilités / Navigo online fiókodba',
-      'Go to "Suspend or Terminate my contract" (Suspendre ou Résilier mon contrat)': 'Menj a "Suspendre ou Résilier mon contrat" (Szerződés felfüggesztése vagy felmondása) menübe',
-      'Submit the cancellation request before the 20th of the current month to stop next month\'s billing': 'A tárgyhónap 20-a előtt küldd be a lemondási kérelmet, hogy leállítsd a következő havi számlázást',
-      // Generic
-      'no-central-cancel-repeat': 'Nincs központi lemondás — minden alkotónál külön',
-    },
-  };
-
+  // Renderer calls trStep() to get the localized string from the JSON files.
   function trStep(text) {
     if (!text) return text;
-    const lang = window.LeakdI18n && window.LeakdI18n.lang;
-    if (!lang || lang === 'en') return text;
-    const dict = STEP_I18N[lang];
-    return (dict && dict[text]) || text;
+    if (window.LeakdI18n && typeof window.LeakdI18n.t === 'function') {
+      const translated = window.LeakdI18n.t('pb.' + text);
+      if (translated && translated !== 'pb.' + text) return translated;
+    }
+    return text;
   }
 
-  window.LeakdImport = { parseText, parseCSV, parseLine, findCancelUrl, findPlaybook, trStep, KNOWN, PLAYBOOKS, STEP_I18N };
+  window.LeakdImport = { parseText, parseCSV, parseLine, findCancelUrl, findPlaybook, trStep, KNOWN, PLAYBOOKS };
 })();

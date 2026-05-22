@@ -146,6 +146,85 @@
     { match: /telepass/i,                bg: '#0054a6', symbol: 'T' },
     { match: /tim\s*vision|telecom\s*italia/i, bg: '#002f6c', symbol: 'TIM' },
     { match: /navigo|ile-de-france\s*mobilit/i, bg: '#00a2e8', symbol: 'N' },
+    // ── Expansion: additional brand badges ──
+    // Productivity & Work
+    { match: /trello/i,                  bg: '#0052cc', symbol: 'T' },
+    { match: /asana/i,                   bg: '#f06a6a', symbol: 'A' },
+    { match: /monday/i,                  bg: '#6161ff', symbol: 'M' },
+    { match: /clickup/i,                 bg: '#7b68ee', symbol: 'C' },
+    { match: /todoist/i,                 bg: '#e44332', symbol: 'T' },
+    { match: /evernote/i,                bg: '#14cc45', symbol: 'E' },
+    { match: /miro/i,                    bg: '#ffd02f', fg: '#1a1a1a', symbol: 'M' },
+    { match: /airtable/i,               bg: '#2d7ff9', symbol: 'A' },
+    { match: /coda/i,                    bg: '#f46a54', symbol: 'C' },
+    { match: /basecamp/i,               bg: '#1d2d35', symbol: 'B' },
+    { match: /loom/i,                    bg: '#625df5', symbol: 'L' },
+    { match: /calendly/i,               bg: '#006bff', symbol: 'C' },
+    { match: /hubspot/i,                bg: '#ff7a59', symbol: 'H' },
+    { match: /salesforce/i,             bg: '#00a1e0', symbol: 'SF' },
+    { match: /freshworks/i,             bg: '#004ddb', symbol: 'F' },
+    // Design & Creative
+    { match: /sketch/i,                  bg: '#fdad00', fg: '#1a1a1a', symbol: 'S' },
+    { match: /invision/i,               bg: '#ff3366', symbol: 'In' },
+    { match: /shutterstock/i,            bg: '#ee2d24', symbol: 'SS' },
+    { match: /envato/i,                  bg: '#81b441', symbol: 'E' },
+    // Developer & DevOps
+    { match: /jetbrains/i,              bg: '#000000', symbol: 'JB' },
+    { match: /vercel/i,                  bg: '#000000', symbol: '▲' },
+    { match: /netlify/i,                 bg: '#00c7b7', symbol: 'N' },
+    { match: /heroku/i,                  bg: '#6762a6', symbol: 'H' },
+    { match: /digitalocean/i,            bg: '#0080ff', symbol: 'DO' },
+    { match: /cloudflare/i,              bg: '#f48120', symbol: 'CF' },
+    { match: /docker/i,                  bg: '#2496ed', symbol: 'D' },
+    { match: /sentry/i,                  bg: '#362d59', symbol: 'S' },
+    { match: /datadog/i,                 bg: '#632ca6', symbol: 'DD' },
+    // Communication
+    { match: /webex/i,                   bg: '#049fd9', symbol: 'W' },
+    { match: /telegram/i,               bg: '#0088cc', symbol: 'T' },
+    // VPN & Security
+    { match: /cyberghost/i,              bg: '#fdc730', fg: '#1a1a1a', symbol: 'CG' },
+    { match: /tunnelbear/i,              bg: '#f5a623', fg: '#1a1a1a', symbol: 'TB' },
+    { match: /dashlane/i,                bg: '#0e6175', symbol: 'D' },
+    { match: /norton/i,                  bg: '#ffc627', fg: '#1a1a1a', symbol: 'N' },
+    { match: /mcafee/i,                  bg: '#c01818', symbol: 'Mc' },
+    { match: /kaspersky/i,               bg: '#006d5c', symbol: 'K' },
+    { match: /malwarebytes/i,            bg: '#0063b1', symbol: 'M' },
+    // Email & Domains
+    { match: /squarespace/i,             bg: '#000000', symbol: 'Sq' },
+    { match: /wix/i,                     bg: '#faad4d', fg: '#1a1a1a', symbol: 'W' },
+    { match: /mailchimp/i,               bg: '#ffe01b', fg: '#1a1a1a', symbol: 'M' },
+    // Education
+    { match: /udemy/i,                   bg: '#a435f0', symbol: 'U' },
+    { match: /brilliant/i,              bg: '#000000', symbol: 'B' },
+    { match: /babbel/i,                  bg: '#f27405', symbol: 'B' },
+    { match: /blinkist/i,               bg: '#03314b', symbol: 'B' },
+    // Dating
+    { match: /tinder/i,                  bg: '#ff6b6b', symbol: '🔥' },
+    { match: /bumble/i,                  bg: '#ffc629', fg: '#1a1a1a', symbol: 'B' },
+    { match: /hinge/i,                   bg: '#1a1a1a', symbol: 'H' },
+    // Fitness
+    { match: /noom/i,                    bg: '#f5a623', fg: '#1a1a1a', symbol: 'N' },
+    { match: /whoop/i,                   bg: '#000000', symbol: 'W' },
+    { match: /classpass/i,               bg: '#00b4d8', symbol: 'CP' },
+    // Food Delivery
+    { match: /doordash/i,                bg: '#ff3008', symbol: 'DD' },
+    { match: /grubhub/i,                 bg: '#f63440', symbol: 'GH' },
+    { match: /instacart/i,               bg: '#43b02a', symbol: 'IC' },
+    // Streaming
+    { match: /peacock/i,                 bg: '#000000', symbol: 'P' },
+    { match: /mubi/i,                    bg: '#00263e', symbol: 'M' },
+    { match: /crunchyroll/i,             bg: '#f47521', symbol: 'CR' },
+    { match: /britbox/i,                 bg: '#dc2626', symbol: 'BB' },
+    { match: /shudder/i,                 bg: '#000000', symbol: 'Sh' },
+    // News
+    { match: /washington\s*post/i,       bg: '#000000', symbol: 'WP' },
+    { match: /guardian/i,                bg: '#052962', symbol: 'G' },
+    { match: /wired/i,                   bg: '#000000', symbol: 'W' },
+    { match: /bloomberg/i,              bg: '#2800d7', symbol: 'B' },
+    { match: /bild/i,                    bg: '#d40000', symbol: 'B' },
+    // European regional
+    { match: /movistar/i,               bg: '#019df4', symbol: 'M+' },
+    { match: /filmin/i,                  bg: '#ff6600', symbol: 'F' },
   ];
 
   // Default badge per category (when service is unknown)

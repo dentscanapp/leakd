@@ -3363,8 +3363,9 @@
   function resetAll() {
     if (!confirm(t('reset.confirm1'))) return;
     if (!confirm(t('reset.confirm2'))) return;
-    ['leakd_subs', 'leakd_settings', 'leakd_notif_prefs', 'leakd_notif_log', 'leakd_pro', 'leakd_onboarded', 'leakd_lang', 'leakd_budgets', 'leakd_history', 'leakd_income', 'leakd_cancelled', 'leakd_goal', 'leakd_tour_done', 'leakd_activity', 'leakd_rates', 'leakd_streak', 'leakd_sync_meta', 'leakd_sync_salt', 'leakd_sync_enabled', 'leakd_terms_accepted', 'leakd_sync_session_pw']
+    ['leakd_subs', 'leakd_settings', 'leakd_notif_prefs', 'leakd_notif_log', 'leakd_pro', 'leakd_onboarded', 'leakd_lang', 'leakd_budgets', 'leakd_history', 'leakd_income', 'leakd_cancelled', 'leakd_goal', 'leakd_tour_done', 'leakd_activity', 'leakd_rates', 'leakd_streak', 'leakd_sync_meta', 'leakd_sync_salt', 'leakd_sync_enabled', 'leakd_terms_accepted', 'leakd_sync_session_pw', 'leakd_fallback']
       .forEach(k => localStorage.removeItem(k));
+    try { indexedDB.deleteDatabase('leakd_fallback'); } catch (e) { }
     try { sessionStorage.clear(); } catch (e) { }
     location.reload();
   }
