@@ -6,7 +6,7 @@
   "activity.empty": "Još nema aktivnosti. Dodaj pretplatu za početak.",
   "activity.imported": "Uvezeno {n} pretplata",
   "activity.paused": "{name} pauzirano",
-  "activity.priceChange": "cijena promijenjena",
+  "activity.priceChange": "Cijena za {name} promijenjena",
   "activity.restored": "{name} vraćeno",
   "activity.resumed": "{name} nastavljeno",
   "activity.title": "Dnevnik aktivnosti",

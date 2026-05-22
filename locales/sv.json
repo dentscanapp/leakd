@@ -6,7 +6,7 @@
   "activity.empty": "Ingen aktivitet ännu. Lägg till en prenumeration för att börja.",
   "activity.imported": "{n} prenumerationer importerade",
   "activity.paused": "{name} pausad",
-  "activity.priceChange": "pris ändrat",
+  "activity.priceChange": "Pris för {name} ändrat",
   "activity.restored": "{name} återställd",
   "activity.resumed": "{name} återupptagen",
   "activity.title": "Aktivitetslogg",

@@ -6,7 +6,7 @@
   "activity.empty": "Henüz etkinlik yok. Başlamak için abonelik ekle.",
   "activity.imported": "{n} abonelik içe aktarıldı",
   "activity.paused": "{name} duraklatıldı",
-  "activity.priceChange": "fiyat değişti",
+  "activity.priceChange": "{name} fiyatı değişti",
   "activity.restored": "{name} geri yüklendi",
   "activity.resumed": "{name} devam ettirildi",
   "activity.title": "Etkinlik kaydı",

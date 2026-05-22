@@ -6,7 +6,7 @@
   "activity.empty": "Encara no hi ha activitat. Afegeix una subscripció per començar.",
   "activity.imported": "Importades {n} subscripcions",
   "activity.paused": "{name} pausat",
-  "activity.priceChange": "preu modificat",
+  "activity.priceChange": "Preu de {name} modificat",
   "activity.restored": "{name} restaurat",
   "activity.resumed": "{name} reprès",
   "activity.title": "Registre d'activitat",

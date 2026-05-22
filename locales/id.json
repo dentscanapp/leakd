@@ -6,7 +6,7 @@
   "activity.empty": "Belum ada aktivitas. Tambah langganan untuk mulai.",
   "activity.imported": "Mengimpor {n} langganan",
   "activity.paused": "Menunda {name}",
-  "activity.priceChange": "harga berubah",
+  "activity.priceChange": "Harga {name} berubah",
   "activity.restored": "Memulihkan {name}",
   "activity.resumed": "Melanjutkan {name}",
   "activity.title": "Log aktivitas",

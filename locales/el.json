@@ -6,7 +6,7 @@
   "activity.empty": "Δεν υπάρχει δραστηριότητα. Πρόσθεσε μια συνδρομή για να ξεκινήσεις.",
   "activity.imported": "Εισήχθησαν {n} συνδρομές",
   "activity.paused": "Σε παύση {name}",
-  "activity.priceChange": "η τιμή άλλαξε",
+  "activity.priceChange": "Τιμή του {name} άλλαξε",
   "activity.restored": "Επαναφέρθηκε {name}",
   "activity.resumed": "Συνεχίστηκε {name}",
   "activity.title": "Ιστορικό δραστηριότητας",

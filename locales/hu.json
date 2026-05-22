@@ -6,7 +6,7 @@
   "activity.empty": "Még nincs aktivitás. Adj hozzá egy előfizetést a kezdéshez.",
   "activity.imported": "{n} előfizetés importálva",
   "activity.paused": "{name} szüneteltetve",
-  "activity.priceChange": "ár változott",
+  "activity.priceChange": "{name} ára változott",
   "activity.restored": "{name} visszaállítva",
   "activity.resumed": "{name} folytatva",
   "activity.title": "Aktivitásnapló",

@@ -6,7 +6,7 @@
   "activity.empty": "아직 활동이 없습니다. 구독을 추가해 시작하세요.",
   "activity.imported": "{n}개의 구독 가져옴",
   "activity.paused": "{name} 일시중지됨",
-  "activity.priceChange": "가격 변경됨",
+  "activity.priceChange": "{name} 가격 변경됨",
   "activity.restored": "{name} 복원됨",
   "activity.resumed": "{name} 재개됨",
   "activity.title": "활동 로그",

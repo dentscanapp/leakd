@@ -1,18 +1,23 @@
-const CACHE_NAME = 'leakd-v110';
+const CACHE_NAME = 'leakd-v111';
 
-// Files that must always be fresh — HTML shells and the critical JS that
-// reads them. Network-first with a cache fallback for offline. Without
-// this, a cached app.html keeps referencing a stale pro.js / app.js and
-// users never see new features (this exact bug happened in v106).
-const NETWORK_FIRST = [
+// Files that must always be fresh — HTML shells, every JS module, and every
+// locale JSON. Network-first with a cache fallback for offline use. Without
+// this the bundle relies on per-file `?v=N` query strings staying in sync
+// (they previously drifted: i18n.js?v=95 vs app.js?v=107), and any file
+// whose query stayed pinned would silently serve a stale cached copy.
+const NETWORK_FIRST_EXACT = [
   '/', '/index.html', '/app.html', '/landing.html',
   '/privacy.html', '/terms.html', '/about.html', '/blog.html',
   '/contact.html', '/roadmap.html', '/changelog.html',
-  '/js/app.js', '/js/pro.js', '/js/sync.js', '/js/i18n.js',
 ];
+const NETWORK_FIRST_PREFIXES = ['/js/', '/locales/', '/css/'];
 function isNetworkFirst(url) {
   const p = url.pathname;
-  return NETWORK_FIRST.indexOf(p) !== -1;
+  if (NETWORK_FIRST_EXACT.indexOf(p) !== -1) return true;
+  for (const pre of NETWORK_FIRST_PREFIXES) {
+    if (p.indexOf(pre) === 0) return true;
+  }
+  return false;
 }
 const ASSETS = [
   './',

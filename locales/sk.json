@@ -6,7 +6,7 @@
   "activity.empty": "Zatiaľ žiadna aktivita. Pridaj predplatné a začni.",
   "activity.imported": "Importované {n} predplatných",
   "activity.paused": "{name} pozastavené",
-  "activity.priceChange": "cena zmenená",
+  "activity.priceChange": "Cena {name} zmenená",
   "activity.restored": "{name} obnovené",
   "activity.resumed": "{name} obnovené",
   "activity.title": "Záznam aktivity",

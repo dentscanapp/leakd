@@ -6,7 +6,7 @@
   "activity.empty": "Brak aktywności. Dodaj subskrypcję, by zacząć.",
   "activity.imported": "Zaimportowano {n} subskrypcji",
   "activity.paused": "Wstrzymano {name}",
-  "activity.priceChange": "cena zmieniona",
+  "activity.priceChange": "Cena {name} zmieniona",
   "activity.restored": "Przywrócono {name}",
   "activity.resumed": "Wznowiono {name}",
   "activity.title": "Dziennik aktywności",

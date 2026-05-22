@@ -6,7 +6,7 @@
   "activity.empty": "まだ活動がありません。サブスクを追加して始めましょう。",
   "activity.imported": "{n}件のサブスクをインポート",
   "activity.paused": "{name}を一時停止",
-  "activity.priceChange": "価格変更",
+  "activity.priceChange": "{name} の価格変更",
   "activity.restored": "{name}を復元",
   "activity.resumed": "{name}を再開",
   "activity.title": "活動ログ",

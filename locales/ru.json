@@ -6,7 +6,7 @@
   "activity.empty": "Пока нет активности. Добавь подписку, чтобы начать.",
   "activity.imported": "Импортировано {n} подписок",
   "activity.paused": "{name} приостановлено",
-  "activity.priceChange": "цена изменена",
+  "activity.priceChange": "Цена {name} изменена",
   "activity.restored": "{name} восстановлено",
   "activity.resumed": "{name} возобновлено",
   "activity.title": "Журнал активности",

@@ -6,7 +6,7 @@
   "activity.empty": "Nog geen activiteit. Voeg een abonnement toe om te beginnen.",
   "activity.imported": "{n} abonnementen geïmporteerd",
   "activity.paused": "{name} gepauzeerd",
-  "activity.priceChange": "prijs gewijzigd",
+  "activity.priceChange": "Prijs van {name} gewijzigd",
   "activity.restored": "{name} hersteld",
   "activity.resumed": "{name} hervat",
   "activity.title": "Activiteitenlog",

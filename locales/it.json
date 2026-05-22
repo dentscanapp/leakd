@@ -6,7 +6,7 @@
   "activity.empty": "Nessuna attività ancora. Aggiungi un abbonamento per iniziare.",
   "activity.imported": "{n} abbonamenti importati",
   "activity.paused": "{name} in pausa",
-  "activity.priceChange": "prezzo modificato",
+  "activity.priceChange": "Prezzo di {name} modificato",
   "activity.restored": "{name} ripristinato",
   "activity.resumed": "{name} ripreso",
   "activity.title": "Registro attività",

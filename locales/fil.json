@@ -6,7 +6,7 @@
   "activity.empty": "Wala pang aktibidad. Magdagdag ng subscription para magsimula.",
   "activity.imported": "Na-import ang {n} subscriptions",
   "activity.paused": "Pinatigil ang {name}",
-  "activity.priceChange": "binago ang presyo",
+  "activity.priceChange": "Binago ang presyo ng {name}",
   "activity.restored": "Naibalik ang {name}",
   "activity.resumed": "Itinuloy ang {name}",
   "activity.title": "Log ng aktibidad",

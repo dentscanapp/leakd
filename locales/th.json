@@ -6,7 +6,7 @@
   "activity.empty": "ยังไม่มีกิจกรรม เพิ่มการสมัครเพื่อเริ่มต้น",
   "activity.imported": "นำเข้า {n} การสมัคร",
   "activity.paused": "หยุดชั่วคราว {name}",
-  "activity.priceChange": "ราคาเปลี่ยน",
+  "activity.priceChange": "ราคา {name} เปลี่ยน",
   "activity.restored": "กู้คืน {name}",
   "activity.resumed": "เริ่มต่อ {name}",
   "activity.title": "บันทึกกิจกรรม",

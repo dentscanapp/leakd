@@ -2093,6 +2093,198 @@
     await N.test();
   }
 
+  // ─── Email reminders (Pro) ───
+  // Renewal-day email alerts via the Cloudflare Worker (LeakdEmailReminder).
+  // State model: leakd_email_rem = { enabled, email, registered: [{itemName, expiryDate}] }.
+  // Enable flow:  validate email → register every eligible sub → persist tuples
+  // Disable flow: unregister every persisted tuple → clear state
+  // We don't auto-sync on every sub edit; the user re-opens this modal to refresh.
+  const EMAIL_REM_KEY = 'leakd_email_rem';
+
+  function loadEmailRem() {
+    try { return JSON.parse(localStorage.getItem(EMAIL_REM_KEY) || '{}') || {}; }
+    catch { return {}; }
+  }
+  function saveEmailRemState(state) {
+    localStorage.setItem(EMAIL_REM_KEY, JSON.stringify(state));
+  }
+
+  // Subscriptions eligible for email reminders:
+  //   • active (not paused)
+  //   • has either a nextDate (renewal) or a trialEnd (trial)
+  //   • date is within the next ~2 years (the Worker rejects further out)
+  function eligibleForEmailRem() {
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const horizon = new Date(now.getTime() + 730 * 86400000);
+    return subs.filter(s => !s.paused).map(s => {
+      const dateStr = s.isTrial && s.trialEnd ? s.trialEnd : s.nextDate;
+      if (!dateStr) return null;
+      const d = new Date(dateStr.replace(/-/g, '/'));
+      if (isNaN(d.getTime()) || d < now || d > horizon) return null;
+      return { id: s.id, name: s.name, expiryDate: dateStr, isTrial: !!s.isTrial };
+    }).filter(Boolean);
+  }
+
+  function openEmailRemModal() {
+    const state = loadEmailRem();
+    $('emailRemInput').value = state.email || '';
+    const status = $('emailRemStatus');
+    const disableBtn = $('emailRemDisableBtn');
+    const saveBtn = $('emailRemSaveBtn') || $('saveEmailRemBtn');
+    if (state.enabled && state.email) {
+      status.textContent = t('emailrem.enabledStatus', { email: state.email });
+      disableBtn.style.display = '';
+      saveBtn.textContent = t('emailrem.save'); // "Update / re-sync"
+    } else {
+      status.textContent = t('emailrem.disabledStatus');
+      disableBtn.style.display = 'none';
+      saveBtn.textContent = t('emailrem.save');
+    }
+    // Render eligible subs preview (read-only — all are registered)
+    const list = eligibleForEmailRem();
+    const eligEl = $('emailRemEligList');
+    if (list.length === 0) {
+      eligEl.innerHTML = `<div class="empty-state-mini">${escHtml(t('insights.noSubs'))}</div>`;
+    } else {
+      const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+      eligEl.innerHTML = list.map(s => {
+        const d = new Date(s.expiryDate.replace(/-/g, '/')).toLocaleDateString(lang, { month: 'short', day: 'numeric' });
+        return `<div class="email-rem-row"><span>${escHtml(s.name)}</span><span class="email-rem-row-date">${escHtml(d)}</span></div>`;
+      }).join('');
+    }
+    // Language note — emails come in the user's app language
+    const langName = (window.LeakdI18n && window.LeakdI18n.LANGUAGES[window.LeakdI18n.lang] || {}).name
+      || (window.LeakdI18n ? window.LeakdI18n.lang : 'English');
+    $('emailRemLangNote').textContent = t('emailrem.langNote', { lang: langName });
+    $('emailRemError').style.display = 'none';
+    $('emailRemError').textContent = '';
+    $('emailRemModal').classList.add('active');
+    setTimeout(() => $('emailRemInput').focus(), 100);
+  }
+  function closeEmailRemModal() { $('emailRemModal').classList.remove('active'); }
+
+  function showEmailRemError(msg) {
+    const el = $('emailRemError');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  async function saveEmailReminders() {
+    if (!window.LeakdEmailReminder) { showEmailRemError(t('emailrem.errGeneric', { code: 'NO_MODULE' })); return; }
+    const email = $('emailRemInput').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showEmailRemError(t('emailrem.errEmail')); return; }
+
+    const list = eligibleForEmailRem();
+    const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+    const prev = loadEmailRem();
+    const prevRegistered = Array.isArray(prev.registered) ? prev.registered : [];
+
+    const saveBtn = $('saveEmailRemBtn');
+    saveBtn.disabled = true;
+    const oldLabel = saveBtn.textContent;
+    saveBtn.textContent = t('pro.verifying');
+
+    // 1. Unregister anything previously stored that is no longer eligible
+    //    (sub removed, date changed, email changed). Best-effort — ignore
+    //    individual failures so a stale row doesn't block re-registration.
+    const eligKeys = new Set(list.map(s => s.name + '|' + s.expiryDate));
+    const emailChanged = prev.email && prev.email !== email;
+    for (const r of prevRegistered) {
+      if (emailChanged || !eligKeys.has(r.itemName + '|' + r.expiryDate)) {
+        try { await window.LeakdEmailReminder.unregister({ email: prev.email || email, itemName: r.itemName, expiryDate: r.expiryDate }); }
+        catch (e) { console.warn('email-rem unregister failed', r, e && e.code); }
+      }
+    }
+
+    // 2. Register every eligible sub. Collect successes for the persisted set.
+    const registered = [];
+    let lastErr = null;
+    for (const s of list) {
+      try {
+        await window.LeakdEmailReminder.register({ email, itemName: s.name, expiryDate: s.expiryDate, lang });
+        registered.push({ itemName: s.name, expiryDate: s.expiryDate });
+      } catch (e) {
+        lastErr = e;
+        console.warn('email-rem register failed', s, e && e.code);
+      }
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = oldLabel;
+
+    if (registered.length === 0 && list.length > 0) {
+      // Every registration failed → surface a meaningful error
+      const code = (lastErr && lastErr.code) || 'GENERIC';
+      const map = {
+        OFFLINE: t('emailrem.errOffline'),
+        TIMEOUT: t('emailrem.errTimeout'),
+        NETWORK: t('emailrem.errNetwork'),
+        PRO_REQUIRED: t('emailrem.errPro'),
+        INVALID_EMAIL: t('emailrem.errEmail'),
+        INVALID_DATE: t('emailrem.errDate'),
+        INVALID_ITEM_NAME: t('emailrem.errItem'),
+      };
+      showEmailRemError(map[code] || t('emailrem.errGeneric', { code }));
+      return;
+    }
+
+    saveEmailRemState({ enabled: true, email, registered, lastSyncedAt: Date.now() });
+    toast(t('emailrem.scheduledOk'));
+    closeEmailRemModal();
+  }
+
+  async function disableEmailReminders() {
+    if (!window.LeakdEmailReminder) return;
+    const state = loadEmailRem();
+    if (!state.enabled || !state.email) { saveEmailRemState({}); closeEmailRemModal(); return; }
+    const btn = $('emailRemDisableBtn');
+    btn.disabled = true;
+    const oldLabel = btn.textContent;
+    btn.textContent = t('pro.verifying');
+    const prevRegistered = Array.isArray(state.registered) ? state.registered : [];
+    for (const r of prevRegistered) {
+      try { await window.LeakdEmailReminder.unregister({ email: state.email, itemName: r.itemName, expiryDate: r.expiryDate }); }
+      catch (e) { console.warn('email-rem unregister failed', r, e && e.code); }
+    }
+    btn.disabled = false;
+    btn.textContent = oldLabel;
+    saveEmailRemState({});
+    toast(t('emailrem.cancelledOk'));
+    closeEmailRemModal();
+  }
+
+  async function sendEmailReminderTest() {
+    if (!window.LeakdEmailReminder) return;
+    const email = $('emailRemInput').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showEmailRemError(t('emailrem.errEmail')); return; }
+    const lang = window.LeakdI18n ? window.LeakdI18n.lang : 'en';
+    // Register a "Leakd test" reminder for tomorrow so the Worker actually
+    // queues something the user can verify within ~24h. Worker treats the
+    // tuple as the dedupe key, so re-sending overwrites instead of stacking.
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    const btn = $('emailRemTestBtn');
+    btn.disabled = true;
+    const oldLabel = btn.textContent;
+    btn.textContent = t('pro.verifying');
+    try {
+      await window.LeakdEmailReminder.register({ email, itemName: 'Leakd test', expiryDate: tomorrow, lang });
+      toast(t('emailrem.testSent'));
+    } catch (e) {
+      const code = (e && e.code) || 'GENERIC';
+      const map = {
+        OFFLINE: t('emailrem.errOffline'),
+        TIMEOUT: t('emailrem.errTimeout'),
+        NETWORK: t('emailrem.errNetwork'),
+        PRO_REQUIRED: t('emailrem.errPro'),
+        INVALID_EMAIL: t('emailrem.errEmail'),
+      };
+      showEmailRemError(map[code] || t('emailrem.errGeneric', { code }));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldLabel;
+    }
+  }
+
   // ─── Pro ───
   function openProModal() {
     const P = window.LeakdPro;
@@ -2469,7 +2661,7 @@
         const iconMap = {
           added: '＋', edited: '✎', cancelled: '✂',
           paused: '⏸', resumed: '▶', restored: '↺',
-          deleted: '✕', imported: '⤓',
+          deleted: '✕', imported: '⤓', priceChange: '💱',
         };
         const colorClass = 'event-' + e.type;
         const text = e.type === 'imported'
@@ -3522,15 +3714,18 @@
 
     $('menuBackup').addEventListener('click', () => { closeMenuModal(); openBackupModal(); });
 
-    // Email reminders (Pro) — opens Pro modal if not Pro, otherwise a quick info toast
-    // until the dedicated email-reminder modal UI is built.
+    // Email reminders (Pro)
     $('menuEmailRem').addEventListener('click', () => {
       closeMenuModal();
       if (window.LeakdPro && !window.LeakdPro.isPro()) { openProModal(); return; }
-      toast(t('emailrem.title') + ' — ' + t('emailrem.langNote', {
-        lang: (window.LeakdI18n && window.LeakdI18n.LANGUAGES[window.LeakdI18n.lang] || {}).name || window.LeakdI18n.lang
-      }));
+      openEmailRemModal();
     });
+    $('closeEmailRemModal').addEventListener('click', closeEmailRemModal);
+    $('cancelEmailRemBtn').addEventListener('click', closeEmailRemModal);
+    $('emailRemModal').addEventListener('click', e => { if (e.target === $('emailRemModal')) closeEmailRemModal(); });
+    $('saveEmailRemBtn').addEventListener('click', saveEmailReminders);
+    $('emailRemDisableBtn').addEventListener('click', disableEmailReminders);
+    $('emailRemTestBtn').addEventListener('click', sendEmailReminderTest);
 
     // Cloud sync (Pro)
     $('menuSync').addEventListener('click', () => { closeMenuModal(); openSyncModal(); });
@@ -3784,6 +3979,7 @@
         else if ($('whatifModal').classList.contains('active')) closeWhatIfModal();
         else if ($('panicModal').classList.contains('active')) closePanicModal();
         else if ($('compareModal').classList.contains('active')) closeCompareModal();
+        else if ($('emailRemModal').classList.contains('active')) closeEmailRemModal();
       }
       if (e.key === 'Enter' && modal.classList.contains('active')) saveSub();
     });

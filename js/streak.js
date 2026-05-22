@@ -26,30 +26,33 @@
     return new Date().toISOString().split('T')[0];
   }
 
+  // Whole-day delta between two YYYY-MM-DD strings, computed in UTC so DST
+  // transitions can't perturb the count. (new Date('2026-03-29') - new
+  // Date('2026-03-30') in CET would yield 0.96 of a day instead of -1,
+  // causing the EU spring-forward Sunday to silently reset users' streaks.)
+  function dayDelta(fromStr, toStr) {
+    if (!fromStr || !toStr) return 0;
+    const [y1, m1, d1] = fromStr.split('-').map(Number);
+    const [y2, m2, d2] = toStr.split('-').map(Number);
+    const t1 = Date.UTC(y1, m1 - 1, d1);
+    const t2 = Date.UTC(y2, m2 - 1, d2);
+    return Math.round((t2 - t1) / 86400000);
+  }
+
   function checkIn() {
     const today = getTodayStr();
     if (streak.lastDate === today) return false;
 
-    // If it's the next day, increment. If we missed a day, reset or keep?
-    // Let's be generous: if it's the next day, increment. 
-    // If it's more than 1 day later, we could reset, but let's keep it 
-    // simple for now: if not today, it's a new check-in.
-    
-    const last = streak.lastDate ? new Date(streak.lastDate) : null;
-    const now = new Date(today);
-    
-    if (last) {
-      const diff = (now - last) / (1000 * 60 * 60 * 24);
-      if (diff === 1) {
-        streak.count++;
-      } else if (diff > 1) {
-        streak.count = 1; // Reset streak but count this day
-      } else {
-        // Same day or past, handled by the first check
-      }
-    } else {
+    const diff = streak.lastDate ? dayDelta(streak.lastDate, today) : null;
+    if (diff === null) {
       streak.count = 1;
+    } else if (diff === 1) {
+      streak.count++;
+    } else if (diff > 1) {
+      streak.count = 1; // Missed at least one day → restart at today.
     }
+    // diff <= 0 is impossible because we returned early on same-day; a past
+    // lastDate would mean clock-tampering or a restored backup, leave count.
 
     streak.lastDate = today;
     save();
@@ -57,14 +60,12 @@
   }
 
   function getCount() {
-    // Check if we missed the streak (more than 24h since last check-in)
+    // If more than one calendar day has passed since last check-in, the
+    // streak is broken. UTC-based dayDelta() keeps this DST-safe.
     const today = getTodayStr();
     if (streak.lastDate && streak.lastDate !== today) {
-      const last = new Date(streak.lastDate);
-      const now = new Date(today);
-      const diff = (now - last) / (1000 * 60 * 60 * 24);
-      if (diff > 1) {
-        streak.count = 0; // Missed a day
+      if (dayDelta(streak.lastDate, today) > 1) {
+        streak.count = 0;
         save();
       }
     }

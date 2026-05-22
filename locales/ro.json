@@ -6,7 +6,7 @@
   "activity.empty": "Niciun activitate încă. Adaugă un abonament pentru a începe.",
   "activity.imported": "{n} abonamente importate",
   "activity.paused": "{name} pus pe pauză",
-  "activity.priceChange": "preț modificat",
+  "activity.priceChange": "Preț {name} modificat",
   "activity.restored": "{name} restaurat",
   "activity.resumed": "{name} reluat",
   "activity.title": "Jurnal de activitate",

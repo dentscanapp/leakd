@@ -6,7 +6,7 @@
   "activity.empty": "Nenhuma atividade ainda. Adiciona uma subscrição para começar.",
   "activity.imported": "{n} subscrições importadas",
   "activity.paused": "{name} pausado",
-  "activity.priceChange": "preço alterado",
+  "activity.priceChange": "Preço de {name} alterado",
   "activity.restored": "{name} restaurado",
   "activity.resumed": "{name} retomado",
   "activity.title": "Registo de atividade",

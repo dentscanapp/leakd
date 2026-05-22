@@ -6,7 +6,7 @@
   "activity.empty": "अभी कोई गतिविधि नहीं। शुरू करने के लिए सब्सक्रिप्शन जोड़ें।",
   "activity.imported": "{n} सब्सक्रिप्शन इम्पोर्ट किए",
   "activity.paused": "{name} रोका गया",
-  "activity.priceChange": "कीमत बदली",
+  "activity.priceChange": "{name} की कीमत बदली",
   "activity.restored": "{name} पुनर्स्थापित",
   "activity.resumed": "{name} फिर शुरू",
   "activity.title": "गतिविधि लॉग",

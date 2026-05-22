@@ -6,7 +6,7 @@
   "activity.empty": "Все още няма активност. Добави абонамент, за да започнеш.",
   "activity.imported": "Импортирани {n} абонамента",
   "activity.paused": "{name} спряно",
-  "activity.priceChange": "цената е променена",
+  "activity.priceChange": "Цената на {name} се промени",
   "activity.restored": "{name} възстановено",
   "activity.resumed": "{name} възобновено",
   "activity.title": "Дневник на активността",

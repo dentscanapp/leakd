@@ -2624,6 +2624,31 @@ input[type="number"] {
 .bank-row-price { font-family: var(--mono); font-weight: 600; font-size: 14px; }
 .bank-row-price span { font-size: 10px; color: var(--text-3); font-family: var(--font); }
 
+/* ── Email reminders modal (Pro) ── */
+.email-rem-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.email-rem-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.email-rem-row-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
 /* ── Savings goal ── */
 .goal-progress-wrap { padding: 4px 0 6px; }
 .goal-progress-bar {

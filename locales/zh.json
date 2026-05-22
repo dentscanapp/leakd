@@ -6,7 +6,7 @@
   "activity.empty": "暂无活动。添加订阅以开始。",
   "activity.imported": "已导入 {n} 个订阅",
   "activity.paused": "已暂停 {name}",
-  "activity.priceChange": "价格已变更",
+  "activity.priceChange": "{name} 价格已变更",
   "activity.restored": "已恢复 {name}",
   "activity.resumed": "已恢复 {name}",
   "activity.title": "活动日志",

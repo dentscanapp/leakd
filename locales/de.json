@@ -6,7 +6,7 @@
   "activity.empty": "Noch keine Aktivität. Füge ein Abo hinzu, um zu starten.",
   "activity.imported": "{n} Abos importiert",
   "activity.paused": "{name} pausiert",
-  "activity.priceChange": "Preis geändert",
+  "activity.priceChange": "Preis von {name} geändert",
   "activity.restored": "{name} wiederhergestellt",
   "activity.resumed": "{name} fortgesetzt",
   "activity.title": "Aktivitätsprotokoll",

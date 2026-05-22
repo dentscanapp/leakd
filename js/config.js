@@ -6,7 +6,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 window.LeakdSyncConfig = {
   clientId: '587744396356-qho928kuorkh8dufjnqa05u7cbdellho.apps.googleusercontent.com'
 };
-window.LeakdVersion = '2026-05-20.103';
+window.LeakdVersion = '2026-05-22.111';
 console.log('Leakd Initializing v' + window.LeakdVersion);
 if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js?v=' + window.LeakdVersion).then(reg => {

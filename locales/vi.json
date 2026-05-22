@@ -6,7 +6,7 @@
   "activity.empty": "Chưa có hoạt động. Thêm gói đăng ký để bắt đầu.",
   "activity.imported": "Đã nhập {n} gói",
   "activity.paused": "Đã tạm dừng {name}",
-  "activity.priceChange": "giá thay đổi",
+  "activity.priceChange": "Giá của {name} đã thay đổi",
   "activity.restored": "Đã khôi phục {name}",
   "activity.resumed": "Đã tiếp tục {name}",
   "activity.title": "Nhật ký hoạt động",

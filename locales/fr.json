@@ -6,7 +6,7 @@
   "activity.empty": "Aucune activité. Ajoute un abonnement pour commencer.",
   "activity.imported": "{n} abonnements importés",
   "activity.paused": "{name} en pause",
-  "activity.priceChange": "prix modifié",
+  "activity.priceChange": "Prix de {name} modifié",
   "activity.restored": "{name} restauré",
   "activity.resumed": "{name} repris",
   "activity.title": "Journal d'activité",

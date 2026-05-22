@@ -6,7 +6,7 @@
   "activity.empty": "No activity yet. Add a subscription to start your journey.",
   "activity.imported": "Imported {n} subscriptions",
   "activity.paused": "Paused {name}",
-  "activity.priceChange": "price changed",
+  "activity.priceChange": "{name} price changed",
   "activity.restored": "Restored {name}",
   "activity.resumed": "Resumed {name}",
   "activity.title": "Activity log",
