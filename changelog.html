@@ -166,6 +166,28 @@ h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5
   <div class="subtitle">Real-time updates, security logs, and product changes.</div>
 
   <div class="timeline">
+    <!-- RELEASE v1.2.2 -->
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-header">
+        <span class="version">v1.2.2</span>
+        <span class="date">23 May 2026</span>
+        <span class="badge pro">Direct P2P Sync &amp; Money-Saved Graveyard</span>
+      </div>
+      <div class="release-body">
+        <ul>
+          <li><span class="feat-tag">Sync (Option B):</span> Brand-new <strong>zero-cloud direct device-to-device sync</strong> over WebRTC. Pair phone↔laptop with a single QR scan — no Google account, no cloud blob, no server stores your data. AES-GCM 256 session key generated fresh per pairing and embedded only in the QR. The PeerJS broker sees opaque SDP/ICE only; the broker socket is closed the moment the secure channel opens. Pro on the Android TWA build, free in the Chrome extension.</li>
+          <li><span class="feat-tag">UX:</span> Sync modal restructured with a tab selector — <em>Option A · Google Drive</em> vs <em>Option B · Direct P2P</em>. The menu entry renamed from "Cloud sync" to plain <em>"Sync"</em> with subtitle <em>"Cloud backup or direct device pairing"</em>, reflecting that not every sync mode is cloud-based.</li>
+          <li><span class="feat-tag">Reconciliation:</span> Smart id-based merge for subscriptions — newer <code>updatedAt</code> wins on collisions, and any sub already in the local Money-Saved graveyard is blocked from being resurrected by a stale remote snapshot. Cancelled/budgets/goals/settings merge by recency of the snapshot timestamp.</li>
+          <li><span class="feat-tag">Graveyard:</span> The cancelled-subs modal got a full overhaul into a <strong>"Money Saved" graveyard</strong> — animated lifetime savings counter that ticks up over time, tombstone cards (R · I · P · service-name) showing per-sub cumulative savings, plus a <em>Share my wins</em> action via the Web Share API.</li>
+          <li><span class="feat-tag">Landing:</span> Interactive <strong>Money Leak Calculator</strong> added to the landing page — pick from 14 common services or add your own, instantly see the monthly / yearly / 5-year damage and the "if invested at 7% instead" alternative.</li>
+          <li><span class="feat-tag">Extension:</span> Chrome extension v1.0.3 — vendor libs (PeerJS, qrcode-generator, jsQR ~130 KB) bundled locally because MV3 CSP forbids remote-script injection. Same P2P experience as the PWA, completely free.</li>
+          <li><span class="feat-tag">Localization:</span> 29 new P2P strings + 7 graveyard strings + 6 calculator labels added across all 28 supported languages — over <strong>1 100 new translated entries</strong> shipped in this release.</li>
+          <li><span class="feat-tag">Caching:</span> Service Worker bumped to v114, network-first strategy added for HTML and critical JS so future code changes reach the TWA WebView without a forced cache reset.</li>
+        </ul>
+      </div>
+    </div>
+
     <!-- RELEASE v1.2.1 -->
     <div class="release">
       <div class="release-dot"></div>

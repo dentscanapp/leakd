@@ -302,7 +302,7 @@
   "menu.emailRemSub": "续订前发邮件提醒",
   "menu.export": "导出 CSV",
   "menu.exportSub": "下载所有数据",
-  "menu.footer": "Leakd v1.4 · 为独立钱包而设计",
+  "menu.footer": "Leakd v1.2.2 · 为独立钱包而设计",
   "menu.goal": "储蓄目标",
   "menu.goalSub": "设置目标 — 每个里程碑都庆祝",
   "menu.import": "批量导入",

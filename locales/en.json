@@ -302,7 +302,7 @@
   "menu.emailRemSub": "Get an email before each renewal",
   "menu.export": "Export CSV",
   "menu.exportSub": "Download all your data",
-  "menu.footer": "Leakd v1.2 · made for indie wallets",
+  "menu.footer": "Leakd v1.2.2 · made for indie wallets",
   "menu.goal": "Savings goal",
   "menu.goalSub": "Set a target — we celebrate every milestone",
   "menu.import": "Bulk import",

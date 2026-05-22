@@ -302,7 +302,7 @@
   "menu.emailRemSub": "Her yenilemeden önce e-posta",
   "menu.export": "CSV olarak dışa aktar",
   "menu.exportSub": "Tüm verilerinizi indirin",
-  "menu.footer": "Leakd v1.2 · bağımsız cüzdanlar için yapıldı",
+  "menu.footer": "Leakd v1.2.2 · bağımsız cüzdanlar için yapıldı",
   "menu.goal": "Tasarruf hedefi",
   "menu.goalSub": "Bir hedef belirle — her dönüm noktasını kutlarız",
   "menu.import": "Toplu içe aktarma",

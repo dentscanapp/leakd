@@ -302,7 +302,7 @@
   "menu.emailRemSub": "Reçois un e-mail avant chaque renouvellement",
   "menu.export": "Exporter en CSV",
   "menu.exportSub": "Télécharge toutes tes données",
-  "menu.footer": "Leakd v1.2 · pour portefeuilles indé",
+  "menu.footer": "Leakd v1.2.2 · pour portefeuilles indé",
   "menu.goal": "Objectif d'épargne",
   "menu.goalSub": "Définis un objectif — on fête chaque étape",
   "menu.import": "Import en masse",
