@@ -720,7 +720,7 @@
   "tax.colVendor": "Fournisseur",
   "tax.colYearly": "Annuel",
   "tax.csvBtn": "Télécharger CSV",
-  "tax.disclaimer": "Ce rapport est fourni à titre purement informatif et ne constitue pas un conseil fiscal ou comptable officiel. L'utilisateur est responsable de l'exactitude des données soumises.",
+  "tax.disclaimer": "Ce rapport est à titre informatif seulement. Il ne constitue pas un conseil fiscal ou comptable officiel, et ne sert pas non plus de déclaration de revenus ou de justificatif officiel. L'utilisateur est seul responsable de la vérification de l'exactitude de toutes les données et du respect de la réglementation fiscale locale.",
   "tax.empty": "Aucun abonnement marqué comme dépense pro pour l'instant. Ouvre un abonnement et coche « Dépense professionnelle ».",
   "tax.footer": "leakd.app · Suivi d'abonnements respectueux de la vie privée",
   "tax.generatedBy": "Généré par Leakd le {date}",

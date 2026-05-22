@@ -720,7 +720,7 @@
   "tax.colVendor": "Dobavljač",
   "tax.colYearly": "Godišnje",
   "tax.csvBtn": "Preuzmi CSV",
-  "tax.disclaimer": "Ovaj izvještaj služi isključivo u informativne svrhe i ne predstavlja službeni porezni ili računovodstveni savjet. Korisnik je odgovoran za točnost dostavljenih podataka.",
+  "tax.disclaimer": "Ovo izvješće je samo u informativne svrhe. Ne predstavlja službeni porezni ili računovodstveni savjet, niti služi kao formalna porezna prijava ili vaučer. Korisnik je isključivo odgovoran za provjeru točnosti svih podataka i usklađenosti s lokalnim poreznim propisima.",
   "tax.empty": "Nijedna pretplata još nije označena kao poslovni trošak. Otvori pretplatu i označi \"Poslovni trošak\".",
   "tax.footer": "leakd.app · Praćenje pretplata s prioritetom privatnosti",
   "tax.generatedBy": "Generirao Leakd dana {date}",

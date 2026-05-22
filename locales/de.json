@@ -720,7 +720,7 @@
   "tax.colVendor": "Anbieter",
   "tax.colYearly": "Jährlich",
   "tax.csvBtn": "CSV herunterladen",
-  "tax.disclaimer": "Dieser Bericht dient ausschließlich Informationszwecken und stellt keine offizielle Steuer- oder Buchhaltungsberatung dar. Für die Richtigkeit der übermittelten Daten ist der Nutzer verantwortlich.",
+  "tax.disclaimer": "Dieser Bericht dient nur zu Informationszwecken. Sie stellen keine offizielle Steuer- oder Buchhaltungsberatung dar und dienen auch nicht als formelle Steuererklärung oder Beleg. Es liegt in der alleinigen Verantwortung des Nutzers, die Richtigkeit aller Daten und die Einhaltung der örtlichen Steuervorschriften zu überprüfen.",
   "tax.empty": "Noch keine Abos als Betriebsausgabe markiert. Öffne ein Abo und aktiviere „Betriebsausgabe\".",
   "tax.footer": "leakd.app · Datenschutzfreundlicher Abo-Tracker",
   "tax.generatedBy": "Erstellt mit Leakd am {date}",

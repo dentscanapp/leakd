@@ -720,7 +720,7 @@
   "tax.colVendor": "Fornitore",
   "tax.colYearly": "Annuale",
   "tax.csvBtn": "Scarica CSV",
-  "tax.disclaimer": "Questo report è fornito solo a scopo informativo e non costituisce una consulenza fiscale o contabile ufficiale. L'utente è responsabile dell'accuratezza dei dati inseriti.",
+  "tax.disclaimer": "Questo rapporto è solo a scopo informativo. Non costituisce una consulenza fiscale o contabile ufficiale, né funge da dichiarazione dei redditi o voucher formale. L'utente è l'unico responsabile della verifica dell'esattezza di tutti i dati e del rispetto delle normative fiscali locali.",
   "tax.empty": "Nessun abbonamento contrassegnato come spesa aziendale. Apri un abbonamento e attiva \"Spesa aziendale\".",
   "tax.footer": "leakd.app · Gestione abbonamenti privacy-first",
   "tax.generatedBy": "Generato da Leakd il {date}",

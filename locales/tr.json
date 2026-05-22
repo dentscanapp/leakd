@@ -720,7 +720,7 @@
   "tax.colVendor": "Sağlayıcı",
   "tax.colYearly": "Yıllık",
   "tax.csvBtn": "CSV indir",
-  "tax.disclaimer": "Bu rapor yalnızca bilgilendirme amaçlıdır ve resmi vergi veya muhasebe danışmanlığı niteliği taşımaz. Gönderilen verilerin doğruluğundan kullanıcı sorumludur.",
+  "tax.disclaimer": "Bu rapor yalnızca bilgilendirme amaçlıdır. Resmi vergi veya muhasebe tavsiyesi teşkil etmez ve resmi bir vergi beyannamesi veya makbuzu olarak da hizmet etmez. Kullanıcı, tüm verilerin doğruluğunun ve yerel vergi düzenlemelerine uygunluğunu doğrulamaktan yalnızca sorumludur.",
   "tax.empty": "Henüz iş gideri olarak işaretlenmiş abonelik yok. Bir aboneliği aç ve \"İş gideri\" kutusunu işaretle.",
   "tax.footer": "leakd.app · Gizlilik öncelikli abonelik takipçisi",
   "tax.generatedBy": "{date} tarihinde Leakd tarafından oluşturuldu",

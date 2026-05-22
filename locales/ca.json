@@ -720,7 +720,7 @@
   "tax.colVendor": "Proveïdor",
   "tax.colYearly": "Anual",
   "tax.csvBtn": "Descarrega CSV",
-  "tax.disclaimer": "Aquest informe és només a títol informatiu i no constitueix assessorament fiscal o comptable oficial. L'usuari és responsable de l'exactitud de les dades enviades.",
+  "tax.disclaimer": "Aquest informe només té finalitats informatives. No constitueix assessorament fiscal o comptable oficial, ni serveix com a declaració o com a justificant fiscal. L'usuari és l'únic responsable de verificar l'exactitud de totes les dades i el compliment de la normativa fiscal local.",
   "tax.empty": "Encara no hi ha cap subscripció marcada com a despesa empresarial. Obre una subscripció i activa \"Despesa empresarial\".",
   "tax.footer": "leakd.app · Gestor de subscripcions centrat en la privacitat",
   "tax.generatedBy": "Generat per Leakd el {date}",

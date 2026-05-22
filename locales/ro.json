@@ -720,7 +720,7 @@
   "tax.colVendor": "Furnizor",
   "tax.colYearly": "Anual",
   "tax.csvBtn": "Descarcă CSV",
-  "tax.disclaimer": "Acest raport are caracter pur informativ și nu constituie consultanță fiscală sau contabilă oficială. Utilizatorul este responsabil pentru acuratețea datelor transmise.",
+  "tax.disclaimer": "Acest raport are doar scop informativ. Nu constituie consiliere fiscală sau contabilă oficială și nici nu servește ca declarație fiscală sau bon. Utilizatorul este singurul responsabil pentru verificarea acurateții tuturor datelor și respectarea reglementărilor fiscale locale.",
   "tax.empty": "Niciun abonament marcat ca cheltuială de afaceri. Deschide un abonament și bifează \"Cheltuială de afaceri\".",
   "tax.footer": "leakd.app · Tracker de abonamente cu confidențialitate",
   "tax.generatedBy": "Generat de Leakd la {date}",

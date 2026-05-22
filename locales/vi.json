@@ -720,7 +720,7 @@
   "tax.colVendor": "Nhà cung cấp",
   "tax.colYearly": "Hàng năm",
   "tax.csvBtn": "Tải CSV",
-  "tax.disclaimer": "Báo cáo này chỉ mang tính chất tham khảo và không cấu thành tư vấn thuế hoặc kế toán chính thức. Người dùng chịu trách nhiệm về tính chính xác của dữ liệu được gửi.",
+  "tax.disclaimer": "Báo cáo này chỉ nhằm mục đích cung cấp thông tin. Nó không phải là lời khuyên chính thức về thuế hoặc kế toán, cũng như không đóng vai trò như một tờ khai hoặc chứng từ thuế chính thức. Người dùng hoàn toàn chịu trách nhiệm xác minh tính chính xác của tất cả dữ liệu và tuân thủ các quy định thuế địa phương.",
   "tax.empty": "Chưa có đăng ký nào được đánh dấu là chi phí doanh nghiệp. Mở đăng ký và tích \"Chi phí doanh nghiệp\".",
   "tax.footer": "leakd.app · Trình theo dõi đăng ký ưu tiên quyền riêng tư",
   "tax.generatedBy": "Được tạo bởi Leakd vào {date}",

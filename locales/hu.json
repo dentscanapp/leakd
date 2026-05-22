@@ -720,7 +720,7 @@
   "tax.colVendor": "Szolgáltató",
   "tax.colYearly": "Éves",
   "tax.csvBtn": "CSV letöltése",
-  "tax.disclaimer": "A jelentés kizárólag tájékoztató jellegű, és nem minősül hivatalos adó- vagy könyvelési tanácsadásnak. A beküldött adatok helyességéért a felhasználó felel.",
+  "tax.disclaimer": "Ez a jelentés kizárólag tájékoztató jellegű. Nem minősül hivatalos adó- vagy könyvelési tanácsadásnak, és nem használható fel hivatalos adóbevallásként vagy bizonylatként. A beküldött adatok helyességéért és az adózási szabályoknak való megfelelésért kizárólag a felhasználó felel.",
   "tax.empty": "Még nem jelöltél meg előfizetést üzleti költségként. Nyiss meg egy előfizetést és pipáld be az „Üzleti költség\" jelölőt.",
   "tax.footer": "leakd.app · Adatvédelem-első előfizetés-követő",
   "tax.generatedBy": "Leakd generálta — {date}",

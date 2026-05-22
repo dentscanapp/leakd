@@ -720,7 +720,7 @@
   "tax.colVendor": "Vendor",
   "tax.colYearly": "Taunan",
   "tax.csvBtn": "I-download ang CSV",
-  "tax.disclaimer": "Ang ulat na ito ay para lamang sa layuning pang-impormasyon at hindi bumubuo ng opisyal na payo sa buwis o accounting. Ang user ang responsable sa kawastuhan ng isinumiteng datos.",
+  "tax.disclaimer": "Ang ulat na ito ay para sa mga layuning pang-impormasyon lamang. Hindi ito bumubuo ng opisyal na payo sa buwis o accounting, at hindi rin ito nagsisilbing pormal na tax return o voucher. Ang user ang tanging responsable para sa pag-verify ng katumpakan ng lahat ng data at pagsunod sa mga lokal na regulasyon sa buwis.",
   "tax.empty": "Wala pang subscription na minarkahan bilang gastos sa negosyo. Buksan ang isang subscription at i-tick ang \"Gastos sa negosyo\".",
   "tax.footer": "leakd.app · Privacy-first subscription tracker",
   "tax.generatedBy": "Ginawa ng Leakd noong {date}",

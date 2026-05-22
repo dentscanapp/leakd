@@ -720,7 +720,7 @@
   "tax.colVendor": "Leverancier",
   "tax.colYearly": "Jaarlijks",
   "tax.csvBtn": "CSV downloaden",
-  "tax.disclaimer": "Dit rapport is uitsluitend ter informatie en vormt geen officieel fiscaal of boekhoudkundig advies. De gebruiker is verantwoordelijk voor de juistheid van de aangeleverde gegevens.",
+  "tax.disclaimer": "Dit rapport is uitsluitend bedoeld ter informatie. Het vormt geen officieel belasting- of boekhoudkundig advies en dient ook niet als formele belastingaangifte of voucher. De gebruiker is als enige verantwoordelijk voor het verifiëren van de juistheid van alle gegevens en het naleven van de lokale belastingvoorschriften.",
   "tax.empty": "Nog geen abonnementen gemarkeerd als zakelijke kosten. Open een abonnement en vink \"Zakelijke kosten\" aan.",
   "tax.footer": "leakd.app · Privacy-first abonnementen tracker",
   "tax.generatedBy": "Gegenereerd door Leakd op {date}",

@@ -720,7 +720,7 @@
   "tax.colVendor": "Leverantör",
   "tax.colYearly": "Årligen",
   "tax.csvBtn": "Ladda ner CSV",
-  "tax.disclaimer": "Denna rapport är endast i informationssyfte och utgör inte officiell skatte- eller redovisningsrådgivning. Användaren ansvarar för att de inlämnade uppgifterna är korrekta.",
+  "tax.disclaimer": "Denna rapport är endast i informationssyfte. Den utgör inte officiell skatte- eller redovisningsrådgivning och fungerar inte heller som en formell skattedeklaration eller voucher. Användaren är ensam ansvarig för att verifiera riktigheten av all data och överensstämmelse med lokala skatteregler.",
   "tax.empty": "Inga prenumerationer markerade som företagskostnad än. Öppna en prenumeration och kryssa i \"Företagskostnad\".",
   "tax.footer": "leakd.app · Integritetsfokuserad prenumerationsspårare",
   "tax.generatedBy": "Skapad av Leakd den {date}",

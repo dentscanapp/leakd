@@ -720,7 +720,7 @@
   "tax.colVendor": "Proveedor",
   "tax.colYearly": "Anual",
   "tax.csvBtn": "Descargar CSV",
-  "tax.disclaimer": "Este informe es solo para fines informativos y no constituye asesoramiento fiscal o contable oficial. El usuario es responsable de la exactitud de los datos enviados.",
+  "tax.disclaimer": "Este informe es sólo para fines informativos. No constituye asesoramiento fiscal o contable oficial, ni sirve como declaración o comprobante de impuestos formal. El usuario es el único responsable de verificar la exactitud de todos los datos y el cumplimiento de las normas fiscales locales.",
   "tax.empty": "Aún no marcaste ninguna suscripción como gasto empresarial. Abre una y activa la casilla \"Gasto empresarial\".",
   "tax.footer": "leakd.app · Gestor de suscripciones que respeta la privacidad",
   "tax.generatedBy": "Generado por Leakd el {date}",

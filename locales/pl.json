@@ -720,7 +720,7 @@
   "tax.colVendor": "Dostawca",
   "tax.colYearly": "Rocznie",
   "tax.csvBtn": "Pobierz CSV",
-  "tax.disclaimer": "Niniejszy raport ma charakter wyłącznie informacyjny i nie stanowi oficjalnego doradztwa podatkowego ani księgowego. Za poprawność przesłanych danych odpowiada użytkownik.",
+  "tax.disclaimer": "Niniejszy raport ma wyłącznie charakter informacyjny. Nie stanowi oficjalnej porady podatkowej ani księgowej, ani nie służy jako formalne zeznanie podatkowe lub voucher. Użytkownik ponosi wyłączną odpowiedzialność za sprawdzenie poprawności wszystkich danych i zgodności z lokalnymi przepisami podatkowymi.",
   "tax.empty": "Brak subskrypcji oznaczonych jako wydatek firmowy. Otwórz subskrypcję i zaznacz \"Wydatek firmowy\".",
   "tax.footer": "leakd.app · Tracker subskrypcji z prywatnością na pierwszym miejscu",
   "tax.generatedBy": "Wygenerowane przez Leakd dnia {date}",

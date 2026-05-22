@@ -720,7 +720,7 @@
   "tax.colVendor": "Dodávateľ",
   "tax.colYearly": "Ročne",
   "tax.csvBtn": "Stiahnuť CSV",
-  "tax.disclaimer": "Tento report má len informatívny charakter a nepredstavuje oficiálne daňové ani účtovné poradenstvo. Za správnosť zaslaných údajov zodpovedá používateľ.",
+  "tax.disclaimer": "Táto správa slúži len na informačné účely. Nepredstavuje oficiálne daňové alebo účtovné poradenstvo, ani neslúži ako formálne daňové priznanie alebo poukaz. Užívateľ je výhradne zodpovedný za overenie správnosti všetkých údajov a dodržiavanie miestnych daňových predpisov.",
   "tax.empty": "Žiadne predplatné zatiaľ nie je označené ako firemný výdavok. Otvor predplatné a zaškrtni \"Firemný výdavok\".",
   "tax.footer": "leakd.app · Tracker predplatných s dôrazom na súkromie",
   "tax.generatedBy": "Vygeneroval Leakd dňa {date}",

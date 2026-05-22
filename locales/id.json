@@ -720,7 +720,7 @@
   "tax.colVendor": "Vendor",
   "tax.colYearly": "Tahunan",
   "tax.csvBtn": "Unduh CSV",
-  "tax.disclaimer": "Laporan ini hanya untuk tujuan informasi dan tidak merupakan saran perpajakan atau akuntansi resmi. Pengguna bertanggung jawab atas keakuratan data yang dikirimkan.",
+  "tax.disclaimer": "Laporan ini hanya untuk tujuan informasi. Ini bukan merupakan nasihat pajak atau akuntansi resmi, juga tidak berfungsi sebagai pengembalian atau voucher pajak formal. Pengguna sepenuhnya bertanggung jawab untuk memverifikasi keakuratan semua data dan kepatuhan terhadap peraturan pajak setempat.",
   "tax.empty": "Belum ada langganan yang ditandai sebagai pengeluaran bisnis. Buka langganan dan centang \"Pengeluaran bisnis\".",
   "tax.footer": "leakd.app · Pelacak langganan yang mengutamakan privasi",
   "tax.generatedBy": "Dibuat oleh Leakd pada {date}",

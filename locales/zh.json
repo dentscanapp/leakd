@@ -720,7 +720,7 @@
   "tax.colVendor": "供应商",
   "tax.colYearly": "每年",
   "tax.csvBtn": "下载 CSV",
-  "tax.disclaimer": "本报告仅供参考，不构成正式的税务或会计建议。提交数据的准确性由用户负责。",
+  "tax.disclaimer": "本报告仅供参考。它不构成官方税务或会计建议，也不作为正式的纳税申报表或凭证。用户全权负责验证所有数据的准确性并遵守当地税务法规。",
   "tax.empty": "尚未将任何订阅标记为商业支出。打开订阅并勾选\"商业支出\"复选框。",
   "tax.footer": "leakd.app · 隐私优先的订阅追踪器",
   "tax.generatedBy": "由 Leakd 于 {date} 生成",
