@@ -1,4 +1,4 @@
-// Leakd — Business Expense & Tax Reporter (Pro)
+// Leakd — Business Expense Reporter (Pro)
 // Generates a printable PDF + accountant-friendly CSV from every sub
 // flagged as `isBusiness: true`. Built on the same print-window pattern
 // as pdf.js so it works offline with no PDF library dependency.
@@ -326,7 +326,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `leakd-tax-report-${new Date().getFullYear()}.csv`;
+    a.download = `leakd-expense-report-${new Date().getFullYear()}.csv`;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
