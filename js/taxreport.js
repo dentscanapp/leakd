@@ -156,7 +156,19 @@
       const cycleLabel = t('cycle.' + (r.cycle === 'monthly' ? 'mo' : r.cycle === 'yearly' ? 'yr' : 'wk')).replace('/', '');
       const localCat = window.LeakdI18n ? window.LeakdI18n.t('cat.' + r.category) : r.category;
       const splitNote = r.sharedWith > 1 ? ` <span class="shared">(1/${r.sharedWith})</span>` : '';
-      const vendorCell = r.vendorUrl ? `<a href="${esc(r.vendorUrl)}" rel="noopener">${esc(new URL(r.vendorUrl).hostname.replace(/^www\./, ''))}</a>` : '';
+      
+      let vendorCell = '';
+      if (r.vendorUrl) {
+        try {
+          const urlObj = new URL(r.vendorUrl);
+          if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+            vendorCell = `<a href="${esc(encodeURI(r.vendorUrl))}" rel="noopener" target="_blank">${esc(urlObj.hostname.replace(/^www\./, ''))}</a>`;
+          }
+        } catch (e) {
+          console.warn('Invalid vendorUrl', r.vendorUrl, e);
+        }
+      }
+
       return `
         <tr>
           <td><strong>${esc(r.name)}</strong>${splitNote}</td>
@@ -240,14 +252,17 @@
 
   <div class="disclaimer">${esc(t('tax.disclaimer'))}</div>
   <div class="footer">${esc(t('tax.footer'))}</div>
-
-  <script>window.onload = function () { window.print(); };</script>
 </body>
 </html>`;
 
-    win.document.open();
-    win.document.write(html);
-    win.document.close();
+    win.document.documentElement.innerHTML = html;
+    win.setTimeout(() => {
+      try {
+        win.print();
+      } catch (e) {
+        console.error('print failed', e);
+      }
+    }, 100);
   }
 
   // ── CSV (accountant-friendly) ───────────────────────────────
