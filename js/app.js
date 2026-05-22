@@ -3165,9 +3165,351 @@
     $('syncPasswordInput').value = '';
     $('syncPasswordConfirm').value = '';
     $('syncStrengthWrapper').style.display = 'none';
+    // Always open on the Drive tab. P2P state resets per pairing.
+    switchSyncTab('drive');
+    resetP2PPanel();
     $('syncModal').classList.add('active');
   }
-  function closeSyncModal() { $('syncModal').classList.remove('active'); }
+
+  // ─── P2P sync (Option B): Zero-cloud direct device-to-device ───
+  // Coordinates the UI half of the WebRTC pairing flow. The transport
+  // and crypto live in p2p-sync.js; everything visible to the user sits
+  // here so the modal logic stays self-contained.
+
+  let p2pPendingRemote = null;       // snapshot received from the other device
+  let p2pScannerStream = null;       // MediaStream while the camera scanner is live
+  let p2pScannerRaf = null;          // requestAnimationFrame handle for the scan loop
+
+  function switchSyncTab(which) {
+    const isDrive = which === 'drive';
+    $('tabSyncDrive').classList.toggle('active', isDrive);
+    $('tabSyncP2P').classList.toggle('active', !isDrive);
+    $('tabSyncDrive').setAttribute('aria-selected', isDrive ? 'true' : 'false');
+    $('tabSyncP2P').setAttribute('aria-selected', isDrive ? 'false' : 'true');
+    $('syncDrivePanel').style.display = isDrive ? '' : 'none';
+    $('syncP2PPanel').style.display  = isDrive ? 'none' : '';
+    if (isDrive) {
+      // Switching away from P2P: kill the scanner / peer so we don't keep
+      // the camera light on or hold a broker socket open.
+      teardownP2P();
+    } else {
+      // Entering P2P: gate it behind Pro on the web/Android build (free in
+      // the Chrome extension, but the extension has its own gate).
+      const isPro = window.LeakdPro && window.LeakdPro.isPro();
+      const lock = $('p2pProLock');
+      const content = $('p2pProContent');
+      if (lock)    lock.style.display    = isPro ? 'none' : '';
+      if (content) content.style.display = isPro ? '' : 'none';
+    }
+  }
+
+  function resetP2PPanel() {
+    $('p2pRolePicker').style.display = '';
+    $('p2pHostView').style.display = 'none';
+    $('p2pClientView').style.display = 'none';
+    $('p2pMergeView').style.display = 'none';
+    $('p2pError').style.display = 'none';
+    $('p2pError').textContent = '';
+    $('p2pCancelBtn').style.display = 'none';
+    $('p2pMergeBtn').style.display = 'none';
+    p2pPendingRemote = null;
+    const code = $('p2pBackupCode');
+    if (code) code.textContent = '—';
+    const loading = $('p2pHostLoading');
+    if (loading) { loading.style.display = ''; loading.textContent = t('sync.p2pPreparing'); }
+  }
+
+  function teardownP2P() {
+    stopP2PScanner();
+    if (window.LeakdP2PSync) {
+      try { window.LeakdP2PSync.closeAll(); } catch {}
+    }
+  }
+
+  function showP2PError(code, detail) {
+    const el = $('p2pError');
+    const key = 'sync.p2pErr.' + (code || 'generic');
+    let msg = t(key);
+    if (!msg || msg === key) msg = t('sync.p2pErr.generic') || 'Pairing failed.';
+    if (detail) msg += ' (' + detail + ')';
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  // Subscribe to p2p-sync events ONCE at init. The listener does not care
+  // which side fired the event — both sides funnel through here.
+  function bindP2PListener() {
+    if (!window.LeakdP2PSync) return;
+    window.LeakdP2PSync.on(async (evt) => {
+      if (evt.type === 'channel-open') {
+        // Both sides immediately push their snapshot — fully symmetric.
+        try { await window.LeakdP2PSync.sendSnapshot(); }
+        catch (e) { showP2PError('SEND_FAILED', String(e && e.message || e)); }
+        $('p2pHostStatus') && ($('p2pHostStatus').textContent = t('sync.p2pConnected'));
+        $('p2pClientStatus') && ($('p2pClientStatus').textContent = t('sync.p2pConnected'));
+      } else if (evt.type === 'snapshot-received') {
+        p2pPendingRemote = evt.snapshot;
+        showMergePreview(p2pPendingRemote);
+      } else if (evt.type === 'error') {
+        showP2PError(evt.code, evt.detail);
+      }
+    });
+  }
+
+  function showMergePreview(snap) {
+    const remoteCount = window.LeakdP2PSync.countSubs(snap);
+    const localCount = subs.length;
+    $('p2pRolePicker').style.display = 'none';
+    $('p2pHostView').style.display = 'none';
+    $('p2pClientView').style.display = 'none';
+    stopP2PScanner();
+    $('p2pMergeView').style.display = '';
+    $('p2pMergeSummary').textContent = t('sync.p2pMergeSummary', { remote: remoteCount, local: localCount });
+    $('p2pMergeBtn').style.display = 'inline-flex';
+    $('p2pCancelBtn').style.display = 'inline-flex';
+  }
+
+  async function startP2PHost() {
+    if (!window.LeakdP2PSync) return;
+    if (!(window.LeakdPro && window.LeakdPro.isPro())) {
+      showP2PError('PRO_REQUIRED'); return;
+    }
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      showP2PError('OFFLINE'); return;
+    }
+    $('p2pRolePicker').style.display = 'none';
+    $('p2pHostView').style.display = '';
+    $('p2pCancelBtn').style.display = 'inline-flex';
+    $('p2pHostStatus').textContent = t('sync.p2pPreparing');
+    try {
+      const { peerId, sessionKey } = await window.LeakdP2PSync.createHost();
+      $('p2pBackupCode').textContent = shortenPeerId(peerId);
+      $('p2pHostStatus').textContent = t('sync.p2pWaiting');
+      await renderP2PQR({ peerId, sessionKey });
+    } catch (e) {
+      showP2PError(classifyError(e), String(e && e.message || e));
+    }
+  }
+
+  async function startP2PClient() {
+    if (!window.LeakdP2PSync) return;
+    if (!(window.LeakdPro && window.LeakdPro.isPro())) {
+      showP2PError('PRO_REQUIRED'); return;
+    }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      showP2PError('NO_CAMERA'); return;
+    }
+    $('p2pRolePicker').style.display = 'none';
+    $('p2pClientView').style.display = '';
+    $('p2pCancelBtn').style.display = 'inline-flex';
+    try {
+      await window.LeakdP2PSync.loadScript('jsqr');
+      await openCameraScanner();
+    } catch (e) {
+      showP2PError(classifyError(e), String(e && e.message || e));
+    }
+  }
+
+  function classifyError(e) {
+    const m = String(e && (e.name || e.code || e.message) || '');
+    if (m.includes('NotAllowedError')) return 'CAMERA_DENIED';
+    if (m.includes('NotFoundError'))   return 'NO_CAMERA';
+    if (m.includes('LIB_LOAD_FAILED')) return 'LIB_LOAD_FAILED';
+    if (m.includes('BROKER_TIMEOUT'))  return 'BROKER_TIMEOUT';
+    if (m.includes('CONNECT_TIMEOUT')) return 'CONNECT_TIMEOUT';
+    if (m.includes('PEER_UNAVAILABLE')) return 'PEER_UNAVAILABLE';
+    return 'GENERIC';
+  }
+
+  function shortenPeerId(id) {
+    if (!id) return '—';
+    return String(id).slice(-6).toUpperCase();
+  }
+
+  async function renderP2PQR({ peerId, sessionKey }) {
+    await window.LeakdP2PSync.loadScript('qrcode');
+    if (typeof qrcode === 'undefined') throw new Error('LIB_LOAD_FAILED:qrcode');
+    const payload = JSON.stringify({ v: 1, p: peerId, k: sessionKey });
+    // qrcode-generator: typeNumber=0 (auto), error correction L is fine for short payloads
+    const qr = qrcode(0, 'M');
+    qr.addData(payload);
+    qr.make();
+    const canvas = $('p2pQrCanvas');
+    const ctx = canvas.getContext('2d');
+    const moduleCount = qr.getModuleCount();
+    const size = canvas.width;
+    const cell = Math.floor(size / moduleCount);
+    const offset = Math.floor((size - cell * moduleCount) / 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#000000';
+    for (let r = 0; r < moduleCount; r++) {
+      for (let c = 0; c < moduleCount; c++) {
+        if (qr.isDark(r, c)) ctx.fillRect(offset + c * cell, offset + r * cell, cell, cell);
+      }
+    }
+    const loading = $('p2pHostLoading');
+    if (loading) loading.style.display = 'none';
+  }
+
+  async function openCameraScanner() {
+    const video = $('p2pScannerVideo');
+    const canvas = $('p2pScannerCanvas');
+    const ctx = canvas.getContext('2d');
+    p2pScannerStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment' },
+      audio: false,
+    });
+    video.srcObject = p2pScannerStream;
+    await video.play().catch(() => {});
+
+    const tick = () => {
+      if (!p2pScannerStream) return;
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        try {
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+          if (code && code.data) {
+            handleScannedQR(code.data);
+            return; // stop the loop; handleScannedQR closes the camera
+          }
+        } catch (e) { /* ignore single-frame failures */ }
+      }
+      p2pScannerRaf = requestAnimationFrame(tick);
+    };
+    p2pScannerRaf = requestAnimationFrame(tick);
+  }
+
+  function stopP2PScanner() {
+    if (p2pScannerRaf) { cancelAnimationFrame(p2pScannerRaf); p2pScannerRaf = null; }
+    if (p2pScannerStream) {
+      try { p2pScannerStream.getTracks().forEach(t => t.stop()); } catch {}
+      p2pScannerStream = null;
+    }
+    const video = $('p2pScannerVideo');
+    if (video) { try { video.pause(); } catch {} video.srcObject = null; }
+  }
+
+  async function handleScannedQR(raw) {
+    let parsed;
+    try { parsed = JSON.parse(raw); } catch { showP2PError('BAD_QR'); return; }
+    if (!parsed || parsed.v !== 1 || !parsed.p || !parsed.k) {
+      showP2PError('BAD_QR'); return;
+    }
+    stopP2PScanner();
+    $('p2pClientStatus') && ($('p2pClientStatus').textContent = t('sync.p2pConnecting'));
+    try {
+      await window.LeakdP2PSync.connectAsClient(parsed.p, parsed.k);
+    } catch (e) {
+      showP2PError(classifyError(e), String(e && e.message || e));
+    }
+  }
+
+  async function applyP2PMerge() {
+    if (!p2pPendingRemote) return;
+    const remote = p2pPendingRemote;
+    try {
+      mergeRemoteSnapshot(remote);
+      toast(t('sync.p2pMergeOk'));
+      teardownP2P();
+      closeSyncModal();
+    } catch (e) {
+      console.error('P2P merge failed', e);
+      showP2PError('MERGE_FAILED', String(e && e.message || e));
+    }
+  }
+
+  // Smart merge of a P2P snapshot into local state:
+  //   • subs:       id-based reconcile (newer updatedAt wins, deletions respected)
+  //   • cancelled:  id-based union (treat cancelledAt similarly)
+  //   • everything else: take whichever side's snapshot is more recent
+  function mergeRemoteSnapshot(remoteSnap) {
+    if (!remoteSnap || !remoteSnap.data) return;
+    const rdata = remoteSnap.data;
+    const localUpdatedAt = readLocalUpdatedAt();
+    const remoteUpdatedAt = remoteSnap.sentAt || 0;
+    const remoteIsNewer = remoteUpdatedAt > localUpdatedAt;
+
+    // Subs — id-based reconcile
+    if ('leakd_subs' in rdata) {
+      let remoteList = [];
+      try { remoteList = JSON.parse(rdata.leakd_subs) || []; } catch {}
+      const cancelledIds = new Set(
+        (window.LeakdCancelled ? window.LeakdCancelled.all() : []).map(x => x.id)
+      );
+      subs = reconcileSubscriptions(subs, remoteList, cancelledIds);
+    }
+
+    // Cancelled — union with id dedupe, keep the later cancelledAt
+    if ('leakd_cancelled' in rdata) {
+      try {
+        const remoteCancelled = JSON.parse(rdata.leakd_cancelled) || [];
+        const localCancelled = window.LeakdCancelled ? window.LeakdCancelled.all() : [];
+        const map = new Map();
+        for (const c of localCancelled) map.set(c.id, c);
+        for (const c of remoteCancelled) {
+          const existing = map.get(c.id);
+          if (!existing) map.set(c.id, c);
+          else {
+            const a = new Date(existing.cancelledAt || 0).getTime();
+            const b = new Date(c.cancelledAt || 0).getTime();
+            if (b > a) map.set(c.id, c);
+          }
+        }
+        localStorage.setItem('leakd_cancelled', JSON.stringify(Array.from(map.values())));
+      } catch {}
+    }
+
+    // Other keys: take remote if its snapshot is newer overall.
+    if (remoteIsNewer) {
+      for (const k of ['leakd_settings', 'leakd_budgets', 'leakd_goal', 'leakd_income',
+                       'leakd_notif_prefs', 'leakd_streak']) {
+        if (k in rdata) localStorage.setItem(k, rdata[k]);
+      }
+      if ('leakd_settings' in rdata) {
+        try { settings = JSON.parse(rdata.leakd_settings); } catch {}
+      }
+    }
+
+    saveData();
+    if (typeof render === 'function') render();
+    if (typeof refreshDynamicLabels === 'function') refreshDynamicLabels();
+  }
+
+  function readLocalUpdatedAt() {
+    // Use the newest sub's updatedAt as a coarse local-state timestamp.
+    let max = 0;
+    for (const s of subs) {
+      const t = Number(s.updatedAt) || Date.parse(s.updatedAt) || Date.parse(s.createdAt) || 0;
+      if (t > max) max = t;
+    }
+    return max;
+  }
+
+  // Merges two sub arrays by id. Newer updatedAt wins on collisions. Remote
+  // subs whose id is already in the local "cancelled" graveyard are skipped
+  // so a re-sync from an old device can't resurrect a killed subscription.
+  function reconcileSubscriptions(localList, remoteList, cancelledIds) {
+    const cancelled = cancelledIds || new Set();
+    const merged = new Map();
+    for (const s of localList || []) merged.set(s.id, s);
+    for (const r of remoteList || []) {
+      if (cancelled.has(r.id)) continue; // killed here on purpose — don't bring it back
+      const existing = merged.get(r.id);
+      if (!existing) { merged.set(r.id, r); continue; }
+      const localT = Number(existing.updatedAt) || Date.parse(existing.updatedAt) || Date.parse(existing.createdAt) || 0;
+      const remoteT = Number(r.updatedAt) || Date.parse(r.updatedAt) || Date.parse(r.createdAt) || 0;
+      if (remoteT > localT) merged.set(r.id, r);
+    }
+    return Array.from(merged.values());
+  }
+  function closeSyncModal() {
+    teardownP2P();
+    $('syncModal').classList.remove('active');
+  }
 
   function refreshSyncUI() {
     const S = window.LeakdSync;
@@ -3736,6 +4078,25 @@
     $('syncDisableBtn').addEventListener('click', disableSync);
     $('syncProUpgrade').addEventListener('click', () => { closeSyncModal(); openProModal(); });
     $('syncPasswordInput').addEventListener('input', updateSyncPasswordStrengthUI);
+
+    // P2P sync (Option B): tab switching + role pick + flow buttons
+    const tabSyncDrive = $('tabSyncDrive');
+    const tabSyncP2P   = $('tabSyncP2P');
+    if (tabSyncDrive) tabSyncDrive.addEventListener('click', () => switchSyncTab('drive'));
+    if (tabSyncP2P)   tabSyncP2P.addEventListener('click',   () => switchSyncTab('p2p'));
+    const p2pBeHostBtn   = $('p2pBeHostBtn');
+    const p2pBeClientBtn = $('p2pBeClientBtn');
+    const p2pCancelBtn   = $('p2pCancelBtn');
+    const p2pDoneBtn     = $('p2pDoneBtn');
+    const p2pMergeBtn    = $('p2pMergeBtn');
+    if (p2pBeHostBtn)   p2pBeHostBtn.addEventListener('click', startP2PHost);
+    if (p2pBeClientBtn) p2pBeClientBtn.addEventListener('click', startP2PClient);
+    if (p2pCancelBtn)   p2pCancelBtn.addEventListener('click', () => { teardownP2P(); resetP2PPanel(); });
+    if (p2pDoneBtn)     p2pDoneBtn.addEventListener('click', closeSyncModal);
+    if (p2pMergeBtn)    p2pMergeBtn.addEventListener('click', applyP2PMerge);
+    const p2pProUpgrade = $('p2pProUpgrade');
+    if (p2pProUpgrade) p2pProUpgrade.addEventListener('click', () => { closeSyncModal(); openProModal(); });
+    bindP2PListener();
 
     // Bank import
     $('menuBank').addEventListener('click', () => { closeMenuModal(); openBankModal(); });

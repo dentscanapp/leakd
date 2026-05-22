@@ -1457,6 +1457,21 @@
         </button>
       </div>
 
+      <!-- Tab selector: Option A (Drive) vs Option B (P2P) -->
+      <div class="sync-tabs" role="tablist">
+        <button type="button" class="sync-tab active" id="tabSyncDrive" role="tab" aria-selected="true">
+          <span class="sync-tab-pill" data-i18n="sync.optionA">Option A</span>
+          <span data-i18n="sync.driveTitle">Google Drive</span>
+        </button>
+        <button type="button" class="sync-tab" id="tabSyncP2P" role="tab" aria-selected="false">
+          <span class="sync-tab-pill" data-i18n="sync.optionB">Option B</span>
+          <span data-i18n="sync.p2pTitle">Direct P2P</span>
+        </button>
+      </div>
+
+      <!-- ═══════════ OPTION A: DRIVE PANEL ═══════════ -->
+      <div id="syncDrivePanel">
+
       <p class="notif-blurb" data-i18n="sync.blurb">End-to-end encrypted backup to your own Google Drive. Your master
         password never leaves this device.</p>
 
@@ -1510,12 +1525,95 @@
       <!-- Error display -->
       <div id="syncError" class="sync-error" style="display:none"></div>
 
-      <div class="modal-actions">
+      <div class="modal-actions" id="syncDriveActions">
         <button class="btn-outline" id="syncDisableBtn" style="display:none" data-i18n="sync.disable">Disable
           sync</button>
         <div style="flex:1"></div>
-        <button class="btn-secondary" id="cancelSyncBtn">Done</button>
+        <button class="btn-secondary" id="cancelSyncBtn" data-i18n="btn.done">Done</button>
         <button class="btn-primary" id="syncPrimaryBtn" data-i18n="sync.enable">Enable sync</button>
+      </div>
+
+      </div><!-- /syncDrivePanel -->
+
+      <!-- ═══════════ OPTION B: P2P PANEL ═══════════ -->
+      <div id="syncP2PPanel" style="display:none">
+        <p class="notif-blurb" data-i18n="sync.p2pBlurb">Pair this device with another one over your local network — no account, no cloud. Encrypted end-to-end with a key only the two devices ever see.</p>
+
+        <!-- Pro lock — shown when isPro()===false (mirror of the Drive lock) -->
+        <div id="p2pProLock" class="budgets-pro-lock" style="display:none">
+          <div class="budgets-pro-lock-title" data-i18n="sync.p2pProLock">P2P direct sync is a Pro feature.</div>
+          <button class="btn-primary" id="p2pProUpgrade" data-i18n="pro.buy">Get Pro</button>
+        </div>
+
+        <!-- Wraps everything that needs Pro — hidden when locked -->
+        <div id="p2pProContent">
+
+        <!-- Role picker — shown first -->
+        <div id="p2pRolePicker" class="p2p-role-picker">
+          <button type="button" class="p2p-role-card" id="p2pBeHostBtn">
+            <div class="p2p-role-icon">📡</div>
+            <div class="p2p-role-title" data-i18n="sync.p2pHostTitle">This device sends</div>
+            <div class="p2p-role-sub" data-i18n="sync.p2pHostSub">Show a QR code the other device can scan.</div>
+          </button>
+          <button type="button" class="p2p-role-card" id="p2pBeClientBtn">
+            <div class="p2p-role-icon">📷</div>
+            <div class="p2p-role-title" data-i18n="sync.p2pClientTitle">This device receives</div>
+            <div class="p2p-role-sub" data-i18n="sync.p2pClientSub">Scan a QR code shown by the other device.</div>
+          </button>
+        </div>
+
+        <!-- Host view: QR + status -->
+        <div id="p2pHostView" style="display:none">
+          <div class="p2p-qr-card">
+            <div class="p2p-qr-canvas-wrap">
+              <canvas id="p2pQrCanvas" width="240" height="240" aria-label="Pairing QR code"></canvas>
+              <div class="p2p-qr-loading" id="p2pHostLoading" data-i18n="sync.p2pPreparing">Preparing pairing code…</div>
+            </div>
+            <div class="p2p-qr-meta">
+              <div class="p2p-status">
+                <span class="p2p-pulse"></span>
+                <span id="p2pHostStatus" data-i18n="sync.p2pWaiting">Waiting for the other device to scan…</span>
+              </div>
+              <div class="p2p-code-row">
+                <span class="p2p-code-label" data-i18n="sync.p2pCodeLabel">Backup code</span>
+                <code class="p2p-code" id="p2pBackupCode">—</code>
+              </div>
+            </div>
+          </div>
+          <div class="p2p-hint" data-i18n="sync.p2pHostHint">Open Leakd on the other device → Sync → Option B → "This device receives" → scan this QR.</div>
+        </div>
+
+        <!-- Client view: camera scanner -->
+        <div id="p2pClientView" style="display:none">
+          <div class="p2p-scanner">
+            <video id="p2pScannerVideo" playsinline muted autoplay></video>
+            <div class="p2p-scanner-overlay" aria-hidden="true">
+              <div class="p2p-scanner-frame"></div>
+            </div>
+            <canvas id="p2pScannerCanvas" style="display:none"></canvas>
+          </div>
+          <div class="p2p-status" id="p2pClientStatus" data-i18n="sync.p2pPointCamera">Point the camera at the QR code shown on the other device.</div>
+        </div>
+
+        <!-- Merge confirmation -->
+        <div id="p2pMergeView" style="display:none">
+          <div class="p2p-merge-card">
+            <div class="p2p-merge-icon">🔄</div>
+            <div class="p2p-merge-title" data-i18n="sync.p2pMergeTitle">Subscriptions received</div>
+            <div class="p2p-merge-sub" id="p2pMergeSummary"></div>
+          </div>
+        </div>
+
+        <div id="p2pError" class="sync-error" style="display:none"></div>
+
+        <div class="modal-actions" id="syncP2PActions">
+          <button class="btn-outline" id="p2pCancelBtn" style="display:none" data-i18n="btn.cancel">Cancel</button>
+          <div style="flex:1"></div>
+          <button class="btn-secondary" id="p2pDoneBtn" data-i18n="btn.done">Done</button>
+          <button class="btn-primary" id="p2pMergeBtn" style="display:none" data-i18n="sync.p2pMergeBtn">Merge</button>
+        </div>
+
+        </div><!-- /p2pProContent -->
       </div>
     </div>
   </div>
@@ -1920,10 +2018,12 @@
   <!-- Pro-only cloud sync (E2EE via Google Drive). Set window.LeakdSyncConfig.clientId before this loads. -->
   <script src="js/config.js"></script>
   <script src="js/sync.js?v=2026-05-22.111" defer></script>
+  <!-- Option B: zero-cloud P2P direct sync (WebRTC, AES-GCM E2EE) -->
+  <script src="js/p2p-sync.js?v=1" defer></script>
   <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
   <script src="js/emailreminder.js" defer></script>
 
-  <script src="js/app.js?v=2026-05-22.111" defer></script>
+  <script src="js/app.js?v=2026-05-22.113" defer></script>
 
 </body>
 

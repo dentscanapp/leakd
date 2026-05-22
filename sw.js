@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v111';
+const CACHE_NAME = 'leakd-v113';
 
 // Files that must always be fresh — HTML shells, every JS module, and every
 // locale JSON. Network-first with a cache fallback for offline use. Without
@@ -74,6 +74,7 @@ const ASSETS = [
   'js/streak.js',
   'js/leak.js',
   'js/sync.js',
+  'js/p2p-sync.js',
   'js/emailreminder.js',
   'manifest.json',
   'icons/icon.svg',
