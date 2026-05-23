@@ -80,7 +80,7 @@
   .hero-ctas>a,.cta-ctas>a{width:209px;height:62px;box-sizing:border-box;margin:0}
   .hero-ctas .gp-badge,.cta-ctas .gp-badge{display:flex;align-items:center;justify-content:center;line-height:0;padding:0}
   .hero-ctas .gp-badge img,.cta-ctas .gp-badge img,.hero-ctas .gp-badge.lg img,.cta-ctas .gp-badge.lg img{height:62px;width:auto;border-radius:0}
-  .hero-ctas .cws-badge,.cta-ctas .cws-badge{width:209px;height:62px;justify-content:center;gap:10px;padding:0 14px;border:1px solid rgba(255,255,255,0.5);border-radius:8px}
+  .hero-ctas .cws-badge,.cta-ctas .cws-badge{width:209px;height:62px;justify-content:center;gap:10px;padding:0 14px;border:1.5px solid rgba(255,255,255,0.45);border-radius:8px;background:#000000;}
   @media (max-width:480px){.hero-ctas,.cta-ctas{grid-template-columns:209px;justify-content:center}}
   .hero-meta{display:flex;gap:24px;margin-top:32px;flex-wrap:wrap}
   .hero-meta-item{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--fg-mute)}
@@ -316,8 +316,8 @@
   .plan .gp-badge{align-self:center}
 
   /* chrome web store badge */
-  .cws-badge{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 20px 0 16px;background:#1a1a1a;border:1px solid var(--line-2);border-radius:10px;font-family:var(--body);font-size:14px;color:var(--fg);transition:transform .15s ease,border-color .15s ease,background .15s ease;text-decoration:none;white-space:nowrap}
-  .cws-badge:hover{transform:translateY(-1px);border-color:rgba(255,255,255,0.24);background:#222}
+  .cws-badge{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 20px 0 16px;background:#000000;border:1.5px solid rgba(255,255,255,0.45);border-radius:8px;font-family:var(--body);font-size:14px;color:var(--fg);transition:transform .15s ease,filter .15s ease;text-decoration:none;white-space:nowrap}
+  .cws-badge:hover{transform:translateY(-1px);filter:brightness(1.15)}
   .cws-badge.lg{height:62px;padding:0 24px 0 18px;font-size:15px}
   .cws-badge .cws-icon{width:28px;height:28px;flex-shrink:0}
   .cws-badge .cws-text{display:flex;flex-direction:column;line-height:1.2}
