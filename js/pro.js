@@ -37,15 +37,70 @@
     },
 
     // ────────────────────────────────────────────────────────────────
-    // ⚠️ TEMP TEST FLAG — set to false to restore real Pro gating.
-    // While true, EVERY user sees Pro features unlocked for testing.
-    // Search for "TEMP_UNLOCK_PRO" to find and revert.
+    // FREE-FOR-EVERYONE FLAG (v1.2.3 strategic pivot — 2026-05-23).
+    // Every feature is unlocked for every user. Revenue now comes from
+    // voluntary supporter tiers (Monthly/Yearly Supporter via Google Play
+    // subscriptions + Coffee Tip consumable IAPs). The flag name is kept
+    // for backwards-compat with old gates that still check it; nothing
+    // is "Pro-locked" any more — supporter status is purely cosmetic.
     // ────────────────────────────────────────────────────────────────
-    TEMP_UNLOCK_PRO: false,
+    TEMP_UNLOCK_PRO: true,
 
     isPro() {
       if (this.TEMP_UNLOCK_PRO) return true;
       return !!this.state.active;
+    },
+
+    // Has the user actively supported development? Drives the "Supporter"
+    // badge UI. Returns true if they hold an active Play Store subscription
+    // (Monthly/Yearly Supporter, formerly Pro) OR have bought at least one
+    // consumable tip product. Independent from `isPro()` — every feature
+    // is free regardless, this is only for the visible thank-you state.
+    isSupporter() {
+      if (this.state && this.state.active) return true; // active subscription
+      const tips = this._loadTipLog();
+      return tips.length > 0;
+    },
+
+    // The "founding supporter" badge is permanent — given to anyone who held
+    // a Pro subscription before the Free-for-everyone pivot, OR to anyone
+    // who supports during the first 90 days after launch.
+    isFoundingSupporter() {
+      if (!this.state || !this.state.verifiedAt) return false;
+      const PIVOT_DATE = Date.UTC(2026, 4, 23); // 2026-05-23 — pivot day
+      return this.state.verifiedAt < PIVOT_DATE
+          || this.state.verifiedAt < PIVOT_DATE + 90 * 86400000;
+    },
+
+    // Highest tier the user currently shows. Used by the UI to render the
+    // right badge (dinner > pizza > coffee > monthly > yearly > none).
+    supporterTier() {
+      const active = this.state && this.state.active;
+      const plan = active && this.state.plan;
+      if (plan === 'yearly') return 'yearly';
+      if (plan === 'monthly') return 'monthly';
+      const tips = this._loadTipLog();
+      if (tips.some(t => t.sku === 'supporter_dinner')) return 'dinner';
+      if (tips.some(t => t.sku === 'supporter_pizza'))  return 'pizza';
+      if (tips.some(t => t.sku === 'supporter_coffee')) return 'coffee';
+      return null;
+    },
+
+    // How many one-time tips the user has bought (regardless of tier).
+    // Drives the "Supported 3 times ☕" counter in the supporter badge.
+    tipCount() { return this._loadTipLog().length; },
+
+    _loadTipLog() {
+      try { return JSON.parse(localStorage.getItem('leakd_tips') || '[]'); }
+      catch { return []; }
+    },
+    _saveTipLog(arr) {
+      localStorage.setItem('leakd_tips', JSON.stringify(arr));
+    },
+    _addTip(sku) {
+      const arr = this._loadTipLog();
+      arr.push({ sku, at: Date.now() });
+      this._saveTipLog(arr);
     },
 
     isTwa() {
@@ -181,6 +236,47 @@
           code: e.name === 'AbortError' ? 'USER_CANCELLED' : 'PAYMENT_REQUEST_FAILED',
           detail: String(e && e.message || e),
           error: (e && e.message) || 'An error occurred during purchase.'
+        };
+      }
+    },
+
+    // One-time supporter tip via Google Play Billing.
+    // SKU = 'supporter_coffee' | 'supporter_pizza' | 'supporter_dinner'
+    // Pre-condition: the SKU is configured as a Consumable Managed Product
+    // in the Play Console with the matching id and a non-zero price.
+    async tip(skuId) {
+      const { service, code } = await this.getService();
+      if (!service) {
+        return {
+          ok: false, code,
+          error: 'Google Play Billing is not available — open Leakd via the Play Store install.'
+        };
+      }
+      try {
+        const request = new PaymentRequest(
+          [{ supportedMethods: 'https://play.google.com/billing', data: { sku: skuId } }],
+          { total: { label: 'Tip', amount: { currency: 'USD', value: '0' } } }
+        );
+        const response = await request.show();
+        const { purchaseToken } = response.details;
+        if (!purchaseToken) {
+          await response.complete('fail');
+          return { ok: false, code: 'NO_TOKEN' };
+        }
+        // Mark consumable as consumed so the user can tip again later.
+        // (Without consume(), Play remembers the purchase and the next
+        // tap on the same tier returns "item already owned".)
+        try { if (typeof service.consume === 'function') await service.consume(purchaseToken); }
+        catch (e) { console.warn('consume() failed (non-fatal)', e); }
+
+        await response.complete('success');
+        this._addTip(skuId);
+        return { ok: true, sku: skuId };
+      } catch (e) {
+        return {
+          ok: false,
+          code: e.name === 'AbortError' ? 'USER_CANCELLED' : 'PAYMENT_REQUEST_FAILED',
+          error: (e && e.message) || 'Tip failed.'
         };
       }
     },

@@ -2285,17 +2285,28 @@
     }
   }
 
-  // ─── Pro ───
+  // ─── Support development (formerly Pro paywall — pivot to free-for-all in v1.2.3) ───
+  // The modal always offers the 3-tier support flow. The "active" panel
+  // shows up additionally when the user has supported (subscription or
+  // tip), with a founding-supporter badge for early backers.
   function openProModal() {
     const P = window.LeakdPro;
     if (!P) return;
     const m = $('proModal');
-    const active = P.isPro();
-    $('proStateActive').style.display = active ? 'block' : 'none';
-    $('proStateInactive').style.display = active ? 'none' : 'block';
-    if (active) {
-      const plan = P.state.plan || 'pro';
-      $('proPlanDisplay').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    const hasSupported = (typeof P.isSupporter === 'function') && P.isSupporter();
+    $('proStateActive').style.display = hasSupported ? 'block' : 'none';
+    $('proStateInactive').style.display = hasSupported ? 'none' : 'block';
+    if (hasSupported) {
+      const tier = (typeof P.supporterTier === 'function') ? P.supporterTier() : null;
+      const tierIcon = { yearly: '⭐⭐', monthly: '⭐', dinner: '🍝', pizza: '🍕', coffee: '☕' }[tier] || '⭐';
+      const tierLabelKey = 'support.tier.' + (tier || 'monthly');
+      const tipsLabel = (typeof P.tipCount === 'function' && P.tipCount() > 0)
+        ? ' · ' + t('support.tipsCount', { n: P.tipCount() })
+        : '';
+      $('supporterTierIcon').textContent = tierIcon;
+      $('proPlanDisplay').textContent = (t(tierLabelKey) || tier || 'supporter') + tipsLabel;
+      const founding = (typeof P.isFoundingSupporter === 'function') && P.isFoundingSupporter();
+      $('foundingSupporterBadge').style.display = founding ? '' : 'none';
     }
     m.classList.add('active');
   }
@@ -2336,6 +2347,38 @@
     const msg = (result.error || t('pro.err.generic') || 'Purchase failed.')
       + (result.code ? '\n\n[' + result.code + ']' : '');
     try { alert(msg); } catch { toast(result.error || 'Purchase failed.'); }
+  }
+
+  // One-time supporter tip (consumable Play Billing IAP).
+  async function buyTip(skuId) {
+    const P = window.LeakdPro;
+    if (!P || typeof P.tip !== 'function') return;
+    const btnId = { supporter_coffee: 'proBuyCoffeeBtn', supporter_pizza: 'proBuyPizzaBtn', supporter_dinner: 'proBuyDinnerBtn' }[skuId];
+    const btn = $(btnId);
+    if (!btn) return;
+    btn.disabled = true;
+    const oldText = btn.textContent;
+    btn.textContent = t('pro.verifying') || '...';
+    let result;
+    try {
+      result = await P.tip(skuId);
+    } catch (e) {
+      console.error('buyTip failed', e);
+      result = { ok: false, code: 'CLIENT_EXCEPTION', error: String(e && e.message || e) };
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+    if (result.ok) {
+      openProModal(); // re-render to show the active panel
+      toast(t('support.thankYou') || 'Thank you! ❤️');
+      if (window.LeakdConfetti) window.LeakdConfetti.burst();
+      return;
+    }
+    if (result.code === 'USER_CANCELLED') return;
+    const msg = (result.error || t('support.errGeneric') || 'Tip failed.')
+      + (result.code ? '\n\n[' + result.code + ']' : '');
+    try { alert(msg); } catch { toast(result.error || 'Tip failed.'); }
   }
 
   async function showProDiagnostics() {
@@ -4162,6 +4205,18 @@
     $('proModal').addEventListener('click', e => { if (e.target === $('proModal')) closeProModal(); });
     $('proBuyMonthlyBtn').addEventListener('click', () => buyPro('pro_monthly'));
     $('proBuyYearlyBtn').addEventListener('click', () => buyPro('pro_yearly'));
+    const tipCoffeeBtn = $('proBuyCoffeeBtn');
+    const tipPizzaBtn  = $('proBuyPizzaBtn');
+    const tipDinnerBtn = $('proBuyDinnerBtn');
+    if (tipCoffeeBtn) tipCoffeeBtn.addEventListener('click', () => buyTip('supporter_coffee'));
+    if (tipPizzaBtn)  tipPizzaBtn.addEventListener('click',  () => buyTip('supporter_pizza'));
+    if (tipDinnerBtn) tipDinnerBtn.addEventListener('click', () => buyTip('supporter_dinner'));
+    const supporterAddMoreBtn = $('supporterAddMoreBtn');
+    if (supporterAddMoreBtn) supporterAddMoreBtn.addEventListener('click', () => {
+      // Show the inactive panel again so the user can pick another tier.
+      $('proStateActive').style.display = 'none';
+      $('proStateInactive').style.display = 'block';
+    });
     const proDiagBtn = $('proDiagBtn');
     if (proDiagBtn) proDiagBtn.addEventListener('click', showProDiagnostics);
     $('proCloseActiveBtn').addEventListener('click', closeProModal);

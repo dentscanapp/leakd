@@ -812,6 +812,23 @@ a:active {
   text-align: center;
   padding: 14px 0 18px;
 }
+
+/* ── Support development (the rebranded Pro modal) ── */
+.support-blurb {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-2);
+  margin: 4px 0 18px;
+  text-wrap: pretty;
+}
+.support-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+  margin: 6px 0 8px;
+}
 .pro-price {
   font-family: var(--mono);
   font-size: 54px;

@@ -842,7 +842,6 @@
             <div>
               <div class="menu-row-label">
                 <span data-i18n="menu.budgets">Category budgets</span>
-                <span class="pro-badge">PRO</span>
               </div>
               <div class="menu-row-sub" data-i18n="menu.budgetsSub">Set monthly limits per category</div>
             </div>
@@ -951,7 +950,6 @@
             <div>
               <div class="menu-row-label">
                 <span data-i18n="menu.pdf">PDF report</span>
-                <span class="pro-badge">PRO</span>
               </div>
               <div class="menu-row-sub" data-i18n="menu.pdfSub">Printable report for your accountant</div>
             </div>
@@ -967,7 +965,6 @@
             <div>
               <div class="menu-row-label">
                 <span data-i18n="menu.tax">Business expense export</span>
-                <span class="pro-badge">PRO</span>
               </div>
               <div class="menu-row-sub" data-i18n="menu.taxSub">PDF + CSV of every business-flagged subscription</div>
             </div>
@@ -1009,7 +1006,6 @@
             <div>
               <div class="menu-row-label">
                 <span data-i18n="menu.sync">Sync</span>
-                <span class="pro-badge">PRO</span>
               </div>
               <div class="menu-row-sub" data-i18n="menu.syncSub">End-to-end encrypted, your Google Drive</div>
             </div>
@@ -1038,7 +1034,6 @@
             <div>
               <div class="menu-row-label">
                 <span data-i18n="menu.yearend">Year-end report</span>
-                <span class="pro-badge">PRO</span>
               </div>
               <div class="menu-row-sub" data-i18n="menu.yearendSub">See your spending wrap-up</div>
             </div>
@@ -1054,7 +1049,6 @@
             <div>
               <div class="menu-row-label">
                 <span data-i18n="menu.emailRem">Email reminders</span>
-                <span class="pro-badge">PRO</span>
               </div>
               <div class="menu-row-sub" data-i18n="menu.emailRemSub">Get an email before each renewal</div>
             </div>
@@ -1130,16 +1124,16 @@
 
 
       <div class="menu-footer">
-        <span data-i18n="menu.footer">leakd v1.2.2 · made for indie wallets</span>
+        <span data-i18n="menu.footer">leakd v1.2.3 · made for indie wallets</span>
       </div>
     </div>
   </div>
 
-  <!-- Pro Upgrade Modal -->
+  <!-- Support Development Modal (formerly Pro) — Leakd is free for everyone -->
   <div class="modal-overlay" id="proModal">
-    <div class="modal" style="max-width:440px">
+    <div class="modal" style="max-width:460px">
       <div class="modal-header">
-        <h2 data-i18n="pro.title">Leakd Pro</h2>
+        <h2 data-i18n="support.title">Support development</h2>
         <button class="btn-icon" id="closeProModal" data-i18n-title="btn.close">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18" />
@@ -1149,43 +1143,47 @@
       </div>
 
       <div id="proStateInactive">
-        <div class="pro-hero">
-          <div class="pro-price">$5<span>/mo</span></div>
-          <div class="pro-price-sub" data-i18n="pro.priceSub">or $40/year (save 33%)</div>
+        <p class="support-blurb" data-i18n="support.blurb">Leakd is free for everyone, forever. Every feature is unlocked, no paywalls. If it's helped you save money and you want to support continued development, choose whatever works for you. Supporters get a visible badge — nothing changes about the app.</p>
+
+        <div class="support-section-title" data-i18n="support.recurringTitle">Recurring support</div>
+        <div class="modal-actions" style="flex-direction: column; gap: 10px; margin-bottom: 18px;">
+          <button class="btn-primary" id="proBuyMonthlyBtn" style="width:100%" data-i18n="support.monthly">⭐ Monthly Supporter · $5/mo</button>
+          <button class="btn-outline" id="proBuyYearlyBtn" style="width:100%" data-i18n="support.yearly">⭐⭐ Yearly Supporter · $40/yr (save 33%)</button>
         </div>
 
-        <ul class="pro-features">
-          <li><span>✓</span> <span data-i18n="pro.f1">Email reminders before renewal</span></li>
-          <li><span>✓</span> <span data-i18n="pro.f2">Multi-device sync (encrypted)</span></li>
-          <li><span>✓</span> <span data-i18n="pro.f3">Year-end spending report</span></li>
-          <li><span>✓</span> <span data-i18n="pro.f4">Category budgets & alerts</span></li>
-          <li><span>✓</span> <span data-i18n="pro.f5">Priority email support</span></li>
-        </ul>
+        <div class="support-section-title" data-i18n="support.oneTimeTitle">One-time tip</div>
+        <div class="modal-actions" style="flex-direction: column; gap: 8px;">
+          <button class="btn-outline" id="proBuyCoffeeBtn" style="width:100%" data-i18n="support.coffee">☕ Coffee · $1.99</button>
+          <button class="btn-outline" id="proBuyPizzaBtn" style="width:100%" data-i18n="support.pizza">🍕 Pizza · $4.99</button>
+          <button class="btn-outline" id="proBuyDinnerBtn" style="width:100%" data-i18n="support.dinner">🍝 Dinner · $9.99</button>
+        </div>
 
-        <div class="pro-note" data-i18n="pro.playNote">Purchases are tied to your Google Account.</div>
+        <div class="pro-note" data-i18n="support.playNote" style="margin-top:14px">Tips and subscriptions are processed by Google Play. Everything stays free either way.</div>
 
-        <div class="modal-actions" style="flex-direction: column; gap: 10px;">
-          <button class="btn-primary" id="proBuyMonthlyBtn" style="width:100%" data-i18n="pro.buyMonthly">Upgrade to Pro
-            Monthly</button>
-          <button class="btn-outline" id="proBuyYearlyBtn" style="width:100%" data-i18n="pro.buyYearly">Upgrade to Pro
-            Yearly</button>
+        <div class="modal-actions" style="margin-top: 14px;">
           <button type="button" id="proDiagBtn"
-            style="margin-top:4px;background:none;border:0;color:var(--text-3);font-size:12px;text-decoration:underline;cursor:pointer;padding:6px"
+            style="margin: 0 auto; background:none;border:0;color:var(--text-3);font-size:12px;text-decoration:underline;cursor:pointer;padding:6px"
             data-i18n="pro.diagBtn">Why isn't this working?</button>
         </div>
       </div>
 
       <div id="proStateActive" style="display:none">
         <div class="pro-active-hero">
-          <div class="pro-active-icon">⭐</div>
-          <h3 data-i18n="pro.welcome">You're on Pro</h3>
-          <p data-i18n="pro.thanks">Thanks for supporting indie software. All premium features are unlocked.</p>
+          <div class="pro-active-icon" id="supporterTierIcon">⭐</div>
+          <h3 id="supporterTitle" data-i18n="support.thanksTitle">Thank you for supporting Leakd</h3>
+          <p id="supporterSubtitle" data-i18n="support.thanksSub">Every feature was already free — but your support keeps independent development going.</p>
         </div>
         <div class="pro-status-display">
-          <div class="pro-key-label" data-i18n="pro.activePlan">Active Plan</div>
+          <div class="pro-key-label" data-i18n="support.yourTier">Your supporter tier</div>
           <div class="pro-key-value" id="proPlanDisplay">—</div>
         </div>
-        <div class="modal-actions">
+        <div id="foundingSupporterBadge" style="display:none; margin-top:12px; padding:12px; border:1px solid var(--accent); border-radius:12px; text-align:center; background:var(--accent-soft);">
+          <div style="font-size:24px; line-height:1; margin-bottom:4px;">🏆</div>
+          <div style="font-size:13px; font-weight:600;" data-i18n="support.foundingBadge">Founding Supporter</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px;" data-i18n="support.foundingDesc">You supported Leakd before it went free. Permanent badge.</div>
+        </div>
+        <div class="modal-actions" style="flex-direction: column; gap: 10px; margin-top:18px;">
+          <button class="btn-outline" id="supporterAddMoreBtn" style="width:100%" data-i18n="support.addMore">Support again</button>
           <button class="btn-secondary" id="proCloseActiveBtn" style="width:100%" data-i18n="btn.done">Done</button>
         </div>
       </div>
@@ -1447,7 +1445,6 @@
       <div class="modal-header">
         <h2>
           <span data-i18n="sync.title">Sync</span>
-          <span class="pro-badge">PRO</span>
         </h2>
         <button class="btn-icon" id="closeSyncModal" data-i18n-title="btn.close">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1983,7 +1980,7 @@
   <script src="js/i18n.js?v=2026-05-22.111" defer></script>
   <script src="js/brands.js" defer></script>
   <script src="js/insights.js" defer></script>
-  <script src="js/pro.js?v=2026-05-22.111" defer></script>
+  <script src="js/pro.js?v=2026-05-23.120" defer></script>
   <script src="js/share.js" defer></script>
   <script src="js/import.js?v=2026-05-22.111" defer></script>
   <script src="js/calendar.js" defer></script>
@@ -2023,7 +2020,7 @@
   <!-- Pro-only email renewal reminders (POSTs to https://reminders.leakd.app) -->
   <script src="js/emailreminder.js" defer></script>
 
-  <script src="js/app.js?v=2026-05-22.113" defer></script>
+  <script src="js/app.js?v=2026-05-23.120" defer></script>
 
 </body>
 
