@@ -15,57 +15,63 @@ Leakd — Subscription Tracker
 
 **Short description (80 chars max):**
 ```
-See where your money leaks. Private subscription tracker. No account needed.
+Private subscription tracker. Free forever. No bank login. No accounts. No ads.
 ```
 
 **Full description (4000 chars max):**
 ```
-Stop wondering where your money goes every month.
+Leakd is a private subscription tracker that helps you watch — and stop — the slow drain of monthly fees. No bank login needed. No account required. None of your data ever leaves your phone.
 
-Leakd is a private subscription tracker that helps you see — and stop — the slow drip of monthly charges. No bank login. No account. No data leaves your phone.
+★ EVERYTHING UNLOCKED — 100% FREE FOREVER
+
+Every feature, on every device. No paywalls. No ads. No upsell tricks. Just the full app, for everyone.
 
 ★ THE ONLY TRACKER THAT SHOWS YOU…
-• How much each subscription has cost you over its lifetime
-• What that money would be worth if you'd invested it instead (at S&P 500 historical 7%)
-• Step-by-step cancellation guides for 20+ popular services
+
+• How much each subscription has actually cost you over its lifetime
+• What that money would be worth if you'd invested it instead (at the S&P 500's historical 7%)
+• Step-by-step cancellation guides for 60+ popular services
 • A visual calendar of every upcoming renewal
+• An instant "Panic" button to review and kill unwanted, low-rated subscriptions
+• A Money-Saved Graveyard — every sub you cancel becomes a tombstone, and the lifetime savings counter ticks up over time
 
-★ ALSO INCLUDED — FREE
-• Auto-detect 60+ popular services (just type "net" → Netflix)
-• 16 languages, 24 currencies, auto-configured from your locale
-• Smart suggestions: spot duplicates, find yearly-billing savings
-• Year-end spending report (Spotify Wrapped style)
+★ EVERY FEATURE IS FREE
+
+• Auto-detection of 60+ popular services (just type "net" → Netflix)
+• 28 languages and 24 currencies, auto-configured from your device locale
+• Smart insights: spot duplicate charges and find annual-billing savings
+• Piggy Bank: set savings goals and track progress in real-time
+• Year-end spending report (Spotify-Wrapped style)
 • Calendar export (.ics file for Google/Apple Calendar)
-• Push notifications before renewals and free trials end
+• Push notifications before renewals and free-trial endings
 • Donut chart, sparkline trend, category breakdown
-• Search, swipe-to-delete, paused subscriptions
-• CSV export, JSON backup & restore between devices
+• Search, swipe-to-delete, paused-subscription handling
+• CSV export, JSON backup, restore between devices
 • Worth-it rating per subscription (1-5 stars)
+• End-to-end encrypted cloud sync via your own Google Drive
+• Direct phone-to-phone P2P pairing with a QR scan (zero cloud, zero server)
+• Business expense report — PDF + CSV for your accountant
+• Email reminders as a backup to push notifications
+• Category budgets with over-spend alerts
 
-★ PRO ($5/month) — OPTIONAL
-• Email reminders alongside push
-• Multi-device sync (encrypted)
-• Category budgets with alerts
-• Income & spending ratio
-• Year-end PDF report
-• Priority email support
+★ PRIVACY-FIRST BY DESIGN
 
-★ PRIVACY-FIRST PROMISE
-Leakd does not ask for your bank login. It does not have an account system. Your subscription list never leaves your device — everything is stored locally in your browser. We literally cannot see your data because we never had it.
+Leakd never asks for your banking login. There is no account system. Your subscription list never leaves your device — everything is stored securely, locally, on your phone. We literally cannot see your data, because we never collect it.
 
-Compare to:
-• Rocket Money: $6-14/mo, requires bank login, USA only
-• Monarch Money: $8-10/mo, requires bank login, no free tier
-• YNAB: $14.99/mo, overkill for sub tracking
-• Bobby: iOS only, no insights or lifetime cost
-• Subby: Android only, has ads
+★ OPTIONAL SUPPORT — VOLUNTARY, NEVER REQUIRED
 
-Built by indie developers for indie wallets. Nothing to lose. Try it free.
+If Leakd has helped you save money and you want to support continued independent development, you can leave a one-time tip (☕ Coffee $1.99, 🍕 Pizza $4.99, 🍝 Dinner $9.99) or become a recurring Supporter (⭐ Monthly $5 or ⭐⭐ Yearly $40 — save 33%).
+
+Supporters get a visible badge in their profile. Nothing about the app changes — every feature stays free for everyone. Tips and subscriptions are processed by Google Play.
+
+Founding Supporters who back the project in the first 90 days after launch get a permanent 🏆 badge.
+
+Take back control of your financial privacy. Download free today.
 ```
 
 **Promo text (170 chars):**
 ```
-The subscription tracker that respects your wallet AND your privacy. Lifetime cost, cancellation guides, 16 languages. No account. No bank login.
+Private subscription tracker — free forever, no ads, no paywalls. Lifetime cost math, 60+ cancel guides, encrypted sync, P2P pairing. 28 languages. No bank login.
 ```
 
 ---
