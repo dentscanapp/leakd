@@ -2296,6 +2296,14 @@
     const hasSupported = (typeof P.isSupporter === 'function') && P.isSupporter();
     $('proStateActive').style.display = hasSupported ? 'block' : 'none';
     $('proStateInactive').style.display = hasSupported ? 'none' : 'block';
+    // Play Billing tiers only inside the TWA; Ko-fi link everywhere else
+    // (browser / iOS / desktop PWA). Showing an external pay link inside the
+    // Play Store TWA would breach Google Play Billing policy.
+    const isTwa = (typeof P.isTwa === 'function') ? P.isTwa() : false;
+    const playTiers = $('proPlayTiers');
+    const kofiBlock = $('proKofiBlock');
+    if (playTiers) playTiers.style.display = isTwa ? 'block' : 'none';
+    if (kofiBlock) kofiBlock.style.display = isTwa ? 'none' : 'block';
     if (hasSupported) {
       const tier = (typeof P.supporterTier === 'function') ? P.supporterTier() : null;
       const tierIcon = { yearly: '⭐⭐', monthly: '⭐', dinner: '🍝', pizza: '🍕', coffee: '☕' }[tier] || '⭐';

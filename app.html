@@ -1145,25 +1145,39 @@
       <div id="proStateInactive">
         <p class="support-blurb" data-i18n="support.blurb">Leakd is free for everyone, forever. Every feature is unlocked, no paywalls. If it's helped you save money and you want to support continued development, choose whatever works for you. Supporters get a visible badge — nothing changes about the app.</p>
 
-        <div class="support-section-title" data-i18n="support.recurringTitle">Recurring support</div>
-        <div class="modal-actions" style="flex-direction: column; gap: 10px; margin-bottom: 18px;">
-          <button class="btn-primary" id="proBuyMonthlyBtn" style="width:100%" data-i18n="support.monthly">⭐ Monthly Supporter · $5/mo</button>
-          <button class="btn-outline" id="proBuyYearlyBtn" style="width:100%" data-i18n="support.yearly">⭐⭐ Yearly Supporter · $40/yr (save 33%)</button>
+        <!-- Google Play tiers — only shown inside the Play Store TWA. Showing
+             an external payment link here would violate Play Billing policy,
+             so the Ko-fi block below is hidden when running as a TWA. -->
+        <div id="proPlayTiers">
+          <div class="support-section-title" data-i18n="support.recurringTitle">Recurring support</div>
+          <div class="modal-actions" style="flex-direction: column; gap: 10px; margin-bottom: 18px;">
+            <button class="btn-primary" id="proBuyMonthlyBtn" style="width:100%" data-i18n="support.monthly">⭐ Monthly Supporter · $5/mo</button>
+            <button class="btn-outline" id="proBuyYearlyBtn" style="width:100%" data-i18n="support.yearly">⭐⭐ Yearly Supporter · $40/yr (save 33%)</button>
+          </div>
+
+          <div class="support-section-title" data-i18n="support.oneTimeTitle">One-time tip</div>
+          <div class="modal-actions" style="flex-direction: column; gap: 8px;">
+            <button class="btn-outline" id="proBuyCoffeeBtn" style="width:100%" data-i18n="support.coffee">☕ Coffee · $1.99</button>
+            <button class="btn-outline" id="proBuyPizzaBtn" style="width:100%" data-i18n="support.pizza">🍕 Pizza · $4.99</button>
+            <button class="btn-outline" id="proBuyDinnerBtn" style="width:100%" data-i18n="support.dinner">🍝 Dinner · $9.99</button>
+          </div>
+
+          <div class="pro-note" data-i18n="support.playNote" style="margin-top:14px">Tips and subscriptions are processed by Google Play. Everything stays free either way.</div>
+
+          <div class="modal-actions" style="margin-top: 14px;">
+            <button type="button" id="proDiagBtn"
+              style="margin: 0 auto; background:none;border:0;color:var(--text-3);font-size:12px;text-decoration:underline;cursor:pointer;padding:6px"
+              data-i18n="pro.diagBtn">Why isn't this working?</button>
+          </div>
         </div>
 
-        <div class="support-section-title" data-i18n="support.oneTimeTitle">One-time tip</div>
-        <div class="modal-actions" style="flex-direction: column; gap: 8px;">
-          <button class="btn-outline" id="proBuyCoffeeBtn" style="width:100%" data-i18n="support.coffee">☕ Coffee · $1.99</button>
-          <button class="btn-outline" id="proBuyPizzaBtn" style="width:100%" data-i18n="support.pizza">🍕 Pizza · $4.99</button>
-          <button class="btn-outline" id="proBuyDinnerBtn" style="width:100%" data-i18n="support.dinner">🍝 Dinner · $9.99</button>
-        </div>
-
-        <div class="pro-note" data-i18n="support.playNote" style="margin-top:14px">Tips and subscriptions are processed by Google Play. Everything stays free either way.</div>
-
-        <div class="modal-actions" style="margin-top: 14px;">
-          <button type="button" id="proDiagBtn"
-            style="margin: 0 auto; background:none;border:0;color:var(--text-3);font-size:12px;text-decoration:underline;cursor:pointer;padding:6px"
-            data-i18n="pro.diagBtn">Why isn't this working?</button>
+        <!-- Ko-fi block — shown in the browser / iOS / desktop PWA, where
+             Google Play Billing is unavailable. -->
+        <div id="proKofiBlock" style="display:none">
+          <a href="https://ko-fi.com/leakd" target="_blank" rel="noopener" class="btn-primary" style="width:100%; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <span style="font-size:18px">☕</span><span data-i18n="support.kofiBtn">Buy me a coffee on Ko-fi</span>
+          </a>
+          <div class="pro-note" data-i18n="support.kofiNote" style="margin-top:14px">A voluntary tip — it doesn't unlock anything. Every feature is free for everyone. On Android you can also support directly in the Play Store.</div>
         </div>
       </div>
 
