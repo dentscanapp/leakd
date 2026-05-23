@@ -276,7 +276,7 @@
   "lifetime.inflationTitle": "値上げが続いたら",
   "lifetime.invest10y": "10年間投資",
   "lifetime.invest5y": "5年間投資",
-  "lifetime.investNote": "年利7%（S&P 500長期平均）",
+  "lifetime.investNote": "年率7%のリターン(S&P 500 長期平均)で計算 — 説明用のみで、投資助言ではありません。過去の実績は将来の結果を保証するものではありません。",
   "lifetime.investTitle": "代わりに投資していたら",
   "lifetime.next10y": "今後10年",
   "lifetime.next5y": "今後5年",
