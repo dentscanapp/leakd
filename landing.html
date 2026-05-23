@@ -81,7 +81,15 @@
   .hero-ctas .gp-badge,.cta-ctas .gp-badge{display:flex;align-items:center;justify-content:center;line-height:0;padding:0}
   .hero-ctas .gp-badge img,.cta-ctas .gp-badge img,.hero-ctas .gp-badge.lg img,.cta-ctas .gp-badge.lg img{height:62px;width:auto;border-radius:0}
   .hero-ctas .cws-badge,.cta-ctas .cws-badge{width:209px;height:62px;justify-content:center;gap:10px;padding:0 14px;border:1.5px solid rgba(255,255,255,0.45);border-radius:8px;background:#000000;}
-  @media (max-width:480px){.hero-ctas,.cta-ctas{grid-template-columns:209px;justify-content:center}}
+  @media (max-width:480px){
+    .hero-ctas,.cta-ctas{grid-template-columns:repeat(2,1fr);gap:8px;justify-content:stretch;width:100%}
+    .hero-ctas>a,.cta-ctas>a{width:100%;height:58px;min-width:0}
+    .hero-ctas .cws-badge,.cta-ctas .cws-badge{width:100%;height:58px;padding:0 8px;gap:6px}
+    .hero-ctas .cws-badge .cws-icon,.cta-ctas .cws-badge .cws-icon{width:22px;height:22px}
+    .hero-ctas .cws-badge .cws-text small,.cta-ctas .cws-badge .cws-text small{font-size:9px}
+    .hero-ctas .cws-badge .cws-text span,.cta-ctas .cws-badge .cws-text span{font-size:13px}
+    .hero-ctas .gp-badge img,.cta-ctas .gp-badge img,.hero-ctas .gp-badge.lg img,.cta-ctas .gp-badge.lg img{height:58px}
+  }
   .hero-meta{display:flex;gap:24px;margin-top:32px;flex-wrap:wrap}
   .hero-meta-item{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--fg-mute)}
   .hero-meta-check{width:14px;height:14px;color:var(--red)}
@@ -426,12 +434,12 @@
         </h1>
         <p class="hero-sub">
           <strong>Leakd</strong> is a privacy-first subscription tracker.
-          Drop a bank CSV from Revolut, Wise, PayPal, Chase, Amex — we surface recurring charges automatically. Get alerts before renewals, a business expense summary, and end-to-end encrypted multi-device sync. <strong>100% free for everyone, forever.</strong> Tip if you like it.
+          Drop a bank CSV from Revolut, Wise, PayPal, Chase, Amex — we surface recurring charges automatically. Get alerts before renewals, a business expense summary, and end-to-end encrypted multi-device sync. <strong>Free for everyone, forever.</strong> Tip if you like it.
         </p>
         <div class="hero-ctas">
           <a class="gp-badge lg" href="https://play.google.com/store/apps/details?id=app.leakd.twa" target="_blank" rel="noopener" aria-label="Get it on Google Play"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
           <a class="cws-badge lg" href="https://chromewebstore.google.com/detail/leakd/hcgcclkoedchmdidfcbphgcnhclbncbe" target="_blank" rel="noopener" aria-label="Available on Chrome Web Store">
-            <svg class="cws-icon" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#fff"/><circle cx="24" cy="24" r="9" fill="#fff" stroke="#4285F4" stroke-width="3.5"/><path d="M24 2A22 22 0 0 0 5.3 35l10.4-18a9 9 0 0 1 15.6 0" fill="#EA4335"/><path d="M5.3 35A22 22 0 0 0 42.7 35H21.8a9 9 0 0 1-7.8-4.5" fill="#34A853"/><path d="M42.7 35A22 22 0 0 0 24 2v13a9 9 0 0 1 7.8 4.5" fill="#FBBC05"/><circle cx="24" cy="24" r="5" fill="#4285F4"/></svg>
+            <svg class="cws-icon" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7s2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
             <div class="cws-text"><small>Available on the</small><span>Chrome Web Store</span></div>
           </a>
           <a class="cws-badge lg" href="app.html" aria-label="Use as iPhone and web app">
@@ -439,7 +447,7 @@
             <div class="cws-text"><small>Install as</small><span>iPhone &amp; Web App</span></div>
           </a>
           <a class="cws-badge lg" href="https://addons.mozilla.org/firefox/addon/leakd/" target="_blank" rel="noopener" aria-label="Get the Firefox add-on">
-            <svg class="cws-icon" viewBox="0 0 24 24" fill="#FF7139"><path d="M12 2c1 3 3 4.2 3 7.2a3 3 0 0 1-6 0c0-1.1.4-2.1 1.1-3C8.4 7.5 6.4 9.9 6.4 13.4A6 6 0 0 0 18.4 13c0-5.2-4-7.4-6.4-11z"/></svg>
+            <svg class="cws-icon" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7s2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
             <div class="cws-text"><small>Get it on</small><span>Firefox Add-ons</span></div>
           </a>
         </div>
@@ -817,7 +825,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 6v6a8 8 0 1 1-8-8h6"/></svg>
         </div>
         <h3>End-to-end encrypted cloud sync <span class="mono red" style="font-size:11px">FREE</span></h3>
-        <p>Sync between your phone and laptop via your own Google Drive. AES-GCM 256 + PBKDF2 600 000. The master password never leaves your device — we couldn't read your data if we tried.</p>
+        <p>Sync between your phone and laptop via your own Google Drive. AES-GCM 256 + PBKDF2 600 000. The master password never leaves your device — by design, we have no way to decrypt it.</p>
         <div class="tag">E2EE · your Drive · zero-knowledge</div>
       </div>
 
@@ -1034,7 +1042,7 @@
     <div class="faq">
       <details class="faq-item">
         <summary class="faq-q">Where does my data go?</summary>
-        <div class="faq-a">By default — nowhere. Your subscription list lives in your browser's localStorage on this device. No account, no analytics, no third-party trackers. If you opt into Cloud Sync, the data is end-to-end encrypted on your device (AES-GCM 256, key derived from your master password) and stored in your own Google Drive's hidden app folder. We literally cannot read it. Full breakdown in our <a href="privacy.html">Privacy Policy</a>.</div>
+        <div class="faq-a">By default — nowhere. Your subscription list lives in your browser's localStorage on this device. No account, no analytics, no third-party trackers. If you opt into Cloud Sync, the data is end-to-end encrypted on your device (AES-GCM 256, key derived from your master password) and stored in your own Google Drive's hidden app folder. By design, we have no way to decrypt it. Full breakdown in our <a href="privacy.html">Privacy Policy</a>.</div>
       </details>
       <details class="faq-item">
         <summary class="faq-q">How does the bank-statement import work?</summary>
@@ -1058,7 +1066,7 @@
       </details>
       <details class="faq-item">
         <summary class="faq-q">Can I use it on iPhone or iPad?</summary>
-        <div class="faq-a">Absolutely — there's no App Store download needed. Open <a href="app.html">leakd.app</a> in Safari, tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>. Leakd installs as a full-screen app with offline support, push-style renewal reminders, and everything the Android version has. To support development from iOS you can leave a tip on <a href="https://ko-fi.com/leakd" target="_blank" rel="noopener">Ko-fi</a> — but the app itself is 100% free.</div>
+        <div class="faq-a">Absolutely — there's no App Store download needed. Open <a href="app.html">leakd.app</a> in Safari, tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>. Leakd installs as a full-screen app with offline support, push-style renewal reminders, and everything the Android version has. To support development from iOS you can leave a tip on <a href="https://ko-fi.com/leakd" target="_blank" rel="noopener">Ko-fi</a> — but the app itself is free for everyone.</div>
       </details>
       <details class="faq-item">
         <summary class="faq-q">What if you shut down the service?</summary>
@@ -1081,7 +1089,7 @@
     <div class="cta-ctas">
       <a class="gp-badge lg" href="https://play.google.com/store/apps/details?id=app.leakd.twa" target="_blank" rel="noopener" aria-label="Get it on Google Play"><img src="landing/assets/google-play.png" alt="Get it on Google Play" class="gp-img"></a>
       <a class="cws-badge lg" href="https://chromewebstore.google.com/detail/leakd/hcgcclkoedchmdidfcbphgcnhclbncbe" target="_blank" rel="noopener" aria-label="Available on Chrome Web Store">
-        <svg class="cws-icon" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#fff"/><circle cx="24" cy="24" r="9" fill="#fff" stroke="#4285F4" stroke-width="3.5"/><path d="M24 2A22 22 0 0 0 5.3 35l10.4-18a9 9 0 0 1 15.6 0" fill="#EA4335"/><path d="M5.3 35A22 22 0 0 0 42.7 35H21.8a9 9 0 0 1-7.8-4.5" fill="#34A853"/><path d="M42.7 35A22 22 0 0 0 24 2v13a9 9 0 0 1 7.8 4.5" fill="#FBBC05"/><circle cx="24" cy="24" r="5" fill="#4285F4"/></svg>
+        <svg class="cws-icon" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7s2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
         <div class="cws-text"><small>Available on the</small><span>Chrome Web Store</span></div>
       </a>
       <a class="cws-badge lg" href="app.html" aria-label="Use as iPhone and web app">
@@ -1089,7 +1097,7 @@
         <div class="cws-text"><small>Install as</small><span>iPhone &amp; Web App</span></div>
       </a>
       <a class="cws-badge lg" href="https://addons.mozilla.org/firefox/addon/leakd/" target="_blank" rel="noopener" aria-label="Get the Firefox add-on">
-        <svg class="cws-icon" viewBox="0 0 24 24" fill="#FF7139"><path d="M12 2c1 3 3 4.2 3 7.2a3 3 0 0 1-6 0c0-1.1.4-2.1 1.1-3C8.4 7.5 6.4 9.9 6.4 13.4A6 6 0 0 0 18.4 13c0-5.2-4-7.4-6.4-11z"/></svg>
+        <svg class="cws-icon" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7s2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
         <div class="cws-text"><small>Get it on</small><span>Firefox Add-ons</span></div>
       </a>
     </div>

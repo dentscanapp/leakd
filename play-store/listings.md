@@ -56,7 +56,7 @@ Every feature, on every device. No paywalls. No ads. No upsell tricks. Just the 
 
 ★ PRIVACY-FIRST BY DESIGN
 
-Leakd never asks for your banking login. There is no account system. Your subscription list never leaves your device — everything is stored securely, locally, on your phone. We literally cannot see your data, because we never collect it.
+Leakd never asks for your banking login. There is no account system. Your subscription list never leaves your device — everything is stored securely, locally, on your phone. By design, we have no way to access your data, because we never collect it.
 
 ★ OPTIONAL SUPPORT — VOLUNTARY, NEVER REQUIRED
 
