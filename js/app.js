@@ -2412,13 +2412,15 @@
   function refreshProUI() {
     const P = window.LeakdPro;
     if (!P) return;
-    const active = P.isPro();
+    // Everything is free now; the menu row reflects supporter status, not a
+    // Pro entitlement. Show the "thank you" copy only if they actually backed us.
+    const supporter = (typeof P.isSupporter === 'function') && P.isSupporter();
     const pill = $('proPill');
-    if (pill) pill.style.display = active ? 'inline-flex' : 'none';
+    if (pill) pill.style.display = supporter ? 'inline-flex' : 'none';
     const label = $('menuProLabel');
-    if (label) label.textContent = active ? t('menu.proOn') : t('menu.pro');
+    if (label) label.textContent = supporter ? t('menu.proOn') : t('menu.pro');
     const sub = $('menuProSub');
-    if (sub) sub.textContent = active ? t('menu.proOnSub') : t('menu.proSub');
+    if (sub) sub.textContent = supporter ? t('menu.proOnSub') : t('menu.proSub');
   }
 
   // ─── Menu ───

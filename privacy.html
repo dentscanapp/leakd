@@ -78,7 +78,7 @@ td { color: var(--text-2); }
 
   <div class="tldr">
     <div class="tldr-label">TL;DR</div>
-    <p>Leakd is a privacy-first app. Your subscription data lives <strong>only on your device</strong> by default. Two Pro features (Cloud Sync, Email Reminders) are opt-in and transmit data only with your explicit consent — Cloud Sync uses your own Google Drive with end-to-end encryption, and Email Reminders go through our minimal server only to deliver the emails you requested.</p>
+    <p>Leakd is a privacy-first app. Your subscription data lives <strong>only on your device</strong> by default. Two advanced features (Cloud Sync, Email Reminders) are opt-in and transmit data only with your explicit consent — Cloud Sync uses your own Google Drive with end-to-end encryption, and Email Reminders go through our minimal server only to deliver the emails you requested.</p>
   </div>
 
   <h2>1. Data Controller</h2>
@@ -93,7 +93,7 @@ td { color: var(--text-2); }
   <p>For any privacy-related question or request, write to us at the email above or reach out via our community channels.</p>
 
   <h2>2. What Leakd is</h2>
-  <p>Leakd is a Progressive Web App for tracking personal and business subscriptions. It runs entirely in your browser and stores your data locally in your device's <em>localStorage</em>, <em>IndexedDB</em>, and the <em>Cache API</em>. Without enabling Pro features, no part of your subscription data leaves your device.</p>
+  <p>Leakd is a Progressive Web App for tracking personal and business subscriptions. It runs entirely in your browser and stores your data locally in your device's <em>localStorage</em>, <em>IndexedDB</em>, and the <em>Cache API</em>. Without enabling these opt-in features, no part of your subscription data leaves your device.</p>
 
   <h2>3. Data we process locally (never sent to us)</h2>
   <ul>
@@ -103,7 +103,7 @@ td { color: var(--text-2); }
     <li>Activity log (added / edited / deleted / paused / price-changed events)</li>
     <li>Daily history snapshots used for the trend chart</li>
     <li>Streak counter, onboarding state</li>
-    <li>Pro license status (per device)</li>
+    <li>Supporter status (per device)</li>
   </ul>
   <p>All of the above is stored on your device. You can wipe everything instantly via Settings → Reset all data.</p>
 
@@ -135,12 +135,12 @@ td { color: var(--text-2); }
       </tr>
       <tr>
         <td><strong>Google Identity Services + Google Drive API</strong><br>accounts.google.com, googleapis.com</td>
-        <td>Only if you turn on Pro Cloud Sync</td>
+        <td>Only if you turn on Cloud Sync</td>
         <td>OAuth2 token + an end-to-end encrypted file (AES-GCM 256, key derived from your master password via PBKDF2 600 000 iterations). Stored in Google Drive's hidden <em>appDataFolder</em> tied to your Google account. Neither Google nor we can read the contents.</td>
       </tr>
       <tr>
         <td><strong>Leakd Reminder Worker</strong><br>reminders.leakd.app (Cloudflare)</td>
-        <td>Only if you turn on Pro Email Reminders</td>
+        <td>Only if you turn on Email Reminders</td>
         <td>Your email address, the name of the subscription, expiry date, and language. The worker schedules a single email per reminder.</td>
       </tr>
       <tr>
@@ -150,20 +150,20 @@ td { color: var(--text-2); }
       </tr>
       <tr>
         <td><strong>Google Play Billing</strong></td>
-        <td>Only if you purchase Pro via the Play Store version</td>
+        <td>Only if you subscribe or tip via the Play Store version</td>
         <td>Handled by Google; we receive only a purchase confirmation token.</td>
       </tr>
     </tbody>
   </table>
 
-  <h2>6. Pro features — opt-in data transmission</h2>
+  <h2>6. Opt-in features — data transmission</h2>
   <h3>6.1 Cloud Sync</h3>
   <p>You provide a master password that we never receive or store. From the password we derive a key via PBKDF2-SHA256 (600 000 iterations) and AES-GCM 256-encrypt your snapshot before upload. The ciphertext is stored only in your own Google Drive (appDataFolder). To remove the data, turn off sync in Settings and delete the file from your Google Drive.</p>
   <p><strong>Legal basis (GDPR Art. 6):</strong> Consent (Art. 6(1)(a)). You can withdraw consent at any time by turning sync off.</p>
 
   <h3>6.2 Email Reminders</h3>
   <p>When enabled, the app sends to <code>reminders.leakd.app</code>: your email address, the subscription name, the expiry date, and your language. The worker stores this temporarily, sends one email near the expiry date, then deletes the record. No analytics, no marketing emails — you receive only the reminders you scheduled.</p>
-  <p><strong>Legal basis (GDPR Art. 6):</strong> Performance of contract (Art. 6(1)(b)) — the reminder is the Pro feature you purchased. To delete a pending reminder, use the in-app cancel action or write to <a href="mailto:hello@leakd.app">hello@leakd.app</a>.</p>
+  <p><strong>Legal basis (GDPR Art. 6):</strong> Performance of contract (Art. 6(1)(b)) — the reminder is the opt-in feature you enabled. To delete a pending reminder, use the in-app cancel action or write to <a href="mailto:hello@leakd.app">hello@leakd.app</a>.</p>
 
   <h2>7. Notifications</h2>
   <p>If you enable in-app renewal reminders, your browser fires local notifications based on dates stored on your device. These do not pass through any server. The Service Worker may use Periodic Background Sync (Chrome only) to check timing while the app is closed — still entirely on-device.</p>
@@ -189,7 +189,7 @@ td { color: var(--text-2); }
     <li><strong>Withdraw consent</strong> (Art. 7(3)) at any time</li>
     <li><strong>Lodge a complaint</strong> with a supervisory authority (in Hungary: NAIH — <a href="https://naih.hu" target="_blank" rel="noopener">naih.hu</a>)</li>
   </ul>
-  <p>For locally-stored data, you can exercise rights instantly: Settings → Backup &amp; restore (portability), Settings → Reset all data (erasure). For Pro Email Reminders or any other concern, contact <a href="mailto:hello@leakd.app">hello@leakd.app</a> and we will respond within 30 days.</p>
+  <p>For locally-stored data, you can exercise rights instantly: Settings → Backup &amp; restore (portability), Settings → Reset all data (erasure). For Email Reminders or any other concern, contact <a href="mailto:hello@leakd.app">hello@leakd.app</a> and we will respond within 30 days.</p>
 
   <h2>12. Data retention</h2>
   <ul>
@@ -219,7 +219,7 @@ td { color: var(--text-2); }
   <p>Because Leakd does not maintain user accounts on its servers, there is no "account" in the traditional sense to delete. Instead, you can remove every piece of data the app touches through the following paths:</p>
   <h3>17.1 Local data on your device</h3>
   <p>Settings → <strong>Reset all data</strong> wipes your subscription list, settings, history, activity log, cancellation registry, goals, budgets, income, streak data, and Pro license cache. Action is immediate and irreversible. You may also uninstall the PWA / clear site data via your browser to remove everything stored by the app.</p>
-  <h3>17.2 Cloud Sync data (Pro)</h3>
+  <h3>17.2 Cloud Sync data</h3>
   <p>If you enabled Cloud Sync, turn it off in Settings → Cloud Sync. When you disable sync, the app asks whether you'd also like to <strong>permanently delete the encrypted backup file from your Google Drive in the same step</strong> — a single confirmation calls Google Drive's <code>files.delete</code> API and the blob is gone for good.</p>
   <p>If for any reason the in-app deletion fails, you can also remove the file manually:</p>
   <ul>
@@ -227,10 +227,10 @@ td { color: var(--text-2); }
     <li>Email us at <a href="mailto:hello@leakd.app">hello@leakd.app</a> and we will guide you through the steps.</li>
   </ul>
   <p>We have no access to the contents of the file at any time.</p>
-  <h3>17.3 Email reminder records (Pro)</h3>
+  <h3>17.3 Email reminder records</h3>
   <p>Pending email reminders are stored briefly on our Cloudflare Worker until delivered. To delete an outstanding reminder before it is sent, use the in-app cancel action, or send a deletion request to <a href="mailto:hello@leakd.app">hello@leakd.app</a> identifying the email address and subscription name. Records are automatically deleted after delivery (or within 30 days if delivery fails).</p>
-  <h3>17.4 Pro subscription</h3>
-  <p>Cancel auto-renewal at any time via your Google Play account → Subscriptions → Leakd Pro → Cancel. Your Pro features remain active until the end of the paid period. Cancellation does not delete any data; combine it with the steps above if you also want all data removed.</p>
+  <h3>17.4 Supporter subscription</h3>
+  <p>Cancel auto-renewal at any time via your Google Play account → Subscriptions → Leakd Supporter → Cancel. Your Supporter badge status remains active until the end of the paid period. Cancellation does not delete any data; combine it with the steps above if you also want all data removed.</p>
   <h3>17.5 Backup, PDF and CSV files</h3>
   <p>Any file you exported (backup JSON, expense report PDF/CSV, calendar .ics, share card image) is stored where you saved it. We never see those files. Delete them from your device or cloud storage if you no longer want them.</p>
   <h3>17.6 Deletion request via email</h3>
