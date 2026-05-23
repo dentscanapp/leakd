@@ -123,13 +123,6 @@ A Leakd egy privát előfizetés követő, amivel látod — és megállíthatod
 ★ PRIVACY-ELSŐ ÍGÉRET
 A Leakd nem kéri a bank logined. Nincs fiók rendszer. Az előfizetés-listád sosem hagyja el az eszközöd — minden lokálisan tárolódik a böngésződben. Szó szerint nem látjuk az adataidat, mert sosem voltak nálunk.
 
-Hasonlítsd össze:
-• Rocket Money: $6-14/hó, bank login kell, csak USA
-• Monarch Money: $8-10/hó, bank login kell, nincs ingyenes
-• YNAB: $14.99/hó, túlméretezett csak sub-trackeléshez
-• Bobby: csak iOS, nincs insights vagy lifetime cost
-• Subby: csak Android, reklámok vannak
-
 Indie fejlesztőktől indie pénztárcáknak. Nincs vesztenivaló. Próbáld ingyen.
 ```
 
