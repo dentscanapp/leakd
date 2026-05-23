@@ -2296,14 +2296,16 @@
     const hasSupported = (typeof P.isSupporter === 'function') && P.isSupporter();
     $('proStateActive').style.display = hasSupported ? 'block' : 'none';
     $('proStateInactive').style.display = hasSupported ? 'none' : 'block';
-    // Play Billing tiers only inside the TWA; Ko-fi link everywhere else
-    // (browser / iOS / desktop PWA). Showing an external pay link inside the
-    // Play Store TWA would breach Google Play Billing policy.
-    const isTwa = (typeof P.isTwa === 'function') ? P.isTwa() : false;
+    // Show the Google Play tiers ONLY when real Play Billing is available —
+    // i.e. the Digital Goods API is present. That is true only in the Play
+    // Store TWA, NOT on iOS/desktop/Android-browser PWAs (a standalone iOS
+    // PWA also matches display-mode:standalone, which is why isTwa() is the
+    // wrong test here). Everyone without Play Billing gets the Ko-fi link.
+    const canPlayBilling = (typeof window.getDigitalGoodsService === 'function');
     const playTiers = $('proPlayTiers');
     const kofiBlock = $('proKofiBlock');
-    if (playTiers) playTiers.style.display = isTwa ? 'block' : 'none';
-    if (kofiBlock) kofiBlock.style.display = isTwa ? 'none' : 'block';
+    if (playTiers) playTiers.style.display = canPlayBilling ? 'block' : 'none';
+    if (kofiBlock) kofiBlock.style.display = canPlayBilling ? 'none' : 'block';
     if (hasSupported) {
       const tier = (typeof P.supporterTier === 'function') ? P.supporterTier() : null;
       const tierIcon = { yearly: '⭐⭐', monthly: '⭐', dinner: '🍝', pizza: '🍕', coffee: '☕' }[tier] || '⭐';
