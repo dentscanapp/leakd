@@ -914,11 +914,16 @@
     let startX = 0, currentX = 0, dragging = false, settled = false;
     const THRESHOLD = 100;
 
-    function onStart(x) { startX = x; currentX = 0; dragging = true; settled = false; el.classList.add('swiping'); }
+    function onStart(x) { startX = x; currentX = 0; dragging = true; settled = false; }
     function onMove(x) {
       if (!dragging) return;
       currentX = Math.min(0, x - startX); // only allow left drag
       if (currentX > -8) return; // ignore tiny moves so taps still work
+      // Only flag as a swipe once a real drag begins — adding this on touchstart
+      // made a plain tap keep the `swiping` class until its 200ms cleanup, which
+      // is longer than the delay before the synthetic click fires, so the edit
+      // click at .sub-item-content was always suppressed on touch devices.
+      el.classList.add('swiping');
       content.style.transform = `translateX(${currentX}px)`;
       content.style.transition = 'none';
       el.classList.toggle('swiped-partial', currentX < -20);
