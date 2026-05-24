@@ -228,8 +228,22 @@
     if (income > 0) {
       pct = (monthlySpend / income) * 100;
     } else {
-      const threshold = window.LeakdState && window.LeakdState.currency === 'Ft' ? 150000 : 400;
-      pct = (monthlySpend / threshold) * 100;
+      // No income set → compare against a fixed "high monthly spend" reference.
+      // The reference is €400/mo; we must normalize the spend (which arrives in
+      // the user's display currency, e.g. Ft, USD, JPY) to EUR before dividing.
+      // Without this, a Ft amount like 27 000 would be divided by 400 directly
+      // and instantly cap the gauge at full, while the equivalent €69 would
+      // stay near-empty — the gauge swung wildly just by switching display
+      // currency. Now all 28 currencies behave consistently.
+      let spendEur = monthlySpend;
+      const code = (window.LeakdState && window.LeakdState.currencyCode) || 'EUR';
+      if (code !== 'EUR' && window.LeakdCurrency && typeof window.LeakdCurrency.convert === 'function') {
+        try {
+          const c = window.LeakdCurrency.convert(monthlySpend, code, 'EUR');
+          if (typeof c === 'number' && isFinite(c)) spendEur = c;
+        } catch { /* rates not loaded yet — fall back to raw amount */ }
+      }
+      pct = (spendEur / 400) * 100;
     }
 
     // Cap it at 90% so it doesn't cover the header
