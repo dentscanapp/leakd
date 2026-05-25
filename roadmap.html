@@ -45,43 +45,45 @@
   <a href="/" class="back">← Back to leakd</a>
   <div class="eyebrow"><span class="dot"></span>Roadmap</div>
   <h1>What's been shipped,<br>what's <span class="r">coming next.</span></h1>
-  <p class="subtitle">A small, independent project — so the roadmap is honest and short. Last updated: <span style="font-family:var(--mono)">22 May 2026</span>.</p>
+  <p class="subtitle">A small, independent project — so the roadmap is honest and short. Last updated: <span style="font-family:var(--mono)">24 May 2026</span>.</p>
 
   <h2><span class="col-tag done">✓ Shipped</span> already in the app</h2>
   <ul class="items">
+    <li><strong>Free for everyone, forever</strong><span>v1.2.3 strategic pivot: every feature is unlocked for every user on every platform. Revenue comes from voluntary supporter tiers (Coffee / Pizza / Dinner tips, Monthly / Yearly Supporter) — no paywalls, no ads.</span></li>
     <li><strong>Local subscription tracking</strong><span>Add, edit, delete, pause subs. Categories, tags, ratings, notes. Multi-currency with daily ECB rates.</span></li>
     <li><strong>Smart bank-CSV import</strong><span>Revolut, Wise, N26, PayPal, Chase, Amex — column headers detected in 28 languages.</span></li>
     <li><strong>Renewal &amp; trial notifications</strong><span>Local browser notifications 1/3/7 days before. Trial-end warnings.</span></li>
     <li><strong>Spending insights &amp; trends</strong><span>Monthly/yearly totals, category donut, 6-month trend line, lifetime cost, "if invested instead" math.</span></li>
     <li><strong>Cloud Sync</strong><span>End-to-end encrypted, AES-GCM 256, PBKDF2 600 000. Stored in your own Google Drive.</span></li>
+    <li><strong>Direct P2P sync</strong><span>QR-pair two devices over WebRTC with no cloud at all — a fresh 256-bit AES-GCM key per pairing, embedded only in the QR you scan. The broker sees opaque handshake metadata and nothing else.</span></li>
+    <li><strong>Master-password strength meter</strong><span>Real-time entropy hint when setting up Cloud Sync — five levels from "too short" to "excellent", localized in all 28 languages.</span></li>
     <li><strong>Email Reminders</strong><span>Backup channel for renewal alerts via Cloudflare Worker → Brevo.</span></li>
     <li><strong>Business Expense Report</strong><span>PDF + CSV of every business-flagged subscription — for informational purposes only, not tax or accounting advice.</span></li>
+    <li><strong>Money-Saved Graveyard</strong><span>Every cancelled sub gets a tombstone; an animated counter ticks up the total money you've stopped leaking. Share-ready screenshots when you hit a milestone.</span></li>
     <li><strong>28 languages, dark/light modes, PWA install</strong><span>Full-localized UI, A11y improvements (focus trap, ARIA labels), offline-first.</span></li>
     <li><strong>Goals, budgets, streaks</strong><span>Yearly savings goal, monthly category budgets, "clean days" streak counter.</span></li>
     <li><strong>Privacy &amp; legal foundation</strong><span>GDPR-compliant privacy policy in 2 langs, T&amp;C with EU consumer rights, ÁSZF acceptance recorded with timestamp + version, DPIA for Cloud Sync.</span></li>
     <li><strong>One-click Drive blob deletion when sync is turned off</strong><span>Disabling Cloud Sync now offers to permanently delete the encrypted backup file from your Google Drive in the same step (GDPR Art. 17 "right to be forgotten" — closed in app).</span></li>
-    <li><strong>Chrome extension at feature parity</strong><span>The browser-extension build now ships the same Drive-delete flow and all 28 locale bundles as the PWA. Same sync.js, same disable flow, same translations — installed as a popup action from the Chrome toolbar.</span></li>
-    <li><strong>"Cancel link" expansion</strong><span>Built-in cancellation URLs and step-by-step tactical guides expanded to 200+ popular services in the PWA and Chrome extension.</span></li>
+    <li><strong>Play Store TWA release</strong><span>Android app shipped via Trusted Web Activity. Voluntary supporter tips integrated via Google Play Billing (Digital Goods API).</span></li>
+    <li><strong>Chrome &amp; Firefox extensions at feature parity</strong><span>Browser-extension builds ship the same Drive flows and all 28 locale bundles as the PWA. Installed as a popup action from the toolbar; Firefox build hides Drive sync (which requires Chrome identity) and keeps the P2P + local features.</span></li>
+    <li><strong>"Cancel link" expansion</strong><span>Built-in cancellation URLs and step-by-step tactical guides expanded to 200+ popular services across the PWA and both extensions.</span></li>
   </ul>
 
   <h2><span class="col-tag doing">⟳ In progress</span> shipping this quarter</h2>
   <ul class="items">
-    <li><strong>Master-password strength meter</strong><span>Real-time entropy hint when setting up Cloud Sync. Helps users pick something better than "password1".</span><span class="quarter">Q3 2026</span></li>
-    <li><strong>Play Store TWA release</strong><span>Trusted Web Activity wrapper with optional supporter tips via Google Play Billing. App stays free for everyone.</span><span class="quarter">Q3 2026</span></li>
+    <li><strong>Spending alerts beyond budget</strong><span>"You're trending 12% higher than last quarter" — proactive nudges based on the trend chart.</span><span class="quarter">Q3 2026</span></li>
   </ul>
 
   <h2><span class="col-tag next">→ Next</span> on the list</h2>
   <ul class="items">
-    <li><strong>Spending alerts beyond budget</strong><span>"You're trending 12% higher than last quarter" — proactive nudges based on the trend chart.</span></li>
     <li><strong>Multi-account profiles</strong><span>Switch between "personal" and "company" lists without two separate browsers.</span></li>
     <li><strong>iOS Safari "Add to Home Screen" polish</strong><span>iOS PWAs have quirks — push notifications via APNs require Safari 16.4+, sync via Apple ID requires more work.</span></li>
     <li><strong>Bank format support</strong><span>Adding more European banks (OTP, Erste, ING, BBVA, Santander, BNP Paribas).</span></li>
-
   </ul>
 
   <h2><span class="col-tag maybe">? Considering</span> if enough users ask</h2>
   <ul class="items">
-    <li><strong>Web-extension companion</strong><span>Detect "Are you sure you want to subscribe?" moments in the browser and offer a one-click add-to-leakd.</span></li>
+    <li><strong>Subscribe-moment detection in the browser</strong><span>Have the extension flag "Are you sure you want to subscribe?" pages in real time and offer a one-click add-to-leakd — beyond the current popup-only flow.</span></li>
     <li><strong>Bulk SMS / WhatsApp reminders</strong><span>For users who want renewal alerts outside email and push.</span></li>
     <li><strong>Family plan UI</strong><span>The data model already supports `sharedWith`. A proper family-pricing view could go further.</span></li>
     <li><strong>Self-hosted Sync</strong><span>For users who don't want Google Drive — point sync at their own WebDAV server.</span></li>
