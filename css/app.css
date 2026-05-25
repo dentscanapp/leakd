@@ -4285,3 +4285,104 @@ input[type="number"] {
   animation: fadeIn 0.3s ease;
 }
 
+/* ── Subscription Time Machine ── */
+.tm-readout {
+  text-align: center;
+  margin: 4px 0 14px;
+}
+.tm-date {
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.tm-cols {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.tm-col {
+  flex: 1;
+  max-width: 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 12px;
+}
+.tm-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-bottom: 6px;
+}
+.tm-dot-paid { background: #ef4444; }
+.tm-dot-invested { background: #34d399; }
+.tm-col-label {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+.tm-col-val {
+  font-family: var(--font-mono, monospace);
+  font-size: 22px;
+  font-weight: 700;
+}
+.tm-col-val.tm-paid { color: #ef4444; }
+.tm-col-val.tm-invested { color: #16a34a; }
+.tm-gap {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--text-2);
+}
+.tm-chart-wrap {
+  margin: 8px 0 14px;
+}
+#tmCanvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #0b0b0c;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+.tm-scrub-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tm-play {
+  flex-shrink: 0;
+}
+.tm-scrubber {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+.tm-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg-modal);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  cursor: pointer;
+}
+.tm-scrubber::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg-modal);
+  cursor: pointer;
+}
+

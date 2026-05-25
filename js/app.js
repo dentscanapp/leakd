@@ -200,6 +200,7 @@
     a({ id: 'income', label: t('menu.income'), run: openIncomeModal, keywords: ['salary', 'ratio'] });
     a({ id: 'goal', label: t('menu.goal'), run: openGoalModal, keywords: ['save', 'target'] });
     a({ id: 'whatif', label: t('menu.whatif'), run: openWhatIfModal, keywords: ['scenario', 'simulate', 'cancel', 'preview'] });
+    a({ id: 'timemachine', label: t('menu.timeMachine'), run: openTimeMachineModal, keywords: ['timeline', 'history', 'invested', 'scrub', 'growth', 'future'] });
     a({ id: 'compare', label: t('menu.compare'), run: openCompareModal, keywords: ['side', 'versus', 'vs'] });
     a({ id: 'bank', label: t('menu.bank'), run: openBankModal, keywords: ['csv', 'revolut', 'wise', 'statement'] });
     a({ id: 'import', label: t('menu.import'), run: openImportModal, keywords: ['paste', 'bulk'] });
@@ -2846,6 +2847,85 @@
     whatifSet = new Set();
   }
 
+  // ─── Subscription Time Machine ───
+  let tmTimeline = null;
+  let tmScrubIndex = 0;
+  let tmPlayRaf = null;
+
+  function openTimeMachineModal() {
+    if (!window.LeakdTimeMachine) return;
+    stopTmPlay();
+    const active = activeSubs();
+    const empty = $('tmEmpty'), body = $('tmBody'), shareBtn = $('tmShareBtn');
+    if (active.length === 0) {
+      empty.style.display = '';
+      body.style.display = 'none';
+      if (shareBtn) shareBtn.style.display = 'none';
+      $('timeMachineModal').classList.add('active');
+      return;
+    }
+    empty.style.display = 'none';
+    body.style.display = '';
+    if (shareBtn) shareBtn.style.display = '';
+
+    tmTimeline = window.LeakdTimeMachine.buildTimeline(active, 7);
+    const scrubber = $('tmScrubber');
+    scrubber.min = '0';
+    scrubber.max = String(tmTimeline.total);
+    tmScrubIndex = tmTimeline.nowIndex;
+    scrubber.value = String(tmScrubIndex);
+    renderTimeMachine();
+    $('timeMachineModal').classList.add('active');
+  }
+
+  function closeTimeMachineModal() {
+    stopTmPlay();
+    $('timeMachineModal').classList.remove('active');
+  }
+
+  function renderTimeMachine() {
+    if (!tmTimeline || !window.LeakdTimeMachine) return;
+    const pts = tmTimeline.points;
+    const pt = pts[tmScrubIndex] || pts[tmTimeline.nowIndex];
+    const lang = (window.LeakdI18n && window.LeakdI18n.lang) || undefined;
+    let when = pt.date.toLocaleDateString(lang, { month: 'short', year: 'numeric' });
+    if (pt.projected) when += ' · ' + t('tm.future');
+    else if (tmScrubIndex === tmTimeline.nowIndex) when += ' · ' + t('tm.now');
+    $('tmDate').textContent = when;
+    $('tmPaidVal').textContent = formatPrice(pt.paid);
+    $('tmInvestedVal').textContent = formatPrice(pt.invested);
+    const gap = Math.max(0, pt.invested - pt.paid);
+    $('tmGap').textContent = t('tm.gapLine', { amount: formatPrice(gap) });
+
+    const canvas = $('tmCanvas');
+    canvas.width = 920;
+    canvas.height = 360;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const theme = window.LeakdTimeMachine.darkTheme(1.4);
+    window.LeakdTimeMachine.drawChart(ctx, tmTimeline, tmScrubIndex,
+      { x: 48, y: 16, w: canvas.width - 64, h: canvas.height - 54 }, theme);
+  }
+
+  function startTmPlay() {
+    if (!tmTimeline) return;
+    stopTmPlay();
+    const target = tmTimeline.nowIndex || tmTimeline.total;
+    tmScrubIndex = 0;
+    const stride = Math.max(1, Math.round(tmTimeline.total / 90));
+    const step = () => {
+      tmScrubIndex = Math.min(target, tmScrubIndex + stride);
+      $('tmScrubber').value = String(tmScrubIndex);
+      renderTimeMachine();
+      tmPlayRaf = tmScrubIndex < target ? requestAnimationFrame(step) : null;
+    };
+    tmPlayRaf = requestAnimationFrame(step);
+  }
+
+  function stopTmPlay() {
+    if (tmPlayRaf) { cancelAnimationFrame(tmPlayRaf); tmPlayRaf = null; }
+  }
+
   function renderWhatIfModal() {
     if (!window.LeakdWhatIf) return;
     const active = activeSubs();
@@ -4184,6 +4264,19 @@
     $('whatifSuggestBtn').addEventListener('click', whatifSuggest);
     $('whatifClearBtn').addEventListener('click', whatifClear);
     $('whatifModal').addEventListener('click', e => { if (e.target === $('whatifModal')) closeWhatIfModal(); });
+
+    // Subscription Time Machine
+    $('menuTimeMachine').addEventListener('click', () => { closeMenuModal(); openTimeMachineModal(); });
+    $('closeTimeMachineModal').addEventListener('click', closeTimeMachineModal);
+    $('tmDoneBtn').addEventListener('click', closeTimeMachineModal);
+    $('timeMachineModal').addEventListener('click', e => { if (e.target === $('timeMachineModal')) closeTimeMachineModal(); });
+    $('tmScrubber').addEventListener('input', e => { stopTmPlay(); tmScrubIndex = parseInt(e.target.value, 10) || 0; renderTimeMachine(); });
+    $('tmPlayBtn').addEventListener('click', startTmPlay);
+    $('tmShareBtn').addEventListener('click', async () => {
+      if (!tmTimeline || !window.LeakdTimeMachine) return;
+      try { await window.LeakdTimeMachine.shareCard(tmTimeline, v => formatPrice(v), (k, p) => t(k, p)); }
+      catch (e) { /* user cancelled or unsupported */ }
+    });
 
     // Activity log
     $('menuActivity').addEventListener('click', () => { closeMenuModal(); openActivityModal(); });

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leakd-v136';
+const CACHE_NAME = 'leakd-v137';
 
 // Files that must always be fresh — HTML shells, every JS module, and every
 // locale JSON. Network-first with a cache fallback for offline use. Without
@@ -53,6 +53,7 @@ const ASSETS = [
   'js/locale.js',
   'js/cancelled.js',
   'js/lifetime.js',
+  'js/timemachine.js',
   'js/calview.js',
   'js/bankparse.js',
   'js/goals.js',

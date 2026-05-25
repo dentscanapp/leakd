@@ -878,6 +878,19 @@
           </svg>
         </button>
 
+        <button class="menu-row" id="menuTimeMachine">
+          <div class="menu-row-main">
+            <span class="menu-row-icon">🎞️</span>
+            <div>
+              <div class="menu-row-label" data-i18n="menu.timeMachine">Time Machine</div>
+              <div class="menu-row-sub" data-i18n="menu.timeMachineSub">Scrub through your spend vs. if you'd invested</div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
         <button class="menu-row" id="menuCompare">
           <div class="menu-row-main">
             <span class="menu-row-icon">⚖️</span>
@@ -1821,6 +1834,58 @@
     </div>
   </div>
 
+  <!-- Subscription Time Machine Modal -->
+  <div class="modal-overlay" id="timeMachineModal">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-header">
+        <h2 data-i18n="tm.title">Time Machine</h2>
+        <button class="btn-icon" id="closeTimeMachineModal" data-i18n-title="btn.close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <p class="notif-blurb" data-i18n="tm.blurb">Drag through time to watch your subscription spend grow — and what that money would be worth if you'd invested it instead.</p>
+
+      <div id="tmEmpty" class="empty-state-mini" style="display:none" data-i18n="tm.empty">Add a subscription to start the clock.</div>
+
+      <div id="tmBody">
+        <div class="tm-readout">
+          <div class="tm-date" id="tmDate">—</div>
+          <div class="tm-cols">
+            <div class="tm-col">
+              <span class="tm-dot tm-dot-paid"></span>
+              <div class="tm-col-label" data-i18n="tm.paidLabel">Spent</div>
+              <div class="tm-col-val tm-paid" id="tmPaidVal">—</div>
+            </div>
+            <div class="tm-col">
+              <span class="tm-dot tm-dot-invested"></span>
+              <div class="tm-col-label" data-i18n="tm.investedLabel">If invested</div>
+              <div class="tm-col-val tm-invested" id="tmInvestedVal">—</div>
+            </div>
+          </div>
+          <div class="tm-gap" id="tmGap">—</div>
+        </div>
+
+        <div class="tm-chart-wrap">
+          <canvas id="tmCanvas" width="460" height="200"></canvas>
+        </div>
+
+        <div class="tm-scrub-row">
+          <button class="btn-icon tm-play" id="tmPlayBtn" data-i18n-title="tm.play" aria-label="Play">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <input type="range" id="tmScrubber" min="0" max="100" value="0" class="tm-scrubber" aria-label="Timeline">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-outline" id="tmShareBtn" data-i18n="tm.share">Share image</button>
+        <div style="flex:1"></div>
+        <button class="btn-primary" id="tmDoneBtn" data-i18n="btn.done">Done</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Activity Log Modal -->
   <div class="modal-overlay" id="activityModal">
     <div class="modal" style="max-width:480px">
@@ -2005,6 +2070,7 @@
   <script src="js/income.js" defer></script>
   <script src="js/cancelled.js" defer></script>
   <script src="js/lifetime.js" defer></script>
+  <script src="js/timemachine.js" defer></script>
   <script src="js/calview.js" defer></script>
   <script src="js/bankparse.js?v=2026-05-22.111" defer></script>
   <script src="js/goals.js" defer></script>
