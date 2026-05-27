@@ -12,7 +12,7 @@
   "navigationDividerColorDark": "#0F0F0F",
   "backgroundColor": "#0F0F0F",
   "enableNotifications": true,
-  "startUrl": "/",
+  "startUrl": "/app.html?source=pwa",
   "iconUrl": "https://leakd.app/icons/icon-512.png",
   "maskableIconUrl": "https://leakd.app/icons/icon-512.png",
   "splashScreenFadeOutDuration": 300,
@@ -26,13 +26,13 @@
     {
       "name": "Add subscription",
       "shortName": "Add",
-      "url": "/?action=add",
+      "url": "/app.html?action=add&source=pwa",
       "chosenIconUrl": "https://leakd.app/icons/icon-192.png"
     },
     {
       "name": "Insights",
       "shortName": "Insights",
-      "url": "/?view=insights",
+      "url": "/app.html?view=insights&source=pwa",
       "chosenIconUrl": "https://leakd.app/icons/icon-192.png"
     }
   ],
